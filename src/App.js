@@ -69,9 +69,13 @@ function App() {
       <Container>
         <CssBaseline />
         <Box sx={{ my: 4 }}>
-        <Box sx={{ textAlign: 'center', mt: 6, mb: 8 }}>
-           <img src={'https://logos-world.net/wp-content/uploads/2021/02/IRS-Logo.png'} alt="IRS Logo" style={{ maxWidth: '200px', marginTop: '50px', marginBottom: '15px' }} />
-        </Box>
+          <Box sx={{ textAlign: 'center', mt: 6, mb: 8 }}>
+            <img
+              src="https://logos-world.net/wp-content/uploads/2021/02/IRS-Logo.png"
+              alt="IRS Logo"
+              style={{ maxWidth: '200px', marginTop: '50px', marginBottom: '15px' }}
+            />
+          </Box>
           <DepreciationForm onCalculate={handleCalculate} />
           {results && <ResultsDisplay results={results} />}
         </Box>
