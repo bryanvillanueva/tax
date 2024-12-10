@@ -12,8 +12,9 @@ import {
   calculateAdditionalMedicare,
   getSelfEmploymentRate,
 } from './utils/calculations';
-import { Container, CssBaseline, Box, Typography, ThemeProvider, createTheme } from '@mui/material';
+import { Container, CssBaseline, Box, ThemeProvider, createTheme } from '@mui/material';
 import './App.css'; // Asegúrate de importar el archivo CSS
+import { standardDeductions } from './utils/taxData';
 
 // Crear el tema personalizado con la fuente Montserrat y el color para botones
 const theme = createTheme({
@@ -34,44 +35,50 @@ function App() {
   const [results, setResults] = useState(null);
 
   const handleCalculate = ({ filingStatus, grossIncome, cost, investType }) => {
-    const netIncome = calculateNetIncome(grossIncome, cost, investType); // Mantener el netIncome sin cambiar
-  
-    // Solo ajustar el ingreso para calcular el Social Security Tax
-    const adjustedIncomeForSocialSecurity = netIncome * 0.9235;
-  
-    // Calcular solo el Social Security Tax al 12.4% sobre el ingreso ajustado
-    const seSocialSecurity = adjustedIncomeForSocialSecurity * 0.124;
-  
-    // Realizar otros cálculos con el netIncome original
+    const netIncome = calculateNetIncome(grossIncome, cost, investType);
+
+    // Cálculo para 1040/1040NR
+    const seSocialSecurity = (netIncome * 0.9235) * 0.124;
     const seMedicare = calculateSEMedicare(netIncome);
-    const agi = calculateAGI(netIncome, seSocialSecurity + seMedicare);
+    const selfEmploymentTax = seSocialSecurity + seMedicare;
+    const agi = calculateAGI(netIncome, selfEmploymentTax);
+    const standardDeduction = standardDeductions[filingStatus];
     const taxableIncome = calculateTaxableIncome(agi, filingStatus);
     const { marginalRate, level } = getMarginalTaxRateAndLevel(filingStatus, taxableIncome);
     const taxDue = calculateTaxDue(filingStatus, taxableIncome);
     const additionalMedicare = calculateAdditionalMedicare(filingStatus, netIncome);
-    const seDeduction = (seSocialSecurity + seMedicare) / 2;
     const selfEmploymentRate = getSelfEmploymentRate();
-    const totalTaxDue = taxDue + seSocialSecurity + seMedicare + additionalMedicare;
-  
+    const totalTaxDue = taxDue + selfEmploymentTax + additionalMedicare;
+    const effectiveTaxRate = taxableIncome !== 0 ? ((taxDue / taxableIncome) * 100).toFixed(2) : '0.00';
+    const seDeduction = selfEmploymentTax / 2;
+
+    // Cálculo para 1120 (Corporations)
+    const corpTaxableIncome = netIncome;
+    const corpTaxDue = corpTaxableIncome * 0.21;
+    const corpEffectiveTaxRate = corpTaxableIncome !== 0 ? ((corpTaxDue / corpTaxableIncome) * 100).toFixed(2) : '0.00';
+
     // Actualizar los resultados
     setResults({
       netIncome,
-      adjustedIncomeForSocialSecurity, // Para mostrar solo la parte ajustada si es necesario
       selfEmploymentRate,
       agi,
+      standardDeduction,
       taxableIncome,
       marginalRate: (marginalRate * 100).toFixed(2),
       incomeLevel: level,
       taxDue,
-      seSocialSecurity, //Self-Employment Social Security
+      seSocialSecurity,
       seMedicare,
-      totalSE: seSocialSecurity + seMedicare,
-      seDeduction,
+      totalSE: selfEmploymentTax,
       additionalMedicare,
       totalTaxDue,
+      corpTaxableIncome,
+      corpTaxDue,
+      effectiveTaxRate,
+      corpEffectiveTaxRate,
+      seDeduction
     });
   };
-  
 
   return (
     <ThemeProvider theme={theme}>
@@ -80,9 +87,9 @@ function App() {
         <Box sx={{ my: 4 }}>
           <Box sx={{ textAlign: 'center', mt: 6, mb: 8 }}>
             <img
-              src="https://logos-world.net/wp-content/uploads/2021/02/IRS-Logo.png"
-              alt="IRS Logo"
-              style={{ maxWidth: '200px', marginTop: '50px', marginBottom: '15px' }}
+              src="https://cmlaccountant.com/templates/yootheme/cache/logoNegro600px_CarlosMLopez_V2-1959ed57.webp"
+              alt="Logo"
+              style={{ maxWidth: '400px', marginTop: '50px', marginBottom: '15px' }}
             />
           </Box>
           <DepreciationForm onCalculate={handleCalculate} />
