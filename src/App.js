@@ -34,35 +34,44 @@ function App() {
   const [results, setResults] = useState(null);
 
   const handleCalculate = ({ filingStatus, grossIncome, cost, investType }) => {
-    const netIncome = calculateNetIncome(grossIncome, cost, investType);
-    const selfEmploymentTax = calculateSelfEmploymentTax(netIncome);
+    const netIncome = calculateNetIncome(grossIncome, cost, investType); // Mantener el netIncome sin cambiar
+  
+    // Solo ajustar el ingreso para calcular el Social Security Tax
+    const adjustedIncomeForSocialSecurity = netIncome * 0.9235;
+  
+    // Calcular solo el Social Security Tax al 12.4% sobre el ingreso ajustado
+    const seSocialSecurity = adjustedIncomeForSocialSecurity * 0.124;
+  
+    // Realizar otros cálculos con el netIncome original
     const seMedicare = calculateSEMedicare(netIncome);
-    const agi = calculateAGI(netIncome, selfEmploymentTax);
+    const agi = calculateAGI(netIncome, seSocialSecurity + seMedicare);
     const taxableIncome = calculateTaxableIncome(agi, filingStatus);
     const { marginalRate, level } = getMarginalTaxRateAndLevel(filingStatus, taxableIncome);
     const taxDue = calculateTaxDue(filingStatus, taxableIncome);
     const additionalMedicare = calculateAdditionalMedicare(filingStatus, netIncome);
-    const totalSE = selfEmploymentTax;
-    const seDeduction = selfEmploymentTax / 2;
+    const seDeduction = (seSocialSecurity + seMedicare) / 2;
     const selfEmploymentRate = getSelfEmploymentRate();
-    const totalTaxDue = taxDue + totalSE + additionalMedicare;
-
+    const totalTaxDue = taxDue + seSocialSecurity + seMedicare + additionalMedicare;
+  
+    // Actualizar los resultados
     setResults({
       netIncome,
+      adjustedIncomeForSocialSecurity, // Para mostrar solo la parte ajustada si es necesario
       selfEmploymentRate,
       agi,
       taxableIncome,
       marginalRate: (marginalRate * 100).toFixed(2),
       incomeLevel: level,
       taxDue,
-      seSocialSecurity: totalSE * (12.4 / 15.3),
+      seSocialSecurity, //Self-Employment Social Security
       seMedicare,
-      totalSE,
+      totalSE: seSocialSecurity + seMedicare,
       seDeduction,
       additionalMedicare,
       totalTaxDue,
     });
   };
+  
 
   return (
     <ThemeProvider theme={theme}>

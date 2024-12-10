@@ -15,13 +15,18 @@ export function calculateNetIncome(grossIncome, cost, investType) {
   return Math.max(0, grossIncome - deduction); // Evita valores negativos
 }
 
+
 // Calcular el Self-Employment Tax Total
 export function calculateSelfEmploymentTax(netIncome) {
   if (netIncome <= 0) return 0;
 
   // Calcular SE Income para Social Security (92.35% del Net Income)
-  const seIncomeForSocialSecurity = netIncome * 0.9235;
-  const socialSecurity = Math.min(seIncomeForSocialSecurity, socialSecurityWageBase) * socialSecurityRate;
+  const seIncomeForSocialSecurity = netIncome * seBaseMultiplier;
+  console.log('SE Income for Social Security:', seIncomeForSocialSecurity);
+  const socialSecurity = Math.min(seIncomeForSocialSecurity, socialSecurityWageBase) * socialSecurityRate; // 12.4% para Social Security
+  console.log('Social Security Tax:', socialSecurity);
+  console.log('Social Security WabeBase:', socialSecurityWageBase);
+
 
   // Calcular Medicare Tax directamente del Net Income (sin aplicar el 92.35%)
   const medicare = netIncome * medicareRate;
@@ -93,3 +98,4 @@ export function calculateAdditionalMedicare(filingStatus, netIncome) {
 export function getSelfEmploymentRate() {
   return 15.3; // 12.4% para Social Security + 2.9% para Medicare
 }
+
