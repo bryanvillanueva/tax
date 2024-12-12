@@ -1,6 +1,8 @@
 import React from 'react';
 import { Typography, Box, Table, TableBody, TableCell, TableContainer, TableRow, TableHead, Paper, Button } from '@mui/material';
 
+
+
 const formatCurrency = (value) => {
   return value !== undefined && value !== null ? `$${value.toFixed(2)}` : '$0.00';
 };
@@ -22,7 +24,7 @@ const ResultsDisplay = ({ results }) => {
           <TableHead>
             <TableRow>
               <TableCell sx={{ fontWeight: 'bold' }}>Return - Form</TableCell>
-              <TableCell sx={{ fontWeight: 'bold' }}>1040/1040NR</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>1040/1040NR/1065/1120S</TableCell>
               <TableCell sx={{ fontWeight: 'bold' }}>1120</TableCell>
             </TableRow>
           </TableHead>
@@ -80,14 +82,19 @@ const ResultsDisplay = ({ results }) => {
               <TableCell>{formatCurrency(results.corpTaxDue)}</TableCell>
             </TableRow>
             <TableRow sx={{ backgroundColor: '#82b484' }}>
-              <TableCell>Total Tax Due</TableCell>
-              <TableCell>{formatCurrency(results.taxDue + results.totalSE)}</TableCell>
-              <TableCell>{formatCurrency(results.corpTaxDue)}</TableCell>
-            </TableRow>
-            <TableRow sx={{ backgroundColor: '#82b484' }}>
-              <TableCell>Effective Tax Rate</TableCell>
+            <TableCell>Effective Tax Rate</TableCell>
               <TableCell>{results.effectiveTaxRate}%</TableCell>
               <TableCell>{results.corpEffectiveTaxRate}%</TableCell>
+            </TableRow>
+             {/* Fila Vacía para Separación */}
+            <TableRow>
+              <TableCell colSpan={3}>&nbsp;</TableCell>
+            </TableRow>
+
+            <TableRow sx={{ backgroundColor: '#82b484' }}>
+            <TableCell>Total Tax Due</TableCell>
+              <TableCell>{formatCurrency(results.taxDue + results.totalSE)}</TableCell>
+              <TableCell>{formatCurrency(results.corpTaxDue)}</TableCell>
             </TableRow>
           </TableBody>
         </Table>
@@ -136,7 +143,7 @@ const ResultsDisplay = ({ results }) => {
         </Table>
       </TableContainer>
 
-      
+    
 
       {/* Botón de Imprimir */}
       <Box sx={{ display: 'flex', justifyContent: 'center', mt: 5 }}>
