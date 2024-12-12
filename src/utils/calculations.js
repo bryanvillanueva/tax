@@ -57,11 +57,11 @@ export function getMarginalTaxRateAndLevel(filingStatus, taxableIncome) {
   let level = 0;
 
   for (let i = 0; i < brackets.length; i++) {
-    // Verifica si el ingreso está dentro del rango actual
-    if (taxableIncome >= brackets[i].start && taxableIncome <= brackets[i].end) {
+    if (taxableIncome >= brackets[i].start) {
       marginalRate = brackets[i].rate;
-      level = i; // Asigna el índice como nivel
-      break; // Detén el bucle una vez encontrado
+      level = i;
+    } else {
+      break;
     }
   }
 
