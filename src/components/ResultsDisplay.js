@@ -75,8 +75,13 @@ const ResultsDisplay = ({ results }) => {
               <TableCell>{formatCurrency(0)}</TableCell>
             </TableRow>
             <TableRow sx={{ backgroundColor: '#82b484' }}>
-              <TableCell>Tax Due</TableCell>
+              <TableCell>Tax Due (Income tax rate)</TableCell>
               <TableCell>{formatCurrency(results.taxDue)}</TableCell>
+              <TableCell>{formatCurrency(results.corpTaxDue)}</TableCell>
+            </TableRow>
+            <TableRow sx={{ backgroundColor: '#82b484' }}>
+              <TableCell>Total Tax Due</TableCell>
+              <TableCell>{formatCurrency(results.taxDue + results.totalSE)}</TableCell>
               <TableCell>{formatCurrency(results.corpTaxDue)}</TableCell>
             </TableRow>
             <TableRow sx={{ backgroundColor: '#82b484' }}>
@@ -130,6 +135,8 @@ const ResultsDisplay = ({ results }) => {
           </TableBody>
         </Table>
       </TableContainer>
+
+      
 
       {/* Botón de Imprimir */}
       <Box sx={{ display: 'flex', justifyContent: 'center', mt: 5 }}>

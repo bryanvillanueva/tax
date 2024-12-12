@@ -9,6 +9,8 @@ import {
   additionalMedicareThreshold,
 } from './taxData';
 
+
+
 // Calcular el Net Income según el tipo de inversión (Section 179 o Bonus)
 export function calculateNetIncome(grossIncome, cost, investType) {
   const deduction = investType === 'Section 179' ? cost : cost * 0.8;
@@ -60,18 +62,19 @@ export function getMarginalTaxRateAndLevel(filingStatus, taxableIncome) {
   let level = 0;
 
   for (let i = 0; i < brackets.length; i++) {
-    if (taxableIncome > brackets[i].start) {
+    // Verifica si el ingreso está dentro del rango actual
+    if (taxableIncome >= brackets[i].start && taxableIncome <= brackets[i].end) {
       marginalRate = brackets[i].rate;
-      level = i;
-    } else {
-      break;
+      level = i; // Asigna el índice como nivel
+      break; // Detén el bucle una vez encontrado
     }
   }
 
   return { marginalRate, level };
 }
 
-// Calcular el impuesto adeudado (Tax Due)
+
+// Calcular el impuesto adeudado (Tax Due) income tax rate
 export function calculateTaxDue(filingStatus, taxableIncome) {
   const brackets = taxBrackets[filingStatus];
   let tax = 0;

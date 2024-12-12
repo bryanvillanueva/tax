@@ -11,6 +11,9 @@ import {
   calculateTaxDue,
   calculateAdditionalMedicare,
   getSelfEmploymentRate,
+  calculateAssets,
+  calculateLiabilities,
+  calculateAssetLiabilityRatio,
 } from './utils/calculations';
 import { Container, CssBaseline, Box, ThemeProvider, createTheme } from '@mui/material';
 import './App.css'; // Asegúrate de importar el archivo CSS
@@ -56,7 +59,7 @@ function App() {
     const corpTaxableIncome = netIncome;
     const corpTaxDue = corpTaxableIncome * 0.21;
     const corpEffectiveTaxRate = corpTaxableIncome !== 0 ? ((corpTaxDue / corpTaxableIncome) * 100).toFixed(2) : '0.00';
-
+    
     // Actualizar los resultados
     setResults({
       netIncome,
