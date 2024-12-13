@@ -12,9 +12,9 @@ import {
   calculateAdditionalMedicare,
   getSelfEmploymentRate,
 } from './utils/calculations';
-import { standardDeductions, socialSecurityWageBase } from './utils/taxData';
 import { Container, CssBaseline, Box, ThemeProvider, createTheme } from '@mui/material';
 import './App.css'; // Asegúrate de importar el archivo CSS
+import { standardDeductions } from './utils/taxData';
 
 // Crear el tema personalizado con la fuente Montserrat y el color para botones
 const theme = createTheme({
@@ -35,27 +35,16 @@ function App() {
   const [results, setResults] = useState(null);
 
   const handleCalculate = ({ filingStatus, grossIncome, cost, investType, partnerType }) => {
-    // Cálculo del Net Income
     const netIncome = calculateNetIncome(grossIncome, cost, investType);
 
-    // Determinar Self-Employment Tax y Medicare según el partnerType
-    const seSocialSecurity = partnerType === 'Active'
-      ? Math.min((netIncome * 0.9235) * 0.124, socialSecurityWageBase * 0.124)
-      : 0;
-
+    // Cálculo para 1040/1040NR
+    const seSocialSecurity = partnerType === 'Active' ? (netIncome * 0.9235) * 0.124 : 0;
     const seMedicare = partnerType === 'Active' ? calculateSEMedicare(netIncome) : 0;
-
-    const selfEmploymentTax = seSocialSecurity + seMedicare;
+    const selfEmploymentTax = partnerType === 'Active' ? (seSocialSecurity + seMedicare) : 0;
     const agi = calculateAGI(netIncome, selfEmploymentTax);
-
-    // Calcular deducciones y Taxable Income
     const standardDeduction = standardDeductions[filingStatus];
     const taxableIncome = calculateTaxableIncome(agi, filingStatus);
-
-    // Obtener Marginal Tax Rate y nivel
     const { marginalRate, level } = getMarginalTaxRateAndLevel(filingStatus, taxableIncome);
-
-    // Calcular impuestos
     const taxDue = calculateTaxDue(filingStatus, taxableIncome);
     const additionalMedicare = calculateAdditionalMedicare(filingStatus, netIncome);
     const selfEmploymentRate = partnerType === 'Active' ? getSelfEmploymentRate() : 0;
@@ -63,6 +52,11 @@ function App() {
     const effectiveTaxRate = taxableIncome !== 0 ? ((taxDue / taxableIncome) * 100).toFixed(2) : '0.00';
     const seDeduction = selfEmploymentTax / 2;
 
+    // Cálculo para 1120 (Corporations)
+    const corpTaxableIncome = netIncome;
+    const corpTaxDue = corpTaxableIncome * 0.21;
+    const corpEffectiveTaxRate = corpTaxableIncome !== 0 ? ((corpTaxDue / corpTaxableIncome) * 100).toFixed(2) : '0.00';
+    
     // Actualizar los resultados
     setResults({
       netIncome,
@@ -78,8 +72,11 @@ function App() {
       totalSE: selfEmploymentTax,
       additionalMedicare,
       totalTaxDue,
+      corpTaxableIncome,
+      corpTaxDue,
       effectiveTaxRate,
-      seDeduction,
+      corpEffectiveTaxRate,
+      seDeduction
     });
   };
 
