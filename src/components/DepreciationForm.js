@@ -11,22 +11,31 @@ const DepreciationForm = ({ onCalculate }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
+  
+    // Validación de Net Income for Analysis
     if (!grossIncome || parseFloat(grossIncome) <= 0) {
       setError('Net Income for Analysis is required and must be greater than 0.');
       return;
     }
-
+  
+    // Validación de Cost / Investment
+    if (!cost || parseFloat(cost) <= 0) {
+      setError('Cost / Investment is required and must be greater than 0.');
+      return;
+    }
+  
+    // Limpiar el error si ambas validaciones son exitosas
     setError(null);
-
+  
     onCalculate({
       filingStatus,
       grossIncome: parseFloat(grossIncome),
-      cost: parseFloat(cost) || 0,
+      cost: parseFloat(cost),
       investType,
       partnerType,
     });
   };
+  
 
   return (
     <Container className="container">
@@ -89,6 +98,7 @@ const DepreciationForm = ({ onCalculate }) => {
               onChange={(e) => setCost(e.target.value)}
               margin="normal"
               type="number"
+              error={Boolean(error)}
             />
 
             <TextField
