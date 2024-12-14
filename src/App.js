@@ -7,10 +7,13 @@ import {
   calculateSEMedicare,
   calculateAGI,
   calculateTaxableIncome,
+  calculateTaxableIncome2,
   getMarginalTaxRateAndLevel,
   calculateTaxDue,
   calculateAdditionalMedicare,
   getSelfEmploymentRate,
+  calculateTaxDue2,
+  getMarginalTaxRateAndLevel2,
 } from './utils/calculations';
 import { Container, CssBaseline, Box, ThemeProvider, createTheme } from '@mui/material';
 import './App.css'; // Asegúrate de importar el archivo CSS
@@ -50,33 +53,61 @@ function App() {
     const selfEmploymentRate = partnerType === 'Active' ? getSelfEmploymentRate() : 0;
     const totalTaxDue = taxDue + selfEmploymentTax + additionalMedicare;
     const effectiveTaxRate = taxableIncome !== 0 ? ((taxDue / taxableIncome) * 100).toFixed(2) : '0.00';
-    const seDeduction = selfEmploymentTax / 2;
+    const seDeduction = selfEmploymentTax / 2;  
+    const seSocialSecurity2 = partnerType === 'Active' ? (grossIncome * 0.9235) * 0.124 : 0;
+    const seMedicare2 = partnerType === 'Active' ? calculateSEMedicare(grossIncome) : 0;
+    const selfEmploymentTax2 = partnerType === 'Active' ? (seSocialSecurity2 + seMedicare2) : 0;
+    const seDeduction2 = selfEmploymentTax2 / 2;
+    const netIncome2 = grossIncome;
+    const agi2 = netIncome2 - selfEmploymentTax2 / 2;
+    const taxableIncome2 = calculateTaxableIncome2(agi2, filingStatus);
+    const taxDue2 = calculateTaxDue2(filingStatus, taxableIncome2);
+    const totalTaxDue2 = taxDue2 + selfEmploymentTax2 + additionalMedicare;
+    const effectiveTaxRate2 = taxableIncome2 !== 0 ? ((taxDue2 / taxableIncome2) * 100).toFixed(2) : '0.00';
+    const { marginalRate2, level2 } = getMarginalTaxRateAndLevel2(filingStatus, taxableIncome2);
 
     // Cálculo para 1120 (Corporations)
     const corpTaxableIncome = netIncome;
+    const corpTaxableIncome2 = netIncome2;
     const corpTaxDue = corpTaxableIncome * 0.21;
+    const corpTaxDue2 = corpTaxableIncome2 * 0.21;  
     const corpEffectiveTaxRate = corpTaxableIncome !== 0 ? ((corpTaxDue / corpTaxableIncome) * 100).toFixed(2) : '0.00';
     
     // Actualizar los resultados
     setResults({
       netIncome,
+      netIncome2,
+      corpTaxableIncome2,
       selfEmploymentRate,
+      corpTaxDue2,
       agi,
+      agi2,
       standardDeduction,
       taxableIncome,
+      taxableIncome2,
       marginalRate: (marginalRate * 100).toFixed(2),
       incomeLevel: level,
       taxDue,
+      taxDue2,
+      totalTaxDue2,
+      marginalRate2: (marginalRate2 * 100).toFixed(2), 
+      incomeLevel2: level2,
       seSocialSecurity,
+      seDeduction2,
       seMedicare,
       totalSE: selfEmploymentTax,
+      totalSE2: selfEmploymentTax2,
       additionalMedicare,
       totalTaxDue,
       corpTaxableIncome,
       corpTaxDue,
       effectiveTaxRate,
+      effectiveTaxRate2,
       corpEffectiveTaxRate,
-      seDeduction
+      seDeduction,
+      seSocialSecurity2,
+      seMedicare2,
+      selfEmploymentTax2
     });
   };
 

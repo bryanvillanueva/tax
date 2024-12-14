@@ -34,6 +34,12 @@ export function calculateTaxableIncome(agi, filingStatus) {
   return Math.max(0, agi - standardDeduction);
 }
 
+// Calcular el Taxable Income
+export function calculateTaxableIncome2(agi2, filingStatus) {
+  const standardDeduction = standardDeductions[filingStatus] || 0;
+  return Math.max(0, agi2 - standardDeduction);
+}
+
 // Obtener el Marginal Tax Rate y el Income Level
 export function getMarginalTaxRateAndLevel(filingStatus, taxableIncome) {
   const brackets = taxBrackets[filingStatus];
@@ -52,6 +58,24 @@ export function getMarginalTaxRateAndLevel(filingStatus, taxableIncome) {
   return { marginalRate, level };
 }
 
+// Obtener el Marginal Tax Rate y el Income Level
+export function getMarginalTaxRateAndLevel2(filingStatus, taxableIncome2) {
+  const brackets = taxBrackets[filingStatus];
+  let marginalRate2 = 0;
+  let level2 = 0;
+
+  for (let i = 0; i < brackets.length; i++) {
+    if (taxableIncome2 >= brackets[i].start) {
+      marginalRate2 = brackets[i].rate;
+      level2 = i;
+    } else {
+      break;
+    }
+  }
+
+  return { marginalRate2, level2 };
+}
+
 
 
 // Calcular el impuesto adeudado (Tax Due) income tax rate
@@ -62,6 +86,23 @@ export function calculateTaxDue(filingStatus, taxableIncome) {
   for (let i = 0; i < brackets.length; i++) {
     if (taxableIncome > brackets[i].start) {
       const amountInBracket = Math.min(taxableIncome, brackets[i].end) - brackets[i].start;
+      tax += amountInBracket * brackets[i].rate;
+    } else {
+      break;
+    }
+  }
+
+  return tax;
+}
+
+// Calcular el impuesto adeudado (Tax Due) income tax rate
+export function calculateTaxDue2(filingStatus, taxableIncome2) {
+  const brackets = taxBrackets[filingStatus];
+  let tax = 0;
+
+  for (let i = 0; i < brackets.length; i++) {
+    if (taxableIncome2 > brackets[i].start) {
+      const amountInBracket = Math.min(taxableIncome2, brackets[i].end) - brackets[i].start;
       tax += amountInBracket * brackets[i].rate;
     } else {
       break;
