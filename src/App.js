@@ -11,6 +11,7 @@ import {
   getMarginalTaxRateAndLevel,
   calculateTaxDue,
   calculateAdditionalMedicare,
+  calculateAdditionalMedicare2,
   getSelfEmploymentRate,
   calculateTaxDue2,
   getMarginalTaxRateAndLevel2,
@@ -49,7 +50,7 @@ function App() {
     const taxableIncome = calculateTaxableIncome(agi, filingStatus);
     const { marginalRate, level } = getMarginalTaxRateAndLevel(filingStatus, taxableIncome);
     const taxDue = calculateTaxDue(filingStatus, taxableIncome);
-    const additionalMedicare = calculateAdditionalMedicare(filingStatus, netIncome);
+    const additionalMedicare = calculateAdditionalMedicare(filingStatus, netIncome); 
     const selfEmploymentRate = partnerType === 'Active' ? getSelfEmploymentRate() : 0;
     const totalTaxDue = taxDue + selfEmploymentTax + additionalMedicare;
     const effectiveTaxRate = taxableIncome !== 0 ? ((taxDue / taxableIncome) * 100).toFixed(2) : '0.00';
@@ -65,6 +66,7 @@ function App() {
     const totalTaxDue2 = taxDue2 + selfEmploymentTax2 + additionalMedicare;
     const effectiveTaxRate2 = taxableIncome2 !== 0 ? ((taxDue2 / taxableIncome2) * 100).toFixed(2) : '0.00';
     const { marginalRate2, level2 } = getMarginalTaxRateAndLevel2(filingStatus, taxableIncome2);
+    const additionalMedicare2 = calculateAdditionalMedicare2(filingStatus, netIncome2);
 
     // Cálculo para 1120 (Corporations)
     const corpTaxableIncome = netIncome;
@@ -98,6 +100,7 @@ function App() {
       totalSE: selfEmploymentTax,
       totalSE2: selfEmploymentTax2,
       additionalMedicare,
+      additionalMedicare2,
       totalTaxDue,
       corpTaxableIncome,
       corpTaxDue,

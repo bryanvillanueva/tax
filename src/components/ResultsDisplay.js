@@ -254,7 +254,7 @@ const ResultsDisplay = ({ results }) => {
       </TableRow>
       <TableRow sx={{ backgroundColor: '#b3e5fc' }}>
         <TableCell>Additional Medicare Tax</TableCell>
-        <TableCell>{formatCurrency(results.additionalMedicare)}</TableCell>
+        <TableCell>{formatCurrency(results.additionalMedicare2)}</TableCell>
       </TableRow>
     </TableBody>
   </Table>

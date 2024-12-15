@@ -118,6 +118,12 @@ export function calculateAdditionalMedicare(filingStatus, netIncome) {
   return netIncome > threshold ? (netIncome - threshold) * additionalMedicareRate : 0;
 }
 
+// Calcular Additional Medicare Tax
+export function calculateAdditionalMedicare2(filingStatus, netIncome2) {
+  const threshold = additionalMedicareThreshold[filingStatus];
+  return netIncome2 > threshold ? (netIncome2 - threshold) * additionalMedicareRate : 0;
+}
+
 // Obtener la Self-Employment Rate fija (15.3%)
 export function getSelfEmploymentRate() {
   return 15.3; // 12.4% para Social Security + 2.9% para Medicare
