@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { TextField, Button, Container, Typography, Box, MenuItem, Alert, Grid } from '@mui/material';
 import useCalculations from '../utils/useCalculations';
 
-const DepreciationForm = ({ onCalculate }) => {
+const AugustaRuleForm = ({ onCalculate }) => {
   const [filingStatus, setFilingStatus] = useState('Single');
   const [grossIncome, setGrossIncome] = useState('');
-  const [investType, setInvestType] = useState('Section 179');
-  const [cost, setCost] = useState('');
+  const [averageMonthlyRent, setAverageMonthlyRent] = useState('');
+  const [daysOfRent, setDaysOfRent] = useState('');
   const [partnerType, setPartnerType] = useState('Active');
   const [error, setError] = useState(null);
 
@@ -16,12 +16,17 @@ const DepreciationForm = ({ onCalculate }) => {
     e.preventDefault();
 
     if (!grossIncome || parseFloat(grossIncome) <= 0) {
-      setError('Net Income for Analysis is required and must be greater than 0.');
+      setError('Gross Income is required and must be greater than 0.');
       return;
     }
 
-    if (!cost || parseFloat(cost) <= 0) {
-      setError('Cost / Investment is required and must be greater than 0.');
+    if (!averageMonthlyRent || parseFloat(averageMonthlyRent) <= 0) {
+      setError('Average Monthly Rent is required and must be greater than 0.');
+      return;
+    }
+
+    if (!daysOfRent || parseFloat(daysOfRent) <= 0) {
+      setError('Days of Rent is required and must be greater than 0.');
       return;
     }
 
@@ -30,9 +35,10 @@ const DepreciationForm = ({ onCalculate }) => {
     const results = performCalculations({
       filingStatus,
       grossIncome: parseFloat(grossIncome),
-      cost: parseFloat(cost),
-      investType,
+      averageMonthlyRent: parseFloat(averageMonthlyRent),
+      daysOfRent: parseFloat(daysOfRent),
       partnerType,
+      isAugustaRule: true,
     });
 
     onCalculate(results);
@@ -41,9 +47,7 @@ const DepreciationForm = ({ onCalculate }) => {
   return (
     <Container>
       <Box sx={{ mt: 5 }}>
-        <Typography variant="h4" gutterBottom>
-          Depreciation Form
-        </Typography>
+
 
         {error && (
           <Alert severity="error" sx={{ mb: 2 }}>
@@ -93,25 +97,22 @@ const DepreciationForm = ({ onCalculate }) => {
 
             <Grid item xs={12} md={6}>
               <TextField
-                label="Cost / Investment"
+                label="Average Monthly Rent"
                 fullWidth
                 type="number"
-                value={cost}
-                onChange={(e) => setCost(e.target.value)}
+                value={averageMonthlyRent}
+                onChange={(e) => setAverageMonthlyRent(e.target.value)}
                 margin="normal"
               />
 
               <TextField
-                select
-                label="Investment Type"
+                label="Days of Rent"
                 fullWidth
-                value={investType}
-                onChange={(e) => setInvestType(e.target.value)}
+                type="number"
+                value={daysOfRent}
+                onChange={(e) => setDaysOfRent(e.target.value)}
                 margin="normal"
-              >
-                <MenuItem value="Section 179">Section 179</MenuItem>
-                <MenuItem value="Bonus">Bonus</MenuItem>
-              </TextField>
+              />
             </Grid>
           </Grid>
 
@@ -126,4 +127,4 @@ const DepreciationForm = ({ onCalculate }) => {
   );
 };
 
-export default DepreciationForm;
+export default AugustaRuleForm;
