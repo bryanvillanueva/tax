@@ -2,6 +2,7 @@ import {
     calculateNetIncome,
     calculateNetIncomeAugusta,
     calculateSelfEmploymentTax,
+    calculateNetIncomeKids,
     calculateSEMedicare,
     calculateAGI,
     calculateTaxableIncome,
@@ -13,24 +14,41 @@ import {
     getSelfEmploymentRate,
     calculateTaxDue2,
     getMarginalTaxRateAndLevel2,
+    calculateNetIncomePrepaid
   } from '../utils/calculations';
   import { standardDeductions } from '../utils/taxData';
   
   const useCalculations = () => {
     const performCalculations = ({
-      filingStatus,
-      grossIncome,
-      cost,
-      investType,
-      partnerType,
-      averageMonthlyRent,
-      daysOfRent,
-      isAugustaRule = false,
-    }) => {
-      // Calcular Net Income según el tipo de inversión
-      const netIncome = isAugustaRule
-        ? calculateNetIncomeAugusta(grossIncome, averageMonthlyRent, daysOfRent)
-        : calculateNetIncome(grossIncome, cost, investType);
+        filingStatus,
+        grossIncome,
+        cost,
+        investType,
+        partnerType,
+        averageMonthlyRent,
+        daysOfRent,
+        totalExpenses,
+        totalNonPrepaidExpenses,
+        totalDeduction,
+        calculationType = 'standard',
+      }) => {
+        // Calcular Net Income según el tipo de cálculo
+        let netIncome;
+      
+        switch (calculationType) {
+            case 'augusta':
+              netIncome = calculateNetIncomeAugusta(grossIncome, averageMonthlyRent, daysOfRent);
+              break;
+            case 'prepaid':
+              netIncome = calculateNetIncomePrepaid(grossIncome, totalExpenses, totalNonPrepaidExpenses);
+              break;
+            case 'hireKids':
+              netIncome = calculateNetIncomeKids(grossIncome, totalDeduction);
+              break;
+            case 'standard':
+            default:
+              netIncome = calculateNetIncome(grossIncome, cost, investType);
+          }
   
       // Cálculo para 1040/1040NR
       const seSocialSecurity = partnerType === 'Active' ? (netIncome * 0.9235) * 0.124 : 0;

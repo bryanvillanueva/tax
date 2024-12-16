@@ -117,7 +117,7 @@ const AugustaRuleForm = ({ onCalculate }) => {
           </Grid>
 
           <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
-            <Button type="submit" variant="contained" color="primary">
+            <Button type="submit" variant="contained" sx={{backgroundColor:'#0858e6', color: '#fff'}}>
               Calculate
             </Button>
           </Box>

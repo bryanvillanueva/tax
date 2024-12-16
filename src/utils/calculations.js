@@ -17,11 +17,28 @@ export function calculateNetIncome(grossIncome, cost, investType) {
   return Math.max(0, grossIncome - deduction); // Evita valores negativos
 }
 
+// Calcular el Net Income para Hire Your Kids
+export function calculateNetIncomeKids(grossIncome, totalDeduction) {
+  return Math.max(0, grossIncome - totalDeduction); // Evita valores negativos
+}
+
+export function calculateNetIncomePrepaid(grossIncome, totalExpenses, totalNonPrepaidExpenses) {
+  const maxPrepaidDeduction = grossIncome * 0.2; // El máximo permitido será un 20% del ingreso bruto (ajustable según reglas)
+  const prepaidDeduction = totalExpenses - totalNonPrepaidExpenses;
+  const finalDeduction = Math.min(Math.max(0, prepaidDeduction), maxPrepaidDeduction);
+  
+  // Calcular el Net Income restando la deducción del Gross Income
+  return Math.max(0, grossIncome - finalDeduction); // Evita valores negativos
+}
+
+
 // Calcular el Net Income según el tipo de inversión (Augusta Rule)
 export function calculateNetIncomeAugusta(grossIncome, averageMonthlyRent, daysOfRent) {
   const totalDeduction = (averageMonthlyRent / 30) * daysOfRent;
   return Math.max(0, grossIncome - totalDeduction); // Evita valores negativos
 }
+
+
 
 
 // Calcular Self-Employment Medicare Tax

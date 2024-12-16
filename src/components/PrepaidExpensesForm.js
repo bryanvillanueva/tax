@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import { TextField, Button, Container, Typography, Box, MenuItem, Alert, Grid } from '@mui/material';
 import useCalculations from '../utils/useCalculations';
 
-const DepreciationForm = ({ onCalculate }) => {
+const PrepaidExpensesForm = ({ onCalculate }) => {
   const [filingStatus, setFilingStatus] = useState('Single');
   const [grossIncome, setGrossIncome] = useState('');
   const [investType, setInvestType] = useState('Section 179');
   const [cost, setCost] = useState('');
   const [partnerType, setPartnerType] = useState('Active');
+  const [totalExpenses, setTotalExpenses] = useState('');
+  const [totalNonPrepaidExpenses, setTotalNonPrepaidExpenses] = useState('');
   const [error, setError] = useState(null);
 
   const { performCalculations } = useCalculations();
@@ -16,12 +18,17 @@ const DepreciationForm = ({ onCalculate }) => {
     e.preventDefault();
 
     if (!grossIncome || parseFloat(grossIncome) <= 0) {
-      setError('Net Income for Analysis is required and must be greater than 0.');
+      setError('Gross Income is required and must be greater than 0.');
       return;
     }
 
-    if (!cost || parseFloat(cost) <= 0) {
-      setError('Cost / Investment is required and must be greater than 0.');
+    if (!totalExpenses || parseFloat(totalExpenses) <= 0) {
+      setError('Total Expenses is required and must be greater than 0.');
+      return;
+    }
+
+    if (!totalNonPrepaidExpenses || parseFloat(totalNonPrepaidExpenses) <= 0) {
+      setError('Total Non-Prepaid Expenses is required and must be greater than 0.');
       return;
     }
 
@@ -33,6 +40,9 @@ const DepreciationForm = ({ onCalculate }) => {
       cost: parseFloat(cost),
       investType,
       partnerType,
+      totalExpenses: parseFloat(totalExpenses),
+      totalNonPrepaidExpenses: parseFloat(totalNonPrepaidExpenses),
+      calculationType: 'prepaid',
     });
 
     onCalculate(results);
@@ -50,6 +60,7 @@ const DepreciationForm = ({ onCalculate }) => {
 
         <form onSubmit={handleSubmit}>
           <Grid container spacing={2}>
+            {/* Lado Izquierdo */}
             <Grid item xs={12} md={6}>
               <TextField
                 select
@@ -88,27 +99,25 @@ const DepreciationForm = ({ onCalculate }) => {
               </TextField>
             </Grid>
 
+            {/* Lado Derecho */}
             <Grid item xs={12} md={6}>
               <TextField
-                label="Cost / Investment"
+                label="Total Expenses"
                 fullWidth
                 type="number"
-                value={cost}
-                onChange={(e) => setCost(e.target.value)}
+                value={totalExpenses}
+                onChange={(e) => setTotalExpenses(e.target.value)}
                 margin="normal"
               />
 
               <TextField
-                select
-                label="Investment Type"
+                label="Total Non-Prepaid Expenses"
                 fullWidth
-                value={investType}
-                onChange={(e) => setInvestType(e.target.value)}
+                type="number"
+                value={totalNonPrepaidExpenses}
+                onChange={(e) => setTotalNonPrepaidExpenses(e.target.value)}
                 margin="normal"
-              >
-                <MenuItem value="Section 179">Section 179</MenuItem>
-                <MenuItem value="Bonus">Bonus</MenuItem>
-              </TextField>
+              />
             </Grid>
           </Grid>
 
@@ -123,4 +132,4 @@ const DepreciationForm = ({ onCalculate }) => {
   );
 };
 
-export default DepreciationForm;
+export default PrepaidExpensesForm;

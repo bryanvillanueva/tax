@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import DepreciationForm from './components/DepreciationForm';
 import AugustaRuleForm from './components/AugustaRuleForm';
+import PrepaidExpensesForm from './components/PrepaidExpensesForm';
+import HireYourKidsForm from './components/HireYourKids';
 import ResultsDisplay from './components/ResultsDisplay';
 import FormSelector from './components/FormSelector';
-import { Container, CssBaseline, Box, ThemeProvider, createTheme, Button, Typography } from '@mui/material';
+import { Container, CssBaseline, Box, ThemeProvider, createTheme, Button, Typography, Fab } from '@mui/material';
+import HomeIcon from '@mui/icons-material/Home'; // Importa el icono de Home
 
 const theme = createTheme({
   typography: {
@@ -41,19 +44,27 @@ function App() {
         return <DepreciationForm onCalculate={setResults} />;
       case 'augusta':
         return <AugustaRuleForm onCalculate={setResults} />;
+      case 'prepaid':
+        return <PrepaidExpensesForm onCalculate={setResults} />;
+      case 'hireKids':
+        return <HireYourKidsForm onCalculate={setResults} />;
       default:
         return <FormSelector onSelectForm={handleSelectForm} />;
     }
   };
-
+  
   const getFormTitle = () => {
     switch (currentForm) {
       case 'depreciation':
         return 'Depreciation Form';
       case 'augusta':
         return 'Augusta Rule Form';
+      case 'prepaid':
+        return 'Prepaid Expenses Form';
+      case 'hireKids':
+        return 'Hire Your Kids Form';
       default:
-        return 'Select a Form to Continue';
+        return '';
     }
   };
 
@@ -65,9 +76,9 @@ function App() {
         {/* Logo */}
         <Box sx={{ textAlign: 'center', my: 4 }}>
           <img
-            src="https://cmlaccountant.com/templates/yootheme/cache/logoNegro600px_CarlosMLopez_V2-1959ed57.webp"
+            src="https://tax.bryanglen.com/logo.png"
             alt="Logo"
-            style={{ maxWidth: '200px', marginBottom: '20px' }}
+            style={{ maxWidth: '350px', marginBottom: '20px' }}
           />
         </Box>
 
@@ -79,10 +90,25 @@ function App() {
           {renderForm()}
 
           {currentForm && (
-            <Button onClick={handleBackToSelector} variant="outlined" sx={{ mt: 2 }}>
-              Back to Form Selection
-            </Button>
-          )}
+           <Fab
+             color="primary"
+             aria-label="back"
+             onClick={handleBackToSelector}
+             sx={{
+             position: 'fixed',
+             bottom: 32,
+             right: 32,
+             width: 80,
+             height: 80,
+             backgroundColor: '#0858e6',
+             '&:hover': {
+              backgroundColor: '#064bb5',
+          },
+    }}
+  >
+    <HomeIcon sx={{ color: '#fff' }} />
+  </Fab>
+)}
 
           {results && <ResultsDisplay results={results} />}
         </Box>
