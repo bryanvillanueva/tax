@@ -5,6 +5,7 @@ import PrepaidExpensesForm from './components/PrepaidExpensesForm';
 import HireYourKidsForm from './components/HireYourKids';
 import ResultsDisplay from './components/ResultsDisplay';
 import FormSelector from './components/FormSelector';
+import CharitableRemainderForm from './components/CharitableRemainderForm';
 import { Container, CssBaseline, Box, ThemeProvider, createTheme, Button, Typography, Fab } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home'; // Importa el icono de Home
 
@@ -48,6 +49,8 @@ function App() {
         return <PrepaidExpensesForm onCalculate={setResults} />;
       case 'hireKids':
         return <HireYourKidsForm onCalculate={setResults} />;
+        case 'charitableRemainderTrust':
+        return <CharitableRemainderForm onCalculate={setResults} />;
       default:
         return <FormSelector onSelectForm={handleSelectForm} />;
     }
@@ -63,6 +66,8 @@ function App() {
         return 'Prepaid Expenses Form';
       case 'hireKids':
         return 'Hire Your Kids Form';
+      case 'charitableRemainderTrust':
+        return 'Charitable Remainder Form';
       default:
         return '';
     }

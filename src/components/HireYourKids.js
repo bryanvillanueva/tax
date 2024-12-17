@@ -44,7 +44,7 @@ const HireYourKidsForm = ({ onCalculate }) => {
     if (partnershipStatus === 'Yes') {
       totalDeduction = cbs + ira;
     } else {
-      totalDeduction = cbs + (cbs * 0.0765) + ira;
+      totalDeduction = cbs + (cbs * (15.3 / 100) / 2);
     }
   
     // Llamada al hook con calculationType 'hireKids'

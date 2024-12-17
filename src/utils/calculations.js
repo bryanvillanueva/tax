@@ -11,6 +11,8 @@ import {
 
 
 
+
+
 // Calcular el Net Income según el tipo de inversión (Section 179 o Bonus)
 export function calculateNetIncome(grossIncome, cost, investType) {
   const deduction = investType === 'Section 179' ? cost : cost * 0.8;
@@ -22,6 +24,7 @@ export function calculateNetIncomeKids(grossIncome, totalDeduction) {
   return Math.max(0, grossIncome - totalDeduction); // Evita valores negativos
 }
 
+//Calcualar el Net Income para Prepaid Expenses
 export function calculateNetIncomePrepaid(grossIncome, totalExpenses, totalNonPrepaidExpenses) {
   const maxPrepaidDeduction = grossIncome * 0.2; // El máximo permitido será un 20% del ingreso bruto (ajustable según reglas)
   const prepaidDeduction = totalExpenses - totalNonPrepaidExpenses;
@@ -38,8 +41,22 @@ export function calculateNetIncomeAugusta(grossIncome, averageMonthlyRent, daysO
   return Math.max(0, grossIncome - totalDeduction); // Evita valores negativos
 }
 
+// Calcular el Net Income para Charitable Remainder Trust (CRT)
+export function calculateNetIncomeCRT(grossIncome, cgas, pvad) {
+
+  const capitalGainTaxSavings = cgas * 0.20;
+  const totalDeduction = pvad;
+  const netIncomeCRT = Math.max(0, grossIncome - totalDeduction ); // Evita valores negativos
+  return {
+    netIncomeCRT, capitalGainTaxSavings, totalDeduction, // PVAD como deducción total
+  };
+}
 
 
+
+
+
+//////////////////////////////////////////////////
 
 // Calcular Self-Employment Medicare Tax
 export function calculateSEMedicare(netIncome) {

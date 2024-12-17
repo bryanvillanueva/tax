@@ -1,6 +1,7 @@
 import {
     calculateNetIncome,
     calculateNetIncomeAugusta,
+    calculateNetIncomeCRT,
     calculateSelfEmploymentTax,
     calculateNetIncomeKids,
     calculateSEMedicare,
@@ -30,12 +31,18 @@ import {
         totalExpenses,
         totalNonPrepaidExpenses,
         totalDeduction,
+        capitalGain,
+        presentValue,
         calculationType = 'standard',
       }) => {
         // Calcular Net Income según el tipo de cálculo
         let netIncome;
       
         switch (calculationType) {
+            case 'charitableRemainderTrust':
+              const resultCRT = calculateNetIncomeCRT(grossIncome, capitalGain, presentValue, filingStatus);
+              netIncome = resultCRT.netIncomeCRT;
+              break;
             case 'augusta':
               netIncome = calculateNetIncomeAugusta(grossIncome, averageMonthlyRent, daysOfRent);
               break;

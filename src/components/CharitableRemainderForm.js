@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
-import { TextField, Button, Container, Typography, Box, MenuItem, Alert, Grid } from '@mui/material';
+import { TextField, Button, Container, Box, MenuItem, Alert, Grid } from '@mui/material';
 import useCalculations from '../utils/useCalculations';
 
-const AugustaRuleForm = ({ onCalculate }) => {
+const CharitableRemainderForm = ({ onCalculate }) => {
   const [filingStatus, setFilingStatus] = useState('Single');
   const [grossIncome, setGrossIncome] = useState('');
-  const [averageMonthlyRent, setAverageMonthlyRent] = useState('');
-  const [daysOfRent, setDaysOfRent] = useState('');
   const [partnerType, setPartnerType] = useState('Active');
+  const [capitalGain, setCapitalGain] = useState('');
+  const [presentValue, setPresentValue] = useState('');
+  const [savingsInTax, setSavingsInTax] = useState(''); // Automatically calculated but still shown
   const [error, setError] = useState(null);
 
   const { performCalculations } = useCalculations();
@@ -20,26 +21,31 @@ const AugustaRuleForm = ({ onCalculate }) => {
       return;
     }
 
-    if (!averageMonthlyRent || parseFloat(averageMonthlyRent) <= 0) {
-      setError('Average Monthly Rent is required and must be greater than 0.');
+    if (!capitalGain || parseFloat(capitalGain) <= 0) {
+      setError('Capital Gain (CGAS) is required and must be greater than 0.');
       return;
     }
 
-    if (!daysOfRent || parseFloat(daysOfRent) <= 0) {
-      setError('Days of Rent is required and must be greater than 0.');
+    if (!presentValue || parseFloat(presentValue) <= 0) {
+      setError('Present Value of Amount to Donate (PVAD) is required and must be greater than 0.');
       return;
     }
 
     setError(null);
 
+    // Calcular automáticamente el 20% de CGAS para Savings in Capital Gain Tax
+    const savings = parseFloat(capitalGain) * 0.20;
+    setSavingsInTax(savings); // Guardamos el cálculo en el estado
+
+  
     const results = performCalculations({
-      filingStatus,
       grossIncome: parseFloat(grossIncome),
-      averageMonthlyRent: parseFloat(averageMonthlyRent),
-      daysOfRent: parseFloat(daysOfRent),
       partnerType,
-      isAugustaRule: true,
-      calculationType: 'augusta',
+      capitalGain: parseFloat(capitalGain),
+      presentValue: parseFloat(presentValue),
+      savingsInTax: savings, // Pasamos el valor calculado
+      filingStatus,
+      calculationType: 'charitableRemainderTrust',
     });
 
     onCalculate(results);
@@ -48,8 +54,6 @@ const AugustaRuleForm = ({ onCalculate }) => {
   return (
     <Container>
       <Box sx={{ mt: 5 }}>
-
-
         {error && (
           <Alert severity="error" sx={{ mb: 2 }}>
             {error}
@@ -58,6 +62,7 @@ const AugustaRuleForm = ({ onCalculate }) => {
 
         <form onSubmit={handleSubmit}>
           <Grid container spacing={2}>
+            {/* Left side: Filing Status, Gross Income, and Type of Partner */}
             <Grid item xs={12} md={6}>
               <TextField
                 select
@@ -96,22 +101,35 @@ const AugustaRuleForm = ({ onCalculate }) => {
               </TextField>
             </Grid>
 
+            {/* Right side: CGAS, PVAD, and Savings in Capital Gain Tax */}
             <Grid item xs={12} md={6}>
               <TextField
-                label="Average Monthly Rent"
+                label="Capital Gain on the Assets Sold by the Trust (CGAS)"
                 fullWidth
                 type="number"
-                value={averageMonthlyRent}
-                onChange={(e) => setAverageMonthlyRent(e.target.value)}
+                value={capitalGain}
+                onChange={(e) => setCapitalGain(e.target.value)}
                 margin="normal"
               />
 
               <TextField
-                label="Days of Rent"
+                label="Present Value of the Amount to be Donate (PVAD)"
                 fullWidth
                 type="number"
-                value={daysOfRent}
-                onChange={(e) => setDaysOfRent(e.target.value)}
+                value={presentValue}
+                onChange={(e) => setPresentValue(e.target.value)}
+                margin="normal"
+              />
+
+              {/* Savings in Capital Gain Tax (auto-calculated, not editable) */}
+              <TextField
+                label="Savings in Capital Gain Tax"
+                fullWidth
+                type="number"
+                value={savingsInTax} // Este campo se actualiza automáticamente
+                InputProps={{
+                  readOnly: true, // El campo no es editable
+                }}
                 margin="normal"
               />
             </Grid>
@@ -128,4 +146,4 @@ const AugustaRuleForm = ({ onCalculate }) => {
   );
 };
 
-export default AugustaRuleForm;
+export default CharitableRemainderForm;

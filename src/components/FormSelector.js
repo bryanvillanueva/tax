@@ -6,6 +6,7 @@ const forms = [
   { id: 'augusta', title: 'Augusta Rule Form', description: 'Calculate deductions under the Augusta Rule.' },
   { id: 'prepaid', title: 'Prepaid Expenses Form', description: 'Manage and calculate prepaid expenses deductions.' },
   { id: 'hireKids', title: 'Hire Your Kids', description: 'Hire Your Kids Form' },
+  { id: 'charitableRemainderTrust', title: 'Charitable Remainder Form', description: 'Calculate charitable remainder deductions.' },
 ];
 
 const FormSelector = ({ onSelectForm }) => {
