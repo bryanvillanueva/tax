@@ -16,7 +16,9 @@ import {
     getSelfEmploymentRate,
     calculateTaxDue2,
     getMarginalTaxRateAndLevel2,
-    calculateNetIncomePrepaid
+    calculateNetIncomePrepaid,
+    calculateNetIncomeFamily,
+    calculateNetIncomeQOF
   } from '../utils/calculations';
   import { standardDeductions } from '../utils/taxData';
   
@@ -31,38 +33,41 @@ import {
         daysOfRent,
         totalExpenses,
         totalNonPrepaidExpenses,
-        totalDeduction,
+        hireKidsDeduction,
+        hireFamilyDeduction,
         capitalGain,
         presentValue,
         tve,
         pbuv,
+        capitalGainTaxDeferred,
+        reductionInNetIncome,
         calculationType = 'standard',
       }) => {
         // Calcular Net Income según el tipo de cálculo
         let netIncome;
       
-        switch (calculationType) {
-            case 'charitableRemainderTrust':
-              const resultCRT = calculateNetIncomeCRT(grossIncome, capitalGain, presentValue, filingStatus);
-              netIncome = resultCRT.netIncomeCRT;
-              break;
-            case 'augusta':
-              netIncome = calculateNetIncomeAugusta(grossIncome, averageMonthlyRent, daysOfRent);
-              break;
-            case 'prepaid':
-              netIncome = calculateNetIncomePrepaid(grossIncome, totalExpenses, totalNonPrepaidExpenses);
-              break;
-            case 'hireKids':
-              netIncome = calculateNetIncomeKids(grossIncome, totalDeduction);
-              break;
-            case 'reimbursment':
-              const reimbursment = calculateReimbursment(grossIncome, tve, pbuv);
-              netIncome = grossIncome - reimbursment;
-        break;
-            case 'standard':
-            default:
-              netIncome = calculateNetIncome(grossIncome, cost, investType);
-          }
+// Calcular Net Income según el tipo de cálculo
+switch (calculationType) {
+  case 'augusta':
+    netIncome = calculateNetIncomeAugusta(grossIncome, averageMonthlyRent, daysOfRent);
+    break;
+  case 'prepaid':
+    netIncome = calculateNetIncomePrepaid(grossIncome, totalExpenses, totalNonPrepaidExpenses);
+    break;
+  case 'hireKids':
+    netIncome = calculateNetIncomeKids(grossIncome, hireKidsDeduction);
+    break;
+  case 'hireFamily':
+    netIncome = calculateNetIncomeFamily(grossIncome, hireFamilyDeduction);
+    break;
+   case 'qualifiedOpportunityFunds':
+      netIncome = calculateNetIncomeQOF(grossIncome, reductionInNetIncome);
+    break;
+  case 'standard':
+    default:
+    netIncome = calculateNetIncome(grossIncome, cost, investType);
+}
+
   
       // Cálculo para 1040/1040NR
       const seSocialSecurity = partnerType === 'Active' ? (netIncome * 0.9235) * 0.124 : 0;

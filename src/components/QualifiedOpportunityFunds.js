@@ -2,65 +2,60 @@ import React, { useState } from 'react';
 import { TextField, Button, Container, Typography, Box, MenuItem, Alert, Grid } from '@mui/material';
 import useCalculations from '../utils/useCalculations';
 
-const HireYourKidsForm = ({ onCalculate }) => {
+const QualifiedOpportunityFundsForm = ({ onCalculate }) => {
   const [filingStatus, setFilingStatus] = useState('Single');
   const [grossIncome, setGrossIncome] = useState('');
   const [investType, setInvestType] = useState('Section 179');
   const [cost, setCost] = useState('');
   const [partnerType, setPartnerType] = useState('Active');
-  const [childrenBaseSalary, setChildrenBaseSalary] = useState('');
-  const [totalIRAContribution, setTotalIRAContribution] = useState('');
-  const [partnershipStatus, setPartnershipStatus] = useState('Yes');
+  const [capitalGain, setCapitalGain] = useState('');
+  const [investmentYears, setInvestmentYears] = useState('');
   const [error, setError] = useState(null);
 
   const { performCalculations } = useCalculations();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-  
+
     // Validaciones de los campos
     if (!grossIncome || parseFloat(grossIncome) <= 0) {
       setError('Gross Income is required and must be greater than 0.');
       return;
     }
-  
-    if (!childrenBaseSalary || parseFloat(childrenBaseSalary) <= 0) {
-      setError("Children's Base Salary is required and must be greater than 0.");
+
+    if (!capitalGain || parseFloat(capitalGain) <= 0) {
+      setError('Capital Gain to be invested in QOF is required and must be greater than 0.');
       return;
     }
-  
-    if (!totalIRAContribution || parseFloat(totalIRAContribution) <= 0) {
-      setError('Total IRA Contribution is required and must be greater than 0.');
+
+    if (!investmentYears) {
+      setError('Number of years the investment will be held is required.');
       return;
     }
-  
+
     setError(null);
-  
-    // Calcular Total Deduction (TD) según la condición de partnership
-    const cbs = parseFloat(childrenBaseSalary);
-    const ira = parseFloat(totalIRAContribution);
-  
-    let totalDeduction;
-    if (partnershipStatus === 'Yes') {
-      totalDeduction = cbs + ira;
-    } else {
-      totalDeduction = cbs + (cbs * 0.153 / 2) + ira;
-    }
-  
-    // Llamada al hook con calculationType 'hireKids'
+
+    // Calcular Capital Gain Tax Deferred (20% rate)
+    const capitalGainValue = parseFloat(capitalGain);
+    const capitalGainTaxDeferred = capitalGainValue * 0.2;
+
+    // Reduction in Net Income
+    const reductionInNetIncome = capitalGainValue;
+
+    // Llamada al hook con calculationType 'qualifiedOpportunityFunds'
     const results = performCalculations({
       filingStatus,
       grossIncome: parseFloat(grossIncome),
       cost: parseFloat(cost),
       investType,
       partnerType,
-      hireKidsDeduction: totalDeduction,
-      calculationType: 'hireKids', // Línea agregada para especificar el tipo de cálculo
+      capitalGainTaxDeferred,
+      reductionInNetIncome,
+      calculationType: 'qualifiedOpportunityFunds',
     });
-  
+
     onCalculate(results);
   };
-  
 
   return (
     <Container>
@@ -116,40 +111,30 @@ const HireYourKidsForm = ({ onCalculate }) => {
             {/* Lado Derecho */}
             <Grid item xs={12} md={6}>
               <TextField
-                label="Children's Base Salary"
+                label="Capital Gain to be Invested in QOF"
                 fullWidth
                 type="number"
-                value={childrenBaseSalary}
-                onChange={(e) => setChildrenBaseSalary(e.target.value)}
-                margin="normal"
-              />
-
-              <TextField
-                label="Total IRA Contribution"
-                fullWidth
-                type="number"
-                value={totalIRAContribution}
-                onChange={(e) => setTotalIRAContribution(e.target.value)}
+                value={capitalGain}
+                onChange={(e) => setCapitalGain(e.target.value)}
                 margin="normal"
               />
 
               <TextField
                 select
-                label="In case of partnership both parents are the partners?"
+                label="Number of Years the Investment Will be Held"
                 fullWidth
-                value={partnershipStatus}
-                onChange={(e) => setPartnershipStatus(e.target.value)}
+                value={investmentYears}
+                onChange={(e) => setInvestmentYears(e.target.value)}
                 margin="normal"
               >
-                <MenuItem value="Yes">Yes</MenuItem>
-                <MenuItem value="No">No</MenuItem>
-                <MenuItem value="N/A">N/A</MenuItem>
+                <MenuItem value="1-10">Between 1 and 10 years</MenuItem>
+                <MenuItem value=">10">More than 10 years</MenuItem>
               </TextField>
             </Grid>
           </Grid>
 
           <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
-            <Button type="submit" variant="contained" sx={{backgroundColor:'#0858e6', color: '#fff'}}>
+            <Button type="submit" variant="contained" sx={{ backgroundColor: '#0858e6', color: '#fff' }}>
               Calculate
             </Button>
           </Box>
@@ -159,4 +144,4 @@ const HireYourKidsForm = ({ onCalculate }) => {
   );
 };
 
-export default HireYourKidsForm;
+export default QualifiedOpportunityFundsForm;

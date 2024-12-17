@@ -7,6 +7,8 @@ import ResultsDisplay from './components/ResultsDisplay';
 import FormSelector from './components/FormSelector';
 import ReimbursmentOfPersonalForm from './components/ReimbursmentOfPersonalForm';
 import CharitableRemainderForm from './components/CharitableRemainderForm';
+import HireYourFamilyForm from './components/HireYourFamily';
+import QualifiedOpportunityFundsForm from './components/QualifiedOpportunityFunds';
 import { Container, CssBaseline, Box, ThemeProvider, createTheme, Button, Typography, Fab } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home'; // Importa el icono de Home
 
@@ -54,6 +56,10 @@ function App() {
         return <CharitableRemainderForm onCalculate={setResults} />;
       case 'reimbursment':
         return <ReimbursmentOfPersonalForm onCalculate={setResults} />;
+      case 'hireFamily':
+        return <HireYourFamilyForm onCalculate={setResults} />;
+      case 'qualifiedOpportunityFunds':
+        return <QualifiedOpportunityFundsForm onCalculate={setResults} />;
       default:
         return <FormSelector onSelectForm={handleSelectForm} />;
     }
@@ -73,6 +79,11 @@ function App() {
         return 'Charitable Remainder Form';
       case 'reimbursment':
         return 'Reimbursment of personal Vehicle Form';
+      case 'hireFamily':
+        return 'Hire your family form';
+      case 'qualifiedOpportunityFunds':
+        return 'Qualified Opportunity Funds (QOF) Form';
+        
       default:
         return '';
     }

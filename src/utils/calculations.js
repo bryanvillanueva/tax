@@ -20,8 +20,8 @@ export function calculateNetIncome(grossIncome, cost, investType) {
 }
 
 // Calcular el Net Income para Hire Your Kids
-export function calculateNetIncomeKids(grossIncome, totalDeduction) {
-  return Math.max(0, grossIncome - totalDeduction); // Evita valores negativos
+export function calculateNetIncomeKids(grossIncome, hireKidsDeduction) {
+  return Math.max(0, grossIncome - hireKidsDeduction); // Evita valores negativos
 }
 
 
@@ -59,6 +59,16 @@ export function calculateReimbursment(grossIncome, tve, pbuv) {
   }
   const reimbursment = tve * (pbuv / 100);
   return reimbursment;
+}
+
+// Calcular el Net Income para Hire Your Family
+export function calculateNetIncomeFamily(grossIncome, hireFamilyDeduction) {
+  return Math.max(0, grossIncome - hireFamilyDeduction); // Evita valores negativos
+}
+
+// Calcular el Net Income para Qualified Opportunity Funds (QOF)
+export function calculateNetIncomeQOF(grossIncome, reductionInNetIncome) {
+  return Math.max(0, grossIncome - reductionInNetIncome); // Evita valores negativos
 }
 
 

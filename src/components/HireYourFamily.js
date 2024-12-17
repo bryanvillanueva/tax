@@ -2,65 +2,58 @@ import React, { useState } from 'react';
 import { TextField, Button, Container, Typography, Box, MenuItem, Alert, Grid } from '@mui/material';
 import useCalculations from '../utils/useCalculations';
 
-const HireYourKidsForm = ({ onCalculate }) => {
+const HireYourFamilyForm = ({ onCalculate }) => {
   const [filingStatus, setFilingStatus] = useState('Single');
   const [grossIncome, setGrossIncome] = useState('');
   const [investType, setInvestType] = useState('Section 179');
   const [cost, setCost] = useState('');
   const [partnerType, setPartnerType] = useState('Active');
-  const [childrenBaseSalary, setChildrenBaseSalary] = useState('');
+  const [totalBaseSalary, setTotalBaseSalary] = useState('');
   const [totalIRAContribution, setTotalIRAContribution] = useState('');
-  const [partnershipStatus, setPartnershipStatus] = useState('Yes');
   const [error, setError] = useState(null);
 
   const { performCalculations } = useCalculations();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-  
+
     // Validaciones de los campos
     if (!grossIncome || parseFloat(grossIncome) <= 0) {
       setError('Gross Income is required and must be greater than 0.');
       return;
     }
-  
-    if (!childrenBaseSalary || parseFloat(childrenBaseSalary) <= 0) {
-      setError("Children's Base Salary is required and must be greater than 0.");
+
+    if (!totalBaseSalary || parseFloat(totalBaseSalary) <= 0) {
+      setError('Total Base Salary is required and must be greater than 0.');
       return;
     }
-  
+
     if (!totalIRAContribution || parseFloat(totalIRAContribution) <= 0) {
       setError('Total IRA Contribution is required and must be greater than 0.');
       return;
     }
-  
+
     setError(null);
-  
-    // Calcular Total Deduction (TD) según la condición de partnership
-    const cbs = parseFloat(childrenBaseSalary);
+
+    // Calcular Total Deduction
+    const tbs = parseFloat(totalBaseSalary);
     const ira = parseFloat(totalIRAContribution);
-  
-    let totalDeduction;
-    if (partnershipStatus === 'Yes') {
-      totalDeduction = cbs + ira;
-    } else {
-      totalDeduction = cbs + (cbs * 0.153 / 2) + ira;
-    }
-  
-    // Llamada al hook con calculationType 'hireKids'
+
+    const totalDeduction = tbs + (tbs * 0.0765) + ira;
+
+    // Llamada al hook con calculationType 'hireFamily'
     const results = performCalculations({
       filingStatus,
       grossIncome: parseFloat(grossIncome),
       cost: parseFloat(cost),
       investType,
       partnerType,
-      hireKidsDeduction: totalDeduction,
-      calculationType: 'hireKids', // Línea agregada para especificar el tipo de cálculo
+      hireFamilyDeduction: totalDeduction,
+      calculationType: 'hireFamily',
     });
-  
+
     onCalculate(results);
   };
-  
 
   return (
     <Container>
@@ -116,11 +109,11 @@ const HireYourKidsForm = ({ onCalculate }) => {
             {/* Lado Derecho */}
             <Grid item xs={12} md={6}>
               <TextField
-                label="Children's Base Salary"
+                label="Total Base Salary"
                 fullWidth
                 type="number"
-                value={childrenBaseSalary}
-                onChange={(e) => setChildrenBaseSalary(e.target.value)}
+                value={totalBaseSalary}
+                onChange={(e) => setTotalBaseSalary(e.target.value)}
                 margin="normal"
               />
 
@@ -132,24 +125,11 @@ const HireYourKidsForm = ({ onCalculate }) => {
                 onChange={(e) => setTotalIRAContribution(e.target.value)}
                 margin="normal"
               />
-
-              <TextField
-                select
-                label="In case of partnership both parents are the partners?"
-                fullWidth
-                value={partnershipStatus}
-                onChange={(e) => setPartnershipStatus(e.target.value)}
-                margin="normal"
-              >
-                <MenuItem value="Yes">Yes</MenuItem>
-                <MenuItem value="No">No</MenuItem>
-                <MenuItem value="N/A">N/A</MenuItem>
-              </TextField>
             </Grid>
           </Grid>
 
           <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
-            <Button type="submit" variant="contained" sx={{backgroundColor:'#0858e6', color: '#fff'}}>
+            <Button type="submit" variant="contained" sx={{ backgroundColor: '#0858e6', color: '#fff' }}>
               Calculate
             </Button>
           </Box>
@@ -159,4 +139,4 @@ const HireYourKidsForm = ({ onCalculate }) => {
   );
 };
 
-export default HireYourKidsForm;
+export default HireYourFamilyForm;
