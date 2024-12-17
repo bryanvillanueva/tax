@@ -4,6 +4,7 @@ import {
     calculateNetIncomeCRT,
     calculateSelfEmploymentTax,
     calculateNetIncomeKids,
+    calculateReimbursment,
     calculateSEMedicare,
     calculateAGI,
     calculateTaxableIncome,
@@ -33,6 +34,8 @@ import {
         totalDeduction,
         capitalGain,
         presentValue,
+        tve,
+        pbuv,
         calculationType = 'standard',
       }) => {
         // Calcular Net Income según el tipo de cálculo
@@ -52,6 +55,10 @@ import {
             case 'hireKids':
               netIncome = calculateNetIncomeKids(grossIncome, totalDeduction);
               break;
+            case 'reimbursment':
+              const reimbursment = calculateReimbursment(grossIncome, tve, pbuv);
+              netIncome = grossIncome - reimbursment;
+        break;
             case 'standard':
             default:
               netIncome = calculateNetIncome(grossIncome, cost, investType);

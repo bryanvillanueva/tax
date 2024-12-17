@@ -11,7 +11,7 @@ import {
 
 
 
-
+//estrategias en orden
 
 // Calcular el Net Income según el tipo de inversión (Section 179 o Bonus)
 export function calculateNetIncome(grossIncome, cost, investType) {
@@ -24,13 +24,12 @@ export function calculateNetIncomeKids(grossIncome, totalDeduction) {
   return Math.max(0, grossIncome - totalDeduction); // Evita valores negativos
 }
 
+
 //Calcualar el Net Income para Prepaid Expenses
 export function calculateNetIncomePrepaid(grossIncome, totalExpenses, totalNonPrepaidExpenses) {
   const maxPrepaidDeduction = grossIncome * 0.2; // El máximo permitido será un 20% del ingreso bruto (ajustable según reglas)
   const prepaidDeduction = totalExpenses - totalNonPrepaidExpenses;
   const finalDeduction = Math.min(Math.max(0, prepaidDeduction), maxPrepaidDeduction);
-  
-  // Calcular el Net Income restando la deducción del Gross Income
   return Math.max(0, grossIncome - finalDeduction); // Evita valores negativos
 }
 
@@ -41,15 +40,25 @@ export function calculateNetIncomeAugusta(grossIncome, averageMonthlyRent, daysO
   return Math.max(0, grossIncome - totalDeduction); // Evita valores negativos
 }
 
+
 // Calcular el Net Income para Charitable Remainder Trust (CRT)
 export function calculateNetIncomeCRT(grossIncome, cgas, pvad) {
-
   const capitalGainTaxSavings = cgas * 0.20;
   const totalDeduction = pvad;
   const netIncomeCRT = Math.max(0, grossIncome - totalDeduction ); // Evita valores negativos
   return {
     netIncomeCRT, capitalGainTaxSavings, totalDeduction, // PVAD como deducción total
   };
+}
+
+//Calcular el Net Income para Reimbursment
+export function calculateReimbursment(grossIncome, tve, pbuv) {
+  // Validar los valores de entrada
+  if (grossIncome <= 0 || tve <= 0 || pbuv <= 0 || pbuv > 100) {
+    throw new Error('Invalid input: All values must be greater than 0, and PBUV must be between 0 and 100.');
+  }
+  const reimbursment = tve * (pbuv / 100);
+  return reimbursment;
 }
 
 

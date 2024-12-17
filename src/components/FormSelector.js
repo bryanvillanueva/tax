@@ -5,9 +5,11 @@ const forms = [
   { id: 'depreciation', title: 'Depreciation Form', description: 'Calculate accelerated depreciation (Section 179 and Bonus).' },
   { id: 'augusta', title: 'Augusta Rule Form', description: 'Calculate deductions under the Augusta Rule.' },
   { id: 'prepaid', title: 'Prepaid Expenses Form', description: 'Manage and calculate prepaid expenses deductions.' },
-  { id: 'hireKids', title: 'Hire Your Kids', description: 'Hire Your Kids Form' },
+  { id: 'hireKids', title: 'Hire Your Kids Form', description: 'Hire Your Kids Form' },
   { id: 'charitableRemainderTrust', title: 'Charitable Remainder Form', description: 'Calculate charitable remainder deductions.' },
+  { id: 'reimbursment', title: 'Reimbursment of Personal Vehicle Form', description: 'Calculate reimbursment for personal vehicle.' },
 ];
+
 
 const FormSelector = ({ onSelectForm }) => {
   const [searchTerm, setSearchTerm] = useState('');
