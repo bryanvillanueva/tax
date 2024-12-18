@@ -10,7 +10,9 @@ const forms = [
   { id: 'reimbursment', title: 'Reimbursment of Personal Vehicle Form', description: 'Calculate reimbursment for personal vehicle.' },
   { id: 'hireFamily', title: 'Hire Your Family Form', description: 'Calculate deductions for hiring your family members.' },
   { id: 'qualifiedOpportunityFunds', title: 'Qualified Opportunity Funds (QOF) Form', description: 'Calculate deductions for investing in Qualified Opportunity Funds.' },
-
+  { id: 'healthSavings', title: "Health Savings Account (HSA) - Employee's Benefits", description: "Calculate deductions for contributions to Health Savings Accounts (HSA) based on employee's benefits." 
+  }
+  
 
 ];
 

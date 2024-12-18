@@ -8,6 +8,7 @@ import FormSelector from './components/FormSelector';
 import ReimbursmentOfPersonalForm from './components/ReimbursmentOfPersonalForm';
 import CharitableRemainderForm from './components/CharitableRemainderForm';
 import HireYourFamilyForm from './components/HireYourFamily';
+import HealthSavingsAccountForm from './components/HealthSavingsAccountForm';
 import QualifiedOpportunityFundsForm from './components/QualifiedOpportunityFunds';
 import { Container, CssBaseline, Box, ThemeProvider, createTheme, Button, Typography, Fab } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home'; // Importa el icono de Home
@@ -60,6 +61,8 @@ function App() {
         return <HireYourFamilyForm onCalculate={setResults} />;
       case 'qualifiedOpportunityFunds':
         return <QualifiedOpportunityFundsForm onCalculate={setResults} />;
+      case 'healthSavings':
+        return <HealthSavingsAccountForm onCalculate={setResults} />;
       default:
         return <FormSelector onSelectForm={handleSelectForm} />;
     }
@@ -83,6 +86,8 @@ function App() {
         return 'Hire your family form';
       case 'qualifiedOpportunityFunds':
         return 'Qualified Opportunity Funds (QOF) Form';
+      case 'healthSavings':
+        return 'Health Savings Account - Employees Benefits Form';
         
       default:
         return '';

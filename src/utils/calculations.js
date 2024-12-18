@@ -73,6 +73,11 @@ export function calculateNetIncomeQOF(grossIncome, reductionInNetIncome) {
   return Math.max(0, grossIncome - reductionInNetIncome); // Evita valores negativos
 }
 
+// Calcular el Net Income para Health Savings Accounts (HSA)
+export function calculateNetIncomeHSA(grossIncome, hsac, ewhd) {
+  const hsaContribution = hsac * ewhd; 
+  return Math.max(0, grossIncome - hsaContribution); // Evita valores negativos
+}
 
 
 
