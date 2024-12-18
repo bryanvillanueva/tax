@@ -1,5 +1,6 @@
 import React from 'react';
 import { Typography, Box, Table, TableBody, TableCell, TableContainer, TableRow, TableHead, Paper, Button } from '@mui/material';
+import ExportPDF from './ExportPDF';
 
 const formatCurrency = (value) => {
   if (value === undefined || value === null) return '$0.00';
@@ -11,7 +12,7 @@ const formatCurrency = (value) => {
   }).format(value);
 };
 
-const ResultsDisplay = ({ results }) => {
+const ResultsDisplay = ({ results, formTitle }) => {
   const handlePrint = () => {
     window.print();
   };
@@ -105,7 +106,7 @@ const ResultsDisplay = ({ results }) => {
       </TableContainer>
 
       <Typography variant="h5" gutterBottom>
-        No formula
+      Values without strategy
       </Typography>
   
   <TableContainer component={Paper} sx={{ mb: 4 }}>
@@ -239,7 +240,7 @@ const ResultsDisplay = ({ results }) => {
 
 {/* Segunda Tabla de Resultados Adicionales con Azul Claro */}
 <Typography variant="h6" gutterBottom>
-  Additional Calculations sin estrategia
+Additional calculations without strategy
 </Typography>
 <TableContainer component={Paper} sx={{ mb: 4 }}>
   <Table>
@@ -290,9 +291,7 @@ const ResultsDisplay = ({ results }) => {
 
       {/* Botón de Imprimir */}
       <Box sx={{ display: 'flex', justifyContent: 'center', mt: 5 }}>
-        <Button variant="contained" color="primary" onClick={handlePrint}>
-          Print Results
-        </Button>
+        <ExportPDF results={results} formTitle={formTitle} />
       </Box>
     </Box>
   );

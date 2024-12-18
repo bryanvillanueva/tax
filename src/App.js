@@ -136,7 +136,8 @@ function App() {
   </Fab>
 )}
 
-          {results && <ResultsDisplay results={results} />}
+        {results && <ResultsDisplay results={results} formTitle={getFormTitle()} />}
+
         </Box>
       </Container>
     </ThemeProvider>
