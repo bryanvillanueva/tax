@@ -7,6 +7,8 @@ import {
   medicareRate,
   additionalMedicareRate,
   additionalMedicareThreshold,
+  
+  
 } from './taxData';
 
 
@@ -138,39 +140,57 @@ export function getMarginalTaxRateAndLevel2(filingStatus, taxableIncome2) {
 
 
 
-// Calcular el impuesto adeudado (Tax Due) income tax rate
+// Calcular el impuesto adeudado (Tax Due) 
 export function calculateTaxDue(filingStatus, taxableIncome) {
   const brackets = taxBrackets[filingStatus];
   let tax = 0;
+  let accumulatedTax = 0;
 
   for (let i = 0; i < brackets.length; i++) {
-    if (taxableIncome > brackets[i].start) {
-      const amountInBracket = Math.min(taxableIncome, brackets[i].end) - brackets[i].start;
-      tax += amountInBracket * brackets[i].rate;
+    const bracket = brackets[i];
+    if (taxableIncome > bracket.start) {
+      const amountInBracket = Math.min(taxableIncome, bracket.end) - bracket.start;
+      tax += amountInBracket * bracket.rate;
+      accumulatedTax += amountInBracket * bracket.rate;
     } else {
-      break;
+      break; 
     }
   }
 
-  return tax;
+  return parseFloat(accumulatedTax.toFixed(2));
 }
 
-// Calcular el impuesto adeudado (Tax Due) income tax rate
+
+// Calcular el impuesto adeudado (Tax Due)  2
 export function calculateTaxDue2(filingStatus, taxableIncome2) {
+  taxableIncome2 = parseFloat(taxableIncome2.toFixed(2));
+
   const brackets = taxBrackets[filingStatus];
   let tax = 0;
+  let accumulatedTax = 0;
 
+ 
   for (let i = 0; i < brackets.length; i++) {
-    if (taxableIncome2 > brackets[i].start) {
-      const amountInBracket = Math.min(taxableIncome2, brackets[i].end) - brackets[i].start;
-      tax += amountInBracket * brackets[i].rate;
+    const bracket = brackets[i];
+    if (taxableIncome2 > bracket.start) {
+      const amountInBracket = Math.min(taxableIncome2, bracket.end) - bracket.start;
+      tax += amountInBracket * bracket.rate;  
+      accumulatedTax += parseFloat((amountInBracket * bracket.rate).toFixed(2)); 
     } else {
-      break;
+      break; 
     }
   }
 
-  return tax;
+
+  return parseFloat(accumulatedTax.toFixed(2));
 }
+
+
+
+
+
+
+
 
 // Calcular Additional Medicare Tax
 export function calculateAdditionalMedicare(filingStatus, netIncome) {

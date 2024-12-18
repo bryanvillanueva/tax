@@ -70,7 +70,7 @@ switch (calculationType) {
 
   
       // Cálculo para 1040/1040NR
-      const seSocialSecurity = partnerType === 'Active' ? (netIncome * 0.9235) * 0.124 : 0;
+      const seSocialSecurity = partnerType === 'Active' ? Math.min(netIncome * 0.9235, 168600) * 0.124 : 0;
       const seMedicare = partnerType === 'Active' ? calculateSEMedicare(netIncome) : 0;
       const selfEmploymentTax = partnerType === 'Active' ? seSocialSecurity + seMedicare : 0;
       const agi = calculateAGI(netIncome, selfEmploymentTax);
@@ -80,12 +80,14 @@ switch (calculationType) {
       const taxDue = calculateTaxDue(filingStatus, taxableIncome);
       const additionalMedicare = calculateAdditionalMedicare(filingStatus, netIncome);
       const selfEmploymentRate = partnerType === 'Active' ? getSelfEmploymentRate() : 0;
-      const totalTaxDue = taxDue + selfEmploymentTax + additionalMedicare;
+      const totalTaxDue = taxDue + selfEmploymentTax;
+      //const totalTaxDue = taxDue + selfEmploymentTax + additionalMedicare;
       const effectiveTaxRate = taxableIncome !== 0 ? ((taxDue / taxableIncome) * 100).toFixed(2) : '0.00';
       const seDeduction = selfEmploymentTax / 2;
+
   
       // Resultados adicionales para cálculos alternativos
-      const seSocialSecurity2 = partnerType === 'Active' ? (grossIncome * 0.9235) * 0.124 : 0;
+      const seSocialSecurity2 = partnerType === 'Active' ? Math.min(grossIncome * 0.9235, 168600) * 0.124 : 0;
       const seMedicare2 = partnerType === 'Active' ? calculateSEMedicare(grossIncome) : 0;
       const selfEmploymentTax2 = partnerType === 'Active' ? seSocialSecurity2 + seMedicare2 : 0;
       const seDeduction2 = selfEmploymentTax2 / 2;
@@ -94,7 +96,7 @@ switch (calculationType) {
       const taxableIncome2 = calculateTaxableIncome2(agi2, filingStatus);
       const taxDue2 = calculateTaxDue2(filingStatus, taxableIncome2);
       const additionalMedicare2 = calculateAdditionalMedicare2(filingStatus, netIncome2);
-      const totalTaxDue2 = taxDue2 + selfEmploymentTax2 + additionalMedicare2;
+      const totalTaxDue2 = taxDue2 + selfEmploymentTax2;
       const effectiveTaxRate2 = taxableIncome2 !== 0 ? ((taxDue2 / taxableIncome2) * 100).toFixed(2) : '0.00';
       const { marginalRate2, level2 } = getMarginalTaxRateAndLevel2(filingStatus, taxableIncome2);
   
@@ -104,7 +106,10 @@ switch (calculationType) {
       const corpTaxDue = corpTaxableIncome * 0.21;
       const corpTaxDue2 = corpTaxableIncome2 * 0.21;
       const corpEffectiveTaxRate = corpTaxableIncome !== 0 ? ((corpTaxDue / corpTaxableIncome) * 100).toFixed(2) : '0.00';
-  
+      
+      console.log(grossIncome, netIncome, totalTaxDue,taxableIncome, taxDue)
+      console.log(netIncome2, totalTaxDue2, taxDue2, taxableIncome2)
+
       return {
         netIncome,
         netIncome2,
