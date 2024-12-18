@@ -7,8 +7,8 @@ import {
   medicareRate,
   additionalMedicareRate,
   additionalMedicareThreshold,
-  
-  
+  niitThresholds,
+ 
 } from './taxData';
 
 
@@ -105,6 +105,37 @@ export function calculateTaxableIncome(agi, filingStatus) {
 export function calculateTaxableIncome2(agi2, filingStatus) {
   const standardDeduction = standardDeductions[filingStatus] || 0;
   return Math.max(0, agi2 - standardDeduction);
+}
+
+// Calcular el NIIT Threshold y el no formula
+export function calculateNIITThreshold(netIncome, filingStatus, partnerType) {
+  if (partnerType !== 'Passive') {
+    return 0; // Solo se calcula para partners pasivos
+  }
+
+  const threshold = niitThresholds[filingStatus] || 0;
+
+  if (netIncome > threshold) {
+    const excess = netIncome - threshold;
+    return (excess * 0.038).toFixed(2); // Formatear a dos decimales
+  }
+
+  return 0;
+}
+
+export function calculateNIITThreshold2(netIncome2, filingStatus, partnerType) {
+  if (partnerType !== 'Passive') {
+    return 0; // Solo se calcula para partners pasivos
+  }
+
+  const threshold = niitThresholds[filingStatus] || 0;
+
+  if (netIncome2 > threshold) {
+    const excess = netIncome2 - threshold;
+    return (excess * 0.038).toFixed(2); // Formatear a dos decimales
+  }
+
+  return 0;
 }
 
 // Obtener el Marginal Tax Rate y el Income Level

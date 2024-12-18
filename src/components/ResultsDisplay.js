@@ -2,7 +2,13 @@ import React from 'react';
 import { Typography, Box, Table, TableBody, TableCell, TableContainer, TableRow, TableHead, Paper, Button } from '@mui/material';
 
 const formatCurrency = (value) => {
-  return value !== undefined && value !== null ? `$${value.toFixed(2)}` : '$0.00';
+  if (value === undefined || value === null) return '$0.00';
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(value);
 };
 
 const ResultsDisplay = ({ results }) => {
@@ -89,6 +95,11 @@ const ResultsDisplay = ({ results }) => {
               <TableCell>{results.effectiveTaxRate}%</TableCell>
               <TableCell>{results.corpEffectiveTaxRate}%</TableCell>
             </TableRow>
+            <TableRow sx={{ backgroundColor: '#82b484' }}>
+             <TableCell>Effective SE Rate</TableCell>
+             <TableCell>{results.effectiveSERate}%</TableCell>
+             <TableCell>0%</TableCell>
+            </TableRow>
           </TableBody>
         </Table>
       </TableContainer>
@@ -169,6 +180,11 @@ const ResultsDisplay = ({ results }) => {
         <TableCell>{results.effectiveTaxRate2}%</TableCell>
         <TableCell>{results.corpEffectiveTaxRate}%</TableCell>
       </TableRow>
+      <TableRow sx={{ backgroundColor: '#fff9c4' }}>
+             <TableCell>Effective SE Rate</TableCell>
+             <TableCell>{results.effectiveSERate2}%</TableCell>
+             <TableCell>0%</TableCell>
+      </TableRow>
     </TableBody>
   </Table>
 </TableContainer>
@@ -213,6 +229,10 @@ const ResultsDisplay = ({ results }) => {
               <TableCell>Additional Medicare Tax</TableCell>
               <TableCell>{formatCurrency(results.additionalMedicare)}</TableCell>
             </TableRow>
+            <TableRow sx={{ backgroundColor: '#52a6d8' }}>
+              <TableCell>NIIT Threshold</TableCell>
+              <TableCell>{formatCurrency(results.niitThreshold)}</TableCell>
+            </TableRow>
           </TableBody>
         </Table>
       </TableContainer>
@@ -255,6 +275,10 @@ const ResultsDisplay = ({ results }) => {
       <TableRow sx={{ backgroundColor: '#b3e5fc' }}>
         <TableCell>Additional Medicare Tax</TableCell>
         <TableCell>{formatCurrency(results.additionalMedicare2)}</TableCell>
+      </TableRow>
+      <TableRow sx={{ backgroundColor: '#b3e5fc' }}>
+          <TableCell>NIIT Threshold</TableCell>
+          <TableCell>{formatCurrency(results.niitThreshold2)}</TableCell>
       </TableRow>
     </TableBody>
   </Table>

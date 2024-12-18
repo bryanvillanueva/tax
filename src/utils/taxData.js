@@ -66,3 +66,11 @@ export const additionalMedicareThreshold = {
   HH: 125000,
   QSS: 250000,
 };
+
+export const niitThresholds = {
+  Single: 200000,
+  MFJ: 250000,
+  MFS: 200000,
+  HH: 125000,
+  QSS: 250000,
+};

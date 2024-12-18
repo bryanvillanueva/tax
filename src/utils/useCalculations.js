@@ -19,7 +19,9 @@ import {
   calculateNetIncomePrepaid,
   calculateNetIncomeFamily,
   calculateNetIncomeQOF,
-  calculateNetIncomeHSA
+  calculateNetIncomeHSA,
+  calculateNIITThreshold,
+  calculateNIITThreshold2
 } from '../utils/calculations';
 import { standardDeductions } from '../utils/taxData';
 
@@ -111,6 +113,16 @@ const useCalculations = () => {
       const totalTaxDue2 = taxDue2 + selfEmploymentTax2;
       const effectiveTaxRate2 = taxableIncome2 !== 0 ? ((taxDue2 / taxableIncome2) * 100).toFixed(2) : '0.00';
       const { marginalRate2, level2 } = getMarginalTaxRateAndLevel2(filingStatus, taxableIncome2);
+      const effectiveSERate = netIncome > 0 ?  ((selfEmploymentTax / netIncome) * 100).toFixed(2) : '0.00';
+       
+     // Calcular NIIT Threshold
+      const niitThreshold = calculateNIITThreshold(netIncome, filingStatus, partnerType);
+      const niitThreshold2 = calculateNIITThreshold2(netIncome2, filingStatus, partnerType);
+
+    
+ 
+
+      
   
       // Cálculo para Corporations (1120)
       const corpTaxableIncome = netIncome;
@@ -118,6 +130,7 @@ const useCalculations = () => {
       const corpTaxDue = corpTaxableIncome * 0.21;
       const corpTaxDue2 = corpTaxableIncome2 * 0.21;
       const corpEffectiveTaxRate = corpTaxableIncome !== 0 ? ((corpTaxDue / corpTaxableIncome) * 100).toFixed(2) : '0.00';
+      const effectiveSERate2 = netIncome2 > 0 ? ((selfEmploymentTax2 / netIncome2) * 100).toFixed(2) : '0.00';
       
       console.log(grossIncome, netIncome, totalTaxDue,taxableIncome, taxDue)
       console.log(netIncome2, totalTaxDue2, taxDue2, taxableIncome2)
@@ -157,6 +170,10 @@ const useCalculations = () => {
         seSocialSecurity2,
         seMedicare2,
         selfEmploymentTax2,
+        effectiveSERate,
+        effectiveSERate2,
+        niitThreshold,
+        niitThreshold2
       };
     };
   
