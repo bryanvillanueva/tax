@@ -44,7 +44,6 @@ const ReimbursmentOfPersonalForm = ({ onCalculate }) => {
       partnerType,
       reimbursment, // Add the calculated value
       calculationType: 'reimbursment',
-
     });
 
     onCalculate(results);
