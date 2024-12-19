@@ -44,14 +44,9 @@ export function calculateNetIncomeAugusta(grossIncome, averageMonthlyRent, daysO
 
 
 // Calcular el Net Income para Charitable Remainder Trust (CRT)
-export function calculateNetIncomeCRT(grossIncome, cgas, pvad) {
-  const capitalGainTaxSavings = cgas * 0.20;
-  const totalDeduction = pvad;
-  const netIncomeCRT = Math.max(0, grossIncome - totalDeduction ); // Evita valores negativos
-  return {
-    netIncomeCRT, capitalGainTaxSavings, totalDeduction, // PVAD como deducción total
+export function calculateNetIncomeCRT(grossIncome, presentValue) {
+  return Math.max(0, grossIncome - presentValue);// Evita valores negativos
   };
-}
 
 //Calcular el Net Income para Reimbursment
 export function calculateReimbursment(grossIncome, tve, pbuv) {

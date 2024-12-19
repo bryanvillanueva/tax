@@ -38,7 +38,6 @@ const useCalculations = () => {
     totalNonPrepaidExpenses,
     hireKidsDeduction,
     hireFamilyDeduction,
-    capitalGain,
     presentValue,
     tve,
     pbuv,
@@ -72,7 +71,7 @@ const useCalculations = () => {
         netIncome = calculateNetIncomeHSA(grossIncome, hsac, ewhd);
         break;
       case 'charitableRemainderTrust':
-        netIncome = calculateNetIncomeCRT(grossIncome, capitalGain, presentValue);
+        netIncome = calculateNetIncomeCRT(grossIncome, presentValue);
         break;
       case 'reimbursment':
         netIncome = calculateReimbursment(grossIncome, tve, pbuv);
@@ -132,8 +131,7 @@ const useCalculations = () => {
       const corpEffectiveTaxRate = corpTaxableIncome !== 0 ? ((corpTaxDue / corpTaxableIncome) * 100).toFixed(2) : '0.00';
       const effectiveSERate2 = netIncome2 > 0 ? ((selfEmploymentTax2 / netIncome2) * 100).toFixed(2) : '0.00';
       
-      console.log(grossIncome, netIncome, totalTaxDue,taxableIncome, taxDue)
-      console.log(netIncome2, totalTaxDue2, taxDue2, taxableIncome2)
+
 
       return {
         netIncome,

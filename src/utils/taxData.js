@@ -36,13 +36,13 @@ export const taxBrackets = {
     { rate: 0.37, start: 578101, end: Infinity },
   ],
   QSS: [
-    { rate: 0.10, start: 0, end: 15700 },
-    { rate: 0.12, start: 15701, end: 59850 },
-    { rate: 0.22, start: 59851, end: 95350 },
-    { rate: 0.24, start: 95351, end: 182100 },
+    { rate: 0.10, start: 0, end: 11000 },
+    { rate: 0.12, start: 11001, end: 44725 },
+    { rate: 0.22, start: 44726, end: 95375 },
+    { rate: 0.24, start: 95376, end: 182100 },
     { rate: 0.32, start: 182101, end: 231250 },
-    { rate: 0.35, start: 231251, end: 578100 },
-    { rate: 0.37, start: 578101, end: Infinity },
+    { rate: 0.35, start: 231251, end: 578125 },
+    { rate: 0.37, start: 578126, end: Infinity },
   ],
 };
 
