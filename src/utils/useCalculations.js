@@ -5,6 +5,7 @@ import {
   calculateSelfEmploymentTax,
   calculateNetIncomeKids,
   calculateReimbursment,
+  calculatelifetimeLearningCredit,
   calculateSEMedicare,
   calculateAGI,
   calculateTaxableIncome,
@@ -42,6 +43,9 @@ const useCalculations = () => {
     presentValue,
     tve,
     pbuv,
+    magi,
+    mfj,
+    qee,
     capitalGainTaxDeferred,
     reductionInNetIncome,
     calculationType = 'standard',
@@ -76,6 +80,9 @@ const useCalculations = () => {
         break;
       case 'reimbursment':
         netIncome = calculateReimbursment(grossIncome, tve, pbuv);
+        break;
+      case 'lifeTimelearning':
+          netIncome = calculatelifetimeLearningCredit(magi, mfj, qee);
         break;
         case 'standard':
           netIncome = calculateNetIncome(grossIncome, cost, investType);
