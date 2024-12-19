@@ -13,7 +13,7 @@ import {
 
 
 
-//estrategias en orden
+//Estrategias en orden
 
 // Calcular el Net Income según el tipo de inversión (Section 179 o Bonus)
 export function calculateNetIncome(grossIncome, cost, investType) {
@@ -47,6 +47,7 @@ export function calculateNetIncomeAugusta(grossIncome, averageMonthlyRent, daysO
 export function calculateNetIncomeCRT(grossIncome, presentValue) {
   return Math.max(0, grossIncome - presentValue);// Evita valores negativos
   };
+
 
 //Calcular el Net Income para Reimbursment
 export function calculateReimbursment(grossIncome, tve, pbuv) {
