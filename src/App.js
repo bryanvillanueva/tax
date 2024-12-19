@@ -6,7 +6,6 @@ import HireYourKidsForm from './components/HireYourKids';
 import ResultsDisplay from './components/ResultsDisplay';
 import FormSelector from './components/FormSelector';
 import ReimbursmentOfPersonalForm from './components/ReimbursmentOfPersonalForm';
-import LifetimeLearningCredit from './components/LifetimeLearningCredit'; // Asegúrate de usar el nombre correcto aquí
 import CharitableRemainderForm from './components/CharitableRemainderForm';
 import HireYourFamilyForm from './components/HireYourFamily';
 import HealthSavingsAccountForm from './components/HealthSavingsAccountForm';
@@ -58,8 +57,6 @@ function App() {
         return <CharitableRemainderForm onCalculate={setResults} />;
       case 'reimbursment':
         return <ReimbursmentOfPersonalForm onCalculate={setResults} />;
-      case 'lifetimeLearningCredit': // Corregido a LifetimeLearningCredit
-        return <LifetimeLearningCredit onCalculate={setResults} />;
       case 'hireFamily':
         return <HireYourFamilyForm onCalculate={setResults} />;
       case 'qualifiedOpportunityFunds':
@@ -70,7 +67,7 @@ function App() {
         return <FormSelector onSelectForm={handleSelectForm} />;
     }
   };
-
+  
   const getFormTitle = () => {
     switch (currentForm) {
       case 'depreciation':
@@ -85,14 +82,13 @@ function App() {
         return 'Charitable Remainder Form';
       case 'reimbursment':
         return 'Reimbursment of personal Vehicle Form';
-      case 'lifetimeLearningCredit':
-        return 'Lifetime Learning Credit'; // Corregido aquí también
       case 'hireFamily':
         return 'Hire your family form';
       case 'qualifiedOpportunityFunds':
         return 'Qualified Opportunity Funds (QOF) Form';
       case 'healthSavings':
         return 'Health Savings Account - Employees Benefits Form';
+        
       default:
         return '';
     }
@@ -120,27 +116,28 @@ function App() {
           {renderForm()}
 
           {currentForm && (
-            <Fab
-              color="primary"
-              aria-label="back"
-              onClick={handleBackToSelector}
-              sx={{
-                position: 'fixed',
-                bottom: 32,
-                right: 32,
-                width: 80,
-                height: 80,
-                backgroundColor: '#0858e6',
-                '&:hover': {
-                  backgroundColor: '#064bb5',
-                },
-              }}
-            >
-              <HomeIcon sx={{ color: '#fff' }} />
-            </Fab>
-          )}
+           <Fab
+             color="primary"
+             aria-label="back"
+             onClick={handleBackToSelector}
+             sx={{
+             position: 'fixed',
+             bottom: 32,
+             right: 32,
+             width: 80,
+             height: 80,
+             backgroundColor: '#0858e6',
+             '&:hover': {
+              backgroundColor: '#064bb5',
+          },
+    }}
+  >
+    <HomeIcon sx={{ color: '#fff' }} />
+  </Fab>
+)}
 
-          {results && <ResultsDisplay results={results} formTitle={getFormTitle()} />}
+        {results && <ResultsDisplay results={results} formTitle={getFormTitle()} />}
+
         </Box>
       </Container>
     </ThemeProvider>

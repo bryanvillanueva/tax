@@ -11,8 +11,7 @@ const forms = [
   { id: 'hireFamily', title: 'Hire Your Family Form', description: 'Calculate deductions for hiring your family members.' },
   { id: 'qualifiedOpportunityFunds', title: 'Qualified Opportunity Funds (QOF) Form', description: 'Calculate deductions for investing in Qualified Opportunity Funds.' },
   { id: 'healthSavings', title: "Health Savings Account (HSA) - Employee's Benefits", description: "Calculate deductions for contributions to Health Savings Accounts (HSA) based on employee's benefits." 
-  },
-  { id: 'lifetimeLearningCredit', title: 'MAGI', description: 'calaculate Lifetime Learning Credit' },
+  }
   
 
 ];
