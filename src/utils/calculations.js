@@ -60,6 +60,42 @@ export function calculateReimbursment(grossIncome, tve, pbuv) {
   return netIncome;
 }
 
+// calcular  el magi(net income) para el LifeTimelearning
+export function calculatelifetimeLearningCredit(magi, mfj, qee) {
+  if (magi <= 0) {
+    throw new Error('Invalid input: MAGI must be greater than 0.');
+  }
+  if (qee < 0 || qee > 10000) {
+    throw new Error('Invalid input: QEE must be between 0 and 10,000.');
+  }
+  if (mfj !== 'Yes' && mfj !== 'No') {
+    throw new Error('Invalid input: MFJ must be either "Yes" or "No".');
+  }
+  const magiLimit = mfj === 'Yes' ? 136000 : 68000;
+  // Determinar si el MAGI es elegible
+  if (magi > magiLimit) {
+    return {
+      credit: 0,
+      message: 'MAGI exceeds the eligibility limit. No credit available.',
+    };
+  }
+  const baseCredit = Math.min(qee, 10000) * 0.2; // 20% de los gastos calificados
+  const phaseOutRange = mfj === 'Yes' ? 20000 : 10000; // Rango de eliminación
+  const phaseOutStart = magiLimit - phaseOutRange;
+
+  let credit = baseCredit;
+  if (magi > phaseOutStart) {
+    const reductionFactor = (magi - phaseOutStart) / phaseOutRange;
+    credit -= baseCredit * reductionFactor;
+  }
+
+  return {
+    credit: Math.max(credit, 0), // Asegura que no sea negativo
+    message: 'Lifetime Learning Credit calculated successfully.',
+  };
+}
+
+
 // Calcular el Net Income para Hire Your Family
 export function calculateNetIncomeFamily(grossIncome, hireFamilyDeduction) {
   return Math.max(0, grossIncome - hireFamilyDeduction); // Evita valores negativos
