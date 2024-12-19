@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { TextField, Button, Container, Box, Alert, Grid, MenuItem } from '@mui/material';
-import useCalculations from "../utils/useCalculations";
 
 const LifetimeLearningCredit = () => {
   const [magi, setMagi] = useState(''); // Modified Adjusted Gross Income (MAGI)
@@ -10,36 +9,21 @@ const LifetimeLearningCredit = () => {
   const [limitZero, setLimitZero] = useState(0); // Limit Zero amount
   const [taxCredit, setTaxCredit] = useState(0); // Tax Credit value
   const [error, setError] = useState(null);
-  const [calculated, setCalculated] = useState(null); // Para almacenar los resultados si es necesario
   const [displayTaxCredit, setDisplayTaxCredit] = useState(false); // Controla cuándo mostrar el Tax Credit
-
-  const { performCalculations } = useCalculations();
 
   useEffect(() => {
     if (mfj === 'Yes') {
       setPhaseOut(20000); // Si mfj es "Yes", set phaseOut a 20000
       if (magi) {
-        setLimitZero(Math.max(0, 180000 - parseFloat(magi))); // Si mfj es "Yes", límite 180,000
+        setLimitZero(180000 - parseFloat(magi)); // Permite valores negativos
       }
     } else if (mfj === 'No') {
       setPhaseOut(10000); // Si mfj es "No", set phaseOut a 10000
       if (magi) {
-        setLimitZero(Math.max(0, 90000 - parseFloat(magi))); // Si mfj es "No", límite 90,000
+        setLimitZero(90000 - parseFloat(magi)); // Permite valores negativos
       }
     }
-
-    // Lógica para calcular el taxCredit
-    if (magi && qee) {
-      if (limitZero >= phaseOut) {
-        const taxCreditValue = parseFloat(qee) * 0.2; // Multiplica el QEE por 0.2
-        setTaxCredit(taxCreditValue);
-      } else {
-        const ratio = limitZero / phaseOut; // Divide limitZero entre phaseOut
-        const taxCreditValue = ratio * parseFloat(qee); // Multiplica el resultado por QEE
-        setTaxCredit(taxCreditValue); 
-      }
-    }
-  }, [mfj, magi, qee, limitZero, phaseOut]);
+  }, [mfj, magi]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -56,20 +40,18 @@ const LifetimeLearningCredit = () => {
     }
 
     setError(null);
-    setDisplayTaxCredit(true); //r
+    setDisplayTaxCredit(true);
 
-    // Llamada a los cálculos
-    const results = performCalculations({
-      magi: parseFloat(magi),
-      mfj,
-      qee: parseFloat(qee),
-      phaseOut, // Se pasa el valor de phaseOut calculado
-      limitZero, // Se pasa el valor de limitZero calculado
-      taxCredit, // Se pasa el valor de taxCredit calculado
-      calculationType: 'lifetimeLearningCredit', // Nuevo tipo de cálculo
-    });
+    // Cálculo del Tax Credit
+    let taxCreditValue = 0;
+    if (limitZero >= phaseOut) {
+      taxCreditValue = parseFloat(qee) * 0.2; // Multiplica el QEE por 0.2
+    } else {
+      const ratio = Math.max(0, limitZero / phaseOut); // Asegura que el ratio no sea negativo
+      taxCreditValue = ratio * parseFloat(qee) * 0.2; // Multiplica el resultado por QEE y 0.2
+    }
 
-    setCalculated(results); // Almacena los resultados si es necesario
+    setTaxCredit(taxCreditValue);
   };
 
   return (
@@ -104,7 +86,7 @@ const LifetimeLearningCredit = () => {
                 type="number"
                 value={limitZero}
                 InputProps={{
-                  readOnly: true, // Este campo no será editable
+                  readOnly: true,
                 }}
                 margin="normal"
               />
@@ -143,7 +125,7 @@ const LifetimeLearningCredit = () => {
                 type="number"
                 value={phaseOut}
                 InputProps={{
-                  readOnly: true, // Este campo no será editable
+                  readOnly: true,
                 }}
                 margin="normal"
               />
@@ -154,9 +136,9 @@ const LifetimeLearningCredit = () => {
                 label="Tax Credit"
                 fullWidth
                 type="number"
-                value={displayTaxCredit ? taxCredit : ''} // Solo muestra el Tax Credit después de calcular
+                value={displayTaxCredit ? taxCredit.toFixed(2) : ''}
                 InputProps={{
-                  readOnly: true, // Este campo no será editable
+                  readOnly: true,
                 }}
                 margin="normal"
               />
@@ -169,14 +151,6 @@ const LifetimeLearningCredit = () => {
             </Button>
           </Box>
         </form>
-
-        {/* Si quieres mostrar los resultados aquí */}
-        {calculated && (
-          <Box sx={{ mt: 3 }}>
-            <h3>Calculation Results:</h3>
-            <pre>{JSON.stringify(calculated, null, 2)}</pre>
-          </Box>
-        )}
       </Box>
     </Container>
   );
