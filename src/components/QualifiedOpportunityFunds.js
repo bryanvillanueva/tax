@@ -127,8 +127,8 @@ const QualifiedOpportunityFundsForm = ({ onCalculate }) => {
                 onChange={(e) => setInvestmentYears(e.target.value)}
                 margin="normal"
               >
-                <MenuItem value="1-10">Between 1 and 10 years</MenuItem>
-                <MenuItem value=">10">More than 10 years</MenuItem>
+                <MenuItem value="1-9">Between 1 and 9 years</MenuItem>
+                <MenuItem value=">10">Ten or more</MenuItem>
               </TextField>
             </Grid>
           </Grid>

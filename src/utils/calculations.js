@@ -44,19 +44,19 @@ export function calculateNetIncomeAugusta(grossIncome, averageMonthlyRent, daysO
 
 
 // Calcular el Net Income para Charitable Remainder Trust (CRT)
-export function calculateNetIncomeCRT(grossIncome, pvad) {
-  const totalDeduction = pvad;
-  return Math.max(0, grossIncome - totalDeduction ); // Evita valores negativos
-}
+export function calculateNetIncomeCRT(grossIncome, presentValue) {
+  return Math.max(0, grossIncome - presentValue);// Evita valores negativos
+  };
 
 //Calcular el Net Income para Reimbursment
 export function calculateReimbursment(grossIncome, tve, pbuv) {
-  // Validar los valores de entrada
+
   if (grossIncome <= 0 || tve <= 0 || pbuv <= 0 || pbuv > 100) {
     throw new Error('Invalid input: All values must be greater than 0, and PBUV must be between 0 and 100.');
   }
   const reimbursment = tve * (pbuv / 100);
-  return Math.max(0, grossIncome - reimbursment ); // Evita valores negativos
+  const netIncome = grossIncome - reimbursment;
+  return netIncome;
 }
 
 // Calcular el Net Income para Hire Your Family
@@ -175,14 +175,14 @@ export function getMarginalTaxRateAndLevel2(filingStatus, taxableIncome2) {
 // Calcular el impuesto adeudado (Tax Due) 
 export function calculateTaxDue(filingStatus, taxableIncome) {
   const brackets = taxBrackets[filingStatus];
-  let tax = 0;
+  
   let accumulatedTax = 0;
 
   for (let i = 0; i < brackets.length; i++) {
     const bracket = brackets[i];
     if (taxableIncome > bracket.start) {
       const amountInBracket = Math.min(taxableIncome, bracket.end) - bracket.start;
-      tax += amountInBracket * bracket.rate;
+
       accumulatedTax += amountInBracket * bracket.rate;
     } else {
       break; 
@@ -198,7 +198,7 @@ export function calculateTaxDue2(filingStatus, taxableIncome2) {
   taxableIncome2 = parseFloat(taxableIncome2.toFixed(2));
 
   const brackets = taxBrackets[filingStatus];
-  let tax = 0;
+  
   let accumulatedTax = 0;
 
  
@@ -206,7 +206,7 @@ export function calculateTaxDue2(filingStatus, taxableIncome2) {
     const bracket = brackets[i];
     if (taxableIncome2 > bracket.start) {
       const amountInBracket = Math.min(taxableIncome2, bracket.end) - bracket.start;
-      tax += amountInBracket * bracket.rate;  
+     
       accumulatedTax += parseFloat((amountInBracket * bracket.rate).toFixed(2)); 
     } else {
       break; 
