@@ -10,6 +10,7 @@ import CharitableRemainderForm from './components/CharitableRemainderForm';
 import HireYourFamilyForm from './components/HireYourFamily';
 import HealthSavingsAccountForm from './components/HealthSavingsAccountForm';
 import QualifiedOpportunityFundsForm from './components/QualifiedOpportunityFunds';
+import LifetimeLearningCredit from './components/LifetimeLearningCredit'; 
 import { Container, CssBaseline, Box, ThemeProvider, createTheme, Button, Typography, Fab } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home'; // Importa el icono de Home
 
@@ -63,6 +64,8 @@ function App() {
         return <QualifiedOpportunityFundsForm onCalculate={setResults} />;
       case 'healthSavings':
         return <HealthSavingsAccountForm onCalculate={setResults} />;
+      case 'lifetimeLearningCredit': // Corregido a LifetimeLearningCredit
+        return <LifetimeLearningCredit onCalculate={setResults} />;
       default:
         return <FormSelector onSelectForm={handleSelectForm} />;
     }
@@ -88,7 +91,8 @@ function App() {
         return 'Qualified Opportunity Funds (QOF) Form';
       case 'healthSavings':
         return 'Health Savings Account - Employees Benefits Form';
-        
+      case 'lifetimeLearningCredit':
+          return 'Lifetime Learning Credit';  
       default:
         return '';
     }
