@@ -80,6 +80,23 @@ export function calculateNetIncomeAmanda(grossIncome) {
   return Math.max(0, grossIncome ); // Evita valores negativos{
 }
 
+// calcular el Net income para exemptionQualifiedSmall
+export function calculateNetIncomeExemptionQualifiedSmall(grossIncome, capitalGainQSBS) {
+  return Math.max(0, grossIncome - capitalGainQSBS); // Evita valores negativos{
+}
+
+// calcular el Net income para costSegregation
+export function calculateNetIncomeCostSegregation(grossIncome, deduction){
+  return Math.max(0, grossIncome - deduction); // Evita valores negativos{
+}
+
+
+
+
+
+
+
+
 
 
 

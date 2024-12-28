@@ -13,8 +13,9 @@ const forms = [
   { id: 'healthSavings', title: "Health Savings Account (HSA) - Employee's Benefits", description: "Calculate deductions for contributions to Health Savings Accounts (HSA) based on employee's benefits."}, 
   { id: 'lifetimeLearningCredit', title: 'MAGI', description: 'calaculate Lifetime Learning Credit' },
   { id: 'amendedPriorYears', title: 'Amended Prior Year Form', description: 'Calculate adjustments for amended tax returns from prior years.' },
+  { id: 'exemptionQualifiedSmall', title: 'Exemption for Qualified Small Business Stock Form', description: 'Calculate the exemption for capital gains on the sale of Qualified Small Business Stock (QSBS) as per IRS guidelines.' },
+  { id: 'costSegregation', title: 'Cost Segregation Form', description: 'Calculate the new annual depreciation and other values for cost segregation as per IRS guidelines for real estate properties.'}
 
-  
 
 ];
 

@@ -12,6 +12,8 @@ import HealthSavingsAccountForm from './components/HealthSavingsAccountForm';
 import QualifiedOpportunityFundsForm from './components/QualifiedOpportunityFunds';
 import LifetimeLearningCredit from './components/LifetimeLearningCredit'; 
 import AmendedPriorYearForm from './components/AmendedPriorYearForm';
+import ExemptionQualifiedSmallBusinessStockForm from './components/ExemptionQualifiedSmallBusinessStockForm';
+import CostSegregationForm from './components/CostSegregationForm';
 import { Container, CssBaseline, Box, ThemeProvider, createTheme, Button, Typography, Fab } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home'; // Importa el icono de Home
 
@@ -70,6 +72,10 @@ function App() {
         return <LifetimeLearningCredit onCalculate={setResults} />;
       case 'amendedPriorYears': 
         return <AmendedPriorYearForm onCalculate={setResults} />;
+      case 'exemptionQualifiedSmall': 
+        return <ExemptionQualifiedSmallBusinessStockForm onCalculate={setResults} />;
+      case 'costSegregation': 
+        return <CostSegregationForm onCalculate={setResults} />;
       default:
         return <FormSelector onSelectForm={handleSelectForm} />;
     }
@@ -98,7 +104,11 @@ function App() {
       case 'lifetimeLearningCredit':
           return 'Lifetime Learning Credit'; 
       case 'amendedPriorYears':
-          return 'Amended Prior Year Form';  
+          return 'Amended Prior Year Form';
+      case 'exemptionQualifiedSmall':
+          return 'Exemption for Qualified Small Business Stock Form';   
+      case 'costSegregation':
+          return 'Cost Segregation Form'; 
       default:
         return '';
     }

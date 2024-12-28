@@ -1,72 +1,78 @@
 import React, { useState } from 'react';
-import { TextField, Button, Container, Typography, Box, MenuItem, Alert, Grid } from '@mui/material';
+import { TextField, Button, Container, Box, Grid, MenuItem, Alert } from '@mui/material';
 import useCalculations from '../utils/useCalculations';
 
-const AmendedPriorYearsForm = ({ onCalculate }) => {
+const ExemptionQualifiedSmallBusinessStockForm = ({ onCalculate }) => {
   const [filingStatus, setFilingStatus] = useState('Single');
   const [grossIncome, setGrossIncome] = useState('');
   const [partnerType, setPartnerType] = useState('Active');
-  const [missedDeductions, setMissedDeductions] = useState('');
-  const [marginalRate, setMarginalRate] = useState('');
-  const [originalTaxableIncome, setOriginalTaxableIncome] = useState('');
-  const [askForRefund, setAskForRefund] = useState('No');
+  const [stockSellPrice, setStockSellPrice] = useState('');
+  const [stockCost, setStockCost] = useState('');
+  const [capitalGainQSBS, setCapitalGainQSBS] = useState('');
+  const [yearsHolding, setYearsHolding] = useState('');
+  const [theStocksWere, setTheStocksWere] = useState('No');
   const [error, setError] = useState(null);
 
   const { performCalculations } = useCalculations();
 
-  const calculateTaxableDifference = (originalIncome, missedDeductions) => {
-    const difference = originalIncome - missedDeductions;
-    return difference <= 0 ? 0 : difference;
-  };
-
-  const calculateAdjustedTax = (originalIncome, marginalRate, taxableDifference) => {
-    return (originalIncome * marginalRate / 100) - (taxableDifference * marginalRate / 100);
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Validations for required fields
-    if (!missedDeductions || parseFloat(missedDeductions) <= 0) {
-      setError('Expenses and deductions missed in previous years is required and must be greater than 0.');
+    if (!filingStatus || !grossIncome || !partnerType) {
+      setError('All fields are required.');
       return;
     }
 
-    if (!marginalRate || parseFloat(marginalRate) <= 0 || parseFloat(marginalRate) > 100) {
-      setError('Taxpayer Marginal Rate is required and must be a percentage between 0 and 100.');
+    if (!stockSellPrice || parseFloat(stockSellPrice) <= 0) {
+      setError('Stock\'s sell price is required and must be greater than 0.');
       return;
     }
 
-    if (!originalTaxableIncome || parseFloat(originalTaxableIncome) <= 0) {
-      setError('Original Taxable Income is required and must be greater than 0.');
+    if (!stockCost || parseFloat(stockCost) <= 0) {
+      setError('Stock\'s cost is required and must be greater than 0.');
+      return;
+    }
+
+    if (!capitalGainQSBS || parseFloat(capitalGainQSBS) <= 0) {
+      setError('Capital gain in the sale of QSBS is required and must be greater than 0.');
+      return;
+    }
+
+    if (parseInt(yearsHolding, 10) < 5) {
+      setError('The stock must be held for at least 5 years.');
       return;
     }
 
     setError(null);
 
-    const taxableDifference = calculateTaxableDifference(parseFloat(originalTaxableIncome), parseFloat(missedDeductions));
-    const adjustedTax = calculateAdjustedTax(parseFloat(originalTaxableIncome), parseFloat(marginalRate), taxableDifference);
-    const taxCreditsResults = askForRefund === 'Yes' ? 0 : adjustedTax;
+    const stockProfit = parseFloat(stockSellPrice) - parseFloat(stockCost);
 
+    const limitOfExemption = (parseFloat(stockCost) * 10) < 10000000 ? parseFloat(stockCost) * 10 : 10000000;
+    console.log('Limit of Exemption:', limitOfExemption);
+
+    let finalCapitalGain = parseFloat(capitalGainQSBS);
+    if (parseInt(yearsHolding, 10) < 5 || theStocksWere === 'No') {
+      finalCapitalGain = 0;
+    }
+
+    finalCapitalGain = finalCapitalGain <= limitOfExemption ? finalCapitalGain : limitOfExemption;
 
     const results = performCalculations({
       filingStatus,
       grossIncome: parseFloat(grossIncome),
       partnerType,
-      missedDeductions: parseFloat(missedDeductions),
-      marginalRate: parseFloat(marginalRate),
-      originalTaxableIncome: parseFloat(originalTaxableIncome),
-      askForRefund: askForRefund === 'Yes',
-      taxableDifference,
-      adjustedTax: taxCreditsResults,
-      taxCreditsResults,
-      calculationType: 'amendedPriorYears',
+      stockSellPrice: parseFloat(stockSellPrice),
+      stockCost: limitOfExemption,
+      capitalGainQSBS: finalCapitalGain,
+      yearsHolding,
+      stockProfit,
+      theStocksWere,
+      calculationType: 'exemptionQualifiedSmall',
     });
-    
 
     onCalculate(results);
   };
-  
+
   return (
     <Container>
       <Box sx={{ mt: 5 }}>
@@ -116,49 +122,49 @@ const AmendedPriorYearsForm = ({ onCalculate }) => {
               </TextField>
 
               <TextField
-                label="Expenses and Deductions Missed in Previous Years"
+                label="Stock's Sell Price"
                 fullWidth
                 type="number"
-                value={missedDeductions}
-                onChange={(e) => setMissedDeductions(e.target.value)}
+                value={stockSellPrice}
+                onChange={(e) => setStockSellPrice(e.target.value)}
                 margin="normal"
               />
             </Grid>
 
             <Grid item xs={12} md={6}>
               <TextField
-                select
-                label="Taxpayer Marginal Rate (%)"
-                fullWidth
-                value={marginalRate}
-                onChange={(e) => setMarginalRate(e.target.value)}
-                margin="normal"
-              >
-                <MenuItem value={10}>10%</MenuItem>
-                <MenuItem value={12}>12%</MenuItem>
-                <MenuItem value={21}>21%</MenuItem>
-                <MenuItem value={22}>22%</MenuItem>
-                <MenuItem value={24}>24%</MenuItem>
-                <MenuItem value={32}>32%</MenuItem>
-                <MenuItem value={35}>35%</MenuItem>
-                <MenuItem value={37}>37%</MenuItem>
-              </TextField>
-
-              <TextField
-                label="Original Taxable Income"
+                label="Stock's Cost"
                 fullWidth
                 type="number"
-                value={originalTaxableIncome}
-                onChange={(e) => setOriginalTaxableIncome(e.target.value)}
+                value={stockCost}
+                onChange={(e) => setStockCost(e.target.value)}
+                margin="normal"
+              />
+
+              <TextField
+                label="Capital Gain in the Sale of QSBS"
+                fullWidth
+                type="number"
+                value={capitalGainQSBS}
+                onChange={(e) => setCapitalGainQSBS(e.target.value)}
+                margin="normal"
+              />
+
+              <TextField
+                label="Years Holding the Stock (Min 5 Yrs)"
+                fullWidth
+                type="number"
+                value={yearsHolding}
+                onChange={(e) => setYearsHolding(e.target.value)}
                 margin="normal"
               />
 
               <TextField
                 select
-                label="Ask for a Refund?"
+                label="Were the Stocks Sold?"
                 fullWidth
-                value={askForRefund}
-                onChange={(e) => setAskForRefund(e.target.value)}
+                value={theStocksWere}
+                onChange={(e) => setTheStocksWere(e.target.value)}
                 margin="normal"
               >
                 <MenuItem value="Yes">Yes</MenuItem>
@@ -178,4 +184,4 @@ const AmendedPriorYearsForm = ({ onCalculate }) => {
   );
 };
 
-export default AmendedPriorYearsForm;
+export default ExemptionQualifiedSmallBusinessStockForm;

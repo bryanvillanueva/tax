@@ -6,6 +6,8 @@ import {
   calculateNetIncomeKids,
   calculateReimbursment,
   calculateNetIncomeAmanda,
+  calculateNetIncomeCostSegregation,
+  calculateNetIncomeExemptionQualifiedSmall,
   calculateSEMedicare,
   calculateAGI,
   calculateTaxableIncome,
@@ -48,7 +50,9 @@ const useCalculations = () => {
     calculationType = 'standard',
     hsac,
     ewhd,
-    taxCreditsResults
+    taxCreditsResults,
+    capitalGainQSBS,
+    deduction
   }) => {
     // Calcular Net Income según el tipo de cálculo
     let netIncome;
@@ -82,6 +86,12 @@ const useCalculations = () => {
       case 'amendedPriorYears':
         netIncome = calculateNetIncomeAmanda(grossIncome);
         break;
+      case 'exemptionQualifiedSmall':
+        netIncome = calculateNetIncomeExemptionQualifiedSmall(grossIncome, capitalGainQSBS);
+        break;
+      case 'costSegregation':
+        netIncome = calculateNetIncomeCostSegregation(grossIncome, deduction);
+        break;
       case 'standard':
           netIncome = calculateNetIncome(grossIncome, cost, investType);
         break;
@@ -97,7 +107,7 @@ const useCalculations = () => {
       const taxableIncome = calculateTaxableIncome(agi, filingStatus);
       const { marginalRate, level } = getMarginalTaxRateAndLevel(filingStatus, taxableIncome);
       const taxDue = calculateTaxDue(filingStatus, taxableIncome);
-      const taxCredits = calculateTaxcredits(taxCreditsResults);
+      const taxCredits = taxCreditsResults || 0;
       const additionalMedicare = calculateAdditionalMedicare(filingStatus, netIncome);
       const selfEmploymentRate = partnerType === 'Active' ? getSelfEmploymentRate() : 0;
       const totalTaxDue = taxDue + selfEmploymentTax;
@@ -138,7 +148,7 @@ const useCalculations = () => {
       const corpEffectiveTaxRate = corpTaxableIncome !== 0 ? ((corpTaxDue / corpTaxableIncome) * 100).toFixed(2) : '0.00';
       const effectiveSERate2 = netIncome2 > 0 ? ((selfEmploymentTax2 / netIncome2) * 100).toFixed(2) : '0.00';
       
-      
+     
 
       return {
         netIncome,
