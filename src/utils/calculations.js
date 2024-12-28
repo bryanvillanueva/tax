@@ -75,6 +75,11 @@ export function calculateNetIncomeHSA(grossIncome, hsac, ewhd) {
   return Math.max(0, grossIncome - hsaContribution); // Evita valores negativos
 }
 
+//calcular el Net income para amandaPriorYears    
+export function calculateNetIncomeAmanda(grossIncome) {
+  return Math.max(0, grossIncome ); // Evita valores negativos{
+}
+
 
 
 
@@ -97,7 +102,7 @@ export function calculateTaxableIncome(agi, filingStatus) {
   return Math.max(0, agi - standardDeduction);
 }
 
-// Calcular el Taxable Income
+// Calcular el Taxable Income2
 export function calculateTaxableIncome2(agi2, filingStatus) {
   const standardDeduction = standardDeductions[filingStatus] || 0;
   return Math.max(0, agi2 - standardDeduction);
@@ -219,11 +224,6 @@ export function calculateTaxDue2(filingStatus, taxableIncome2) {
 
 
 
-
-
-
-
-
 // Calcular Additional Medicare Tax
 export function calculateAdditionalMedicare(filingStatus, netIncome) {
   const threshold = additionalMedicareThreshold[filingStatus];
@@ -241,3 +241,7 @@ export function getSelfEmploymentRate() {
   return 15.3; // 12.4% para Social Security + 2.9% para Medicare
 }
 
+//calcular tax credits 1
+export function calculateTaxcredits(taxCreditsResults) {
+return taxCreditsResults;
+}

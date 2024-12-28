@@ -87,10 +87,21 @@ const ResultsDisplay = ({ results, formTitle }) => {
               <TableCell>{formatCurrency(results.corpTaxDue)}</TableCell>
             </TableRow>
             <TableRow sx={{ backgroundColor: '#82b484' }}>
+              <TableCell>Tax Credits</TableCell>
+              <TableCell>{formatCurrency(results.taxCredits)}</TableCell>
+              <TableCell>Not applicable</TableCell>
+            </TableRow>
+            <TableRow sx={{ backgroundColor: '#82b484' }}>
               <TableCell>Total Tax Due</TableCell>
-              <TableCell>{formatCurrency(results.taxDue + results.totalSE)}</TableCell>
+              <TableCell>{formatCurrency(results.taxDue + results.totalSE - results.taxCredits)}</TableCell>
               <TableCell>{formatCurrency(results.corpTaxDue)}</TableCell>
             </TableRow>
+
+            {/* Fila Vacía para Separación */}
+            <TableRow>
+              <TableCell colSpan={3}>&nbsp;</TableCell>
+            </TableRow>
+
             <TableRow sx={{ backgroundColor: '#82b484' }}>
               <TableCell>Effective Tax Rate</TableCell>
               <TableCell>{results.effectiveTaxRate}%</TableCell>
@@ -172,10 +183,21 @@ const ResultsDisplay = ({ results, formTitle }) => {
         <TableCell>{formatCurrency(results.corpTaxDue2)}</TableCell>
       </TableRow>
       <TableRow sx={{ backgroundColor: '#fff9c4' }}>
+              <TableCell>Tax Credits</TableCell>
+              <TableCell>Not applicable</TableCell>
+              <TableCell>Not applicable</TableCell>
+      </TableRow>
+      <TableRow sx={{ backgroundColor: '#fff9c4' }}>
         <TableCell>Total Tax Due</TableCell>
         <TableCell>{formatCurrency(results.totalTaxDue2)}</TableCell>
         <TableCell>{formatCurrency(results.corpTaxDue2)}</TableCell>
       </TableRow>
+      
+      {/* Fila Vacía para Separación */}
+      <TableRow>
+              <TableCell colSpan={3}>&nbsp;</TableCell>
+      </TableRow>
+
       <TableRow sx={{ backgroundColor: '#fff9c4' }}>
         <TableCell>Effective Tax Rate</TableCell>
         <TableCell>{results.effectiveTaxRate2}%</TableCell>

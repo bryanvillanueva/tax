@@ -11,8 +11,10 @@ import HireYourFamilyForm from './components/HireYourFamily';
 import HealthSavingsAccountForm from './components/HealthSavingsAccountForm';
 import QualifiedOpportunityFundsForm from './components/QualifiedOpportunityFunds';
 import LifetimeLearningCredit from './components/LifetimeLearningCredit'; 
+import AmendedPriorYearForm from './components/AmendedPriorYearForm';
 import { Container, CssBaseline, Box, ThemeProvider, createTheme, Button, Typography, Fab } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home'; // Importa el icono de Home
+
 
 const theme = createTheme({
   typography: {
@@ -66,6 +68,8 @@ function App() {
         return <HealthSavingsAccountForm onCalculate={setResults} />;
       case 'lifetimeLearningCredit': // Corregido a LifetimeLearningCredit
         return <LifetimeLearningCredit onCalculate={setResults} />;
+      case 'amendedPriorYears': 
+        return <AmendedPriorYearForm onCalculate={setResults} />;
       default:
         return <FormSelector onSelectForm={handleSelectForm} />;
     }
@@ -92,7 +96,9 @@ function App() {
       case 'healthSavings':
         return 'Health Savings Account - Employees Benefits Form';
       case 'lifetimeLearningCredit':
-          return 'Lifetime Learning Credit';  
+          return 'Lifetime Learning Credit'; 
+      case 'amendedPriorYears':
+          return 'Amended Prior Year Form';  
       default:
         return '';
     }

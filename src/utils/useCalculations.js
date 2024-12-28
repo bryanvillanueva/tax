@@ -5,6 +5,7 @@ import {
   calculateSelfEmploymentTax,
   calculateNetIncomeKids,
   calculateReimbursment,
+  calculateNetIncomeAmanda,
   calculateSEMedicare,
   calculateAGI,
   calculateTaxableIncome,
@@ -21,7 +22,8 @@ import {
   calculateNetIncomeQOF,
   calculateNetIncomeHSA,
   calculateNIITThreshold,
-  calculateNIITThreshold2
+  calculateNIITThreshold2,
+  calculateTaxcredits,
 } from '../utils/calculations';
 import { standardDeductions } from '../utils/taxData';
 
@@ -45,7 +47,8 @@ const useCalculations = () => {
     reductionInNetIncome,
     calculationType = 'standard',
     hsac,
-    ewhd
+    ewhd,
+    taxCreditsResults
   }) => {
     // Calcular Net Income según el tipo de cálculo
     let netIncome;
@@ -76,7 +79,10 @@ const useCalculations = () => {
       case 'reimbursment':
         netIncome = calculateReimbursment(grossIncome, tve, pbuv);
         break;
-        case 'standard':
+      case 'amendedPriorYears':
+        netIncome = calculateNetIncomeAmanda(grossIncome);
+        break;
+      case 'standard':
           netIncome = calculateNetIncome(grossIncome, cost, investType);
         break;
     }
@@ -91,6 +97,7 @@ const useCalculations = () => {
       const taxableIncome = calculateTaxableIncome(agi, filingStatus);
       const { marginalRate, level } = getMarginalTaxRateAndLevel(filingStatus, taxableIncome);
       const taxDue = calculateTaxDue(filingStatus, taxableIncome);
+      const taxCredits = calculateTaxcredits(taxCreditsResults);
       const additionalMedicare = calculateAdditionalMedicare(filingStatus, netIncome);
       const selfEmploymentRate = partnerType === 'Active' ? getSelfEmploymentRate() : 0;
       const totalTaxDue = taxDue + selfEmploymentTax;
@@ -131,7 +138,7 @@ const useCalculations = () => {
       const corpEffectiveTaxRate = corpTaxableIncome !== 0 ? ((corpTaxDue / corpTaxableIncome) * 100).toFixed(2) : '0.00';
       const effectiveSERate2 = netIncome2 > 0 ? ((selfEmploymentTax2 / netIncome2) * 100).toFixed(2) : '0.00';
       
-
+      
 
       return {
         netIncome,
@@ -148,6 +155,7 @@ const useCalculations = () => {
         incomeLevel: level,
         taxDue,
         taxDue2,
+        taxCredits,
         totalTaxDue2,
         marginalRate2: (marginalRate2 * 100).toFixed(2),
         incomeLevel2: level2,
@@ -171,7 +179,7 @@ const useCalculations = () => {
         effectiveSERate,
         effectiveSERate2,
         niitThreshold,
-        niitThreshold2
+        niitThreshold2,
       };
     };
   
