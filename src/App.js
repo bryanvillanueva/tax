@@ -1,167 +1,17 @@
-import React, { useState } from 'react';
-import DepreciationForm from './components/DepreciationForm';
-import AugustaRuleForm from './components/AugustaRuleForm';
-import PrepaidExpensesForm from './components/PrepaidExpensesForm';
-import HireYourKidsForm from './components/HireYourKids';
-import ResultsDisplay from './components/ResultsDisplay';
+import React from 'react';
+import { Routes, Route } from 'react-router-dom';
+import Login from './components/Login';
 import FormSelector from './components/FormSelector';
-import ReimbursmentOfPersonalForm from './components/ReimbursmentOfPersonalForm';
-import CharitableRemainderForm from './components/CharitableRemainderForm';
-import HireYourFamilyForm from './components/HireYourFamily';
-import HealthSavingsAccountForm from './components/HealthSavingsAccountForm';
-import QualifiedOpportunityFundsForm from './components/QualifiedOpportunityFunds';
-import LifetimeLearningCredit from './components/LifetimeLearningCredit'; 
-import AmendedPriorYearForm from './components/AmendedPriorYearForm';
-import ExemptionQualifiedSmallBusinessStockForm from './components/ExemptionQualifiedSmallBusinessStockForm';
-import CostSegregationForm from './components/CostSegregationForm';
-import { Container, CssBaseline, Box, ThemeProvider, createTheme, Button, Typography, Fab } from '@mui/material';
-import HomeIcon from '@mui/icons-material/Home'; // Importa el icono de Home
+import Dashboard from './components/Dashboard';
 
-
-const theme = createTheme({
-  typography: {
-    fontFamily: 'Montserrat, sans-serif',
-  },
-  palette: {
-    primary: {
-      main: '#9ce7ff',
-    },
-    secondary: {
-      main: '#30C2F3',
-    },
-  },
-});
-
-function App() {
-  const [results, setResults] = useState(null);
-  const [currentForm, setCurrentForm] = useState(null);
-
-  // Función para seleccionar el formulario y limpiar los resultados
-  const handleSelectForm = (form) => {
-    setCurrentForm(form);
-    setResults(null); // Limpiar los resultados al cambiar de formulario
-  };
-
-  // Función para regresar al selector de formularios
-  const handleBackToSelector = () => {
-    setCurrentForm(null);
-    setResults(null); // Limpiar los resultados al regresar al selector
-  };
-
-  const renderForm = () => {
-    switch (currentForm) {
-      case 'depreciation':
-        return <DepreciationForm onCalculate={setResults} />;
-      case 'augusta':
-        return <AugustaRuleForm onCalculate={setResults} />;
-      case 'prepaid':
-        return <PrepaidExpensesForm onCalculate={setResults} />;
-      case 'hireKids':
-        return <HireYourKidsForm onCalculate={setResults} />;
-      case 'charitableRemainderTrust':
-        return <CharitableRemainderForm onCalculate={setResults} />;
-      case 'reimbursment':
-        return <ReimbursmentOfPersonalForm onCalculate={setResults} />;
-      case 'hireFamily':
-        return <HireYourFamilyForm onCalculate={setResults} />;
-      case 'qualifiedOpportunityFunds':
-        return <QualifiedOpportunityFundsForm onCalculate={setResults} />;
-      case 'healthSavings':
-        return <HealthSavingsAccountForm onCalculate={setResults} />;
-      case 'lifetimeLearningCredit': // Corregido a LifetimeLearningCredit
-        return <LifetimeLearningCredit onCalculate={setResults} />;
-      case 'amendedPriorYears': 
-        return <AmendedPriorYearForm onCalculate={setResults} />;
-      case 'exemptionQualifiedSmall': 
-        return <ExemptionQualifiedSmallBusinessStockForm onCalculate={setResults} />;
-      case 'costSegregation': 
-        return <CostSegregationForm onCalculate={setResults} />;
-      default:
-        return <FormSelector onSelectForm={handleSelectForm} />;
-    }
-  };
-  
-  const getFormTitle = () => {
-    switch (currentForm) {
-      case 'depreciation':
-        return 'Depreciation Form';
-      case 'augusta':
-        return 'Augusta Rule Form';
-      case 'prepaid':
-        return 'Prepaid Expenses Form';
-      case 'hireKids':
-        return 'Hire Your Kids Form';
-      case 'charitableRemainderTrust':
-        return 'Charitable Remainder Form';
-      case 'reimbursment':
-        return 'Reimbursment of personal Vehicle Form';
-      case 'hireFamily':
-        return 'Hire your family form';
-      case 'qualifiedOpportunityFunds':
-        return 'Qualified Opportunity Funds (QOF) Form';
-      case 'healthSavings':
-        return 'Health Savings Account - Employees Benefits Form';
-      case 'lifetimeLearningCredit':
-          return 'Lifetime Learning Credit'; 
-      case 'amendedPriorYears':
-          return 'Amended Prior Year Form';
-      case 'exemptionQualifiedSmall':
-          return 'Exemption for Qualified Small Business Stock Form';   
-      case 'costSegregation':
-          return 'Cost Segregation Form'; 
-      default:
-        return '';
-    }
-  };
-
+const App = () => {
   return (
-    <ThemeProvider theme={theme}>
-      <Container>
-        <CssBaseline />
-
-        {/* Logo */}
-        <Box sx={{ textAlign: 'center', my: 4 }}>
-          <img
-            src="https://tax.bryanglen.com/logo.png"
-            alt="Logo"
-            style={{ maxWidth: '350px', marginBottom: '20px' }}
-          />
-        </Box>
-
-        <Box sx={{ my: 4, textAlign: 'center' }}>
-          <Typography variant="h4" gutterBottom>
-            {getFormTitle()}
-          </Typography>
-
-          {renderForm()}
-
-          {currentForm && (
-           <Fab
-             color="primary"
-             aria-label="back"
-             onClick={handleBackToSelector}
-             sx={{
-             position: 'fixed',
-             bottom: 32,
-             right: 32,
-             width: 80,
-             height: 80,
-             backgroundColor: '#0858e6',
-             '&:hover': {
-              backgroundColor: '#064bb5',
-          },
-    }}
-  >
-    <HomeIcon sx={{ color: '#fff' }} />
-  </Fab>
-)}
-
-        {results && <ResultsDisplay results={results} formTitle={getFormTitle()} />}
-
-        </Box>
-      </Container>
-    </ThemeProvider>
+    <Routes>
+      <Route path="/" element={<Login />} />
+      <Route path="/form-selector" element={<Dashboard />} /> {/* Cambia esto */}
+      
+    </Routes>
   );
-}
+};
 
 export default App;

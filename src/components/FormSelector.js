@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Typography, Grid, Card, CardActionArea, CardContent, TextField, Container } from '@mui/material';
+import { Box, Typography, Grid, Card, CardActionArea, CardContent, TextField, Container,  } from '@mui/material';
 
 const forms = [
   { id: 'depreciation', title: 'Depreciation Form', description: 'Calculate accelerated depreciation (Section 179 and Bonus).' },
@@ -15,10 +15,7 @@ const forms = [
   { id: 'amendedPriorYears', title: 'Amended Prior Year Form', description: 'Calculate adjustments for amended tax returns from prior years.' },
   { id: 'exemptionQualifiedSmall', title: 'Exemption for Qualified Small Business Stock Form', description: 'Calculate the exemption for capital gains on the sale of Qualified Small Business Stock (QSBS) as per IRS guidelines.' },
   { id: 'costSegregation', title: 'Cost Segregation Form', description: 'Calculate the new annual depreciation and other values for cost segregation as per IRS guidelines for real estate properties.'}
-
-
 ];
-
 
 const FormSelector = ({ onSelectForm }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -27,20 +24,29 @@ const FormSelector = ({ onSelectForm }) => {
     form.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  
+
   return (
     <Box sx={{ mt: 5 }}>
+      {/* Contenedor del logo */}
+      <Box sx={{ textAlign: 'center', mb: 4 }}>
+        
+      </Box>
+
+      {/* Contenedor del buscador */}
       <Container
         sx={{
-          backgroundImage: 'url(https://wac-cdn.atlassian.com/misc-assets/webp-images/bg_atl_cloud_hero_small.svg)',
+          backgroundImage: 'url(https://wac-cdn.atlassian.com/misc-assets/webp-images/bg_atl_cloud_hero_small.svg)', // URL de la imagen de fondo
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           borderRadius: '12px',
           padding: '32px',
           mb: 4,
           textAlign: 'center',
+          maxWidth: '1250px',
         }}
       >
-        <Typography variant="h4" gutterBottom sx={{ color: '#fff', fontWeight: 'bold' }}>
+        <Typography variant="h5" gutterBottom sx={{ color: '#fff', fontWeight: 'bold', fontFamily: 'Montserrat, sans-serif', fontSize: '2.125rem' }}>
           Search or Select a Form to Continue
         </Typography>
 
@@ -52,39 +58,57 @@ const FormSelector = ({ onSelectForm }) => {
           onChange={(e) => setSearchTerm(e.target.value)}
           sx={{
             backgroundColor: '#fff',
+            fontFamily: 'Montserrat, sans-serif',
             borderRadius: '8px',
             '& fieldset': { border: 'none' },
             '& .MuiOutlinedInput-root': {
               '&:hover fieldset': { borderColor: '#9ce7ff' },
-              '&.Mui-focused fieldset': { borderColor: '#30C2F3' },
+              '&.Mui-focused fieldset': { borderColor: '#30C2F3',  fontFamily: 'Montserrat, sans-serif' },
             },
           }}
         />
       </Container>
 
-      <Grid container spacing={2}>
-        {filteredForms.map((form) => (
-          <Grid item xs={12} sm={6} md={3} key={form.id}>
-            <Card variant="outlined" sx={{ height: '100%', borderRadius: '12px' }}>
-              <CardActionArea onClick={() => onSelectForm(form.id)}>
-                <CardContent sx={{ textAlign: 'center' }}>
-                  <img
-                    src="https://wac-cdn.atlassian.com/misc-assets/webp-images/confluence/templates/taxonomy/strategic-plan.svg"
-                    alt="Form Icon"
-                    style={{ width: '230px', marginBottom: '18px' }}
-                  />
-                  <Typography variant="h6" component="div" sx={{ fontWeight: 'bold', color: '#0858e6', mb: 1 }}>
-                    {form.title}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    {form.description}
-                  </Typography>
-                </CardContent>
-              </CardActionArea>
-            </Card>
-          </Grid>
-        ))}
-      </Grid>
+      {/* Contenedor de los formularios */}
+      <Grid
+  container
+  spacing={2}
+  sx={{
+    maxWidth: '1250px', // Asegúrate de que coincida con el ancho del contenedor del buscador
+    margin: '0 auto', // Centra el contenedor
+    padding: '21px', // Añade un pequeño relleno si es necesario
+  }}
+>
+  {filteredForms.map((form) => (
+    <Grid item xs={12} sm={6} md={3} key={form.id}>
+      <Card variant="outlined" sx={{ height: '100%', borderRadius: '12px', }}>
+        <CardActionArea onClick={() => onSelectForm(form.id)}>
+          <CardContent sx={{ textAlign: 'center' }}>
+            <img
+              src="https://wac-cdn.atlassian.com/misc-assets/webp-images/confluence/templates/taxonomy/strategic-plan.svg"
+              alt="Form Icon"
+              style={{
+                width: '230px', // Ajusta el tamaño de la imagen para que sea consistente
+                marginBottom: '18px',
+                
+              }}
+            />
+            <Typography
+              variant="h6"
+              component="div"
+              sx={{ fontWeight: 'bold', color: '#0858e6', mb: 1, fontFamily: 'Montserrat, sans-serif'}}
+            >
+              {form.title}
+            </Typography>
+            <Typography variant="body2" color="text.secondary"  sx={{ fontFamily: 'Montserrat, sans-serif', }}>
+              {form.description}
+            </Typography>
+          </CardContent>
+        </CardActionArea>
+      </Card>
+    </Grid>
+  ))}
+</Grid>
     </Box>
   );
 };
