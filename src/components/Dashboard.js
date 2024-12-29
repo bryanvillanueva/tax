@@ -18,7 +18,11 @@ import SavingsPlanForm from './SavingsPlanForm';
 import EducationAssistanceForm from './EducationAssistanceForm';
 import EducationTaxCreditForm from './EducationTaxCreditForm';
 import ResultsDisplay from './ResultsDisplay';
+import AccountablePlanForm from './AccountableplanForm';
+import AdoptionIncentiveForm from './AdoptionIncentiveForm';
 import FormSelector from './FormSelector';
+import DeferredCapitalGainForm from './DeferredCapitalGainForm';
+
 
 const Dashboard = () => {
   const [currentForm, setCurrentForm] = useState(null);
@@ -68,6 +72,12 @@ const Dashboard = () => {
         return <EducationAssistanceForm onCalculate={setResults} />;
       case 'educationTaxCredit':
         return <EducationTaxCreditForm onCalculate={setResults} />;
+        case 'accountableplanform':
+          return <AccountablePlanForm onCalculate={setResults} />;
+        case 'adoptionincentiveform':
+          return <AdoptionIncentiveForm onCalculate={setResults} />;
+        case 'deferredCapitalGain':
+      return <DeferredCapitalGainForm onCalculate={setResults} />;
       default:
         return <FormSelector onSelectForm={handleSelectForm} />;
     }
@@ -107,6 +117,12 @@ const Dashboard = () => {
         return 'Education Assistance Form';
       case 'educationTaxCredit':
         return 'Education Tax Credit Form';
+        case 'accountableplanform':
+          return 'accountable plan form';
+        case 'adoptionincentiveform':
+          return 'adoptionincentiveform';
+        case 'deferredCapitalGain':
+          return 'Deferred Capital Gain Form';
       default:
         return '';
     }
@@ -156,7 +172,8 @@ const Dashboard = () => {
           </Fab>
         )}
 
-        {results && <ResultsDisplay results={results} formTitle={getFormTitle()} />}
+       {results && currentForm !== 'deferredCapitalGain' && <ResultsDisplay results={results} formTitle={getFormTitle()} />}
+
       </Box>
     </Container>
   );
