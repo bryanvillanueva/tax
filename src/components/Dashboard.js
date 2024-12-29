@@ -16,6 +16,8 @@ import ExemptionQualifiedSmallBusinessStockForm from './ExemptionQualifiedSmallB
 import CostSegregationForm from './CostSegregationForm';
 import ResultsDisplay from './ResultsDisplay';
 import FormSelector from './FormSelector';
+import DeferredCapitalGainForm from './DeferredCapitalGainForm';
+
 
 const Dashboard = () => {
   const [currentForm, setCurrentForm] = useState(null);
@@ -59,6 +61,8 @@ const Dashboard = () => {
         return <ExemptionQualifiedSmallBusinessStockForm onCalculate={setResults} />;
       case 'costSegregation':
         return <CostSegregationForm onCalculate={setResults} />;
+        case 'deferredCapitalGain':
+      return <DeferredCapitalGainForm onCalculate={setResults} />;
       default:
         return <FormSelector onSelectForm={handleSelectForm} />;
     }
@@ -92,6 +96,8 @@ const Dashboard = () => {
         return 'Exemption Qualified Small Business Stock Form';
       case 'costSegregation':
         return 'Cost Segregation Form';
+        case 'deferredCapitalGain':
+          return 'Deferred Capital Gain Form';
       default:
         return '';
     }
@@ -141,7 +147,8 @@ const Dashboard = () => {
           </Fab>
         )}
 
-        {results && <ResultsDisplay results={results} formTitle={getFormTitle()} />}
+       {results && currentForm !== 'deferredCapitalGain' && <ResultsDisplay results={results} formTitle={getFormTitle()} />}
+
       </Box>
     </Container>
   );
