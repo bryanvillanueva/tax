@@ -91,6 +91,16 @@ export function calculateNetIncomeCostSegregation(grossIncome, deduction){
 }
 
 
+// calcular el Net income para savingsPlan
+export function calculateNetIncomeSavingsPlan(grossIncome) {
+  return Math.max(0, grossIncome); // Evita valores negativos
+}
+//calcular el Net income para educationAssistance
+export function calculateNetIncomeEducationAssistance(grossIncome, totalEducationalAssistance) {
+return Math.max(0, grossIncome - totalEducationalAssistance); // Evita valores negativos
+}
+
+
 
 
 

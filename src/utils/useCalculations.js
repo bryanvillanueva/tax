@@ -8,6 +8,8 @@ import {
   calculateNetIncomeAmanda,
   calculateNetIncomeCostSegregation,
   calculateNetIncomeExemptionQualifiedSmall,
+  calculateNetIncomeSavingsPlan,
+  calculateNetIncomeEducationAssistance,
   calculateSEMedicare,
   calculateAGI,
   calculateTaxableIncome,
@@ -52,7 +54,8 @@ const useCalculations = () => {
     ewhd,
     taxCreditsResults,
     capitalGainQSBS,
-    deduction
+    deduction,
+    totalEducationalAssistance
   }) => {
     // Calcular Net Income según el tipo de cálculo
     let netIncome;
@@ -91,6 +94,12 @@ const useCalculations = () => {
         break;
       case 'costSegregation':
         netIncome = calculateNetIncomeCostSegregation(grossIncome, deduction);
+        break;
+      case 'savingsPlan':
+        netIncome = calculateNetIncomeSavingsPlan(grossIncome);
+        break;
+      case 'educationAssistance':
+        netIncome = calculateNetIncomeEducationAssistance(grossIncome, totalEducationalAssistance);
         break;
       case 'standard':
           netIncome = calculateNetIncome(grossIncome, cost, investType);
@@ -148,6 +157,7 @@ const useCalculations = () => {
       const corpEffectiveTaxRate = corpTaxableIncome !== 0 ? ((corpTaxDue / corpTaxableIncome) * 100).toFixed(2) : '0.00';
       const effectiveSERate2 = netIncome2 > 0 ? ((selfEmploymentTax2 / netIncome2) * 100).toFixed(2) : '0.00';
       
+     
      
 
       return {
