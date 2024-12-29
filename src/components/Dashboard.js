@@ -15,6 +15,8 @@ import AmendedPriorYearForm from './AmendedPriorYearForm';
 import ExemptionQualifiedSmallBusinessStockForm from './ExemptionQualifiedSmallBusinessStockForm';
 import CostSegregationForm from './CostSegregationForm';
 import ResultsDisplay from './ResultsDisplay';
+import AccountablePlanForm from './AccountableplanForm';
+import AdoptionIncentiveForm from './AdoptionIncentiveForm';
 import FormSelector from './FormSelector';
 import DeferredCapitalGainForm from './DeferredCapitalGainForm';
 
@@ -61,6 +63,10 @@ const Dashboard = () => {
         return <ExemptionQualifiedSmallBusinessStockForm onCalculate={setResults} />;
       case 'costSegregation':
         return <CostSegregationForm onCalculate={setResults} />;
+        case 'accountableplanform':
+          return <AccountablePlanForm onCalculate={setResults} />;
+        case 'adoptionincentiveform':
+          return <AdoptionIncentiveForm onCalculate={setResults} />;
         case 'deferredCapitalGain':
       return <DeferredCapitalGainForm onCalculate={setResults} />;
       default:
@@ -96,6 +102,10 @@ const Dashboard = () => {
         return 'Exemption Qualified Small Business Stock Form';
       case 'costSegregation':
         return 'Cost Segregation Form';
+        case 'accountableplanform':
+          return 'accountable plan form';
+        case 'adoptionincentiveform':
+          return 'adoptionincentiveform';
         case 'deferredCapitalGain':
           return 'Deferred Capital Gain Form';
       default:

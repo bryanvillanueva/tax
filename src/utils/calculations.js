@@ -89,6 +89,11 @@ export function calculateNetIncomeExemptionQualifiedSmall(grossIncome, capitalGa
 export function calculateNetIncomeCostSegregation(grossIncome, deduction){
   return Math.max(0, grossIncome - deduction); // Evita valores negativos{
 }
+//calcular el Net income accountableplan
+export function calculateNetIncomeAccountableplan(grossIncome, totalReimbursableExpenses) {
+  return Math.max(0, grossIncome - totalReimbursableExpenses); 
+}
+
 
 
 
