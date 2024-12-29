@@ -18,8 +18,8 @@ const forms = [
   { id: 'savingsPlan', title: 'Savings Plan Form', description: 'Calculate projected savings for future goals, accounting for annual contributions, interest rates, and time periods.'},
   { id: 'educationAssistance', title: 'Education Assistance Form', description: 'Evaluate the impact of providing educational assistance to employees, including per-employee assistance amounts, limits, and total employees benefited.' },
   { id: 'educationTaxCredit', title: 'Education Tax Credit Form', description: 'Calculate the tax credit for education expenses, considering factors such as filing status, income, qualified expenses, and the number of students benefited.'},
-  { id: 'accountableplanform', title: 'accountable plan form', description: ''},
-  { id: 'adoptionincentiveform', title: 'adoption incentive form', description: ''}
+  { id: 'accountableplanform', title: 'accountable plan form', description: 'prueba'},
+  { id: 'adoptionincentiveform', title: 'adoption incentive form', description: 'prueba'},
   { id: 'deferredCapitalGain', title: 'Deferred Capital Gain', description: 'Calculate Deferred Capital Gain values.' },
 ];
 
