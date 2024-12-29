@@ -15,6 +15,8 @@ import AmendedPriorYearForm from './AmendedPriorYearForm';
 import ExemptionQualifiedSmallBusinessStockForm from './ExemptionQualifiedSmallBusinessStockForm';
 import CostSegregationForm from './CostSegregationForm';
 import ResultsDisplay from './ResultsDisplay';
+import AccountablePlanForm from './AccountableplanForm';
+import AdoptionIncentiveForm from './AdoptionIncentiveForm';
 import FormSelector from './FormSelector';
 
 const Dashboard = () => {
@@ -59,6 +61,10 @@ const Dashboard = () => {
         return <ExemptionQualifiedSmallBusinessStockForm onCalculate={setResults} />;
       case 'costSegregation':
         return <CostSegregationForm onCalculate={setResults} />;
+        case 'accountableplanform':
+          return <AccountablePlanForm onCalculate={setResults} />;
+        case 'adoptionincentiveform':
+          return <AdoptionIncentiveForm onCalculate={setResults} />;
       default:
         return <FormSelector onSelectForm={handleSelectForm} />;
     }
@@ -92,6 +98,10 @@ const Dashboard = () => {
         return 'Exemption Qualified Small Business Stock Form';
       case 'costSegregation':
         return 'Cost Segregation Form';
+        case 'accountableplanform':
+          return 'accountable plan form';
+        case 'adoptionincentiveform':
+          return 'adoptionincentiveform';
       default:
         return '';
     }

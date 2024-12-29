@@ -26,6 +26,7 @@ import {
   calculateNIITThreshold,
   calculateNIITThreshold2,
   calculateTaxcredits,
+  calculateNetIncomeAccountableplan
 } from '../utils/calculations';
 import { standardDeductions } from '../utils/taxData';
 
@@ -51,6 +52,7 @@ const useCalculations = () => {
     hsac,
     ewhd,
     taxCreditsResults,
+    totalReimbursableExpenses,
     capitalGainQSBS,
     deduction
   }) => {
@@ -92,6 +94,9 @@ const useCalculations = () => {
       case 'costSegregation':
         netIncome = calculateNetIncomeCostSegregation(grossIncome, deduction);
         break;
+        case 'accountablePlan':
+          netIncome = calculateNetIncomeAccountableplan(grossIncome, totalReimbursableExpenses);
+          break;
       case 'standard':
           netIncome = calculateNetIncome(grossIncome, cost, investType);
         break;
