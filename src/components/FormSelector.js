@@ -17,6 +17,7 @@ const forms = [
   { id: 'costSegregation', title: 'Cost Segregation Form', description: 'Calculate the new annual depreciation and other values for cost segregation as per IRS guidelines for real estate properties.'},
   { id: 'accountableplanform', title: 'accountable plan form', description: ''},
   { id: 'adoptionincentiveform', title: 'adoption incentive form', description: ''}
+  { id: 'deferredCapitalGain', title: 'Deferred Capital Gain', description: 'Calculate Deferred Capital Gain values.' },
 ];
 
 const FormSelector = ({ onSelectForm }) => {

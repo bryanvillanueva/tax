@@ -18,6 +18,8 @@ import ResultsDisplay from './ResultsDisplay';
 import AccountablePlanForm from './AccountableplanForm';
 import AdoptionIncentiveForm from './AdoptionIncentiveForm';
 import FormSelector from './FormSelector';
+import DeferredCapitalGainForm from './DeferredCapitalGainForm';
+
 
 const Dashboard = () => {
   const [currentForm, setCurrentForm] = useState(null);
@@ -65,6 +67,8 @@ const Dashboard = () => {
           return <AccountablePlanForm onCalculate={setResults} />;
         case 'adoptionincentiveform':
           return <AdoptionIncentiveForm onCalculate={setResults} />;
+        case 'deferredCapitalGain':
+      return <DeferredCapitalGainForm onCalculate={setResults} />;
       default:
         return <FormSelector onSelectForm={handleSelectForm} />;
     }
@@ -102,6 +106,8 @@ const Dashboard = () => {
           return 'accountable plan form';
         case 'adoptionincentiveform':
           return 'adoptionincentiveform';
+        case 'deferredCapitalGain':
+          return 'Deferred Capital Gain Form';
       default:
         return '';
     }
@@ -151,7 +157,8 @@ const Dashboard = () => {
           </Fab>
         )}
 
-        {results && <ResultsDisplay results={results} formTitle={getFormTitle()} />}
+       {results && currentForm !== 'deferredCapitalGain' && <ResultsDisplay results={results} formTitle={getFormTitle()} />}
+
       </Box>
     </Container>
   );
