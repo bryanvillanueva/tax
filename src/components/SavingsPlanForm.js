@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { TextField, Button, Container, Box, MenuItem, Alert, Grid } from '@mui/material';
 import useCalculations from '../utils/useCalculations';
+import { getMarginalTaxRateAndLevel, calculateTaxableIncome, calculateAGI, calculateSEMedicare } from '../utils/calculations';
+
 
 
 
@@ -18,9 +20,17 @@ const SavingsPlanForm = ({ onCalculate }) => {
   const [error, setError] = useState(null);
 
   
-  const { performCalculations } = useCalculations();
+  const { performCalculations, } = useCalculations();
 
- 
+  // Calcular el selfEmploymentTax
+  const calculateSelfEmploymentTax = (grossIncome, partnerType) => {
+    if (partnerType === 'Active') {
+      const seSocialSecurity = Math.min(grossIncome * 0.9235, 168600) * 0.124;
+      const seMedicare = calculateSEMedicare(grossIncome);
+      return seSocialSecurity + seMedicare;
+    }
+    return 0;
+  };
 
   
   
@@ -51,14 +61,20 @@ const SavingsPlanForm = ({ onCalculate }) => {
 
     setError(null);
     
-    
+    //calcular marginal rate
     const totalAnnualContribution = parseFloat(annualContribution) * parseInt(numberOfChildren);
-    const futureValue = (totalAnnualContribution * Math.pow(1 + parseFloat(averageInterestRate) / 100 / 12, 12 * parseInt(totalYears))) - totalAnnualContribution; 
-    //const totalTaxSavings = futureValue * 0.12;
+    const selfEmploymentTax = calculateSelfEmploymentTax(parseFloat(grossIncome), partnerType);
+    const agi = calculateAGI(parseFloat(grossIncome), selfEmploymentTax); 
+    const taxableIncome = calculateTaxableIncome(agi, filingStatus);
+    const { marginalRate } = getMarginalTaxRateAndLevel(filingStatus, taxableIncome);
+    const futureValue = (totalAnnualContribution * Math.pow(1 + parseFloat(averageInterestRate) / 100 / 12, 12 * parseInt(totalYears))) - totalAnnualContribution;
+    const totalTaxSavings = futureValue * (marginalRate);
+    
 
     setTotalAnnualContribution(totalAnnualContribution);
     setFutureValue(futureValue);
     setTotalTaxSavings(totalTaxSavings);
+  
     
 
     const results = performCalculations({
@@ -181,14 +197,14 @@ const SavingsPlanForm = ({ onCalculate }) => {
                 margin="normal"
               />
 
-              {/*<TextField
+              <TextField
                 label="Total Tax Savings"
                 fullWidth
                 type="text"
                 value={totalTaxSavings !== null ? totalTaxSavings.toFixed(2) : ''}
                 InputProps={{ readOnly: true }}
                 margin="normal"
-              />*/}
+              />
             </Grid>
           </Grid>
 
