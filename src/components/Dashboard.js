@@ -99,9 +99,9 @@ const Dashboard = () => {
       case 'costSegregation':
         return 'Cost Segregation Form';
         case 'accountableplanform':
-          return 'accountable plan form';
+          return 'Accountable Plan Form';
         case 'adoptionincentiveform':
-          return 'adoptionincentiveform';
+          return 'Adoption Incentive Form';
       default:
         return '';
     }

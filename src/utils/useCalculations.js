@@ -26,7 +26,8 @@ import {
   calculateNIITThreshold,
   calculateNIITThreshold2,
   calculateTaxcredits,
-  calculateNetIncomeAccountableplan
+  calculateNetIncomeAccountableplan,
+  calculateNetIncomeAdoptionPlan
 } from '../utils/calculations';
 import { standardDeductions } from '../utils/taxData';
 
@@ -96,6 +97,9 @@ const useCalculations = () => {
         break;
         case 'accountablePlan':
           netIncome = calculateNetIncomeAccountableplan(grossIncome, totalReimbursableExpenses);
+          break;
+        case 'adoptionAndIra':
+          netIncome = calculateNetIncomeAdoptionPlan(grossIncome);
           break;
       case 'standard':
           netIncome = calculateNetIncome(grossIncome, cost, investType);

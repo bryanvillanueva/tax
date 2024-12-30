@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { TextField, Button, Container, Box, MenuItem, Alert, Grid } from '@mui/material';
 import useCalculations from '../utils/useCalculations';
+import { calculateAGI, calculateSEMedicare } from '../utils/calculations';
 
 const AdoptionIncentiveForm = ({ onCalculate }) => {
   const [filingStatus, setFilingStatus] = useState('Single');
@@ -12,10 +13,94 @@ const AdoptionIncentiveForm = ({ onCalculate }) => {
   const [TotalAdoptionExpenses, setTotalAdoptionExpenses] = useState('');
   const [IRAEarlyWithdrawalLimit, setIraEarlyWithdrawalLimit] = useState('');
   const [EarlyWithdrawalPenaltyAvoided, setEarlyWithdrawalPenaltyAvoided] = useState('');
+  const [AdoptionCreditLimit, setAdoptionCreditLimit] = useState('');
+  const [reduction, setReduction] = useState('');
+  const [totalCredit, setTotalCredit] = useState('');
   const [error, setError] = useState(null);
 
-
   const { performCalculations } = useCalculations();
+
+  // Constantes fijas importadas
+  const seSocialSecurity = partnerType === 'Active' ? Math.min(grossIncome * 0.9235, 168600) * 0.124 : 0;
+  const seMedicare = partnerType === 'Active' ? calculateSEMedicare(grossIncome) : 0;
+  const selfEmploymentTax = partnerType === 'Active' ? seSocialSecurity + seMedicare : 0;
+  const agi = calculateAGI(grossIncome, selfEmploymentTax);
+  // constantes fijas de la estategia
+  const AdoptionIncomeLimited = 252150; 
+  const phaseOut = 40000; 
+  console.log(agi);
+  
+
+
+  useEffect(() => {
+    // Calcular TotalAdoptionExpenses dinámicamente cuando cambian adoptionExpenses o childrenAdopted
+    if (adoptionExpenses && childrenAdopted) {
+      const calculatedTotalAdoptionExpenses = parseFloat(adoptionExpenses) * parseInt(childrenAdopted, 10);
+      setTotalAdoptionExpenses(calculatedTotalAdoptionExpenses);
+    }
+  }, [adoptionExpenses, childrenAdopted]);
+
+ // Calcular IRAEarlyWithdrawalLimit dinámicamente cuando cambian adoptionExpenses o childrenAdopted
+  useEffect(() => {
+    const IRAEarlyWithdrawalLimit = filingStatus === 'MFJ' ? 20000 : 10000;
+    setIraEarlyWithdrawalLimit(IRAEarlyWithdrawalLimit);
+  }, [filingStatus])
+
+ // Calcular IRAEarlyWithdrawal dinámicamente cuando cambian adoptionExpenses o childrenAdopted
+  useEffect(() => {
+    if (iraEarlyWithdrawal) {
+      const penaltyAvoided = parseFloat(iraEarlyWithdrawal) * 0.1;
+      setEarlyWithdrawalPenaltyAvoided(penaltyAvoided);
+    }
+  }, [iraEarlyWithdrawal]);
+  // CALCULAR ADPTED CREDIT LIMIT
+  useEffect(() => {
+    if (childrenAdopted && parseInt(childrenAdopted, 10) > 0) {
+      const AdoptionCreditLimit = 16810 * parseInt(childrenAdopted, 10);
+      setAdoptionCreditLimit(AdoptionCreditLimit);
+    } else {
+      setAdoptionCreditLimit(0);
+    }
+  }, [childrenAdopted]); 
+
+  // Calcular reduction dinamicamente
+  useEffect(() => {
+    let calculatedReduction = 0;
+  
+    // Calcular la reducción siguiendo la lógica proporcionada
+    if (agi < AdoptionIncomeLimited) {
+      calculatedReduction = 0;
+    } else {
+      const excess = (agi - AdoptionIncomeLimited) / phaseOut;
+      calculatedReduction = excess <= 1 ? excess : 0;
+    }
+  
+    // Formatear el resultado como porcentaje
+    setReduction((calculatedReduction * 100).toFixed(2) + '%');
+  }, [grossIncome, iraEarlyWithdrawal, selfEmploymentTax]);
+
+   // Función para calcular el total credit
+    const calculateTotalCredit = (TotalAdoptionExpenses, AdoptionCreditLimit, reduction) => {
+       const reductionValue = parseFloat(reduction) / 100;
+
+     // Aplicar la fórmula lógica de forma similar a la original
+     if (TotalAdoptionExpenses < AdoptionCreditLimit) {
+      return TotalAdoptionExpenses - (TotalAdoptionExpenses * reductionValue);
+     } else {
+     return AdoptionCreditLimit - (AdoptionCreditLimit * reductionValue);
+      }
+     };
+
+     useEffect(() => {
+     // Calcular el total credit utilizando la función
+     const totalCredit = calculateTotalCredit(TotalAdoptionExpenses, AdoptionCreditLimit, reduction);
+  
+      // Actualizar el estado de totalCredit
+      setTotalCredit(totalCredit);
+    }, [TotalAdoptionExpenses, AdoptionCreditLimit, reduction]);
+
+  
+  
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -40,15 +125,10 @@ const AdoptionIncentiveForm = ({ onCalculate }) => {
       return;
     }
 
+    
+
     setError(null);
-    // calcular TotalAdoptionExpenses
-    const TotalAdoptionExpenses = parseFloat(adoptionExpenses) * parseInt(childrenAdopted);
-    // calcular IRA LIMIT
-    const IRAEarlyWithdrawalLimit = filingStatus === 'MFJ' ? 20000 : 10000;
-    // EarlyWithdrawalPenaltyAvoided
-    const EarlyWithdrawalPenaltyAvoided = parseFloat(iraEarlyWithdrawal) * 0.1;
-
-
+    const taxCreditsResults = calculateTotalCredit(TotalAdoptionExpenses, AdoptionCreditLimit, reduction);
 
 
     const results = performCalculations({
@@ -58,6 +138,7 @@ const AdoptionIncentiveForm = ({ onCalculate }) => {
       childrenAdopted: parseInt(childrenAdopted, 10),
       iraEarlyWithdrawal: parseFloat(iraEarlyWithdrawal),
       filingStatus,
+      taxCreditsResults,
       calculationType: 'adoptionAndIra',
     });
 
@@ -112,6 +193,36 @@ const AdoptionIncentiveForm = ({ onCalculate }) => {
                 <MenuItem value="Active">Active</MenuItem>
                 <MenuItem value="Passive">Passive</MenuItem>
               </TextField>
+
+              <TextField
+                label="Total Adoption Expenses"
+                fullWidth
+                value={TotalAdoptionExpenses}
+                margin="normal"
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+
+               <TextField
+                label="Early Withdrawal Penalty Avoided"
+                fullWidth
+                value={EarlyWithdrawalPenaltyAvoided}
+                margin="normal"
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+
+              <TextField
+                label="Reduction Percentage"
+                fullWidth
+                value={reduction}
+                margin="normal"
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
             </Grid>
 
             {/* Right side: Adoption Expenses, Children Adopted, and IRA Early Withdrawal */}
@@ -142,6 +253,27 @@ const AdoptionIncentiveForm = ({ onCalculate }) => {
                 onChange={(e) => setIraEarlyWithdrawal(e.target.value)}
                 margin="normal"
               />
+
+               <TextField
+                label="IRA Early Withdrawal Limit"
+                fullWidth
+                value={IRAEarlyWithdrawalLimit}
+                margin="normal"
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+
+               <TextField
+                label="Adoption Credit Limit"
+                fullWidth
+                value={AdoptionCreditLimit}
+                margin="normal"
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+             
             </Grid>
           </Grid>
 
