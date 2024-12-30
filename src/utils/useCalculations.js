@@ -30,7 +30,8 @@ import {
   calculateNIITThreshold,
   calculateNIITThreshold2,
   calculateTaxcredits,
-  calculateNetIncomeAccountableplan
+  calculateNetIncomeAccountableplan,
+  calculateNetIncomeAdoptionPlan
 } from '../utils/calculations';
 import { standardDeductions } from '../utils/taxData';
 
@@ -106,9 +107,12 @@ const useCalculations = () => {
       case 'educationAssistance':
         netIncome = calculateNetIncomeEducationAssistance(grossIncome, totalEducationalAssistance);
         break;
-      case 'accountablePlan':
-        netIncome = calculateNetIncomeAccountableplan(grossIncome, totalReimbursableExpenses);
-        break;
+        case 'accountablePlan':
+          netIncome = calculateNetIncomeAccountableplan(grossIncome, totalReimbursableExpenses);
+          break;
+        case 'adoptionAndIra':
+          netIncome = calculateNetIncomeAdoptionPlan(grossIncome);
+          break;
       case 'educationTaxCredit':
         netIncome = calculateNetIncomeEducationTaxCredit(grossIncome);
         break;

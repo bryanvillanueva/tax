@@ -96,6 +96,13 @@ export function calculateNetIncomeAccountableplan(grossIncome, totalReimbursable
   return Math.max(0, grossIncome - totalReimbursableExpenses); 
 }
 
+// CALCULAR NET INCOME PARA ADOTIONPLAN
+export function calculateNetIncomeAdoptionPlan(grossIncome) {
+  return Math.max(0, grossIncome ); 
+}
+
+
+
 
 // calcular el Net income para savingsPlan
 export function calculateNetIncomeSavingsPlan(grossIncome) {
