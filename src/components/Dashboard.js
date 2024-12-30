@@ -14,6 +14,9 @@ import LifetimeLearningCredit from './LifetimeLearningCredit';
 import AmendedPriorYearForm from './AmendedPriorYearForm';
 import ExemptionQualifiedSmallBusinessStockForm from './ExemptionQualifiedSmallBusinessStockForm';
 import CostSegregationForm from './CostSegregationForm';
+import SavingsPlanForm from './SavingsPlanForm';
+import EducationAssistanceForm from './EducationAssistanceForm';
+import EducationTaxCreditForm from './EducationTaxCreditForm';
 import ResultsDisplay from './ResultsDisplay';
 import AccountablePlanForm from './AccountableplanForm';
 import AdoptionIncentiveForm from './AdoptionIncentiveForm';
@@ -63,6 +66,12 @@ const Dashboard = () => {
         return <ExemptionQualifiedSmallBusinessStockForm onCalculate={setResults} />;
       case 'costSegregation':
         return <CostSegregationForm onCalculate={setResults} />;
+      case 'savingsPlan':
+        return <SavingsPlanForm onCalculate={setResults} />;
+      case 'educationAssistance':
+        return <EducationAssistanceForm onCalculate={setResults} />;
+      case 'educationTaxCredit':
+        return <EducationTaxCreditForm onCalculate={setResults} />;
         case 'accountableplanform':
           return <AccountablePlanForm onCalculate={setResults} />;
         case 'adoptionincentiveform':
@@ -102,6 +111,12 @@ const Dashboard = () => {
         return 'Exemption Qualified Small Business Stock Form';
       case 'costSegregation':
         return 'Cost Segregation Form';
+      case 'savingsPlan':
+        return 'Savings Plan Form';
+      case 'educationAssistance':
+        return 'Education Assistance Form';
+      case 'educationTaxCredit':
+        return 'Education Tax Credit Form';
         case 'accountableplanform':
           return 'Accountable Plan Form';
         case 'adoptionincentiveform':
