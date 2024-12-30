@@ -48,6 +48,7 @@ export function calculateNetIncomeCRT(grossIncome, presentValue) {
   return Math.max(0, grossIncome - presentValue);// Evita valores negativos
   };
 
+
 //Calcular el Net Income para Reimbursment
 export function calculateReimbursment(grossIncome, tve, pbuv) {
 
@@ -89,11 +90,11 @@ export function calculateNetIncomeExemptionQualifiedSmall(grossIncome, capitalGa
 export function calculateNetIncomeCostSegregation(grossIncome, deduction){
   return Math.max(0, grossIncome - deduction); // Evita valores negativos{
 }
+
 //calcular el Net income accountableplan
 export function calculateNetIncomeAccountableplan(grossIncome, totalReimbursableExpenses) {
   return Math.max(0, grossIncome - totalReimbursableExpenses); 
 }
-
 
 
 // calcular el Net income para savingsPlan
@@ -105,10 +106,34 @@ export function calculateNetIncomeEducationAssistance(grossIncome, totalEducatio
 return Math.max(0, grossIncome - totalEducationalAssistance); // Evita valores negativos
 }
 
+//calcular el Net income para educationTaxCredit
+export function calculateNetIncomeEducationTaxCredit(grossIncome) {
+  return Math.max(0, grossIncome ); // Evita valores negativos
+}
+
+//calcular el Net income para educationTaxCredit
+export function calculateNetIncomeHealthReimbursement(grossIncome, totalBenefits) {
+  return Math.max(0, grossIncome - totalBenefits); // Evita valores negativos
+}
 
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//////cierre de estrategias////////////////////
 
 
 
