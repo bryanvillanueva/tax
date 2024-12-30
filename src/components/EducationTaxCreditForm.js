@@ -6,8 +6,12 @@ const EducationTaxCreditForm = ({ onCalculate }) => {
   const [grossIncome, setGrossIncome] = useState('');
   const [taxpayerMAGI, setTaxpayerMAGI] = useState('');
   const [qualifiedEducationExpenses, setQualifiedEducationExpenses] = useState('');
-  const [MFJ, setMFJ] = useState('No'); 
-  const [limit, setLimit] = useState(''); // Para almacenar el límite calculado
+  const [MFJ, setMFJ] = useState('No');
+  const [partnerType, setPartnerType] = useState('Active'); 
+  const [filingStatus, setFilingStatus] = useState('MFJ'); 
+  const [limit, setLimit] = useState(''); 
+  const [phaseOut, setPhaseOut] = useState(''); 
+  const [maximumRefundable, setMaximumRefundable] = useState(null); 
   const [error, setError] = useState(null);
 
   const { performCalculations } = useCalculations();
@@ -22,11 +26,29 @@ const EducationTaxCreditForm = ({ onCalculate }) => {
     }
   };
 
-  // Recalcular el límite cuando MFJ o MAGI cambian
+  // Función para calcular el Phase-out
+  const calculatePhaseOut = (MFJ) => {
+    if (MFJ === 'Yes') {
+      return 20000; // Si MFJ es "Yes", el Phase-out es 20000
+    } else {
+      return 10000; // Si MFJ es "No", el Phase-out es 10000
+    }
+  };
+
+  // Recalcular el límite y Phase-out cuando MFJ o MAGI cambian
   useEffect(() => {
     const calculatedLimit = calculateLimit(MFJ, taxpayerMAGI);
     setLimit(calculatedLimit);
+    
+    const calculatedPhaseOut = calculatePhaseOut(MFJ);
+    setPhaseOut(calculatedPhaseOut); 
   }, [MFJ, taxpayerMAGI]);
+
+  const calculateTaxCredits = (limit, phaseOut, qualifiedEducationExpenses) => {
+    return limit >= phaseOut
+      ? qualifiedEducationExpenses * 0.2
+      : (limit / phaseOut) * qualifiedEducationExpenses;
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -49,14 +71,24 @@ const EducationTaxCreditForm = ({ onCalculate }) => {
 
     setError(null);
 
+    // Calcular los Tax Credits
+    const taxCreditsResults = calculateTaxCredits(limit, phaseOut, parseFloat(qualifiedEducationExpenses));
+    
+    // Calcular el Maximum Refundable
+    const maxRefundable = taxCreditsResults * 0.4;
+    setMaximumRefundable(maxRefundable);
+
     const results = performCalculations({
       grossIncome: parseFloat(grossIncome),
       taxpayerMAGI: parseFloat(taxpayerMAGI),
       qualifiedEducationExpenses: parseFloat(qualifiedEducationExpenses),
-      MFJ: MFJ === 'Yes', 
+      MFJ: MFJ === 'Yes',
+      partnerType,
+      filingStatus,
+      taxCreditsResults,
       calculationType: 'educationTaxCredit',
     });
-
+    
     onCalculate(results);
   };
 
@@ -74,16 +106,31 @@ const EducationTaxCreditForm = ({ onCalculate }) => {
             <Grid item xs={12} md={6}>
               <TextField
                 select
+                label="Filing Status"
+                fullWidth
+                value={filingStatus}
+                onChange={(e) => setFilingStatus(e.target.value)}
+                margin="normal"
+              >
+                <MenuItem value="Single">Single</MenuItem>
+                <MenuItem value="MFJ">Married Filing Jointly</MenuItem>
+                <MenuItem value="MFS">Married Filing Separately</MenuItem>
+                <MenuItem value="HH">Head of Household</MenuItem>
+                <MenuItem value="QSS">Qualified Surviving Spouse</MenuItem>
+              </TextField>
+
+              <TextField
+                select
                 label="Married Filing Jointly (MFJ)"
                 fullWidth
                 value={MFJ}
-                onChange={(e) => setMFJ(e.target.value)} // Cambio aquí
+                onChange={(e) => setMFJ(e.target.value)}
                 margin="normal"
               >
                 <MenuItem value="Yes">Yes</MenuItem>
                 <MenuItem value="No">No</MenuItem>
               </TextField>
-              
+
               <TextField
                 label="Gross Income"
                 fullWidth
@@ -94,6 +141,20 @@ const EducationTaxCreditForm = ({ onCalculate }) => {
               />
 
               <TextField
+                select
+                label="Partner Type"
+                fullWidth
+                value={partnerType}
+                onChange={(e) => setPartnerType(e.target.value)} // Nuevo campo para Partner Type
+                margin="normal"
+              >
+                <MenuItem value="Active">Active</MenuItem>
+                <MenuItem value="Passive">Passive</MenuItem>
+              </TextField>
+            </Grid>
+
+            <Grid item xs={12} md={6}>
+              <TextField
                 label="Taxpayer Modified Adjusted Gross Income (MAGI)"
                 fullWidth
                 type="number"
@@ -101,9 +162,6 @@ const EducationTaxCreditForm = ({ onCalculate }) => {
                 onChange={(e) => setTaxpayerMAGI(e.target.value)}
                 margin="normal"
               />
-            </Grid>
-
-            <Grid item xs={12} md={6}>
               <TextField
                 label="Qualified Education Expenses"
                 fullWidth
@@ -113,7 +171,6 @@ const EducationTaxCreditForm = ({ onCalculate }) => {
                 margin="normal"
               />
 
-              
               <TextField
                 label="Limit (if zero, no credit available)"
                 fullWidth
@@ -123,6 +180,28 @@ const EducationTaxCreditForm = ({ onCalculate }) => {
                 }}
                 margin="normal"
               />
+
+              <TextField
+                label="Phase-out"
+                fullWidth
+                value={phaseOut} 
+                InputProps={{
+                  readOnly: true, // Solo lectura para el resultado
+                }}
+                margin="normal"
+              />
+              
+              {maximumRefundable !== null && ( // Mostrar Maximum Refundable si ya está calculado
+                <TextField
+                  label="Maximum Amount Refundable"
+                  fullWidth
+                  value={maximumRefundable}
+                  InputProps={{
+                    readOnly: true, // Solo lectura para el resultado
+                  }}
+                  margin="normal"
+                />
+              )}
             </Grid>
           </Grid>
 

@@ -20,8 +20,9 @@ import EducationTaxCreditForm from './EducationTaxCreditForm';
 import ResultsDisplay from './ResultsDisplay';
 import AccountablePlanForm from './AccountableplanForm';
 import AdoptionIncentiveForm from './AdoptionIncentiveForm';
-import FormSelector from './FormSelector';
 import DeferredCapitalGainForm from './DeferredCapitalGainForm';
+import HealthReimbursementArrangementForm from './HealthReimbursementArragementForm';
+import FormSelector from './FormSelector';
 
 
 const Dashboard = () => {
@@ -72,12 +73,14 @@ const Dashboard = () => {
         return <EducationAssistanceForm onCalculate={setResults} />;
       case 'educationTaxCredit':
         return <EducationTaxCreditForm onCalculate={setResults} />;
-        case 'accountableplanform':
+      case 'accountableplanform':
           return <AccountablePlanForm onCalculate={setResults} />;
-        case 'adoptionincentiveform':
+      case 'adoptionincentiveform':
           return <AdoptionIncentiveForm onCalculate={setResults} />;
-        case 'deferredCapitalGain':
-      return <DeferredCapitalGainForm onCalculate={setResults} />;
+      case 'deferredCapitalGain':
+          return <DeferredCapitalGainForm onCalculate={setResults} />;
+      case 'healthReimbursement':
+          return <HealthReimbursementArrangementForm onCalculate={setResults} />;
       default:
         return <FormSelector onSelectForm={handleSelectForm} />;
     }
@@ -117,13 +120,14 @@ const Dashboard = () => {
         return 'Education Assistance Form';
       case 'educationTaxCredit':
         return 'Education Tax Credit Form';
-        case 'accountableplanform':
-          return 'Accountable Plan Form';
-        case 'adoptionincentiveform':
-          return 'Adoption Incentive Form';
-        case 'deferredCapitalGain':
+      case 'accountableplanform':
+        return 'Accountable Plan Form';
+      case 'adoptionincentiveform':
+        return 'Adoption Incentive Form';
+      case 'deferredCapitalGain':
           return 'Deferred Capital Gain Form';
-
+      case 'healthReimbursement':
+          return 'Health Reimbursement Arrangement Form';
       default:
         return '';
     }

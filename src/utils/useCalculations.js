@@ -9,7 +9,9 @@ import {
   calculateNetIncomeCostSegregation,
   calculateNetIncomeExemptionQualifiedSmall,
   calculateNetIncomeSavingsPlan,
+  calculateNetIncomeEducationTaxCredit,
   calculateNetIncomeEducationAssistance,
+  calculateNetIncomeHealthReimbursement,
   calculateSEMedicare,
   calculateAGI,
   calculateTaxableIncome,
@@ -58,7 +60,8 @@ const useCalculations = () => {
     totalReimbursableExpenses,
     capitalGainQSBS,
     deduction,
-    totalEducationalAssistance
+    totalEducationalAssistance,
+    totalBenefits,
   }) => {
     // Calcular Net Income según el tipo de cálculo
     let netIncome;
@@ -110,6 +113,12 @@ const useCalculations = () => {
         case 'adoptionAndIra':
           netIncome = calculateNetIncomeAdoptionPlan(grossIncome);
           break;
+      case 'educationTaxCredit':
+        netIncome = calculateNetIncomeEducationTaxCredit(grossIncome);
+        break;
+      case 'healthReimbursement':
+        netIncome = calculateNetIncomeHealthReimbursement(grossIncome, totalBenefits);
+        break;
       case 'standard':
           netIncome = calculateNetIncome(grossIncome, cost, investType);
         break;
@@ -132,8 +141,8 @@ const useCalculations = () => {
       //const totalTaxDue = taxDue + selfEmploymentTax + additionalMedicare;
       const effectiveTaxRate = taxableIncome !== 0 ? ((taxDue / taxableIncome) * 100).toFixed(2) : '0.00';
       const seDeduction = selfEmploymentTax / 2;
+      
 
-  
       // Resultados adicionales para cálculos alternativos
       const seSocialSecurity2 = partnerType === 'Active' ? Math.min(grossIncome * 0.9235, 168600) * 0.124 : 0;
       const seMedicare2 = partnerType === 'Active' ? calculateSEMedicare(grossIncome) : 0;
