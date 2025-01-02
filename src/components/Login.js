@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Typography, TextField, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -11,23 +11,37 @@ const Login = () => {
 
   const isFormValid = email.trim() !== '' && password.trim() !== '' && /\S+@\S+\.\S+/.test(email);
 
+  // Verificar si hay un token activo al cargar el componente
+  useEffect(() => {
+    const token = localStorage.getItem('authToken');
+    if (token) {
+      navigate('/form-selector'); // Redirige al Dashboard si ya hay un token
+    }
+  }, [navigate]);
+
   const handleLogin = async (e) => {
     e.preventDefault();
-
+  
     if (!isFormValid) {
       setError('Por favor, verifica los campos.');
       return;
     }
-
+  
     try {
+      // Limpiar cualquier token previo antes de iniciar sesión
+      localStorage.removeItem('authToken');
+  
       const response = await axios.post('https://taxbackend-production.up.railway.app/login', {
         email,
         password,
       });
-
+  
       if (response.data.token) {
         localStorage.setItem('authToken', response.data.token);
-        navigate('/form-selector');
+        navigate('/form-selector'); // Redirige al FormSelector después de iniciar sesión
+      } else if (response.data.isFirstLogin) {
+        // Manejo especial para primer inicio de sesión
+        navigate('/change-password', { state: { email } });
       } else {
         setError(response.data.message || 'Error al iniciar sesión.');
       }
@@ -35,6 +49,7 @@ const Login = () => {
       setError('Error del servidor. Por favor intenta más tarde.');
     }
   };
+  
 
   return (
     <Box

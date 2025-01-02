@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
-import { Box, Typography, Grid, Card, CardActionArea, CardContent, TextField, Container,  } from '@mui/material';
-
+import React, { useState, useEffect } from 'react';
+import { Box, Typography, Grid, Card, CardActionArea, CardContent, TextField, Container, Drawer, IconButton, List, ListItem, ListItemText, Divider, Button } from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
+import { useNavigate } from 'react-router-dom';
+import LogoutIcon from '@mui/icons-material/Logout';
 const forms = [
   { id: 'depreciation', title: 'Depreciation Form', description: 'Calculate accelerated depreciation (Section 179 and Bonus).' },
   { id: 'augusta', title: 'Augusta Rule Form', description: 'Calculate deductions under the Augusta Rule.' },
@@ -28,15 +30,70 @@ const forms = [
 
 const FormSelector = ({ onSelectForm }) => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const navigate = useNavigate();
+
+  // Verificar si hay un token activo al cargar el componente
+  useEffect(() => {
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+      navigate('/'); // Redirige al login si no hay token
+    }
+  }, [navigate]);
 
   const filteredForms = forms.filter((form) =>
     form.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const handleLogout = () => {
+    localStorage.removeItem('authToken'); // Elimina el token
+    navigate('/'); // Redirige al login
+  };
   
 
   return (
-    <Box sx={{ mt: 5 }}>
+    <Box sx={{ display: 'flex' }}>
+      {/* Drawer */}
+      <Drawer
+        anchor="left"
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+      >
+        <Box sx={{ width: 250 }}>
+          <List>
+            <ListItem>
+              <Typography variant="h6" sx={{ fontWeight: 'bold', textAlign: 'center', width: '100%' }}>
+                Menu
+              </Typography>
+            </ListItem>
+            <Divider />
+            <ListItem button onClick={() => navigate('/dashboard')}>
+              <ListItemText primary="Dashboard" />
+            </ListItem>
+            {/* Otros enlaces del menú */}
+          </List>
+          <Divider />
+          <List>
+            <ListItem button onClick={handleLogout}>
+              <LogoutIcon sx={{ mr: 2 }} />
+              <ListItemText primary="Logout" />
+            </ListItem>
+          </List>
+        </Box>
+      </Drawer>
+
+      {/* Contenido principal */}
+      <Box sx={{ flex: 1 }}>
+        {/* Botón para abrir el Drawer */}
+        <IconButton
+          onClick={() => setDrawerOpen(true)}
+          sx={{ position: 'absolute', top: 16, left: 16 }}
+        >
+          <MenuIcon />
+        </IconButton>
+
+        {/* Contenido del FormSelector */}
+        <Box sx={{ mt: 5 }}>
       {/* Contenedor del logo */}
       <Box sx={{ textAlign: 'center', mb: 4 }}>
         
@@ -119,6 +176,8 @@ const FormSelector = ({ onSelectForm }) => {
   ))}
 </Grid>
     </Box>
+  </Box>
+</Box>
   );
 };
 

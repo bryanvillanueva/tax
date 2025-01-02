@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Box, Typography, Fab, Container, CssBaseline } from '@mui/material';
+import { Box, Typography, Fab, Container, } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import HomeIcon from '@mui/icons-material/Home';
 import DepreciationForm from './DepreciationForm';
 import AugustaRuleForm from './AugustaRuleForm';
@@ -24,14 +25,16 @@ import DeferredCapitalGainForm from './DeferredCapitalGainForm';
 import HealthReimbursementArrangementForm from './HealthReimbursementArragementForm';
 import FormSelector from './FormSelector';
 
-
 const Dashboard = () => {
   const [currentForm, setCurrentForm] = useState(null);
   const [results, setResults] = useState(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const navigate = useNavigate();
 
   const handleSelectForm = (form) => {
     setCurrentForm(form);
     setResults(null);
+    setDrawerOpen(false); // Cierra el Drawer al seleccionar
   };
 
   const handleBackToSelector = () => {
@@ -132,30 +135,17 @@ const Dashboard = () => {
         return '';
     }
   };
-
   return (
     <Container>
-      <CssBaseline />
 
-      {/* Logo */}
+      {/* Main Content */}
       <Box sx={{ textAlign: 'center', my: 4 }}>
-        <img
-          src="https://tax.bryanglen.com/logo.png"
-          alt="Logo"
-          style={{ maxWidth: '350px', marginBottom: '20px' }}
-        />
-      </Box>
-
-      {/* Contenedor principal */}
-      <Box sx={{ my: 4, textAlign: 'center' }}>
         {currentForm && (
-          <Typography variant="h4" gutterBottom sx={{ mt:4 , margin: '0px 0px 0.35em', fontFamily: 'Montserrat, sans-serif',  }}>
+          <Typography variant="h4" gutterBottom sx={{ mt: 4, margin: '0px 0px 0.35em', fontFamily: 'Montserrat, sans-serif' }}>
             {getFormTitle()}
           </Typography>
         )}
-
         {renderForm()}
-
         {currentForm && (
           <Fab
             color="primary"
@@ -176,9 +166,9 @@ const Dashboard = () => {
             <HomeIcon sx={{ color: '#fff' }} />
           </Fab>
         )}
-
-       {results && currentForm !== 'deferredCapitalGain' && <ResultsDisplay results={results} formTitle={getFormTitle()} />}
-
+        {results && currentForm !== 'deferredCapitalGain' && (
+          <Typography>Display your results here...</Typography>
+        )}
       </Box>
     </Container>
   );
