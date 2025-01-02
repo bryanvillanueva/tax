@@ -16,38 +16,52 @@ const ResultsDisplay = ({ results, formTitle }) => {
   const handlePrint = () => {
     window.print();
   };
+  console.log('Results:', results)
 
   return (
     <Box sx={{ mt: 4 }}>
-      <Typography variant="h5" gutterBottom>
+      <Typography variant="h5" gutterBottom sx={{ fontFamily: 'Montserrat, sans-serif', }}>
         Calculation Results
       </Typography>
 
       {/* Primera Tabla de Resultados */}
+      <TableContainer component={Paper} sx={{ mb: 4, marginBottom: '55px', marginTop: '35px' }}>
+      <Table >
+        <TableHead>
+        <TableCell sx={{ fontWeight: 'bold' }}>Value Withouth Strategy</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>Value with strategy</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>Total Savings</TableCell>
+        </TableHead>
+        <TableBody>
+            <TableRow sx={{ backgroundColor: '#e8f2ff',}}>
+              <TableCell>{formatCurrency(results.totalTaxDue2)}</TableCell>
+              <TableCell>{formatCurrency(results.totalTaxDue)}</TableCell>
+              <TableCell sx={{ backgroundColor: '#93f5b0',}}>{formatCurrency(results.totalTaxDue2 - results.totalTaxDue)}</TableCell>
+            </TableRow>
+        </TableBody>
+      </Table>
+      </TableContainer>
+
+      {/* Segunda Tabla de Resultados */}
       <TableContainer component={Paper} sx={{ mb: 4 }}>
         <Table>
           <TableHead>
             <TableRow>
               <TableCell sx={{ fontWeight: 'bold' }}>Return - Form</TableCell>
-              <TableCell sx={{ fontWeight: 'bold' }}>1040/1040NR</TableCell>
+              <TableCell>{results.formType || 'N/A'}</TableCell>
               <TableCell sx={{ fontWeight: 'bold' }}>1120</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            <TableRow sx={{ backgroundColor: '#9ce7ff' }}>
+            <TableRow sx={{ backgroundColor: '#e8f2ff' }}>
               <TableCell>Net Income</TableCell>
               <TableCell>{formatCurrency(results.netIncome)}</TableCell>
               <TableCell>{formatCurrency(results.netIncome)}</TableCell>
             </TableRow>
-            <TableRow sx={{ backgroundColor: '#82b484' }}>
+            <TableRow sx={{ backgroundColor: '#e8f2ff' }}>
               <TableCell>Self-Employment Rate</TableCell>
               <TableCell>{results.selfEmploymentRate}%</TableCell>
               <TableCell>0%</TableCell>
-            </TableRow>
-            <TableRow sx={{ backgroundColor: '#82b484' }}>
-              <TableCell>Marginal Tax Rate</TableCell>
-              <TableCell>{results.marginalRate}%</TableCell>
-              <TableCell>21%</TableCell>
             </TableRow>
 
             {/* Fila Vacía para Separación */}
@@ -55,17 +69,17 @@ const ResultsDisplay = ({ results, formTitle }) => {
               <TableCell colSpan={3}>&nbsp;</TableCell>
             </TableRow>
 
-            <TableRow sx={{ backgroundColor: '#82b484' }}>
+            <TableRow sx={{ backgroundColor: '#e8f2ff' }}>
               <TableCell>Adjusted Gross Income (AGI)</TableCell>
               <TableCell>{formatCurrency(results.agi)}</TableCell>
               <TableCell>Not applicable</TableCell>
             </TableRow>
-            <TableRow sx={{ backgroundColor: '#82b484' }}>
+            <TableRow sx={{ backgroundColor: '#e8f2ff' }}>
               <TableCell>Standard Deduction</TableCell>
               <TableCell>{formatCurrency(results.standardDeduction)}</TableCell>
               <TableCell>Not applicable</TableCell>
             </TableRow>
-            <TableRow sx={{ backgroundColor: '#82b484' }}>
+            <TableRow sx={{ backgroundColor: '#e8f2ff' }}>
               <TableCell>Taxable Income</TableCell>
               <TableCell>{formatCurrency(results.taxableIncome)}</TableCell>
               <TableCell>{formatCurrency(results.corpTaxableIncome)}</TableCell>
@@ -76,24 +90,24 @@ const ResultsDisplay = ({ results, formTitle }) => {
               <TableCell colSpan={3}>&nbsp;</TableCell>
             </TableRow>
 
-            <TableRow sx={{ backgroundColor: '#82b484' }}>
+            <TableRow sx={{ backgroundColor: '#e8f2ff' }}>
               <TableCell>Tax Due (Self-Employment)</TableCell>
               <TableCell>{formatCurrency(results.totalSE)}</TableCell>
               <TableCell>{formatCurrency(0)}</TableCell>
             </TableRow>
-            <TableRow sx={{ backgroundColor: '#82b484' }}>
+            <TableRow sx={{ backgroundColor: '#e8f2ff' }}>
               <TableCell>Tax Due (Income tax rate)</TableCell>
               <TableCell>{formatCurrency(results.taxDue)}</TableCell>
               <TableCell>{formatCurrency(results.corpTaxDue)}</TableCell>
             </TableRow>
-            <TableRow sx={{ backgroundColor: '#82b484' }}>
+            <TableRow sx={{ backgroundColor: '#e8f2ff' }}>
               <TableCell>Tax Credits</TableCell>
               <TableCell>{formatCurrency(results.taxCredits)}</TableCell>
               <TableCell>Not applicable</TableCell>
             </TableRow>
-            <TableRow sx={{ backgroundColor: '#82b484' }}>
+            <TableRow sx={{ backgroundColor: '#e8f2ff' }}>
               <TableCell>Total Tax Due</TableCell>
-              <TableCell>{formatCurrency(results.taxDue + results.totalSE - results.taxCredits)}</TableCell>
+              <TableCell>{formatCurrency(results.totalTaxDue)}</TableCell>
               <TableCell>{formatCurrency(results.corpTaxDue)}</TableCell>
             </TableRow>
 
@@ -102,15 +116,15 @@ const ResultsDisplay = ({ results, formTitle }) => {
               <TableCell colSpan={3}>&nbsp;</TableCell>
             </TableRow>
 
-            <TableRow sx={{ backgroundColor: '#82b484' }}>
+            <TableRow sx={{ backgroundColor: '#e8f2ff' }}>
               <TableCell>Effective Tax Rate</TableCell>
               <TableCell>{results.effectiveTaxRate}%</TableCell>
               <TableCell>{results.corpEffectiveTaxRate}%</TableCell>
             </TableRow>
-            <TableRow sx={{ backgroundColor: '#82b484' }}>
-             <TableCell>Effective SE Rate</TableCell>
-             <TableCell>{results.effectiveSERate}%</TableCell>
-             <TableCell>0%</TableCell>
+            <TableRow sx={{ backgroundColor: '#e8f2ff' }}>
+            <TableCell>Marginal Tax Rate</TableCell>
+              <TableCell>{results.marginalRate}%</TableCell>
+              <TableCell>21%</TableCell>
             </TableRow>
           </TableBody>
         </Table>
@@ -213,7 +227,7 @@ const ResultsDisplay = ({ results, formTitle }) => {
 </TableContainer>
 
 
-      {/* Segunda Tabla de Resultados Adicionales */}
+      {/* Tercera Tabla de Resultados Adicionales */}
       <Typography variant="h6" gutterBottom>
         Additional Calculations
       </Typography>

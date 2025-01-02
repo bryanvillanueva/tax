@@ -62,6 +62,7 @@ const useCalculations = () => {
     deduction,
     totalEducationalAssistance,
     totalBenefits,
+    formType,
   }) => {
     // Calcular Net Income según el tipo de cálculo
     let netIncome;
@@ -123,7 +124,7 @@ const useCalculations = () => {
           netIncome = calculateNetIncome(grossIncome, cost, investType);
         break;
     }
-
+    console.log(`Selected Form Type: ${formType}`);
   
       // Cálculo para 1040/1040NR
       const seSocialSecurity = partnerType === 'Active' ? Math.min(netIncome * 0.9235, 168600) * 0.124 : 0;
@@ -218,6 +219,7 @@ const useCalculations = () => {
         effectiveSERate2,
         niitThreshold,
         niitThreshold2,
+        formType
       };
     };
   

@@ -9,6 +9,7 @@ const DepreciationForm = ({ onCalculate }) => {
   const [investType, setInvestType] = useState('Section 179');
   const [cost, setCost] = useState('');
   const [partnerType, setPartnerType] = useState('Active');
+  const [formType, setFormType] = useState('1040');
   const [error, setError] = useState(null);
 
   const { performCalculations } = useCalculations();
@@ -34,6 +35,7 @@ const DepreciationForm = ({ onCalculate }) => {
       cost: parseFloat(cost),
       investType,
       partnerType,
+      formType,
     });
 
     onCalculate(results);
@@ -121,6 +123,20 @@ const DepreciationForm = ({ onCalculate }) => {
               >
                 <MenuItem value="Section 179">Section 179</MenuItem>
                 <MenuItem value="Bonus">Bonus</MenuItem>
+              </TextField>
+
+              <TextField
+                select
+                label="Form Type"
+                fullWidth
+                value={formType}
+                onChange={(e) => setFormType(e.target.value)}
+                margin="normal"
+              >
+                <MenuItem value="1040 - Schedule C">1040 - Schedule C</MenuItem>
+                <MenuItem value="1040NR - Schedule E">1040NR - Schedule E</MenuItem>
+                <MenuItem value="1065">1065</MenuItem>
+                <MenuItem value="1120S">1120S</MenuItem>
               </TextField>
             </Grid>
           </Grid>
