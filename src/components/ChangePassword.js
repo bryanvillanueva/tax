@@ -1,71 +1,57 @@
 import React, { useState } from 'react';
-import { Box, Typography, TextField, Button, IconButton, InputAdornment, Alert } from '@mui/material';
+import { Box, Typography, TextField, Button, InputAdornment, IconButton, Alert, CircularProgress } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { useNavigate, useLocation } from 'react-router-dom';
 
-const ChangePassword = ({ email }) => {
-  const [password, setPassword] = useState('');
+const ChangePassword = () => {
+  const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [success, setSuccess] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [capsLock, setCapsLock] = useState(false);
   const navigate = useNavigate();
 
-  const isPasswordValid = (password) => {
-    const lengthValid = password.length >= 8;
-    const uppercaseValid = /[A-Z]/.test(password);
-    const lowercaseValid = /[a-z]/.test(password);
-    const numberValid = /[0-9]/.test(password);
-    const specialCharValid = /[!@#$%^&*]/.test(password);
-    const noSpaces = !/\s/.test(password);
-
-    return (
-      lengthValid &&
-      uppercaseValid &&
-      lowercaseValid &&
-      numberValid &&
-      specialCharValid &&
-      noSpaces
-    );
-  };
-
-  const handleChangePassword = async () => {
-    if (!isPasswordValid(password)) {
-      setError(
-        'La contraseña debe tener al menos 8 caracteres, incluir una letra mayúscula, una letra minúscula, un número, un carácter especial y no contener espacios.'
-      );
-      return;
-    }
-
-    if (password !== confirmPassword) {
-      setError('Las contraseñas no coinciden.');
-      return;
-    }
-
-    try {
-      await axios.post('https://taxbackend-production.up.railway.app/change-password', {
-        email,
-        newPassword: password,
-      });
-      setSuccess('Contraseña cambiada exitosamente.');
-      setError('');
-      setTimeout(() => navigate('/form-selector'), 2000);
-    } catch (err) {
-      setError('Error al cambiar la contraseña. Por favor, inténtalo más tarde.');
-    }
-  };
+  // Obtener el email desde el estado de navegación
+  const { state } = useLocation();
+  const email = state?.email;
 
   const handleTogglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
-  const handleKeyUp = (e) => {
-    if (e.getModifierState('CapsLock')) {
-      setError('Mayúsculas activadas.');
-    } else {
+  const handleKeyPress = (e) => {
+    setCapsLock(e.getModifierState('CapsLock'));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (newPassword !== confirmPassword) {
+      setError('Las contraseñas no coinciden.');
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      await axios.post('https://taxbackend-production.up.railway.app/change-password', {
+        email,
+        newPassword,
+      });
+
+      setSuccess(true);
       setError('');
+      setTimeout(() => {
+        navigate('/', { state: { message: 'Contraseña cambiada exitosamente. Por favor inicia sesión.' } });
+      }, 2000);
+    } catch (err) {
+      setError('Error al cambiar la contraseña. Por favor intenta más tarde.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -108,7 +94,7 @@ const ChangePassword = ({ email }) => {
             fontFamily: 'Montserrat, sans-serif',
           }}
         >
-          Cambia tu contraseña
+          Cambiar Contraseña
         </Typography>
 
         {error && (
@@ -117,59 +103,72 @@ const ChangePassword = ({ email }) => {
           </Alert>
         )}
 
-        {success && (
-          <Alert severity="success" sx={{ mb: 2 }}>
-            {success}
+        {capsLock && (
+          <Alert severity="warning" sx={{ mb: 2 }}>
+            La tecla de mayúsculas está activada.
           </Alert>
         )}
 
-        <TextField
-          label="Nueva contraseña"
-          type={showPassword ? 'text' : 'password'}
-          fullWidth
-          variant="outlined"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          onKeyUp={handleKeyUp}
-          sx={{ mb: 2 }}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton onClick={handleTogglePasswordVisibility} edge="end">
-                  {showPassword ? <Visibility /> : <VisibilityOff />}
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
-        />
-        <TextField
-          label="Confirmar contraseña"
-          type={showPassword ? 'text' : 'password'}
-          fullWidth
-          variant="outlined"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          onKeyUp={handleKeyUp}
-          sx={{ mb: 2 }}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton onClick={handleTogglePasswordVisibility} edge="end">
-                  {showPassword ? <Visibility /> : <VisibilityOff />}
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
-        />
-        <Button
-          onClick={handleChangePassword}
-          variant="contained"
-          color="primary"
-          fullWidth
-          sx={{ mt: 2 }}
-        >
-          Cambiar Contraseña
-        </Button>
+        {success && (
+          <Alert severity="success" sx={{ mb: 2 }}>
+            Contraseña cambiada exitosamente.
+          </Alert>
+        )}
+
+        {loading ? (
+          <CircularProgress />
+        ) : (
+          <form onSubmit={handleSubmit} style={{ width: '100%' }}>
+            <TextField
+              label="Nueva Contraseña"
+              type={showPassword ? 'text' : 'password'}
+              fullWidth
+              variant="outlined"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              onKeyUp={handleKeyPress}
+              sx={{ mb: 2 }}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={handleTogglePasswordVisibility} edge="end">
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+            <TextField
+              label="Confirmar Contraseña"
+              type={showPassword ? 'text' : 'password'}
+              fullWidth
+              variant="outlined"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              onKeyUp={handleKeyPress}
+              sx={{ mb: 2 }}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={handleTogglePasswordVisibility} edge="end">
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              sx={{ mt: 2 }}
+              disabled={loading}
+            >
+              Cambiar Contraseña
+            </Button>
+          </form>
+        )}
       </Box>
     </Box>
   );

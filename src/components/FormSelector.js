@@ -1,8 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Grid, Card, CardActionArea, CardContent, TextField, Container, Drawer, IconButton, List, ListItem, ListItemText, Divider, Button } from '@mui/material';
+import { Box, Typography, Grid, Card, CardActionArea, CardContent, TextField, Container, Drawer, IconButton, List, ListItem, ListItemText, Divider, Button, Avatar } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-import { useNavigate } from 'react-router-dom';
 import LogoutIcon from '@mui/icons-material/Logout';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+
+// Lista de formularios disponibles
 const forms = [
   { id: 'depreciation', title: 'Depreciation Form', description: 'Calculate accelerated depreciation (Section 179 and Bonus).' },
   { id: 'augusta', title: 'Augusta Rule Form', description: 'Calculate deductions under the Augusta Rule.' },
@@ -31,16 +36,39 @@ const forms = [
 const FormSelector = ({ onSelectForm }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [userData, setUserData] = useState(null); // Para almacenar los datos del usuario
+  const [favorites, setFavorites] = useState({}); // Estado para almacenar los favoritos
   const navigate = useNavigate();
 
   // Verificar si hay un token activo al cargar el componente
   useEffect(() => {
     const token = localStorage.getItem('authToken');
+
     if (!token) {
       navigate('/'); // Redirige al login si no hay token
+      return;
     }
+
+    // Validar el token con el backend y obtener los datos del usuario
+    const validateToken = async () => {
+      try {
+        const response = await axios.get('https://taxbackend-production.up.railway.app/user', {
+          headers: {
+            Authorization: `Bearer ${token}`, // Envía el token al backend
+          },
+        });
+        setUserData(response.data); // Almacena los datos del usuario
+      } catch (error) {
+        console.error('Error al validar el token:', error.message);
+        localStorage.removeItem('authToken'); // Elimina el token si no es válido
+        navigate('/'); // Redirige al login
+      }
+    };
+
+    validateToken();
   }, [navigate]);
 
+  // Filtrar los formularios por el término de búsqueda
   const filteredForms = forms.filter((form) =>
     form.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -49,45 +77,76 @@ const FormSelector = ({ onSelectForm }) => {
     localStorage.removeItem('authToken'); // Elimina el token
     navigate('/'); // Redirige al login
   };
+
+  const toggleFavorite = (formId) => {
+    setFavorites((prevFavorites) => ({
+      ...prevFavorites,
+      [formId]: !prevFavorites[formId],
+    }));
+  };
   
 
   return (
     <Box sx={{ display: 'flex' }}>
+      
       {/* Drawer */}
       <Drawer
         anchor="left"
         open={drawerOpen}
-        onClose={() => setDrawerOpen(false)}
+        onClose={() => setDrawerOpen(false)}  
       >
-        <Box sx={{ width: 250 }}>
+        <Box sx={{ width: 250, p: 2 }}>
+          {userData && (
+            <>
+              <Box sx={{ textAlign: 'center', mb: 2 }}>
+                <Avatar
+                  sx={{ width: 64, height: 64, mx: 'auto', mb: 1 }}
+                  src={userData.profilePicture || 'https://tax.bryanglen.com/user.png'} // Reemplaza con un campo de imagen si existe
+                  alt={userData.firstName}
+                />
+                <Typography variant="h6" sx={{ fontWeight: 'bold', fontFamily: 'Montserrat, sans-serif' }}>
+                  {`${userData.first_name} ${userData.last_name}`}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {userData.email}
+                </Typography>
+              </Box>
+              <Divider sx={{ mb: 2 }} />
+            </>
+          )}
           <List>
-            <ListItem>
-              <Typography variant="h6" sx={{ fontWeight: 'bold', textAlign: 'center', width: '100%' }}>
-                Menu
-              </Typography>
+            <ListItem button onClick={() => navigate('/profile')}>
+              <ListItemText primary="Profile" />
             </ListItem>
-            <Divider />
-            <ListItem button onClick={() => navigate('/dashboard')}>
-              <ListItemText primary="Dashboard" />
+            <ListItem button onClick={() => navigate('/favorites')}>
+              <ListItemText primary="Favorites" />
             </ListItem>
-            {/* Otros enlaces del menú */}
-          </List>
-          <Divider />
-          <List>
-            <ListItem button onClick={handleLogout}>
-              <LogoutIcon sx={{ mr: 2 }} />
-              <ListItemText primary="Logout" />
+            <ListItem button onClick={() => navigate('/recent')}>
+              <ListItemText primary="Recent" />
+            </ListItem>
+            <ListItem button onClick={() => navigate('/support')}>
+              <ListItemText primary="Support" />
             </ListItem>
           </List>
+          <Divider sx={{ my: 2 }} />
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<LogoutIcon />}
+            fullWidth
+            onClick={handleLogout}
+          >
+            Logout
+          </Button>
         </Box>
       </Drawer>
 
       {/* Contenido principal */}
       <Box sx={{ flex: 1 }}>
         {/* Botón para abrir el Drawer */}
-        <IconButton
+        <IconButton size='large'
           onClick={() => setDrawerOpen(true)}
-          sx={{ position: 'absolute', top: 16, left: 16 }}
+          sx={{ position: 'absolute', top: 16, left: 16, color: '#fff', backgroundColor: '#0858e6',}}
         >
           <MenuIcon />
         </IconButton>
@@ -146,34 +205,52 @@ const FormSelector = ({ onSelectForm }) => {
   }}
 >
   {filteredForms.map((form) => (
-    <Grid item xs={12} sm={6} md={3} key={form.id}>
-      <Card variant="outlined" sx={{ height: '100%', borderRadius: '12px', }}>
-        <CardActionArea onClick={() => onSelectForm(form.id)}>
-          <CardContent sx={{ textAlign: 'center' }}>
-            <img
-              src="https://wac-cdn.atlassian.com/misc-assets/webp-images/confluence/templates/taxonomy/strategic-plan.svg"
-              alt="Form Icon"
-              style={{
-                width: '230px', // Ajusta el tamaño de la imagen para que sea consistente
-                marginBottom: '18px',
-                
-              }}
-            />
-            <Typography
-              variant="h6"
-              component="div"
-              sx={{ fontWeight: 'bold', color: '#0858e6', mb: 1, fontFamily: 'Montserrat, sans-serif'}}
-            >
-              {form.title}
-            </Typography>
-            <Typography variant="body2" color="text.secondary"  sx={{ fontFamily: 'Montserrat, sans-serif', }}>
-              {form.description}
-            </Typography>
-          </CardContent>
-        </CardActionArea>
-      </Card>
-    </Grid>
-  ))}
+ <Grid item xs={12} sm={6} md={3} key={form.id}>
+ <Card
+   variant="outlined"
+   sx={{ height: '100%', borderRadius: '12px', position: 'relative' }}
+ >
+   <IconButton
+     onClick={() => toggleFavorite(form.id)}
+     sx={{
+       position: 'absolute',
+       top: 8,
+       right: 8,
+       color: favorites[form.id] ? 'red' : 'gray',
+       zIndex: 2,
+     }}
+   >
+     {favorites[form.id] ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+   </IconButton>
+   <CardActionArea onClick={() => onSelectForm(form.id)}>
+     <CardContent sx={{ textAlign: 'center' }}>
+       <img
+         src="https://wac-cdn.atlassian.com/misc-assets/webp-images/confluence/templates/taxonomy/strategic-plan.svg"
+         alt="Form Icon"
+         style={{
+           width: '230px',
+           marginBottom: '18px',
+         }}
+       />
+       <Typography
+         variant="h6"
+         component="div"
+         sx={{ fontWeight: 'bold', color: '#0858e6', mb: 1, fontFamily: 'Montserrat, sans-serif' }}
+       >
+         {form.title}
+       </Typography>
+       <Typography
+         variant="body2"
+         color="text.secondary"
+         sx={{ fontFamily: 'Montserrat, sans-serif' }}
+       >
+         {form.description}
+       </Typography>
+     </CardContent>
+   </CardActionArea>
+ </Card>
+</Grid>
+))}
 </Grid>
     </Box>
   </Box>

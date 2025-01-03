@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, TextField, Button } from '@mui/material';
+import { Box, Typography, TextField, Button, CircularProgress, Alert } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
@@ -7,6 +7,7 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false); // Estado para el loader
   const navigate = useNavigate();
 
   const isFormValid = email.trim() !== '' && password.trim() !== '' && /\S+@\S+\.\S+/.test(email);
@@ -21,21 +22,23 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-  
+
     if (!isFormValid) {
       setError('Por favor, verifica los campos.');
       return;
     }
-  
+
+    setLoading(true); // Activar el loader
+
     try {
       // Limpiar cualquier token previo antes de iniciar sesión
       localStorage.removeItem('authToken');
-  
+
       const response = await axios.post('https://taxbackend-production.up.railway.app/login', {
         email,
         password,
       });
-  
+
       if (response.data.token) {
         localStorage.setItem('authToken', response.data.token);
         navigate('/form-selector'); // Redirige al FormSelector después de iniciar sesión
@@ -47,9 +50,10 @@ const Login = () => {
       }
     } catch (err) {
       setError('Error del servidor. Por favor intenta más tarde.');
+    } finally {
+      setLoading(false); // Desactivar el loader
     }
   };
-  
 
   return (
     <Box
@@ -64,7 +68,7 @@ const Login = () => {
     >
       <Box
         sx={{
-          width: '385px', // Ajustado para que sea 35px más grande
+          width: '385px',
           padding: '30px',
           background: '#fff',
           borderRadius: '12px',
@@ -94,40 +98,44 @@ const Login = () => {
         </Typography>
 
         {error && (
-          <Typography color="error" align="center" sx={{ mb: 2 }}>
+          <Alert severity="error" sx={{ mb: 2 }}>
             {error}
-          </Typography>
+          </Alert>
         )}
 
-        <form onSubmit={handleLogin} style={{ width: '100%' }}>
-          <TextField
-            label="Email"
-            fullWidth
-            variant="outlined"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            sx={{ mb: 2 }}
-          />
-          <TextField
-            label="Contraseña"
-            type="password"
-            fullWidth
-            variant="outlined"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            sx={{ mb: 2 }}
-          />
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            sx={{ mt: 2 }}
-            disabled={!isFormValid} // Botón deshabilitado si no es válido
-          >
-            Iniciar Sesión
-          </Button>
-        </form>
+        {loading ? (
+          <CircularProgress />
+        ) : (
+          <form onSubmit={handleLogin} style={{ width: '100%' }}>
+            <TextField
+              label="Email"
+              fullWidth
+              variant="outlined"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              sx={{ mb: 2 }}
+            />
+            <TextField
+              label="Contraseña"
+              type="password"
+              fullWidth
+              variant="outlined"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              sx={{ mb: 2 }}
+            />
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              sx={{ mt: 2 }}
+              disabled={!isFormValid || loading} // Deshabilitar el botón mientras carga
+            >
+              Iniciar Sesión
+            </Button>
+          </form>
+        )}
       </Box>
     </Box>
   );
