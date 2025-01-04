@@ -24,7 +24,25 @@ const ResultsDisplay = ({ results, formTitle }) => {
         Calculation Results
       </Typography>
 
-      {/* Primera Tabla de Resultados */}
+       {/* Primera Tabla de Resultados */}
+       <TableContainer component={Paper} sx={{ mb: 4, marginBottom: '55px', marginTop: '35px' }}>
+      <Table >
+        <TableHead>
+        <TableCell sx={{ fontWeight: 'bold' }}>Value Withouth Strategy</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>Value with strategy</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>Total Savings</TableCell>
+        </TableHead>
+        <TableBody>
+            <TableRow sx={{ backgroundColor: '#e8f2ff',}}>
+              <TableCell>{formatCurrency(results.totalTaxDue2)}</TableCell>
+              <TableCell>{formatCurrency(results.totalTaxDue)}</TableCell>
+              <TableCell sx={{ backgroundColor: '#93f5b0',}}>{formatCurrency(results.totalTaxDue2 - results.totalTaxDue)}</TableCell>
+            </TableRow>
+        </TableBody>
+      </Table>
+      </TableContainer>
+      
+      {/* Segunda Tabla de Resultados */}
       <TableContainer component={Paper} sx={{ mb: 4, marginBottom: '55px', marginTop: '35px' }}>
       <Table >
       <TableHead>
@@ -53,9 +71,12 @@ const ResultsDisplay = ({ results, formTitle }) => {
   <TableRow sx={{ backgroundColor: '#e8f2ff' }}>
     <TableCell>Adjusted Gross Income (AGI)</TableCell>
     <TableCell>
-  {results.formType === '1120' ? 'Not applicable' : results.formType === '1120S' ? formatCurrency(results.agi1120S) : formatCurrency(results.agi)
-  }
+  {results.formType === '1120' ? 'Not applicable' : results.formType === '1120S' ? formatCurrency(results.agi1120S) : formatCurrency(results.agi)}
 </TableCell>
+  </TableRow>
+  <TableRow sx={{ backgroundColor: '#e8f2ff' }}>
+      <TableCell>Qualified Business Income Deduction</TableCell>
+      <TableCell>{results.formType === '1040NR - Schedule E' ? formatCurrency(results.QBID): '0'}</TableCell>
   </TableRow>
   <TableRow sx={{ backgroundColor: '#e8f2ff' }}>
     <TableCell>Standard Deduction</TableCell>
@@ -69,30 +90,6 @@ const ResultsDisplay = ({ results, formTitle }) => {
       {results.formType === '1120' ? formatCurrency(results.corpTaxableIncome) : results.formType === '1120S' ? formatCurrency(results.taxableIncome1120S) : formatCurrency(results.taxableIncome)}
     </TableCell>
   </TableRow>
-
-            <TableRow sx={{ backgroundColor: '#e8f2ff' }}>
-              <TableCell>Adjusted Gross Income (AGI)</TableCell>
-              <TableCell>{formatCurrency(results.agi)}</TableCell>
-              <TableCell>Not applicable</TableCell>
-            </TableRow>
-            <TableRow sx={{ backgroundColor: '#e8f2ff' }}>
-              <TableCell>Qualified Business Income Deduction</TableCell>
-              
-              <TableCell>
-      {results.formType === '1040NR - Schedule E' ? formatCurrency(results.QBID): '0'}
-    </TableCell>
-              <TableCell>Not applicable</TableCell>
-            </TableRow>
-            <TableRow sx={{ backgroundColor: '#e8f2ff' }}>
-              <TableCell>Standard Deduction</TableCell>
-              <TableCell>{formatCurrency(results.standardDeduction)}</TableCell>
-              <TableCell>Not applicable</TableCell>
-            </TableRow>
-            <TableRow sx={{ backgroundColor: '#e8f2ff' }}>
-              <TableCell>Taxable Income</TableCell>
-              <TableCell>{formatCurrency(results.taxableIncome)}</TableCell>
-              <TableCell>{formatCurrency(results.corpTaxableIncome)}</TableCell>
-            </TableRow>
   {/* Fila vacía para separación */}
   <TableRow>
     <TableCell colSpan={2}>&nbsp;</TableCell>
@@ -187,6 +184,11 @@ const ResultsDisplay = ({ results, formTitle }) => {
         <TableCell>{formatCurrency(results.agi2)}</TableCell>
         <TableCell>Not applicable</TableCell>
       </TableRow>
+      <TableRow sx={{ backgroundColor: '#fff9c4' }}>
+      <TableCell>Qualified Business Income Deduction</TableCell>
+      <TableCell>{'$0.00'}</TableCell>
+      <TableCell>Not applicable</TableCell>
+  </TableRow>
       <TableRow sx={{ backgroundColor: '#fff9c4' }}>
         <TableCell>Standard Deduction</TableCell>
         <TableCell>{formatCurrency(results.standardDeduction)}</TableCell>
