@@ -35,8 +35,8 @@ const ResultsDisplay = ({ results, formTitle }) => {
         <TableBody>
             <TableRow sx={{ backgroundColor: '#e8f2ff',}}>
               <TableCell>{formatCurrency(results.totalTaxDue2)}</TableCell>
-              <TableCell>{formatCurrency(results.totalTaxDue)}</TableCell>
-              <TableCell sx={{ backgroundColor: '#93f5b0',}}>{formatCurrency(results.totalTaxDue2 - results.totalTaxDue)}</TableCell>
+              <TableCell>{results.formType === '1120' ? formatCurrency(results.corpTaxDue) : results.formType === '1120S' ? formatCurrency(results.taxDue1120S) : formatCurrency(results.totalTaxDue)}</TableCell>
+              <TableCell sx={{ backgroundColor: '#93f5b0',}}>{results.formType === '1120' ? formatCurrency(results.totalTaxDue2 - results.corpTaxDue) : results.formType === '1120S' ? formatCurrency(results.totalTaxDue2 - results.taxDue) : formatCurrency(results.totalTaxDue2 - results.totalTaxDue)}</TableCell>
             </TableRow>
         </TableBody>
       </Table>
@@ -104,7 +104,7 @@ const ResultsDisplay = ({ results, formTitle }) => {
   <TableRow sx={{ backgroundColor: '#e8f2ff' }}>
     <TableCell>Tax Due (Income tax rate)</TableCell>
     <TableCell>
-      {results.formType === '1120' ? formatCurrency(results.corpTaxDue) : formatCurrency(results.taxDue)}
+    {results.formType === '1120' ? formatCurrency(results.corpTaxDue) : results.formType === '1120S' ?  formatCurrency(results.taxDue1120S) : formatCurrency(results.taxDue)}
     </TableCell>
   </TableRow>
   <TableRow sx={{ backgroundColor: '#e8f2ff' }}>
@@ -255,15 +255,15 @@ const ResultsDisplay = ({ results, formTitle }) => {
           <TableBody>
             <TableRow sx={{ backgroundColor: '#52a6d8' }}>
               <TableCell>Income Level</TableCell>
-              <TableCell>{results.incomeLevel}</TableCell>
+              <TableCell>{results.formType === '1120S' ? (results.incomeLevel1120S) : (results.incomeLevel)}</TableCell>
             </TableRow>
             <TableRow sx={{ backgroundColor: '#52a6d8' }}>
               <TableCell>Marginal Rate</TableCell>
-              <TableCell>{results.marginalRate}%</TableCell>
+              <TableCell>{results.formType === '1120S' ? (results.marginalRate1120s) : (results.marginalRate)}%</TableCell>
             </TableRow>
             <TableRow sx={{ backgroundColor: '#52a6d8' }}>
               <TableCell>Tax Due (Income tax rate)</TableCell>
-              <TableCell>{formatCurrency(results.taxDue)}</TableCell>
+              <TableCell>{results.formType === '1120' ? formatCurrency(results.corpTaxDue) : results.formType === '1120S' ?  formatCurrency(results.taxDue1120S) : formatCurrency(results.taxDue)}</TableCell>
             </TableRow>
             <TableRow sx={{ backgroundColor: '#52a6d8' }}>
               <TableCell>Self-Employment Social Security</TableCell>

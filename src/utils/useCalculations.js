@@ -18,7 +18,9 @@ import {
   calculateTaxableIncome2,
   calculateTaxableIncome1120S,
   getMarginalTaxRateAndLevel,
+  getMarginalTaxRateAndLevel1120S,
   calculateTaxDue,
+  calculateTaxDue1120S,
   calculateAdditionalMedicare,
   calculateAdditionalMedicare2,
   getSelfEmploymentRate,
@@ -128,9 +130,9 @@ const useCalculations = () => {
     }
     console.log(`Selected Form Type: ${formType}`);
 
-      //QBID 1040NR
-      const QBID = 500;
-  
+     //QBID 1040NR
+     const QBID = 500;
+    
       // Cálculo para 1040/1040NR
       const seSocialSecurity = partnerType === 'Active' ? Math.min(netIncome * 0.9235, 168600) * 0.124 : 0;
       const seMedicare = partnerType === 'Active' ? calculateSEMedicare(netIncome) : 0;
@@ -182,12 +184,17 @@ const useCalculations = () => {
       const corpEffectiveTaxRate = corpTaxableIncome !== 0 ? ((corpTaxDue / corpTaxableIncome) * 100).toFixed(2) : '0.00';
       const effectiveSERate2 = netIncome2 > 0 ? ((selfEmploymentTax2 / netIncome2) * 100).toFixed(2) : '0.00';
       
-    
+      
+     
 
       // calculos para el formulario 1120S
      const agi1120S = netIncome;
      const taxableIncome1120S = calculateTaxableIncome1120S(agi1120S, filingStatus);
-    const effectiveTaxRate1120S = taxableIncome !== 0 ? ((taxDue / taxableIncome1120S) * 100).toFixed(2) : '0.00';
+     const effectiveTaxRate1120S = taxableIncome !== 0 ? ((taxDue / taxableIncome1120S) * 100).toFixed(2) : '0.00';
+     const taxDue1120S = calculateTaxDue1120S(filingStatus, taxableIncome1120S);
+     const {marginalRate1120s, level1120s } = getMarginalTaxRateAndLevel1120S(filingStatus, taxableIncome1120S);
+
+
       return {
         netIncome,
         netIncome2,
@@ -202,9 +209,12 @@ const useCalculations = () => {
         taxableIncome2,
         taxableIncome1120S,
         marginalRate: (marginalRate * 100).toFixed(2),
+        marginalRate1120s: (marginalRate1120s * 100).toFixed(2),
         incomeLevel: level,
+        incomeLevel1120S: level1120s,
         taxDue,
         taxDue2,
+        taxDue1120S,
         taxCredits,
         totalTaxDue2,
         marginalRate2: (marginalRate2 * 100).toFixed(2),
@@ -232,8 +242,7 @@ const useCalculations = () => {
         niitThreshold,
         niitThreshold2,
         formType,
-        QBID,
-      };
+        QBID,      };
     };
   
     return { performCalculations };
