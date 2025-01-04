@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { TextField, Button, Container, Typography, Box, MenuItem, Alert, Grid } from '@mui/material';
 import useCalculations from '../utils/useCalculations';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+
 
 const HireYourKidsForm = ({ onCalculate }) => {
   const [filingStatus, setFilingStatus] = useState('Single');
@@ -11,6 +13,7 @@ const HireYourKidsForm = ({ onCalculate }) => {
   const [childrenBaseSalary, setChildrenBaseSalary] = useState('');
   const [totalIRAContribution, setTotalIRAContribution] = useState('');
   const [partnershipStatus, setPartnershipStatus] = useState('Yes');
+  const [formType, setFormType] = useState('1040 - Schedule C/F');
   const [error, setError] = useState(null);
 
   const { performCalculations } = useCalculations();
@@ -55,6 +58,7 @@ const HireYourKidsForm = ({ onCalculate }) => {
       investType,
       partnerType,
       hireKidsDeduction: totalDeduction,
+      formType,
       calculationType: 'hireKids', // Línea agregada para especificar el tipo de cálculo
     });
   
@@ -64,7 +68,18 @@ const HireYourKidsForm = ({ onCalculate }) => {
 
   return (
     <Container>
-      <Box sx={{ mt: 5 }}>
+      <Box sx={{ position: 'relative', mt: 5 }}>
+        {/* Enlace en la esquina superior derecha */}
+        <Box sx={{ position: 'absolute', top: -10, right: 0, }}>
+          <Button
+            href="https://tax.bryanglen.com/data/Strategies-Structure.pdf"
+            target="_blank"
+            sx={{ textTransform: 'none', backgroundColor: '#ffffff', color: '#0858e6', fontSize: '0.875remc', marginBottom: '150px', }}
+            startIcon={<InfoOutlinedIcon />}
+          >
+            View Strategy Details
+          </Button>
+        </Box>
 
         {error && (
           <Alert severity="error" sx={{ mb: 2 }}>
@@ -144,6 +159,20 @@ const HireYourKidsForm = ({ onCalculate }) => {
                 <MenuItem value="Yes">Yes</MenuItem>
                 <MenuItem value="No">No</MenuItem>
                 <MenuItem value="N/A">N/A</MenuItem>
+              </TextField>
+              <TextField
+                select
+                label="Form Type"
+                fullWidth
+                value={formType}
+                onChange={(e) => setFormType(e.target.value)}
+                margin="normal"
+              >
+                <MenuItem value="1040 - Schedule C/F">1040 - Schedule C/F</MenuItem>
+                <MenuItem value="1040NR - Schedule E">1040NR - Schedule E</MenuItem>
+                <MenuItem value="1065">1065</MenuItem>
+                <MenuItem value="1120S">1120S</MenuItem>
+                <MenuItem value="1120">1120</MenuItem>
               </TextField>
             </Grid>
           </Grid>

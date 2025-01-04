@@ -9,7 +9,7 @@ const DepreciationForm = ({ onCalculate }) => {
   const [investType, setInvestType] = useState('Section 179');
   const [cost, setCost] = useState('');
   const [partnerType, setPartnerType] = useState('Active');
-  const [formType, setFormType] = useState('1040');
+  const [formType, setFormType] = useState('1040 - Schedule C/F');
   const [error, setError] = useState(null);
 
   const { performCalculations } = useCalculations();
@@ -45,7 +45,7 @@ const DepreciationForm = ({ onCalculate }) => {
     <Container>
       <Box sx={{ position: 'relative', mt: 5 }}>
         {/* Enlace en la esquina superior derecha */}
-        <Box sx={{ position: 'absolute', top: 0, right: 0, }}>
+        <Box sx={{ position: 'absolute', top: -10, right: 0, }}>
           <Button
             href="https://tax.bryanglen.com/data/Strategies-Structure.pdf"
             target="_blank"
