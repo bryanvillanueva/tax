@@ -16,6 +16,7 @@ import {
   calculateAGI,
   calculateTaxableIncome,
   calculateTaxableIncome2,
+  calculateTaxableIncome1120S,
   getMarginalTaxRateAndLevel,
   calculateTaxDue,
   calculateAdditionalMedicare,
@@ -32,6 +33,7 @@ import {
   calculateTaxcredits,
   calculateNetIncomeAccountableplan,
   calculateNetIncomeAdoptionPlan
+  
 } from '../utils/calculations';
 import { standardDeductions } from '../utils/taxData';
 
@@ -165,6 +167,7 @@ const useCalculations = () => {
      // Calcular NIIT Threshold
       const niitThreshold = calculateNIITThreshold(netIncome, filingStatus, partnerType);
       const niitThreshold2 = calculateNIITThreshold2(netIncome2, filingStatus, partnerType);
+    
 
     
  
@@ -179,9 +182,12 @@ const useCalculations = () => {
       const corpEffectiveTaxRate = corpTaxableIncome !== 0 ? ((corpTaxDue / corpTaxableIncome) * 100).toFixed(2) : '0.00';
       const effectiveSERate2 = netIncome2 > 0 ? ((selfEmploymentTax2 / netIncome2) * 100).toFixed(2) : '0.00';
       
-     
     
 
+      // calculos para el formulario 1120S
+     const agi1120S = netIncome;
+     const taxableIncome1120S = calculateTaxableIncome1120S(agi1120S, filingStatus);
+    const effectiveTaxRate1120S = taxableIncome !== 0 ? ((taxDue / taxableIncome1120S) * 100).toFixed(2) : '0.00';
       return {
         netIncome,
         netIncome2,
@@ -190,9 +196,11 @@ const useCalculations = () => {
         corpTaxDue2,
         agi,
         agi2,
+        agi1120S,
         standardDeduction,
         taxableIncome,
         taxableIncome2,
+        taxableIncome1120S,
         marginalRate: (marginalRate * 100).toFixed(2),
         incomeLevel: level,
         taxDue,
@@ -213,6 +221,7 @@ const useCalculations = () => {
         corpTaxDue,
         effectiveTaxRate,
         effectiveTaxRate2,
+        effectiveTaxRate1120S,
         corpEffectiveTaxRate,
         seDeduction,
         seSocialSecurity2,

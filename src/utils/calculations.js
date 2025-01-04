@@ -8,6 +8,7 @@ import {
   additionalMedicareRate,
   additionalMedicareThreshold,
   niitThresholds,
+  taxAccumulators,
  
 } from './taxData';
 
@@ -152,7 +153,7 @@ export function calculateNetIncomeHealthReimbursement(grossIncome, totalBenefits
 // Calcular Self-Employment Medicare Tax
 export function calculateSEMedicare(netIncome) {
   if (netIncome <= 0) return 0;
-  return (netIncome * 0.9235 ) * 0.029; // Aplicar 2.9% directamente al Net Income
+  return (netIncome * 0.9235) * 0.029; // Aplicar 2.9% directamente al Net Income
 }
 
 // Calcular el AGI (Adjusted Gross Income)
@@ -177,6 +178,11 @@ export function calculateTaxableIncome(agi, filingStatus, formType, QBID = 0) {
 export function calculateTaxableIncome2(agi2, filingStatus) {
   const standardDeduction = standardDeductions[filingStatus] || 0;
   return Math.max(0, agi2 - standardDeduction);
+}
+
+export function calculateTaxableIncome1120S(agi1120S, filingStatus) {
+  const standardDeduction = standardDeductions[filingStatus] || 0;
+  return Math.max(0, agi1120S - standardDeduction);
 }
 
 // Calcular el NIIT Threshold y el no formula
@@ -249,19 +255,26 @@ export function getMarginalTaxRateAndLevel2(filingStatus, taxableIncome2) {
 
 
 // Calcular el impuesto adeudado (Tax Due) 
+
 export function calculateTaxDue(filingStatus, taxableIncome) {
-  const brackets = taxBrackets[filingStatus];
-  
+  const brackets = taxBrackets[filingStatus]; // Obtener los brackets según el estado fiscal
+  const accumulated = taxAccumulators[filingStatus]; // Obtener los acumulados correspondientes
   let accumulatedTax = 0;
 
   for (let i = 0; i < brackets.length; i++) {
     const bracket = brackets[i];
-    if (taxableIncome > bracket.start) {
-      const amountInBracket = Math.min(taxableIncome, bracket.end) - bracket.start;
 
-      accumulatedTax += amountInBracket * bracket.rate;
-    } else {
-      break; 
+    if (taxableIncome <= bracket.end) {
+      // Calcular el impuesto en el nivel actual
+      if (i === 0) {
+        // Nivel 0: No se suma acumulado
+        accumulatedTax = taxableIncome * bracket.rate;
+      } else {
+        // Otros niveles: Usar acumulado del nivel anterior
+        const previousBracketEnd = brackets[i - 1].end; // Límite superior del bracket anterior
+        accumulatedTax = ((taxableIncome - previousBracketEnd) * bracket.rate) + accumulated[i - 1];
+      }
+      break; // Detener el cálculo después de encontrar el nivel correspondiente
     }
   }
 
@@ -271,27 +284,35 @@ export function calculateTaxDue(filingStatus, taxableIncome) {
 
 // Calcular el impuesto adeudado (Tax Due)  2
 export function calculateTaxDue2(filingStatus, taxableIncome2) {
-  taxableIncome2 = parseFloat(taxableIncome2.toFixed(2));
+  taxableIncome2 = parseFloat(taxableIncome2.toFixed(2)); // Asegurarse de que los ingresos tengan 2 decimales
 
-  const brackets = taxBrackets[filingStatus];
-  
+  const brackets = taxBrackets[filingStatus]; // Obtener los brackets según el estado fiscal
+  const accumulated = taxAccumulators[filingStatus]; // Obtener los acumulados correspondientes
+
   let accumulatedTax = 0;
 
- 
   for (let i = 0; i < brackets.length; i++) {
     const bracket = brackets[i];
-    if (taxableIncome2 > bracket.start) {
-      const amountInBracket = Math.min(taxableIncome2, bracket.end) - bracket.start;
-     
-      accumulatedTax += parseFloat((amountInBracket * bracket.rate).toFixed(2)); 
-    } else {
-      break; 
+
+    if (taxableIncome2 <= bracket.end) {
+      if (i === 0) {
+        // Nivel 0: No se suma acumulado
+        accumulatedTax = parseFloat((taxableIncome2 * bracket.rate).toFixed(2));
+      } else {
+        // Otros niveles: Usar acumulado del nivel anterior
+        const previousBracketEnd = brackets[i - 1].end; // Límite superior del bracket anterior
+        const amountInBracket = taxableIncome2 - previousBracketEnd;
+        accumulatedTax = parseFloat(
+          ((amountInBracket * bracket.rate) + accumulated[i - 1]).toFixed(2)
+        );
+      }
+      break; // Detener el cálculo después de encontrar el nivel correspondiente
     }
   }
 
-
-  return parseFloat(accumulatedTax.toFixed(2));
+  return accumulatedTax;
 }
+
 
 
 
