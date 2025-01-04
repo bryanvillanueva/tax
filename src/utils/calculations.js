@@ -252,7 +252,23 @@ export function getMarginalTaxRateAndLevel2(filingStatus, taxableIncome2) {
   return { marginalRate2, level2 };
 }
 
+// Obtener el Marginal Tax Rate y el Income Level para 1120S
+export function getMarginalTaxRateAndLevel1120S(filingStatus, taxableIncome1120S) {
+  const brackets = taxBrackets[filingStatus];
+  let marginalRate1120s = 0;
+  let level1120s = 0;
 
+  for (let i = 0; i < brackets.length; i++) {
+    if (taxableIncome1120S >= brackets[i].start) {
+      marginalRate1120s = brackets[i].rate;
+      level1120s = i;
+    } else {
+      break;
+    }
+  }
+
+  return { marginalRate1120s, level1120s};
+}
 
 // Calcular el impuesto adeudado (Tax Due) 
 
@@ -313,6 +329,39 @@ export function calculateTaxDue2(filingStatus, taxableIncome2) {
   return accumulatedTax;
 }
 
+// Calcular el Tax due 1120S (Tax Due 1120S)
+
+export function calculateTaxDue1120S(filingStatus, taxableIncome1120S) {
+  taxableIncome1120S = parseFloat(taxableIncome1120S.toFixed(2)); // Asegurarse de que los ingresos tengan 2 decimales
+
+  const brackets = taxBrackets[filingStatus]; // Obtener los brackets según el estado fiscal
+  const accumulated = taxAccumulators[filingStatus]; // Obtener los acumulados correspondientes
+
+  let accumulatedTax1120S = 0;
+
+  for (let i = 0; i < brackets.length; i++) {
+    const bracket = brackets[i];
+
+    if (taxableIncome1120S <= bracket.end) {
+      if (i === 0) {
+        // Nivel 0: No se suma acumulado
+        accumulatedTax1120S = parseFloat((taxableIncome1120S * bracket.rate).toFixed(2));
+      } else {
+        // Otros niveles: Usar acumulado del nivel anterior
+        const previousBracketEnd = brackets[i - 1].end; // Límite superior del bracket anterior
+        const amountInBracket = taxableIncome1120S - previousBracketEnd;
+        accumulatedTax1120S = parseFloat(
+          ((amountInBracket * bracket.rate) + accumulated[i - 1]).toFixed(2)
+        );
+      }
+      break; // Detener el cálculo después de encontrar el nivel correspondiente
+    }
+  }
+
+  return accumulatedTax1120S;
+
+  console.log(accumulatedTax1120S);
+}
 
 
 
