@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { Box, TextField, Typography, MenuItem, Button } from '@mui/material';
+import { Box, TextField, Typography, MenuItem, Button, Container } from '@mui/material';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+
 
 const DeferredCapitalGainForm = ({ onCalculate }) => {
   const [filingStatus, setFilingStatus] = useState('Single');
@@ -7,6 +9,8 @@ const DeferredCapitalGainForm = ({ onCalculate }) => {
   const [typeOfPartner, setTypeOfPartner] = useState('Active');
   const [capitalGain, setCapitalGain] = useState('');
   const [installmentPeriod, setInstallmentPeriod] = useState('');
+  const [formType, setFormType] = useState('1040 - Schedule C/F');
+
 
 
   const trustInterestRate = 0.07; // Valor fijo (7%)
@@ -30,6 +34,9 @@ const DeferredCapitalGainForm = ({ onCalculate }) => {
       ? (parseFloat(potentialInterestIncome) - parseFloat(currentYearTax)).toFixed(2)
       : '';
 
+       
+      
+
   const handleCalculate = () => {
     if (capitalGain && installmentPeriod) {
       const resultData = {
@@ -41,16 +48,27 @@ const DeferredCapitalGainForm = ({ onCalculate }) => {
         deferredTax,
         potentialInterestIncome,
         netBenefit,
+        formType
       };
       onCalculate(resultData);
     }
   };
 
   return (
-    <Box sx={{ mt: 3 }}>
-      <Typography variant="h5" sx={{ mb: 3 }}>
-        Deferred Capital Gain Form
-      </Typography>
+    <Container>
+    <Box sx={{ position: 'relative', mt: 5 }}>
+        {/* Enlace en la esquina superior derecha */}
+        <Box sx={{ position: 'absolute', top: -40, right: 0, }}>
+          <Button
+            href="https://tax.bryanglen.com/data/Strategies-Structure.pdf"
+            target="_blank"
+            sx={{ textTransform: 'none', backgroundColor: '#ffffff', color: '#0858e6', fontSize: '0.875remc', marginBottom: '150px', }}
+            startIcon={<InfoOutlinedIcon />}
+          >
+            View Strategy Details
+          </Button>
+        </Box>
+      
       <Box
         sx={{
           display: 'flex',
@@ -60,9 +78,7 @@ const DeferredCapitalGainForm = ({ onCalculate }) => {
       >
         {/* Campos del lado izquierdo */}
         <Box sx={{ flex: 1 }}>
-          <Typography variant="subtitle1" sx={{ mb: 2 }}>
-            General Inputs
-          </Typography>
+          
           <TextField
             select
             label="Filing Status"
@@ -72,8 +88,10 @@ const DeferredCapitalGainForm = ({ onCalculate }) => {
             sx={{ mb: 2 }}
           >
             <MenuItem value="Single">Single</MenuItem>
-            <MenuItem value="Married">Married</MenuItem>
-            <MenuItem value="Head of Household">Head of Household</MenuItem>
+            <MenuItem value="MFJ">Married Filing Jointly</MenuItem>
+            <MenuItem value="MFS">Married Filing Separately</MenuItem>
+            <MenuItem value="HH">Head of Household</MenuItem>
+            <MenuItem value="QSS">Qualified Surviving Spouse</MenuItem>
           </TextField>
           <TextField
             label="Gross Income"
@@ -99,9 +117,7 @@ const DeferredCapitalGainForm = ({ onCalculate }) => {
 
         {/* Campos del lado derecho */}
         <Box sx={{ flex: 1 }}>
-          <Typography variant="subtitle1" sx={{ mb: 2 }}>
-            Specific Inputs
-          </Typography>
+          
           <TextField
             fullWidth
             label="Capital gain over property sold to the trust"
@@ -125,6 +141,20 @@ const DeferredCapitalGainForm = ({ onCalculate }) => {
             onChange={(e) => setInstallmentPeriod(e.target.value)}
             sx={{ mb: 2 }}
           />
+          <TextField
+                          select
+                          label="Form Type"
+                          fullWidth
+                          value={formType}
+                          onChange={(e) => setFormType(e.target.value)}
+                          margin="normal"
+                        >
+                          <MenuItem value="1040 - Schedule C/F">1040 - Schedule C/F</MenuItem>
+                          <MenuItem value="1040NR - Schedule E">1040NR - Schedule E</MenuItem>
+                          <MenuItem value="1065">1065</MenuItem>
+                          <MenuItem value="1120S">1120S</MenuItem>
+                          <MenuItem value="1120">1120</MenuItem>
+                        </TextField>
         </Box>
       </Box>
 
@@ -173,6 +203,7 @@ const DeferredCapitalGainForm = ({ onCalculate }) => {
         </Button>
       </Box>
     </Box>
+    </Container>
   );
 };
 

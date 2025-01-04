@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { TextField, Button, Container, Box, Alert, Grid, MenuItem } from '@mui/material';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+
+
 
 const LifetimeLearningCredit = () => {
   const [magi, setMagi] = useState(''); // Modified Adjusted Gross Income (MAGI)
@@ -10,6 +13,7 @@ const LifetimeLearningCredit = () => {
   const [taxCredit, setTaxCredit] = useState(0); // Tax Credit value
   const [error, setError] = useState(null);
   const [displayTaxCredit, setDisplayTaxCredit] = useState(false); // Controla cuándo mostrar el Tax Credit
+
 
   useEffect(() => {
     if (mfj === 'Yes') {
@@ -52,11 +56,24 @@ const LifetimeLearningCredit = () => {
     }
 
     setTaxCredit(taxCreditValue);
+    
   };
 
   return (
     <Container>
-      <Box sx={{ mt: 5 }}>
+      <Box sx={{ position: 'relative', mt: 5 }}>
+        {/* Enlace en la esquina superior derecha */}
+        <Box sx={{ position: 'absolute', top: -10, right: 0, }}>
+          <Button
+            href="https://tax.bryanglen.com/data/Strategies-Structure.pdf"
+            target="_blank"
+            sx={{ textTransform: 'none', backgroundColor: '#ffffff', color: '#0858e6', fontSize: '0.875remc', marginBottom: '150px', }}
+            startIcon={<InfoOutlinedIcon />}
+          >
+            View Strategy Details
+          </Button>
+        </Box>
+        
         {error && (
           <Alert severity="error" sx={{ mb: 2 }}>
             {error}
