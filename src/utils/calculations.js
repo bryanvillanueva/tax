@@ -152,7 +152,7 @@ export function calculateNetIncomeHealthReimbursement(grossIncome, totalBenefits
 // Calcular Self-Employment Medicare Tax
 export function calculateSEMedicare(netIncome) {
   if (netIncome <= 0) return 0;
-  return netIncome * 0.029; // Aplicar 2.9% directamente al Net Income
+  return (netIncome * 0.9235 ) * 0.029; // Aplicar 2.9% directamente al Net Income
 }
 
 // Calcular el AGI (Adjusted Gross Income)
@@ -161,8 +161,15 @@ export function calculateAGI(netIncome, selfEmploymentTax) {
 }
 
 // Calcular el Taxable Income
-export function calculateTaxableIncome(agi, filingStatus) {
+export function calculateTaxableIncome(agi, filingStatus, formType, QBID = 0) {
   const standardDeduction = standardDeductions[filingStatus] || 0;
+  
+  // Si el formType es '1040NR - Schedule E', incluye QBID en el cálculo
+  if (formType === '1040NR - Schedule E') {
+    return Math.max(0, agi - standardDeduction - QBID);
+  }
+  
+  // Si no, realiza el cálculo normal
   return Math.max(0, agi - standardDeduction);
 }
 
