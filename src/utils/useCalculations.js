@@ -127,6 +127,9 @@ const useCalculations = () => {
         break;
     }
     console.log(`Selected Form Type: ${formType}`);
+
+      //QBID 1040NR
+      const QBID = 500;
   
       // Cálculo para 1040/1040NR
       const seSocialSecurity = partnerType === 'Active' ? Math.min(netIncome * 0.9235, 168600) * 0.124 : 0;
@@ -134,7 +137,7 @@ const useCalculations = () => {
       const selfEmploymentTax = partnerType === 'Active' ? seSocialSecurity + seMedicare : 0;
       const agi = calculateAGI(netIncome, selfEmploymentTax);
       const standardDeduction = standardDeductions[filingStatus];
-      const taxableIncome = calculateTaxableIncome(agi, filingStatus);
+      const taxableIncome = calculateTaxableIncome(agi, filingStatus, formType, QBID);
       const { marginalRate, level } = getMarginalTaxRateAndLevel(filingStatus, taxableIncome);
       const taxDue = calculateTaxDue(filingStatus, taxableIncome);
       const taxCredits = taxCreditsResults || 0;
@@ -179,7 +182,7 @@ const useCalculations = () => {
       const corpEffectiveTaxRate = corpTaxableIncome !== 0 ? ((corpTaxDue / corpTaxableIncome) * 100).toFixed(2) : '0.00';
       const effectiveSERate2 = netIncome2 > 0 ? ((selfEmploymentTax2 / netIncome2) * 100).toFixed(2) : '0.00';
       
-     
+    
 
       // calculos para el formulario 1120S
      const agi1120S = netIncome;
@@ -228,7 +231,8 @@ const useCalculations = () => {
         effectiveSERate2,
         niitThreshold,
         niitThreshold2,
-        formType
+        formType,
+        QBID,
       };
     };
   

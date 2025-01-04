@@ -162,8 +162,15 @@ export function calculateAGI(netIncome, selfEmploymentTax) {
 }
 
 // Calcular el Taxable Income
-export function calculateTaxableIncome(agi, filingStatus) {
+export function calculateTaxableIncome(agi, filingStatus, formType, QBID = 0) {
   const standardDeduction = standardDeductions[filingStatus] || 0;
+  
+  // Si el formType es '1040NR - Schedule E', incluye QBID en el cálculo
+  if (formType === '1040NR - Schedule E') {
+    return Math.max(0, agi - standardDeduction - QBID);
+  }
+  
+  // Si no, realiza el cálculo normal
   return Math.max(0, agi - standardDeduction);
 }
 

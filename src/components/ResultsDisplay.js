@@ -70,6 +70,29 @@ const ResultsDisplay = ({ results, formTitle }) => {
     </TableCell>
   </TableRow>
 
+            <TableRow sx={{ backgroundColor: '#e8f2ff' }}>
+              <TableCell>Adjusted Gross Income (AGI)</TableCell>
+              <TableCell>{formatCurrency(results.agi)}</TableCell>
+              <TableCell>Not applicable</TableCell>
+            </TableRow>
+            <TableRow sx={{ backgroundColor: '#e8f2ff' }}>
+              <TableCell>Qualified Business Income Deduction</TableCell>
+              
+              <TableCell>
+      {results.formType === '1040NR - Schedule E' ? formatCurrency(results.QBID): '0'}
+    </TableCell>
+              <TableCell>Not applicable</TableCell>
+            </TableRow>
+            <TableRow sx={{ backgroundColor: '#e8f2ff' }}>
+              <TableCell>Standard Deduction</TableCell>
+              <TableCell>{formatCurrency(results.standardDeduction)}</TableCell>
+              <TableCell>Not applicable</TableCell>
+            </TableRow>
+            <TableRow sx={{ backgroundColor: '#e8f2ff' }}>
+              <TableCell>Taxable Income</TableCell>
+              <TableCell>{formatCurrency(results.taxableIncome)}</TableCell>
+              <TableCell>{formatCurrency(results.corpTaxableIncome)}</TableCell>
+            </TableRow>
   {/* Fila vacía para separación */}
   <TableRow>
     <TableCell colSpan={2}>&nbsp;</TableCell>
