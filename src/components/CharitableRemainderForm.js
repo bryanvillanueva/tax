@@ -143,10 +143,11 @@ const CharitableRemainderForm = ({ onCalculate }) => {
                 fullWidth
                 type="number"
                 value={savingsInTax} // Este campo se actualiza automáticamente
-                InputProps={{
-                  readOnly: true, // El campo no es editable
-                }}
                 margin="normal"
+                disabled // Campo deshabilitado
+                InputProps={{
+                  sx: { fontWeight: 'bold', color: '#333' }, // Texto en negrita y color oscuro
+                }}
               />
               <TextField
                 select
