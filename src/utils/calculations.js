@@ -185,6 +185,11 @@ export function calculateTaxableIncome1120S(agi1120S, filingStatus) {
   return Math.max(0, agi1120S - standardDeduction);
 }
 
+export function calculateTaxableIncome1065(agi1120S, filingStatus) {
+  const standardDeduction = standardDeductions[filingStatus] || 0;
+  return Math.max(0, agi1120S - standardDeduction);
+}
+
 // Calcular el NIIT Threshold y el no formula
 export function calculateNIITThreshold(netIncome, filingStatus, partnerType) {
   if (partnerType !== 'Passive') {
@@ -359,8 +364,6 @@ export function calculateTaxDue1120S(filingStatus, taxableIncome1120S) {
   }
 
   return accumulatedTax1120S;
-
-  console.log(accumulatedTax1120S);
 }
 
 

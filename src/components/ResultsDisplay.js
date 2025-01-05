@@ -87,7 +87,7 @@ const ResultsDisplay = ({ results, formTitle }) => {
   <TableRow sx={{ backgroundColor: '#e8f2ff' }}>
     <TableCell>Taxable Income</TableCell>
     <TableCell>
-      {results.formType === '1120' ? formatCurrency(results.corpTaxableIncome) : results.formType === '1120S' ? formatCurrency(results.taxableIncome1120S) : formatCurrency(results.taxableIncome)}
+      {results.formType === '1120' ? formatCurrency(results.corpTaxableIncome) : results.formType === '1065' ? formatCurrency(results.taxableIncome1065) : results.formType === '1120S' ? formatCurrency(results.taxableIncome1120S) : formatCurrency(results.taxableIncome)}
     </TableCell>
   </TableRow>
   {/* Fila vacía para separación */}
@@ -104,7 +104,7 @@ const ResultsDisplay = ({ results, formTitle }) => {
   <TableRow sx={{ backgroundColor: '#e8f2ff' }}>
     <TableCell>Tax Due (Income tax rate)</TableCell>
     <TableCell>
-    {results.formType === '1120' ? formatCurrency(results.corpTaxDue) : results.formType === '1120S' ?  formatCurrency(results.taxDue1120S) : formatCurrency(results.taxDue)}
+    {results.formType === '1120' ? formatCurrency(results.corpTaxDue) : results.formType === '1065' ? formatCurrency(results.taxDue1120S) : results.formType === '1120S' ?  formatCurrency(results.taxDue1120S) : formatCurrency(results.taxDue)}
     </TableCell>
   </TableRow>
   <TableRow sx={{ backgroundColor: '#e8f2ff' }}>
@@ -116,7 +116,7 @@ const ResultsDisplay = ({ results, formTitle }) => {
   <TableRow sx={{ backgroundColor: '#e8f2ff' }}>
     <TableCell>Total Tax Due</TableCell>
     <TableCell>
-      {results.formType === '1120' ? formatCurrency(results.corpTaxDue) : results.formType === '1120S' ? formatCurrency(results.taxDue) : formatCurrency(results.totalTaxDue)}
+      {results.formType === '1120' ? formatCurrency(results.corpTaxDue) : results.formType === '1065' ? formatCurrency(results.taxDue1120S + results.totalSE) : results.formType === '1120S' ? formatCurrency(results.taxDue1120S) : formatCurrency(results.totalTaxDue)}
     </TableCell>
   </TableRow>
 
@@ -128,13 +128,13 @@ const ResultsDisplay = ({ results, formTitle }) => {
   <TableRow sx={{ backgroundColor: '#e8f2ff' }}>
     <TableCell>Effective Tax Rate</TableCell>
     <TableCell>
-      {results.formType === '1120' ? `${results.corpEffectiveTaxRate}%` : results.formType === '1120S' ?  `${results.effectiveTaxRate1120S}%`  : `${results.effectiveTaxRate}%`}
-    </TableCell>
+      {results.formType === '1120' ? `${results.corpEffectiveTaxRate}%` : results.formType === '1065' ? `${results.effectiveTaxRate1065}%` : results.formType === '1120S' ?  `${results.effectiveTaxRate1120S}%`  : `${results.effectiveTaxRate}%`}
+    </TableCell> 
   </TableRow>
   <TableRow sx={{ backgroundColor: '#e8f2ff' }}>
     <TableCell>Marginal Tax Rate</TableCell>
     <TableCell>
-      {results.formType === '1120' ? '21%' : `${results.marginalRate}%`}
+      {results.formType === '1120' ? '21%' : results.formType === '1120S' ?  `${results.marginalRate1120s}%`  : `${results.marginalRate}%`}
     </TableCell>
   </TableRow>
 </TableBody>

@@ -17,6 +17,7 @@ import {
   calculateTaxableIncome,
   calculateTaxableIncome2,
   calculateTaxableIncome1120S,
+  calculateTaxableIncome1065,
   getMarginalTaxRateAndLevel,
   getMarginalTaxRateAndLevel1120S,
   calculateTaxDue,
@@ -190,11 +191,15 @@ const useCalculations = () => {
       // calculos para el formulario 1120S
      const agi1120S = netIncome;
      const taxableIncome1120S = calculateTaxableIncome1120S(agi1120S, filingStatus);
-     const effectiveTaxRate1120S = taxableIncome !== 0 ? ((taxDue / taxableIncome1120S) * 100).toFixed(2) : '0.00';
      const taxDue1120S = calculateTaxDue1120S(filingStatus, taxableIncome1120S);
+     const effectiveTaxRate1120S = taxableIncome1120S !== 0 ? ((taxDue1120S / taxableIncome1120S) * 100).toFixed(2) : '0.00';
      const {marginalRate1120s, level1120s } = getMarginalTaxRateAndLevel1120S(filingStatus, taxableIncome1120S);
+     
 
 
+    // Cálculos adicionales para el formulario 1065
+    const taxableIncome1065 = calculateTaxableIncome1120S(agi1120S, filingStatus);
+    const effectiveTaxRate1065 = taxableIncome1065 !== 0 ? ((taxDue1120S / taxableIncome1065) * 100).toFixed(2) : '0.00';
       return {
         netIncome,
         netIncome2,
@@ -208,6 +213,7 @@ const useCalculations = () => {
         taxableIncome,
         taxableIncome2,
         taxableIncome1120S,
+        taxableIncome1065,
         marginalRate: (marginalRate * 100).toFixed(2),
         marginalRate1120s: (marginalRate1120s * 100).toFixed(2),
         incomeLevel: level,
@@ -232,6 +238,7 @@ const useCalculations = () => {
         effectiveTaxRate,
         effectiveTaxRate2,
         effectiveTaxRate1120S,
+        effectiveTaxRate1065,
         corpEffectiveTaxRate,
         seDeduction,
         seSocialSecurity2,
