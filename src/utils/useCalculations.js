@@ -17,10 +17,13 @@ import {
   calculateTaxableIncome,
   calculateTaxableIncome2,
   calculateTaxableIncome1120S,
+  calculateTaxableIncome1040nr,
   getMarginalTaxRateAndLevel,
   getMarginalTaxRateAndLevel1120S,
+  getMarginalTaxRateAndLevel1040nr,
   calculateTaxDue,
   calculateTaxDue1120S,
+  calculateTaxDue1040nr,
   calculateAdditionalMedicare,
   calculateAdditionalMedicare2,
   getSelfEmploymentRate,
@@ -195,6 +198,13 @@ const useCalculations = () => {
      const {marginalRate1120s, level1120s } = getMarginalTaxRateAndLevel1120S(filingStatus, taxableIncome1120S);
 
 
+     // calculos para 1040nr
+     const taxableincome1040nr = calculateTaxableIncome1040nr (agi, filingStatus, QBID);
+     const taxDue1040nr = calculateTaxDue1040nr(filingStatus, taxableincome1040nr);
+     const totalTaxDue1040nr = taxDue1040nr + selfEmploymentTax;
+     const effectiveTaxRate1040nr = taxableincome1040nr !== 0 ? ((taxDue1040nr / taxableincome1040nr) * 100).toFixed(2) : '0.00';
+     const {marginalRate1040nr, level1040nr } = getMarginalTaxRateAndLevel1040nr(filingStatus, taxableincome1040nr);
+
       return {
         netIncome,
         netIncome2,
@@ -208,15 +218,21 @@ const useCalculations = () => {
         taxableIncome,
         taxableIncome2,
         taxableIncome1120S,
+        taxableincome1040nr,
         marginalRate: (marginalRate * 100).toFixed(2),
         marginalRate1120s: (marginalRate1120s * 100).toFixed(2),
+        marginalRate1040nr: (marginalRate1040nr * 100).toFixed(2),
         incomeLevel: level,
         incomeLevel1120S: level1120s,
+        incomeLevel1040nr: level1040nr,
         taxDue,
         taxDue2,
         taxDue1120S,
+        taxDue1040nr,
         taxCredits,
+        totalTaxDue,
         totalTaxDue2,
+        totalTaxDue1040nr,
         marginalRate2: (marginalRate2 * 100).toFixed(2),
         incomeLevel2: level2,
         seSocialSecurity,
@@ -226,12 +242,12 @@ const useCalculations = () => {
         totalSE2: selfEmploymentTax2,
         additionalMedicare,
         additionalMedicare2,
-        totalTaxDue,
         corpTaxableIncome,
         corpTaxDue,
         effectiveTaxRate,
         effectiveTaxRate2,
         effectiveTaxRate1120S,
+        effectiveTaxRate1040nr,
         corpEffectiveTaxRate,
         seDeduction,
         seSocialSecurity2,
