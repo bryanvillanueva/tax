@@ -187,26 +187,27 @@ const EducationTaxCreditForm = ({ onCalculate }) => {
                 margin="normal"
               />
 
-              <TextField
+             <TextField
                 label="Limit (if zero, no credit available)"
                 fullWidth
                 value={limit === 0 ? 'Not Credit Available' : limit} // Muestra "Not Credit Available" si el límite es 0
-                InputProps={{
-                  readOnly: true, // Solo lectura para el resultado
-                }}
+                disabled // Campo deshabilitado
                 margin="normal"
+                InputProps={{
+                  sx: { fontWeight: 'bold', color: '#333' }, // Texto en negrita y color oscuro
+                }}
               />
 
-              <TextField
+             <TextField
                 label="Phase-out"
                 fullWidth
-                value={phaseOut} 
-                InputProps={{
-                  readOnly: true, // Solo lectura para el resultado
-                }}
+                value={phaseOut}
+                disabled // Campo deshabilitado
                 margin="normal"
+                InputProps={{
+                  sx: { fontWeight: 'bold', color: '#333' }, // Texto en negrita y color oscuro
+                }}
               />
-              
               {maximumRefundable !== null && ( // Mostrar Maximum Refundable si ya está calculado
                 <TextField
                   label="Maximum Amount Refundable"

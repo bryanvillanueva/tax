@@ -165,15 +165,17 @@ const SavingsPlanForm = ({ onCalculate }) => {
                 onChange={(e) => setAnnualContribution(e.target.value)}
                 margin="normal"
               />
-               <TextField
+              <TextField
                 label="Total Annual Contribution"
                 fullWidth
                 type="text"
                 value={totalAnnualContribution !== null ? totalAnnualContribution.toFixed(2) : ''}
-                InputProps={{ readOnly: true }}
                 margin="normal"
+                disabled
+                InputProps={{
+                  sx: { fontWeight: 'bold', color: '#333' },
+                }}
               />
-              
             </Grid>
 
             <Grid item xs={12} md={6}>
@@ -204,21 +206,26 @@ const SavingsPlanForm = ({ onCalculate }) => {
                 margin="normal"
               />
               <TextField
-                label="Total Interes Over the Years"
+                label="Total Interest Over the Years"
                 fullWidth
                 type="text"
                 value={futureValue !== null ? futureValue.toFixed(2) : ''}
-                InputProps={{ readOnly: true }}
                 margin="normal"
+                disabled
+                InputProps={{
+                  sx: { fontWeight: 'bold', color: '#333' }, // Negrita y color más oscuro
+                }}
               />
-
               <TextField
                 label="Total Tax Savings"
                 fullWidth
                 type="text"
                 value={totalTaxSavings !== null ? totalTaxSavings.toFixed(2) : ''}
-                InputProps={{ readOnly: true }}
                 margin="normal"
+                disabled
+                InputProps={{
+                  sx: { fontWeight: 'bold', color: '#333' },
+                }}
               />
               <TextField
                 select
