@@ -161,29 +161,28 @@ export function calculateAGI(netIncome, selfEmploymentTax) {
   return netIncome - selfEmploymentTax / 2;
 }
 
-// Calcular el Taxable Income
-export function calculateTaxableIncome(agi, filingStatus, formType, QBID = 0) {
+// Calcular el Taxable Income 1040
+export function calculateTaxableIncome(agi, filingStatus) {
   const standardDeduction = standardDeductions[filingStatus] || 0;
-  
-  // Si el formType es '1040NR - Schedule E', incluye QBID en el cálculo
-  if (formType === '1040NR - Schedule E') {
-    return Math.max(0, agi - standardDeduction - QBID);
-  }
-  
-  // Si no, realiza el cálculo normal
   return Math.max(0, agi - standardDeduction);
 }
 
-// Calcular el Taxable Income2
+// Calcular el Taxable Income2 sin estrategia
 export function calculateTaxableIncome2(agi2, filingStatus) {
   const standardDeduction = standardDeductions[filingStatus] || 0;
   return Math.max(0, agi2 - standardDeduction);
 }
-
+// Calcular el Taxable Income 1120S
 export function calculateTaxableIncome1120S(agi1120S, filingStatus) {
   const standardDeduction = standardDeductions[filingStatus] || 0;
   return Math.max(0, agi1120S - standardDeduction);
 }
+// calcular el Taxable Income 1040nr
+export function calculateTaxableIncome1040nr(agi, filingStatus, QBID) {
+ const standardDeduction = standardDeductions[filingStatus] || 0;
+ return Math.max(0, agi - standardDeduction - QBID);
+}
+
 
 // Calcular el NIIT Threshold y el no formula
 export function calculateNIITThreshold(netIncome, filingStatus, partnerType) {
@@ -270,6 +269,23 @@ export function getMarginalTaxRateAndLevel1120S(filingStatus, taxableIncome1120S
   return { marginalRate1120s, level1120s};
 }
 
+// Obtener el Marginal Tax Rate y el Income Level para 1040nr
+export function getMarginalTaxRateAndLevel1040nr(filingStatus, taxableincome1040nr) {
+  const brackets = taxBrackets[filingStatus];
+  let marginalRate1040nr = 0;
+  let level1040nr = 0;
+
+  for (let i = 0; i < brackets.length; i++) {
+    if (taxableincome1040nr >= brackets[i].start) {
+      marginalRate1040nr = brackets[i].rate;
+      level1040nr = i;
+    } else {
+      break;
+    }
+  }
+
+  return { marginalRate1040nr, level1040nr};
+}
 // Calcular el impuesto adeudado (Tax Due) 
 
 export function calculateTaxDue(filingStatus, taxableIncome) {
@@ -360,10 +376,41 @@ export function calculateTaxDue1120S(filingStatus, taxableIncome1120S) {
 
   return accumulatedTax1120S;
 
-  console.log(accumulatedTax1120S);
+  
 }
 
+// caucular el Tax Due 1040nr (Tax Due 1040nr)
+export function calculateTaxDue1040nr(filingStatus, taxableincome1040nr) {
+  taxableincome1040nr = parseFloat(taxableincome1040nr.toFixed(2)); // Asegurarse de que los ingresos tengan 2 decimales
 
+  const brackets = taxBrackets[filingStatus]; // Obtener los brackets según el estado fiscal
+  const accumulated = taxAccumulators[filingStatus]; // Obtener los acumulados correspondientes
+
+  let accumulatedTax1040nr = 0;
+
+  for (let i = 0; i < brackets.length; i++) {
+    const bracket = brackets[i];
+
+    if (taxableincome1040nr <= bracket.end) {
+      if (i === 0) {
+        // Nivel 0: No se suma acumulado
+        taxableincome1040nr = parseFloat((taxableincome1040nr * bracket.rate).toFixed(2));
+      } else {
+        // Otros niveles: Usar acumulado del nivel anterior
+        const previousBracketEnd = brackets[i - 1].end; // Límite superior del bracket anterior
+        const amountInBracket = taxableincome1040nr - previousBracketEnd;
+        accumulatedTax1040nr = parseFloat(
+          ((amountInBracket * bracket.rate) + accumulated[i - 1]).toFixed(2)
+        );
+      }
+      break; 
+    }
+  }
+
+  return accumulatedTax1040nr;
+
+  
+}
 
 // Calcular Additional Medicare Tax
 export function calculateAdditionalMedicare(filingStatus, netIncome) {
