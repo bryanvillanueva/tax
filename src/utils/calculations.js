@@ -184,6 +184,11 @@ export function calculateTaxableIncome1040nr(agi, filingStatus, QBID) {
 }
 
 
+export function calculateTaxableIncome1065(agi1120S, filingStatus) {
+  const standardDeduction = standardDeductions[filingStatus] || 0;
+  return Math.max(0, agi1120S - standardDeduction);
+}
+
 // Calcular el NIIT Threshold y el no formula
 export function calculateNIITThreshold(netIncome, filingStatus, partnerType) {
   if (partnerType !== 'Passive') {
@@ -375,8 +380,6 @@ export function calculateTaxDue1120S(filingStatus, taxableIncome1120S) {
   }
 
   return accumulatedTax1120S;
-
-  
 }
 
 // caucular el Tax Due 1040nr (Tax Due 1040nr)
