@@ -139,11 +139,8 @@ const ResultsDisplay = ({ results, formTitle }) => {
     </TableCell>
   </TableRow>
 </TableBody>
-
-
-
-        </Table>
-      </TableContainer>
+ </Table>
+  </TableContainer>
 
       <Typography variant="h5" gutterBottom>
       Values without strategy
@@ -154,77 +151,66 @@ const ResultsDisplay = ({ results, formTitle }) => {
     <TableHead>
       <TableRow>
         <TableCell sx={{ fontWeight: 'bold', backgroundColor: '#fff9c4' }}>Return - Form</TableCell>
-        <TableCell sx={{ fontWeight: 'bold', backgroundColor: '#fff9c4' }}>1040/1040NR</TableCell>
-        <TableCell sx={{ fontWeight: 'bold', backgroundColor: '#fff9c4' }}>1120</TableCell>
+        <TableCell sx={{ fontWeight: 'bold', backgroundColor: '#fff9c4' }}>{results.formType || 'N/A'}</TableCell>
       </TableRow>
     </TableHead>
+
     <TableBody>
       <TableRow sx={{ backgroundColor: '#fff9c4' }}>
         <TableCell>Net Income</TableCell>
-        <TableCell>{formatCurrency(results.netIncome2)}</TableCell>
-        <TableCell>{formatCurrency(results.netIncome2)}</TableCell>
+        <TableCell>{results.formType === '1120' ? formatCurrency(results.netIncome2) : formatCurrency(results.netIncome2)}</TableCell>
       </TableRow>
       <TableRow sx={{ backgroundColor: '#fff9c4' }}>
         <TableCell>Self-Employment Rate</TableCell>
-        <TableCell>{results.selfEmploymentRate}%</TableCell>
-        <TableCell>0%</TableCell>
+        <TableCell>{results.formType === '1120' ? '0%' : `${results.selfEmploymentRate}%`}</TableCell>
       </TableRow>
       <TableRow sx={{ backgroundColor: '#fff9c4' }}>
         <TableCell>Marginal Tax Rate</TableCell>
-        <TableCell>{results.marginalRate}%</TableCell>
-        <TableCell>21%</TableCell>
+        <TableCell>{results.formType === '1120' ? '21%' : `${results.marginalRate}%`}</TableCell>
       </TableRow>
 
       {/* Fila Vacía para Separación */}
       <TableRow>
-        <TableCell colSpan={3}>&nbsp;</TableCell>
+        <TableCell colSpan={2}>&nbsp;</TableCell>
       </TableRow>
 
       <TableRow sx={{ backgroundColor: '#fff9c4' }}>
         <TableCell>Adjusted Gross Income (AGI)</TableCell>
-        <TableCell>{formatCurrency(results.agi2)}</TableCell>
-        <TableCell>Not applicable</TableCell>
+        <TableCell>{results.formType === '1120' ? 'Not applicable' : formatCurrency(results.agi2)}</TableCell>
       </TableRow>
       <TableRow sx={{ backgroundColor: '#fff9c4' }}>
       <TableCell>Qualified Business Income Deduction</TableCell>
-      <TableCell>{'$0.00'}</TableCell>
-      <TableCell>Not applicable</TableCell>
+      <TableCell>{results.formType === '1120' ? '$0.00' : 'Not applicable'}</TableCell>
   </TableRow>
       <TableRow sx={{ backgroundColor: '#fff9c4' }}>
         <TableCell>Standard Deduction</TableCell>
-        <TableCell>{formatCurrency(results.standardDeduction)}</TableCell>
-        <TableCell>Not applicable</TableCell>
+        <TableCell>{results.formType === '1120' ? 'Not applicable' : formatCurrency(results.standardDeduction2)}</TableCell>
       </TableRow>
       <TableRow sx={{ backgroundColor: '#fff9c4' }}>
         <TableCell>Taxable Income</TableCell>
-        <TableCell>{formatCurrency(results.taxableIncome2)}</TableCell>
-        <TableCell>{formatCurrency(results.corpTaxableIncome2)}</TableCell>
+        <TableCell>{results.formType === '1120' ? formatCurrency(results.corpTaxableIncome2) : formatCurrency(results.taxableIncome2)}</TableCell>
       </TableRow>
 
       {/* Fila Vacía para Separación */}
       <TableRow>
-        <TableCell colSpan={3}>&nbsp;</TableCell>
+        <TableCell colSpan={2}>&nbsp;</TableCell>
       </TableRow>
 
       <TableRow sx={{ backgroundColor: '#fff9c4' }}>
         <TableCell>Tax Due (Self-Employment)</TableCell>
-        <TableCell>{formatCurrency(results.totalSE2)}</TableCell>
-        <TableCell>{formatCurrency(0)}</TableCell>
+        <TableCell>{results.formType === '1120' ? '$0.00' : formatCurrency(results.totalSE2)}</TableCell>
       </TableRow>
       <TableRow sx={{ backgroundColor: '#fff9c4' }}>
         <TableCell>Tax Due (Income tax rate)</TableCell>
-        <TableCell>{formatCurrency(results.taxDue2)}</TableCell>
-        <TableCell>{formatCurrency(results.corpTaxDue2)}</TableCell>
+        <TableCell>{results.formType === '1120' ? formatCurrency(results.corpTaxDue2) : formatCurrency(results.taxDue2)}</TableCell>
       </TableRow>
       <TableRow sx={{ backgroundColor: '#fff9c4' }}>
-              <TableCell>Tax Credits</TableCell>
-              <TableCell>Not applicable</TableCell>
-              <TableCell>Not applicable</TableCell>
+        <TableCell>Tax Credits</TableCell>
+            <TableCell>Not applicable</TableCell>
       </TableRow>
       <TableRow sx={{ backgroundColor: '#fff9c4' }}>
         <TableCell>Total Tax Due</TableCell>
-        <TableCell>{formatCurrency(results.totalTaxDue2)}</TableCell>
-        <TableCell>{formatCurrency(results.corpTaxDue2)}</TableCell>
+        <TableCell> {results.formType === '1120' ? formatCurrency(results.corpTaxDue2) : formatCurrency(results.totalTaxDue2)}</TableCell>  
       </TableRow>
       
       {/* Fila Vacía para Separación */}
@@ -234,13 +220,11 @@ const ResultsDisplay = ({ results, formTitle }) => {
 
       <TableRow sx={{ backgroundColor: '#fff9c4' }}>
         <TableCell>Effective Tax Rate</TableCell>
-        <TableCell>{results.effectiveTaxRate2}%</TableCell>
-        <TableCell>{results.corpEffectiveTaxRate}%</TableCell>
+        <TableCell>{results.formType === '1120' ? `${results.corpEffectiveTaxRate}%` : `${results.effectiveTaxRate2}%`}</TableCell>
       </TableRow>
       <TableRow sx={{ backgroundColor: '#fff9c4' }}>
              <TableCell>Effective SE Rate</TableCell>
-             <TableCell>{results.effectiveSERate2}%</TableCell>
-             <TableCell>0%</TableCell>
+             <TableCell>{ results.formType === '1120' ? '0%' : `${results.effectiveSERate2}%`}</TableCell>
       </TableRow>
     </TableBody>
   </Table>

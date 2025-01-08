@@ -16,6 +16,7 @@ import {
   calculateNetIncomeLifeInsurance,
   calculateNetIncomeMaximizeMiscellaneousExpenses,
   calculateNetIncomeMealsDeduction,
+  calculateNetIncomeOperatingLosses,
   calculateSEMedicare,
   calculateAGI,
   calculateTaxableIncome,
@@ -78,6 +79,7 @@ const useCalculations = () => {
     totalNetDeductionMaxi,
     deductionMeals,
     formType,
+    totalNOL,
   }) => {
     // Calcular Net Income según el tipo de cálculo
     let netIncome;
@@ -146,6 +148,9 @@ const useCalculations = () => {
         break;
       case 'mealsDeduction':
         netIncome = calculateNetIncomeMealsDeduction(grossIncome, deductionMeals);
+        break;
+      case 'lossesDeduction':
+        netIncome = calculateNetIncomeOperatingLosses(grossIncome, totalNOL);
         break;
       case 'standard':
           netIncome = calculateNetIncome(grossIncome, cost, investType);
