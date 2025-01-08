@@ -90,11 +90,11 @@ export const taxAccumulators = {
 };
 
 export const standardDeductions = {
-  Single: 13850,
-  MFJ: 27700,
-  MFS: 13850,
-  HH: 20800,
-  QSS: 27700,
+  Single: 14600,
+  MFJ: 29200,
+  MFS: 14600,
+  HH: 21900,
+  QSS: 29200,
 };
 
 export const socialSecurityRate = 0.124;
@@ -113,7 +113,7 @@ export const additionalMedicareThreshold = {
 export const niitThresholds = {
   Single: 200000,
   MFJ: 250000,
-  MFS: 200000,
-  HH: 125000,
+  MFS: 125000,
+  HH: 200000,
   QSS: 250000,
 };
