@@ -124,6 +124,26 @@ export function calculateNetIncomeHealthReimbursement(grossIncome, totalBenefits
   return Math.max(0, grossIncome - totalBenefits); // Evita valores negativos
 }
 
+//calcular el Net income para incomeShifting
+export function calculateNetIncomeIncomeShifting(grossIncome, totalIncomeShifted) {
+  return Math.max(0, grossIncome - totalIncomeShifted); // Evita valores negativos
+}
+
+//calcular el Net income para lifeInsurance
+export function calculateNetIncomeLifeInsurance(grossIncome) {
+  return Math.max(0, grossIncome ); // Evita valores negativos
+}
+
+//calcular el Net income para lifetimeLearningCredit
+export function calculateNetIncomeMaximizeMiscellaneousExpenses(grossIncome, totalNetDeductionMaxi) {
+  return Math.max(0, grossIncome - totalNetDeductionMaxi); // Evita valores negativos 
+}
+
+export function calculateNetIncomeMealsDeduction(grossIncome, deductionMeals) {
+  return Math.max(0, grossIncome - deductionMeals); // Evita valores negativos
+}
+
+
 
 
 
@@ -148,7 +168,7 @@ export function calculateNetIncomeHealthReimbursement(grossIncome, totalBenefits
 
 
 
-//////////////////////////////////////////////////
+/////////////////////calculos generales/////////////////////////////
 
 // Calcular Self-Employment Medicare Tax
 export function calculateSEMedicare(netIncome) {
