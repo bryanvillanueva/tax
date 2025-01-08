@@ -138,11 +138,18 @@ export function calculateNetIncomeLifeInsurance(grossIncome) {
 export function calculateNetIncomeMaximizeMiscellaneousExpenses(grossIncome, totalNetDeductionMaxi) {
   return Math.max(0, grossIncome - totalNetDeductionMaxi); // Evita valores negativos 
 }
+//calcular el Net income para Meals Deduction
 
 export function calculateNetIncomeMealsDeduction(grossIncome, deductionMeals) {
   return Math.max(0, grossIncome - deductionMeals); // Evita valores negativos
 }
 
+//calcular el Net income para Operating Losses
+
+
+export function calculateNetIncomeOperatingLosses(grossIncome, totalNOL) {
+  return Math.max(0, grossIncome - totalNOL); // Evita valores negativos
+}
 
 
 

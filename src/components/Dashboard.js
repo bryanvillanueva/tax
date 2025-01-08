@@ -26,6 +26,7 @@ import LifeInsuranceForm from './LifeInsuranceForm';
 import MealsDeductionForm from './MealsDeductionForm';
 import MaximizeMiscellaneousExpensesForm from './MaximizeMiscellaneousExpensesForm';
 import HealthReimbursementArrangementForm from './HealthReimbursementArragementForm';
+import NetOperatingLossesForm from './NetOperatingLossesForm';
 import FormSelector from './FormSelector';
 
 
@@ -93,6 +94,8 @@ const Dashboard = () => {
           return <MaximizeMiscellaneousExpensesForm onCalculate={setResults} />;
       case 'mealsDeduction':
           return <MealsDeductionForm onCalculate={setResults} />;
+      case 'lossesDeduction':
+          return <NetOperatingLossesForm onCalculate={setResults} />;
       default:
         return <FormSelector onSelectForm={handleSelectForm} />;
     }
@@ -148,6 +151,8 @@ const Dashboard = () => {
           return 'Maximize Miscellaneous Expenses Form';
       case 'mealsDeduction':
           return 'Meals Deduction Form';
+      case 'lossesDeduction':
+          return 'Net Operating Losses (NOL) Form';
       default:
         return '';
     }
