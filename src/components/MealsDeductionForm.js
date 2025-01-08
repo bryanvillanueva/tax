@@ -105,28 +105,6 @@ const MealsDeductionForm = ({ onCalculate }) => {
                 margin="normal"
               />
                <TextField
-                label="Meal Expenses"
-                fullWidth
-                type="number"
-                value={mealExpenses}
-                onChange={(e) => setMealExpenses(e.target.value)}
-                margin="normal"
-              />
-            </Grid>
-
-            {/* Right Side */}
-            <Grid item xs={12} md={6}>
-             
-            <TextField
-                label="100% Deductible"
-                fullWidth
-                type="number"
-                value={cienDeductible}
-                onChange={(e) => setCienDeductible(e.target.value)}
-                margin="normal"
-              />
-        
-              <TextField
                 select
                 label="Type of Partner"
                 fullWidth
@@ -137,7 +115,26 @@ const MealsDeductionForm = ({ onCalculate }) => {
                 <MenuItem value="Active">Active</MenuItem>
                 <MenuItem value="Passive">Passive</MenuItem>
               </TextField>
+            </Grid>
 
+            {/* Right Side */}
+            <Grid item xs={12} md={6}>
+            <TextField
+                label="Meal Expenses"
+                fullWidth
+                type="number"
+                value={mealExpenses}
+                onChange={(e) => setMealExpenses(e.target.value)}
+                margin="normal"
+              />
+            <TextField
+                label="100% Deductible"
+                fullWidth
+                type="number"
+                value={cienDeductible}
+                onChange={(e) => setCienDeductible(e.target.value)}
+                margin="normal"
+              />
               <TextField
                 select
                 label="Form Type"
