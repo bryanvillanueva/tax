@@ -12,6 +12,10 @@ import {
   calculateNetIncomeEducationTaxCredit,
   calculateNetIncomeEducationAssistance,
   calculateNetIncomeHealthReimbursement,
+  calculateNetIncomeIncomeShifting,
+  calculateNetIncomeLifeInsurance,
+  calculateNetIncomeMaximizeMiscellaneousExpenses,
+  calculateNetIncomeMealsDeduction,
   calculateSEMedicare,
   calculateAGI,
   calculateTaxableIncome,
@@ -70,6 +74,9 @@ const useCalculations = () => {
     deduction,
     totalEducationalAssistance,
     totalBenefits,
+    totalIncomeShifted,
+    totalNetDeductionMaxi,
+    deductionMeals,
     formType,
   }) => {
     // Calcular Net Income según el tipo de cálculo
@@ -127,6 +134,18 @@ const useCalculations = () => {
         break;
       case 'healthReimbursement':
         netIncome = calculateNetIncomeHealthReimbursement(grossIncome, totalBenefits);
+        break;
+      case 'incomeShifting':
+        netIncome = calculateNetIncomeIncomeShifting(grossIncome, totalIncomeShifted);
+        break;
+      case 'lifeInsurance':
+        netIncome = calculateNetIncomeLifeInsurance(grossIncome);
+        break;
+      case 'maximizeMiscellaneousExpenses':
+        netIncome = calculateNetIncomeMaximizeMiscellaneousExpenses(grossIncome, totalNetDeductionMaxi);
+        break;
+      case 'mealsDeduction':
+        netIncome = calculateNetIncomeMealsDeduction(grossIncome, deductionMeals);
         break;
       case 'standard':
           netIncome = calculateNetIncome(grossIncome, cost, investType);

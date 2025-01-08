@@ -21,6 +21,10 @@ import ResultsDisplay from './ResultsDisplay';
 import AccountablePlanForm from './AccountableplanForm';
 import AdoptionIncentiveForm from './AdoptionIncentiveForm';
 import DeferredCapitalGainForm from './DeferredCapitalGainForm';
+import IncomeShiftingForm from './IncomeShiftingForm';
+import LifeInsuranceForm from './LifeInsuranceForm';
+import MealsDeductionForm from './MealsDeductionForm';
+import MaximizeMiscellaneousExpensesForm from './MaximizeMiscellaneousExpensesForm';
 import HealthReimbursementArrangementForm from './HealthReimbursementArragementForm';
 import FormSelector from './FormSelector';
 
@@ -81,6 +85,14 @@ const Dashboard = () => {
           return <DeferredCapitalGainForm onCalculate={setResults} />;
       case 'healthReimbursement':
           return <HealthReimbursementArrangementForm onCalculate={setResults} />;
+      case 'incomeShifting':
+          return <IncomeShiftingForm onCalculate={setResults} />;
+      case 'lifeInsurance':
+          return <LifeInsuranceForm onCalculate={setResults} />;
+        case 'maximizeMiscellaneousExpenses':
+          return <MaximizeMiscellaneousExpensesForm onCalculate={setResults} />;
+      case 'mealsDeduction':
+          return <MealsDeductionForm onCalculate={setResults} />;
       default:
         return <FormSelector onSelectForm={handleSelectForm} />;
     }
@@ -128,6 +140,14 @@ const Dashboard = () => {
           return 'Deferred Capital Gain Form';
       case 'healthReimbursement':
           return 'Health Reimbursement Arrangement Form';
+      case 'incomeShifting':
+          return 'Income Shifting Form';
+      case 'lifeInsurance':
+          return 'Life Insurance Form';
+      case 'maximizeMiscellaneousExpenses':
+          return 'Maximize Miscellaneous Expenses Form';
+      case 'mealsDeduction':
+          return 'Meals Deduction Form';
       default:
         return '';
     }
