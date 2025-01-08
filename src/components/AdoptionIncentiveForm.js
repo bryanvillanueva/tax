@@ -214,18 +214,9 @@ const AdoptionIncentiveForm = ({ onCalculate }) => {
                 fullWidth
                 value={TotalAdoptionExpenses}
                 margin="normal"
+                disabled // Campo deshabilitado
                 InputProps={{
-                  readOnly: true,
-                }}
-              />
-
-               <TextField
-                label="Early Withdrawal Penalty Avoided"
-                fullWidth
-                value={EarlyWithdrawalPenaltyAvoided}
-                margin="normal"
-                InputProps={{
-                  readOnly: true,
+                  sx: { fontWeight: 'bold', color: '#00000' }, // Texto en negrita y color oscuro
                 }}
               />
 
@@ -234,10 +225,12 @@ const AdoptionIncentiveForm = ({ onCalculate }) => {
                 fullWidth
                 value={reduction}
                 margin="normal"
+                disabled // Campo deshabilitado
                 InputProps={{
-                  readOnly: true,
+                  sx: { fontWeight: 'bold', color: '#00000' }, // Texto en negrita y color oscuro
                 }}
               />
+
             </Grid>
 
             {/* Right side: Adoption Expenses, Children Adopted, and IRA Early Withdrawal */}
@@ -269,25 +262,28 @@ const AdoptionIncentiveForm = ({ onCalculate }) => {
                 margin="normal"
               />
 
-               <TextField
+              <TextField
                 label="IRA Early Withdrawal Limit"
                 fullWidth
                 value={IRAEarlyWithdrawalLimit}
                 margin="normal"
+                disabled // Campo deshabilitado
                 InputProps={{
-                  readOnly: true,
+                  sx: { fontWeight: 'bold', color: '#00000' }, // Texto en negrita y color oscuro
                 }}
               />
 
-               <TextField
+              <TextField
                 label="Adoption Credit Limit"
                 fullWidth
                 value={AdoptionCreditLimit}
                 margin="normal"
+                disabled // Campo deshabilitado
                 InputProps={{
-                  readOnly: true,
+                  sx: { fontWeight: 'bold', color: '#00000' }, // Texto en negrita y color oscuro
                 }}
               />
+
               <TextField
                 select
                 label="Form Type"
