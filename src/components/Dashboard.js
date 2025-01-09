@@ -24,6 +24,10 @@ import DeferredCapitalGainForm from './DeferredCapitalGainForm';
 import IncomeShiftingForm from './IncomeShiftingForm';
 import LifeInsuranceForm from './LifeInsuranceForm';
 import MealsDeductionForm from './MealsDeductionForm';
+import Solo401kForm from './Solo401kForm';
+import ResearchAndDevelopmentCreditForm from './ResearchAndDevelopmentCreditForm';
+import RothIRAForm from './RothIRAForm';
+import HealthInsuranceDeductionForm from './HealthInsuranceDeductionForm';
 import MaximizeMiscellaneousExpensesForm from './MaximizeMiscellaneousExpensesForm';
 import HealthReimbursementArrangementForm from './HealthReimbursementArragementForm';
 import NetOperatingLossesForm from './NetOperatingLossesForm';
@@ -96,6 +100,14 @@ const Dashboard = () => {
           return <MealsDeductionForm onCalculate={setResults} />;
       case 'lossesDeduction':
           return <NetOperatingLossesForm onCalculate={setResults} />;
+      case 'solo401k':
+          return <Solo401kForm onCalculate={setResults} />;
+      case 'researchAndDevelopmentCredit':
+          return <ResearchAndDevelopmentCreditForm onCalculate={setResults} />;
+      case 'healthInsuranceDeduction':
+          return <HealthInsuranceDeductionForm onCalculate={setResults} />;
+      case 'rothIRA':
+          return <RothIRAForm onCalculate={setResults} />;
       default:
         return <FormSelector onSelectForm={handleSelectForm} />;
     }
@@ -153,6 +165,14 @@ const Dashboard = () => {
           return 'Meals Deduction Form';
       case 'lossesDeduction':
           return 'Net Operating Losses (NOL) Form';
+      case 'solo401k':
+          return 'Solo 401(k) Form';
+      case 'researchAndDevelopmentCredit':
+          return 'Research & Development Credit Form';
+      case 'healthInsuranceDeduction':
+          return 'Health Insurance Deduction Form';
+      case 'rothIRA':
+          return 'Roth IRA Form';
       default:
         return '';
     }

@@ -17,6 +17,10 @@ import {
   calculateNetIncomeMaximizeMiscellaneousExpenses,
   calculateNetIncomeMealsDeduction,
   calculateNetIncomeOperatingLosses,
+  calcularNetIncomeSolo401k,
+  calculateNetIncomeRothIRA,
+  calculateNetIncomeHealthInsuranceDeduction,
+  calculateNetIncomeResearchAndDevelopmentCredit,
   calculateSEMedicare,
   calculateAGI,
   calculateTaxableIncome,
@@ -80,6 +84,8 @@ const useCalculations = () => {
     deductionMeals,
     formType,
     totalNOL,
+    deductionSolo401k,
+    incomeReduction,
   }) => {
     // Calcular Net Income según el tipo de cálculo
     let netIncome;
@@ -125,10 +131,10 @@ const useCalculations = () => {
       case 'educationAssistance':
         netIncome = calculateNetIncomeEducationAssistance(grossIncome, totalEducationalAssistance);
         break;
-        case 'accountablePlan':
+      case 'accountablePlan':
           netIncome = calculateNetIncomeAccountableplan(grossIncome, totalReimbursableExpenses);
           break;
-        case 'adoptionAndIra':
+      case 'adoptionAndIra':
           netIncome = calculateNetIncomeAdoptionPlan(grossIncome);
           break;
       case 'educationTaxCredit':
@@ -152,6 +158,18 @@ const useCalculations = () => {
       case 'lossesDeduction':
         netIncome = calculateNetIncomeOperatingLosses(grossIncome, totalNOL);
         break;
+      case 'solo401k':
+        netIncome = calcularNetIncomeSolo401k(grossIncome, deductionSolo401k);
+        break;
+      case 'researchAndDevelopmentCredit':
+        netIncome = calculateNetIncomeResearchAndDevelopmentCredit(grossIncome);
+        break;
+      case 'rothIRA':
+        netIncome = calculateNetIncomeRothIRA(grossIncome);
+        break;
+      case 'healthInsuranceDeduction':
+        netIncome = calculateNetIncomeHealthInsuranceDeduction(grossIncome, incomeReduction );
+        break;
       case 'standard':
           netIncome = calculateNetIncome(grossIncome, cost, investType);
         break;
@@ -173,7 +191,7 @@ const useCalculations = () => {
       const taxCredits = taxCreditsResults || 0;
       const additionalMedicare = calculateAdditionalMedicare(filingStatus, netIncome);
       const selfEmploymentRate = partnerType === 'Active' ? getSelfEmploymentRate() : 0;
-      const totalTaxDue = taxDue + selfEmploymentTax;
+      const totalTaxDue = taxDue + selfEmploymentTax - taxCredits;
       //const totalTaxDue = taxDue + selfEmploymentTax + additionalMedicare;
       const effectiveTaxRate = taxableIncome !== 0 ? ((taxDue / taxableIncome) * 100).toFixed(2) : '0.00';
       const seDeduction = selfEmploymentTax / 2;
