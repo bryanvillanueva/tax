@@ -145,11 +145,34 @@ export function calculateNetIncomeMealsDeduction(grossIncome, deductionMeals) {
 }
 
 //calcular el Net income para Operating Losses
-
-
 export function calculateNetIncomeOperatingLosses(grossIncome, totalNOL) {
   return Math.max(0, grossIncome - totalNOL); // Evita valores negativos
 }
+
+//cacular el Net income para solo401k
+export function calcularNetIncomeSolo401k(grossIncome, deductionSolo401k) {
+  return Math.max(0, grossIncome - deductionSolo401k); // Evita valores negativos
+}
+//calcular el Net income para researchAndDevelopmentCredit
+export function calculateNetIncomeResearchAndDevelopmentCredit(grossIncome) {
+  return Math.max(0, grossIncome ); // Evita valores negativos
+}
+//calcular el Net income para rothIRA
+export function calculateNetIncomeRothIRA(grossIncome) {
+  return Math.max(0, grossIncome ); // Evita valores negativos
+}
+//calcular el Net income para healthInsuranceDeduction
+export function calculateNetIncomeHealthInsuranceDeduction(grossIncome, incomeReduction ) {
+  return Math.max(0, grossIncome - incomeReduction); // Evita valores negativos
+}
+
+
+
+
+
+
+
+
 
 
 
