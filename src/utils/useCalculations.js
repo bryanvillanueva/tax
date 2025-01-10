@@ -85,7 +85,7 @@ const useCalculations = () => {
     formType,
     totalNOL,
     deductionSolo401k,
-    incomeReduction,
+    totalContribution
   }) => {
     // Calcular Net Income según el tipo de cálculo
     let netIncome;
@@ -168,7 +168,7 @@ const useCalculations = () => {
         netIncome = calculateNetIncomeRothIRA(grossIncome);
         break;
       case 'healthInsuranceDeduction':
-        netIncome = calculateNetIncomeHealthInsuranceDeduction(grossIncome, incomeReduction );
+        netIncome = calculateNetIncomeHealthInsuranceDeduction(grossIncome, totalContribution, );
         break;
       case 'standard':
           netIncome = calculateNetIncome(grossIncome, cost, investType);

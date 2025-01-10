@@ -162,10 +162,9 @@ export function calculateNetIncomeRothIRA(grossIncome) {
   return Math.max(0, grossIncome ); // Evita valores negativos
 }
 //calcular el Net income para healthInsuranceDeduction
-export function calculateNetIncomeHealthInsuranceDeduction(grossIncome, incomeReduction ) {
-  return Math.max(0, grossIncome - incomeReduction); // Evita valores negativos
+export function calculateNetIncomeHealthInsuranceDeduction(grossIncome, totalContribution) {
+  return Math.max(0, grossIncome - totalContribution); // Evita valores negativos
 }
-
 
 
 
