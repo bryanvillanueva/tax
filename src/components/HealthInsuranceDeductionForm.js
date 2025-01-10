@@ -7,13 +7,30 @@ const HealthInsuranceDeductionForm = ({ onCalculate }) => {
   const [filingStatus, setFilingStatus] = useState('Single');
   const [grossIncome, setGrossIncome] = useState('');
   const [partnerType, setPartnerType] = useState('Active');
-  const [healthInsurancePremium, setHealthInsurancePremium] = useState('');
-  const [selfEmploymentIncome, setSelfEmploymentIncome] = useState('');
+  const [averageQualifiedEmployeesCompensation, setAverageQualifiedEmployeesCompensation] = useState('');
+  const [numberOfQualifiedEmployees, setNumberOfQualifiedEmployees] = useState('');
+  const [averageContributionPerEmployee, setAverageContributionPerEmployee] = useState('');
   const [formType, setFormType] = useState('1040 - Schedule C/F');
   const [error, setError] = useState(null);
 
   const { performCalculations } = useCalculations();
 
+ // constantes fijas
+ const LIMIT_ONE = 69000; 
+ const LIMIT_TWO = averageQualifiedEmployeesCompensation ? averageQualifiedEmployeesCompensation * 0.25 : 0;
+
+ const totalContribution = (() => {
+ const avgContribution = averageContributionPerEmployee || 0;
+ const numEmployees = numberOfQualifiedEmployees || 0;
+
+ if (avgContribution > LIMIT_TWO || avgContribution > LIMIT_ONE) {
+   const minLimit = Math.min(LIMIT_ONE, LIMIT_TWO);
+   return minLimit * numEmployees;
+ } else {
+   return avgContribution * numEmployees;
+ }
+ })();
+ 
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -23,30 +40,18 @@ const HealthInsuranceDeductionForm = ({ onCalculate }) => {
       return;
     }
 
-    if (!healthInsurancePremium || parseFloat(healthInsurancePremium) <= 0) {
-      setError('Health Insurance Premium is required and must be greater than 0.');
-      return;
-    }
-
-    if (!selfEmploymentIncome || parseFloat(selfEmploymentIncome) <= 0) {
-      setError('Self-Employment Income is required and must be greater than 0.');
-      return;
-    }
-
- // Income Reduction (formula comparison between Health Insurance Premium and Self-Employment Income)
- const incomeReduction = (healthInsurancePremium > selfEmploymentIncome) ? selfEmploymentIncome : healthInsurancePremium;
- console.log(incomeReduction)
-
     setError(null);
+
 
     const results = performCalculations({
       filingStatus,
       grossIncome: parseFloat(grossIncome),
-      healthInsurancePremium: parseFloat(healthInsurancePremium),
-      selfEmploymentIncome: parseFloat(selfEmploymentIncome),
       formType,
       partnerType,
-      incomeReduction,
+      averageQualifiedEmployeesCompensation,
+      numberOfQualifiedEmployees,
+      averageContributionPerEmployee,
+      totalContribution,
       calculationType: 'healthInsuranceDeduction', 
     });
 
@@ -113,26 +118,59 @@ const HealthInsuranceDeductionForm = ({ onCalculate }) => {
                 <MenuItem value="Active">Active</MenuItem>
                 <MenuItem value="Passive">Passive</MenuItem>
               </TextField>
-            </Grid>
 
-            {/* Lado Derecho */}
-            <Grid item xs={12} md={6}>
+                
               <TextField
-                label="Health Insurance Premium"
+                label="Average Qualified Employees Compensation"
                 fullWidth
                 type="number"
-                value={healthInsurancePremium}
-                onChange={(e) => setHealthInsurancePremium(e.target.value)}
+                value={averageQualifiedEmployeesCompensation}
+                onChange={(e) => setAverageQualifiedEmployeesCompensation(e.target.value)}
                 margin="normal"
               />
 
               <TextField
-                label="Self-Employment Income"
+                label="Limit Two"
+                fullWidth
+                value={LIMIT_TWO} // Mostrar valor dinámico
+                margin="normal"
+                disabled // Campo deshabilitado
+                InputProps={{
+                  sx: { fontWeight: 'bold', color: '#00000' }, // Texto en negrita y color oscuro
+                }}
+              />
+            </Grid>
+
+        {/* Lado Derecho */}
+              <Grid item xs={12} md={6}>
+
+              <TextField
+                label="Number of Qualified Employees"
                 fullWidth
                 type="number"
-                value={selfEmploymentIncome}
-                onChange={(e) => setSelfEmploymentIncome(e.target.value)}
+                value={numberOfQualifiedEmployees}
+                onChange={(e) => setNumberOfQualifiedEmployees(e.target.value)}
                 margin="normal"
+              />
+
+              <TextField
+                label="Average Contribution Per Employee"
+                fullWidth
+                type="number"
+                value={averageContributionPerEmployee}
+                onChange={(e) => setAverageContributionPerEmployee(e.target.value)}
+                margin="normal"
+              />
+
+              <TextField
+                label="Total Contribution"
+                fullWidth
+                value={totalContribution} // Mostrar valor dinámico
+                margin="normal"
+                disabled // Campo deshabilitado
+                InputProps={{
+                  sx: { fontWeight: 'bold', color: '#00000' }, // Texto en negrita y color oscuro
+                }}
               />
 
               <TextField
