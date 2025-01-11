@@ -32,6 +32,9 @@ import MaximizeMiscellaneousExpensesForm from './MaximizeMiscellaneousExpensesFo
 import HealthReimbursementArrangementForm from './HealthReimbursementArragementForm';
 import HealthInsuranceDeductionForm2 from './HealthInsuranceDeductionForm2';
 import NetOperatingLossesForm from './NetOperatingLossesForm';
+import ActiveRealEstateForm from './ActiveRealEstateForm';
+import BackdoorRothForm from './BackdoorRothForm';
+import CancellationByInsolvencyForm from './CancellationByInsolvencyForm';
 import FormSelector from './FormSelector';
 
 
@@ -111,6 +114,12 @@ const Dashboard = () => {
           return <HealthInsuranceDeductionForm2 onCalculate={setResults} />;
       case 'rothIRA':
           return <RothIRAForm onCalculate={setResults} />;
+      case 'ActiveRealEstateForm':
+          return <ActiveRealEstateForm onCalculate={setResults} />;
+      case 'BackdoorRothForm':
+          return <BackdoorRothForm onCalculate={setResults} />;
+      case 'CancellationByInsolvencyForm':
+          return <CancellationByInsolvencyForm onCalculate={setResults} />;
       default:
         return <FormSelector onSelectForm={handleSelectForm} />;
     }
@@ -178,6 +187,12 @@ const Dashboard = () => {
           return 'Health Insurance Deduction Form (Est. 29)';
       case 'rothIRA':
           return 'Roth IRA Form';
+      case 'ActiveRealEstateForm':
+          return 'Active Real Estate Form';
+      case 'BackdoorRothForm':
+          return 'Backdoor Roth Form';
+      case 'CancellationByInsolvencyForm':
+          return 'Cancellation of debt income by insolvency Form';
       default:
         return '';
     }
@@ -227,7 +242,10 @@ const Dashboard = () => {
           </Fab>
         )}
 
-       {results && currentForm !== 'deferredCapitalGain' && <ResultsDisplay results={results} formTitle={getFormTitle()} />}
+{results && currentForm !== 'CancellationByInsolvencyForm' && currentForm !== 'BackdoorRothForm' && currentForm !== 'deferredCapitalGain' && currentForm !== 'ActiveRealEstateForm' && (
+  <ResultsDisplay results={results} formTitle={getFormTitle()} />
+)}
+
 
       </Box>
     </Container>
