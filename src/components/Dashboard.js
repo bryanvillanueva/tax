@@ -25,6 +25,9 @@ import IncomeShiftingForm from './IncomeShiftingForm';
 import LifeInsuranceForm from './LifeInsuranceForm';
 import MealsDeductionForm from './MealsDeductionForm';
 import Solo401kForm from './Solo401kForm';
+import SimpleIRAForm from './SimpleIRAForm';
+import StartupCostOptimizationForm from './StartupCostOptimizationForm';
+import StateTaxSavingsForm from './StateTaxSavingsForm';
 import ResearchAndDevelopmentCreditForm from './ResearchAndDevelopmentCreditForm';
 import RothIRAForm from './RothIRAForm';
 import HealthInsuranceDeductionForm from './HealthInsuranceDeductionForm';
@@ -111,6 +114,12 @@ const Dashboard = () => {
           return <HealthInsuranceDeductionForm2 onCalculate={setResults} />;
       case 'rothIRA':
           return <RothIRAForm onCalculate={setResults} />;
+      case 'simpleIRA':
+          return <SimpleIRAForm onCalculate={setResults} />;
+      case 'startupCostOptimization':
+            return <StartupCostOptimizationForm onCalculate={setResults} />;
+      case 'stateTaxSavings':
+            return <StateTaxSavingsForm onCalculate={setResults} />;
       default:
         return <FormSelector onSelectForm={handleSelectForm} />;
     }
@@ -178,6 +187,12 @@ const Dashboard = () => {
           return 'Health Insurance Deduction Form (Est. 29)';
       case 'rothIRA':
           return 'Roth IRA Form';
+      case 'simpleIRA':
+            return 'Simple IRA Form';
+      case 'startupCostOptimization':
+            return 'Startup Cost Optimization Form';
+      case 'stateTaxSavings':
+            return 'State Tax Savings Form';
       default:
         return '';
     }

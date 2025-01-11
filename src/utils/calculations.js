@@ -170,11 +170,18 @@ export function calculateNetIncomeHealthInsuranceDeduction(grossIncome, totalCon
 export function calculateNetIncomeHealthInsuranceDeduction2 (grossIncome, incomeReduction ) {
   return Math.max(0, grossIncome - incomeReduction); // Evita valores negativos
 }
-
-
-
-
-
+//calcular el Net income para SimpleIRA
+export function calculateNetIncomeSimpleIra (grossIncome, totalEmployerContribution) {
+  return Math.max(0, grossIncome - totalEmployerContribution); // Evita valores negativos
+}
+//calcular net income para startupcost
+export function calculateNetIncomeStartupCost (grossIncome,deductionStartup){
+  return Math.max(0, grossIncome - deductionStartup); // Evita valores negativos
+}
+// calcular net income para StateTaxSaving
+export function calculateNetIncomeStateTaxSavings(grossIncome){
+  return Math.max(0, grossIncome ); // Evita valores negativos
+}
 
 
 
