@@ -166,6 +166,11 @@ export function calculateNetIncomeHealthInsuranceDeduction(grossIncome, totalCon
   return Math.max(0, grossIncome - totalContribution); // Evita valores negativos
 }
 
+//calcular el Net income para healthInsuranceDeduction2
+export function calculateNetIncomeHealthInsuranceDeduction2(grossIncome, incomeReduction ) {
+  return Math.max(0, grossIncome - incomeReduction); // Evita valores negativos
+}
+
 
 
 

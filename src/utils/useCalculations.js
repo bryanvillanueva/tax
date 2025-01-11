@@ -20,6 +20,7 @@ import {
   calcularNetIncomeSolo401k,
   calculateNetIncomeRothIRA,
   calculateNetIncomeHealthInsuranceDeduction,
+  calculateNetIncomeHealthInsuranceDeduction2,
   calculateNetIncomeResearchAndDevelopmentCredit,
   calculateSEMedicare,
   calculateAGI,
@@ -85,7 +86,8 @@ const useCalculations = () => {
     formType,
     totalNOL,
     deductionSolo401k,
-    totalContribution
+    totalContribution,
+    incomeReduction,
   }) => {
     // Calcular Net Income según el tipo de cálculo
     let netIncome;
@@ -169,6 +171,9 @@ const useCalculations = () => {
         break;
       case 'healthInsuranceDeduction':
         netIncome = calculateNetIncomeHealthInsuranceDeduction(grossIncome, totalContribution, );
+        break;
+        case 'healthInsuranceDeduction2':
+          netIncome = calculateNetIncomeHealthInsuranceDeduction2(grossIncome, incomeReduction );
         break;
       case 'standard':
           netIncome = calculateNetIncome(grossIncome, cost, investType);

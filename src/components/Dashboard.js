@@ -30,6 +30,7 @@ import RothIRAForm from './RothIRAForm';
 import HealthInsuranceDeductionForm from './HealthInsuranceDeductionForm';
 import MaximizeMiscellaneousExpensesForm from './MaximizeMiscellaneousExpensesForm';
 import HealthReimbursementArrangementForm from './HealthReimbursementArragementForm';
+import HealthInsuranceDeductionForm2 from './HealthInsuranceDeductionForm2';
 import NetOperatingLossesForm from './NetOperatingLossesForm';
 import FormSelector from './FormSelector';
 
@@ -106,6 +107,8 @@ const Dashboard = () => {
           return <ResearchAndDevelopmentCreditForm onCalculate={setResults} />;
       case 'healthInsuranceDeduction':
           return <HealthInsuranceDeductionForm onCalculate={setResults} />;
+      case 'healthInsuranceDeduction2':
+          return <HealthInsuranceDeductionForm2 onCalculate={setResults} />;
       case 'rothIRA':
           return <RothIRAForm onCalculate={setResults} />;
       default:
@@ -171,6 +174,8 @@ const Dashboard = () => {
           return 'Research & Development Credit Form';
       case 'healthInsuranceDeduction':
           return 'Health Insurance Deduction Form';
+      case 'healthInsuranceDeduction2':
+          return 'Health Insurance Deduction Form (Est. 29)';
       case 'rothIRA':
           return 'Roth IRA Form';
       default:
