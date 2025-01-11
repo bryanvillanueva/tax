@@ -1,7 +1,7 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Login from './components/Login';
-import FormSelector from './components/FormSelector';
+//import FormSelector from './components/FormSelector';
 import Dashboard from './components/Dashboard';
 import ChangePassword from './components/ChangePassword';
 import Profile from './components/profile';

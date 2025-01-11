@@ -45,6 +45,11 @@ const forms = [
   { id: 'simpleIRA', title: 'Simple IRA Form', description: 'Manage Simple IRA contributions, including Employer and Employee Contributions.'},
   { id: 'startupCostOptimization', title: 'Startup Cost Optimization Form', description: 'Optimize and manage startup costs. Input expenses, forecasted revenue, and financing options to ensure efficient allocation of resources and maximum profitability.'},
   { id: 'stateTaxSavings', title: 'State Tax Savings Form', description: 'Calculate and manage state tax savings. Input taxable income, deductions, and applicable state tax rates to optimize tax planning and minimize state tax liabilities.'},
+  { id: 'traditionalIRA', title: 'Traditional IRA Contributions Form', description: 'Calculate and manage contributions to a Traditional IRA. Input income, contribution limits, and tax deductions to optimize retirement savings and minimize current tax liabilities.'},
+  { id: 'unreimbursedExpenses', title: 'Unreimbursed Expenses Form', description: 'Track and manage unreimbursed business expenses. Input expenses such as travel, supplies, and meals to optimize deductions and reduce taxable income.'},
+  { id: 'charitableDonationSavings', title: 'Charitable Donation Savings Form', description: 'Track and manage charitable donations for tax savings. Input donations, applicable tax deductions, and optimize contributions to reduce taxable income and maximize charitable giving benefits.'},
+  { id: 'influencerOptimization', title: 'Influencer Optimization Form', description: 'Optimize influencer marketing strategies. Input campaign details, audience metrics, and ROI to maximize reach, engagement, and conversion rates for better brand partnerships and marketing efficiency.' 
+  }
   
   
 
@@ -54,8 +59,30 @@ const FormSelector = ({ onSelectForm }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [userData, setUserData] = useState(null); // Para almacenar los datos del usuario
-  const [favorites, setFavorites] = useState({}); // Estado para almacenar los favoritos
+  //const [favorites, setFavorites] = useState({}); // Estado para almacenar los favoritos
+  const [favorites, setFavorites] = useState(() => {
+    const savedFavorites = localStorage.getItem('formFavorites');
+    return savedFavorites ? JSON.parse(savedFavorites) : {};
+  });
   const navigate = useNavigate();
+
+    // Función para ordenar los formularios con favoritos primero
+    const getSortedForms = (formsList, favoritesObj, searchTerm) => {
+      const filteredForms = formsList.filter((form) =>
+        form.title.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+  
+      return filteredForms.sort((a, b) => {
+        const aIsFavorite = favoritesObj[a.id] || false;
+        const bIsFavorite = favoritesObj[b.id] || false;
+  
+        if (aIsFavorite && !bIsFavorite) return -1;
+        if (!aIsFavorite && bIsFavorite) return 1;
+        
+        // Si ambos son favoritos o ninguno es favorito, mantener el orden original
+        return forms.indexOf(a) - forms.indexOf(b);
+      });
+    };
 
   // Verificar si hay un token activo al cargar el componente
   useEffect(() => {
@@ -86,9 +113,9 @@ const FormSelector = ({ onSelectForm }) => {
   }, [navigate]);
 
   // Filtrar los formularios por el término de búsqueda
-  const filteredForms = forms.filter((form) =>
+  {/*const filteredForms = forms.filter((form) =>
     form.title.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  );*/}
 
   const handleLogout = () => {
     localStorage.removeItem('authToken'); // Elimina el token
@@ -96,12 +123,19 @@ const FormSelector = ({ onSelectForm }) => {
   };
 
   const toggleFavorite = (formId) => {
-    setFavorites((prevFavorites) => ({
-      ...prevFavorites,
-      [formId]: !prevFavorites[formId],
-    }));
+    setFavorites((prevFavorites) => {
+      const newFavorites = {
+        ...prevFavorites,
+        [formId]: !prevFavorites[formId]
+      };
+      // Guardar en localStorage
+      localStorage.setItem('formFavorites', JSON.stringify(newFavorites));
+      return newFavorites;
+    });
   };
   
+  // Obtener la lista ordenada de formularios
+  const sortedAndFilteredForms = getSortedForms(forms, favorites, searchTerm);
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -220,7 +254,7 @@ const FormSelector = ({ onSelectForm }) => {
     padding: '5px', // Añade un pequeño relleno si es necesario
   }}
 >
-  {filteredForms.map((form) => (
+  {sortedAndFilteredForms.map((form) => (
  <Grid item xs={12} sm={6} md={3} key={form.id}>
  <Card
    variant="outlined"

@@ -28,7 +28,7 @@ const ResultsDisplay = ({ results, formTitle }) => {
        <TableContainer component={Paper} sx={{ mb: 4, marginBottom: '55px', marginTop: '35px' }}>
       <Table >
         <TableHead>
-        <TableCell sx={{ fontWeight: 'bold' }}>Value Withouth Strategy</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>Value Withouth Strategy</TableCell>
               <TableCell sx={{ fontWeight: 'bold' }}>Value with strategy</TableCell>
               <TableCell sx={{ fontWeight: 'bold' }}>Total Savings</TableCell>
         </TableHead>
@@ -56,7 +56,7 @@ const ResultsDisplay = ({ results, formTitle }) => {
       <TableHead>
   <TableRow>
     <TableCell sx={{ fontWeight: 'bold' }}>Return - Form</TableCell>
-    <TableCell>{results.formType || 'N/A'}</TableCell>
+    <TableCell sx={{ fontWeight: 'bold' }}>{results.formType || 'N/A'}</TableCell>
   </TableRow>
 </TableHead>
 <TableBody>
@@ -153,7 +153,7 @@ const ResultsDisplay = ({ results, formTitle }) => {
       <Typography variant="h5" gutterBottom>
       Values without strategy
       </Typography>
-  
+     
   <TableContainer component={Paper} sx={{ mb: 4 }}>
   <Table>
     <TableHead>

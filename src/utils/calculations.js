@@ -183,6 +183,37 @@ export function calculateNetIncomeStateTaxSavings(grossIncome){
   return Math.max(0, grossIncome ); // Evita valores negativos
 }
 
+//calcular Net income para TraditionalIRA
+export function calculateNetIncomeTraditionalIRA (grossIncome, totalDeductionTraditionalIRA) {
+  return Math.max(0, grossIncome - totalDeductionTraditionalIRA ); // Evita valores negativos
+}
+
+
+//calcular Net income para Unreimbursed Expenses
+export function calculateNetIncomeUnreimbursedExpenses (grossIncome, reductionUnreimbursed){
+  return Math.max(0, grossIncome - reductionUnreimbursed); // Evita valores negativos
+}
+
+//calcular Net Income para Charitable Donation Of Appreciated
+export function calculateNetIncomeCharitableDonation (grossIncome,deductionDonation ){
+  return Math.max(0, grossIncome - deductionDonation); // Evita valores negativos
+}
+
+export function calculateNetIncomeInfluencer (grossIncome, deductionInfluencer){
+  return Math.max(0, grossIncome - deductionInfluencer); // Evita valores negativos
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
