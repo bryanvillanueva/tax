@@ -210,8 +210,7 @@ const FormSelector = ({ onSelectForm }) => {
   spacing={2}
   sx={{
     maxWidth: '1250px', // Asegúrate de que coincida con el ancho del contenedor del buscador
-    margin: '0 auto', // Centra el contenedor
-    padding: '21px', // Añade un pequeño relleno si es necesario
+    padding: '5px', // Añade un pequeño relleno si es necesario
   }}
 >
   {filteredForms.map((form) => (

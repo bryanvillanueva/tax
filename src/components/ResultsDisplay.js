@@ -36,7 +36,15 @@ const ResultsDisplay = ({ results, formTitle }) => {
             <TableRow sx={{ backgroundColor: '#e8f2ff',}}>
               <TableCell>{formatCurrency(results.totalTaxDue2)}</TableCell>
               <TableCell>{results.formType === '1120' ? formatCurrency(results.corpTaxDue) : results.formType === '1120S' ? formatCurrency(results.taxDue1120S) : formatCurrency(results.totalTaxDue)}</TableCell>
-              <TableCell sx={{ backgroundColor: '#93f5b0',}}>{results.formType === '1120' ? formatCurrency(results.totalTaxDue2 - results.corpTaxDue) : results.formType === '1120S' ? formatCurrency(results.totalTaxDue2 - results.taxDue) : formatCurrency(results.totalTaxDue2 - results.totalTaxDue)}</TableCell>
+              <TableCell sx={{ 
+                backgroundColor: (results.formType === '1120' 
+               ? results.totalTaxDue2 - results.corpTaxDue 
+               : results.formType === '1120S' 
+               ? results.totalTaxDue2 - results.taxDue 
+               : results.totalTaxDue2 - results.totalTaxDue) <= 0 
+               ? '#e36666' 
+               : '#93f5b0',}}
+               >{results.formType === '1120' ? formatCurrency(results.totalTaxDue2 - results.corpTaxDue) : results.formType === '1120S' ? formatCurrency(results.totalTaxDue2 - results.taxDue) : formatCurrency(results.totalTaxDue2 - results.totalTaxDue)}</TableCell>
             </TableRow>
         </TableBody>
       </Table>
@@ -104,7 +112,7 @@ const ResultsDisplay = ({ results, formTitle }) => {
   <TableRow sx={{ backgroundColor: '#e8f2ff' }}>
     <TableCell>Tax Due (Income tax rate)</TableCell>
     <TableCell>
-    {results.formType === '1120' ? formatCurrency(results.corpTaxDue) : results.formType === '1065' ? formatCurrency(results.taxDue1120S) : results.formType === '1120S' ?  formatCurrency(results.taxDue1120S) : results.formType === '1040NR - Schedule E' ?  formatCurrency(results.taxDue1040nr) : formatCurrency(results.taxDue)}
+    {results.formType === '1120' ? formatCurrency(results.corpTaxDue) : results.formType === '1065' ? formatCurrency(results.taxDue1065) : results.formType === '1120S' ?  formatCurrency(results.taxDue1120S) : results.formType === '1040NR - Schedule E' ?  formatCurrency(results.taxDue1040nr) : formatCurrency(results.taxDue)}
     </TableCell>
   </TableRow>
   <TableRow sx={{ backgroundColor: '#e8f2ff' }}>
@@ -116,7 +124,7 @@ const ResultsDisplay = ({ results, formTitle }) => {
   <TableRow sx={{ backgroundColor: '#e8f2ff' }}>
     <TableCell>Total Tax Due</TableCell>
     <TableCell>
-      {results.formType === '1120' ? formatCurrency(results.corpTaxDue) : results.formType === '1065' ? formatCurrency(results.taxDue1120S + results.totalSE) : results.formType === '1120S' ? formatCurrency(results.taxDue1120S) : results.formType === '1040NR - Schedule E' ? formatCurrency(results.totalTaxDue1040nr) : formatCurrency(results.totalTaxDue)}
+      {results.formType === '1120' ? formatCurrency(results.corpTaxDue) : results.formType === '1065' ? formatCurrency(results.totalTaxDue1065) : results.formType === '1120S' ? formatCurrency(results.taxDue1120S) : results.formType === '1040NR - Schedule E' ? formatCurrency(results.totalTaxDue1040nr) : formatCurrency(results.totalTaxDue)}
     </TableCell>
   </TableRow>
   

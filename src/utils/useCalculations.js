@@ -35,6 +35,7 @@ import {
   calculateTaxDue,
   calculateTaxDue1120S,
   calculateTaxDue1040nr,
+  calculateTaxDue1065,
   calculateAdditionalMedicare,
   calculateAdditionalMedicare2,
   getSelfEmploymentRate,
@@ -182,20 +183,20 @@ const useCalculations = () => {
     console.log(`Selected Form Type: ${formType}`);
 
      //QBID 1040NR
-     const QBID = 500;
+     const QBID = 0;
     
       // Cálculo para 1040/1040NR
-      const seSocialSecurity = partnerType === 'Active' ? Math.min(netIncome * 0.9235, 168600) * 0.124 : 0;
-      const seMedicare = partnerType === 'Active' ? calculateSEMedicare(netIncome) : 0;
-      const selfEmploymentTax = partnerType === 'Active' ? seSocialSecurity + seMedicare : 0;
+      const seSocialSecurity = formType === '1040 - Schedule C/F' ?  Math.min(netIncome * 0.9235, 168600) * 0.124 : partnerType === 'Active' ? Math.min(netIncome * 0.9235, 168600) * 0.124 : 0;
+      const seMedicare = formType === '1040 - Schedule C/F' ?  calculateSEMedicare(netIncome) : partnerType === 'Active' ? calculateSEMedicare(netIncome) : 0;
+      const selfEmploymentTax = formType === '1040 - Schedule C/F' ?  seSocialSecurity + seMedicare : partnerType === 'Active' ? seSocialSecurity + seMedicare : 0;
       const agi = calculateAGI(netIncome, selfEmploymentTax);
-      const standardDeduction = standardDeductions[filingStatus];
+      const standardDeduction = standardDeductions[filingStatus]; 
       const taxableIncome = calculateTaxableIncome(agi, filingStatus, formType, QBID);
       const { marginalRate, level } = getMarginalTaxRateAndLevel(filingStatus, taxableIncome);
       const taxDue = calculateTaxDue(filingStatus, taxableIncome);
       const taxCredits = taxCreditsResults || 0;
       const additionalMedicare = calculateAdditionalMedicare(filingStatus, netIncome);
-      const selfEmploymentRate = partnerType === 'Active' ? getSelfEmploymentRate() : 0;
+      const selfEmploymentRate = formType === '1040 - Schedule C/F' ? getSelfEmploymentRate() : partnerType === 'Active' ? getSelfEmploymentRate() : 0;
       const totalTaxDue = taxDue + selfEmploymentTax - taxCredits;
       //const totalTaxDue = taxDue + selfEmploymentTax + additionalMedicare;
       const effectiveTaxRate = taxableIncome !== 0 ? ((taxDue / taxableIncome) * 100).toFixed(2) : '0.00';
@@ -249,8 +250,11 @@ const useCalculations = () => {
 
 
     // Cálculos adicionales para el formulario 1065
-    const taxableIncome1065 = calculateTaxableIncome1120S(agi1120S, filingStatus);
-    const effectiveTaxRate1065 = taxableIncome1065 !== 0 ? ((taxDue1120S / taxableIncome1065) * 100).toFixed(2) : '0.00';
+    const taxableIncome1065 = calculateTaxableIncome1065(agi, filingStatus);
+    const effectiveTaxRate1065 = taxableIncome1065 !== 0 ? ((taxDue / taxableIncome1065) * 100).toFixed(2) : '0.00';
+    const taxDue1065 = calculateTaxDue1065(filingStatus, taxableIncome1065);
+    const totalTaxDue1065 = taxDue1065 + selfEmploymentTax;
+
 
      // calculos para 1040nr
      const taxableincome1040nr = calculateTaxableIncome1040nr (agi, filingStatus, QBID);
@@ -288,6 +292,8 @@ const useCalculations = () => {
         totalTaxDue,
         totalTaxDue2,
         totalTaxDue1040nr,
+        totalTaxDue1065,
+        taxDue1065,
         marginalRate2: (marginalRate2 * 100).toFixed(2),
         incomeLevel2: level2,
         seSocialSecurity,

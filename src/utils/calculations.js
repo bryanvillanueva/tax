@@ -167,7 +167,7 @@ export function calculateNetIncomeHealthInsuranceDeduction(grossIncome, totalCon
 }
 
 //calcular el Net income para healthInsuranceDeduction2
-export function calculateNetIncomeHealthInsuranceDeduction2(grossIncome, incomeReduction ) {
+export function calculateNetIncomeHealthInsuranceDeduction2 (grossIncome, incomeReduction ) {
   return Math.max(0, grossIncome - incomeReduction); // Evita valores negativos
 }
 
@@ -237,10 +237,10 @@ export function calculateTaxableIncome1040nr(agi, filingStatus, QBID) {
  return Math.max(0, agi - standardDeduction - QBID);
 }
 
-
-export function calculateTaxableIncome1065(agi1120S, filingStatus) {
+// calcular el Taxable Income 1065
+export function calculateTaxableIncome1065(agi, filingStatus) {
   const standardDeduction = standardDeductions[filingStatus] || 0;
-  return Math.max(0, agi1120S - standardDeduction);
+  return Math.max(0, agi - standardDeduction);
 }
 
 // Calcular el NIIT Threshold y el no formula
@@ -345,6 +345,7 @@ export function getMarginalTaxRateAndLevel1040nr(filingStatus, taxableincome1040
 
   return { marginalRate1040nr, level1040nr};
 }
+
 // Calcular el impuesto adeudado (Tax Due) 
 
 export function calculateTaxDue(filingStatus, taxableIncome) {
@@ -464,10 +465,40 @@ export function calculateTaxDue1040nr(filingStatus, taxableincome1040nr) {
     }
   }
 
-  return accumulatedTax1040nr;
-
-  
+  return accumulatedTax1040nr; 
 }
+
+// caucular el Tax Due 1065 (Tax Due 1065)
+export function calculateTaxDue1065(filingStatus, taxableincome1065) {
+  taxableincome1065 = parseFloat(taxableincome1065.toFixed(2)); // Asegurarse de que los ingresos tengan 2 decimales
+
+  const brackets = taxBrackets[filingStatus]; // Obtener los brackets según el estado fiscal
+  const accumulated = taxAccumulators[filingStatus]; // Obtener los acumulados correspondientes
+
+  let accumulatedTax1065 = 0;
+
+  for (let i = 0; i < brackets.length; i++) {
+    const bracket = brackets[i];
+
+    if (taxableincome1065 <= bracket.end) {
+      if (i === 0) {
+        // Nivel 0: No se suma acumulado
+        taxableincome1065 = parseFloat((taxableincome1065 * bracket.rate).toFixed(2));
+      } else {
+        // Otros niveles: Usar acumulado del nivel anterior
+        const previousBracketEnd = brackets[i - 1].end; // Límite superior del bracket anterior
+        const amountInBracket = taxableincome1065 - previousBracketEnd;
+        accumulatedTax1065 = parseFloat(
+          ((amountInBracket * bracket.rate) + accumulated[i - 1]).toFixed(2)
+        );
+      }
+      break; 
+    }
+  }
+
+  return accumulatedTax1065; 
+}
+
 
 // Calcular Additional Medicare Tax
 export function calculateAdditionalMedicare(filingStatus, netIncome) {
