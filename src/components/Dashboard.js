@@ -30,6 +30,10 @@ import StartupCostOptimizationForm from './StartupCostOptimizationForm';
 import StateTaxSavingsForm from './StateTaxSavingsForm';
 import ResearchAndDevelopmentCreditForm from './ResearchAndDevelopmentCreditForm';
 import RothIRAForm from './RothIRAForm';
+import TraditionalIRAContributionsForm from './TraditionalIRAContributionsForm';
+import UnreimbursedPartnershipExpensesForm from './UnreimbursedPartnershipExpensesForm';
+import CharitableDonationOfAppreciatedAssetsForm from './CharitableDonationOfAppreciatedAssetsForm';
+import InfluencerOptimizationForm from './InfluencerOptimizationForm';
 import HealthInsuranceDeductionForm from './HealthInsuranceDeductionForm';
 import MaximizeMiscellaneousExpensesForm from './MaximizeMiscellaneousExpensesForm';
 import HealthReimbursementArrangementForm from './HealthReimbursementArragementForm';
@@ -129,6 +133,14 @@ const Dashboard = () => {
             return <StartupCostOptimizationForm onCalculate={setResults} />;
       case 'stateTaxSavings':
             return <StateTaxSavingsForm onCalculate={setResults} />;
+      case 'traditionalIRA':
+            return <TraditionalIRAContributionsForm onCalculate={setResults} />;
+      case 'unreimbursedExpenses':
+            return <UnreimbursedPartnershipExpensesForm onCalculate={setResults} />;
+      case 'charitableDonationSavings':
+            return <CharitableDonationOfAppreciatedAssetsForm onCalculate={setResults} />;
+      case 'influencerOptimization':
+            return <InfluencerOptimizationForm onCalculate={setResults} />;
       default:
         return <FormSelector onSelectForm={handleSelectForm} />;
     }
@@ -208,6 +220,14 @@ const Dashboard = () => {
             return 'Startup Cost Optimization Form';
       case 'stateTaxSavings':
             return 'State Tax Savings Form';
+      case 'traditionalIRA':
+            return 'Traditional IRA Contributions Form';
+      case 'unreimbursedExpenses':
+            return 'Unreimbursed Expenses Form';
+      case 'charitableDonationSavings':
+            return 'Charitable Donation Savings Form'
+      case 'influencerOptimization':
+            return 'Influencer Optimization Form'
       default:
         return '';
     }

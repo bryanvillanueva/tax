@@ -24,6 +24,10 @@ import {
   calculateNetIncomeSimpleIra,
   calculateNetIncomeStartupCost,
   calculateNetIncomeStateTaxSavings,
+  calculateNetIncomeTraditionalIRA,
+  calculateNetIncomeUnreimbursedExpenses,
+  calculateNetIncomeCharitableDonation,
+  calculateNetIncomeInfluencer,
   calculateNetIncomeResearchAndDevelopmentCredit,
   calculateSEMedicare,
   calculateAGI,
@@ -72,7 +76,6 @@ const useCalculations = () => {
     presentValue,
     tve,
     pbuv,
-    capitalGainTaxDeferred,
     reductionInNetIncome,
     calculationType = 'standard',
     hsac,
@@ -93,6 +96,10 @@ const useCalculations = () => {
     incomeReduction,
     totalEmployerContribution,
     deductionStartup,
+    totalDeductionTraditionalIRA,
+    reductionUnreimbursed,
+    deductionDonation,
+    deductionInfluencer,
   }) => {
     // Calcular Net Income según el tipo de cálculo
     let netIncome;
@@ -188,6 +195,18 @@ const useCalculations = () => {
         break;
       case 'stateTaxSavings':
           netIncome = calculateNetIncomeStateTaxSavings(grossIncome);
+        break;
+      case 'traditionalIRA':
+          netIncome = calculateNetIncomeTraditionalIRA(grossIncome, totalDeductionTraditionalIRA);
+        break;
+      case 'unreimbursedExpenses':
+          netIncome = calculateNetIncomeUnreimbursedExpenses(grossIncome, reductionUnreimbursed);
+        break;
+      case 'charitableDonationSavings':
+          netIncome = calculateNetIncomeCharitableDonation(grossIncome, deductionDonation);
+        break;
+      case 'influencerOptimization':
+          netIncome = calculateNetIncomeInfluencer(grossIncome, deductionInfluencer);
         break;
       case 'standard':
           netIncome = calculateNetIncome(grossIncome, cost, investType);
