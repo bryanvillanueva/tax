@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Box, Typography, Fab, Container, CssBaseline } from '@mui/material';
+import { useParams, useNavigate } from 'react-router-dom';
 import HomeIcon from '@mui/icons-material/Home';
 import DepreciationForm from './DepreciationForm';
 import AugustaRuleForm from './AugustaRuleForm';
@@ -46,21 +47,22 @@ import FormSelector from './FormSelector';
 
 
 const Dashboard = () => {
-  const [currentForm, setCurrentForm] = useState(null);
+  const { formId } = useParams(); // Obtiene el formId de la URL
+  const navigate = useNavigate();
   const [results, setResults] = useState(null);
 
   const handleSelectForm = (form) => {
-    setCurrentForm(form);
+    navigate(`/form-selector/${form}`); // Navega a la ruta con el ID del formulario
     setResults(null);
   };
 
   const handleBackToSelector = () => {
-    setCurrentForm(null);
+    navigate('/form-selector'); // Vuelve a la página principal del dashboard
     setResults(null);
   };
 
   const renderForm = () => {
-    switch (currentForm) {
+    switch (formId) {
       case 'depreciation':
         return <DepreciationForm onCalculate={setResults} />;
       case 'augusta':
@@ -147,7 +149,7 @@ const Dashboard = () => {
   };
 
   const getFormTitle = () => {
-    switch (currentForm) {
+    switch (formId) {
       case 'depreciation':
         return 'Depreciation Form';
       case 'augusta':
@@ -159,7 +161,7 @@ const Dashboard = () => {
       case 'charitableRemainderTrust':
         return 'Charitable Remainder Form';
       case 'reimbursment':
-        return 'Reimbursment of Personal Vehicle Form';
+        return 'Reimbursment Of Personal Vehicle Form';
       case 'hireFamily':
         return 'Hire Your Family Form';
       case 'qualifiedOpportunityFunds':
@@ -211,9 +213,9 @@ const Dashboard = () => {
       case 'ActiveRealEstateForm':
           return 'Active Real Estate Form';
       case 'BackdoorRothForm':
-          return 'Backdoor Roth Form';
+          return 'Back Door Roth Form';
       case 'CancellationByInsolvencyForm':
-          return 'Cancellation of debt income by insolvency Form';
+          return 'Cancellation Of Debt Income By Insolvency Form';
       case 'simpleIRA':
             return 'Simple IRA Form';
       case 'startupCostOptimization':
@@ -238,17 +240,17 @@ const Dashboard = () => {
       <CssBaseline />
 
       {/* Logo */}
-      <Box sx={{ textAlign: 'center', my: 4 }}>
+      <Box sx={{ textAlign: 'center', my: 4, marginTop: 8, }}>
         <img
           src="https://tax.bryanglen.com/logo.png"
           alt="Logo"
-          style={{ maxWidth: '350px', marginBottom: '20px' }}
+          style={{ maxWidth: '350px' }}
         />
       </Box>
 
       {/* Contenedor principal */}
       <Box sx={{ my: 4, textAlign: 'center' }}>
-        {currentForm && (
+        {formId && (
           <Typography variant="h4" gutterBottom sx={{ mt:4 , margin: '0px 0px 0.35em', fontFamily: 'Montserrat, sans-serif',  }}>
             {getFormTitle()}
           </Typography>
@@ -256,7 +258,7 @@ const Dashboard = () => {
 
         {renderForm()}
 
-        {currentForm && (
+        {formId && (
           <Fab
             color="primary"
             aria-label="back"
@@ -277,7 +279,7 @@ const Dashboard = () => {
           </Fab>
         )}
 
-{results && currentForm !== 'CancellationByInsolvencyForm' && currentForm !== 'BackdoorRothForm' && currentForm !== 'deferredCapitalGain' && currentForm !== 'ActiveRealEstateForm' && (
+{results && formId !== 'CancellationByInsolvencyForm' && formId !== 'BackdoorRothForm' && formId !== 'deferredCapitalGain' && formId !== 'ActiveRealEstateForm' && (
   <ResultsDisplay results={results} formTitle={getFormTitle()} />
 )}
 
