@@ -33,6 +33,7 @@ const Profile = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [capsLock, setCapsLock] = useState(false);
   const navigate = useNavigate();
+  
 
   useEffect(() => {
     const fetchUserData = async () => {
