@@ -9,46 +9,48 @@ import axios from 'axios';
 
 // Lista de formularios disponibles
 const forms = [
-  { id: 'depreciation', title: 'Depreciation Form', description: 'Calculate accelerated depreciation (Section 179 and Bonus).' },
-  { id: 'augusta', title: 'Augusta Rule Form', description: 'Calculate deductions under the Augusta Rule.' },
-  { id: 'prepaid', title: 'Prepaid Expenses Form', description: 'Manage and calculate prepaid expenses deductions.' },
-  { id: 'hireKids', title: 'Hire Your Kids Form', description: 'Hire Your Kids Form' },
-  { id: 'charitableRemainderTrust', title: 'Charitable Remainder Form', description: 'Calculate charitable remainder deductions.' },
-  { id: 'reimbursment', title: 'Reimbursment of Personal Vehicle Form', description: 'Calculate reimbursment for personal vehicle.' },
-  { id: 'hireFamily', title: 'Hire Your Family Form', description: 'Calculate deductions for hiring your family members.' },
-  { id: 'qualifiedOpportunityFunds', title: 'Qualified Opportunity Funds (QOF) Form', description: 'Calculate deductions for investing in Qualified Opportunity Funds.' },
-  { id: 'healthSavings', title: "Health Savings Account (HSA) - Employee's Benefits Form", description: "Calculate deductions for contributions to Health Savings Accounts (HSA) based on employee's benefits."}, 
-  { id: 'lifetimeLearningCredit', title: 'MAGI Form', description: 'calaculate Lifetime Learning Credit.' },
-  { id: 'amendedPriorYears', title: 'Amended Prior Year Form', description: 'Calculate adjustments for amended tax returns from prior years.' },
-  { id: 'exemptionQualifiedSmall', title: 'Exemption For Qualified Small Business Stock Form', description: 'Calculate the exemption for capital gains on the sale of Qualified Small Business Stock (QSBS) as per IRS guidelines.' },
-  { id: 'costSegregation', title: 'Cost Segregation Form', description: 'Calculate the new annual depreciation and other values for cost segregation as per IRS guidelines for real estate properties.'},
-  { id: 'savingsPlan', title: 'Savings Plan Form', description: 'Calculate projected savings for future goals, accounting for annual contributions, interest rates, and time periods.'},
-  { id: 'educationAssistance', title: 'Education Assistance Form', description: 'Evaluate the impact of providing educational assistance to employees, including per-employee assistance amounts, limits, and total employees benefited.' },
-  { id: 'educationTaxCredit', title: 'Education Tax Credit Form', description: 'Calculate the tax credit for education expenses, considering factors such as filing status, income, qualified expenses, and the number of students benefited.'},
-  { id: 'accountableplanform', title: 'Accountable Plan Form', description: 'Manage Accountable Plan reimbursement values.'},
-  { id: 'adoptionincentiveform', title: 'Adoption Incentive Form', description: 'Calculate Adoption Incentive values.'},
-  { id: 'deferredCapitalGain', title: 'Deferred Capital Gain Form', description: 'Calculate Deferred Capital Gain values.' },
-  { id: 'healthReimbursement', title: 'Health Reimbursement Arrangement Form', description: 'Calculate the total benefits of the Health Reimbursement Arrangement based on employee benefits.'},
-  { id: 'incomeShifting', title: 'Income Shifting Form', description: 'Calculate the tax benefits of shifting income between family members or entities to optimize overall tax liability.'},
-  { id: 'lifeInsurance', title: 'Life Insurance Form', description: 'Evaluate the benefits and tax implications of incorporating life insurance into your financial strategy.'},
-  { id: 'maximizeMiscellaneousExpenses', title: 'Maximize Miscellaneous Expenses Form', description: 'Analyze and optimize the reclassification of income and expenses to maximize tax deductions and improve financial strategies.'},
-  { id: 'mealsDeduction', title: 'Meals Deduction Form', description: 'Analyze and optimize meal-related expenses for tax deduction purposes, maximizing allowable deductions and improving financial strategies.'},
-  { id: 'lossesDeduction', title: 'Net Operating Losses (NOL) Form', description: 'Calculate and manage Net Operating Losses (NOL) with ease. Input filing details, taxable income, and NOL carryforward to generate accurate deductions and limitations automatically.'},
-  { id: 'solo401k', title: 'Solo 401(k) Form', description: 'Easily calculate and manage Solo 401(k) contributions. Input filing details, gross income, and deferral amounts to ensure accurate results and compliance with contribution limits.'},
-  { id: 'researchAndDevelopmentCredit', title: 'Research & Development Credit Form', description: 'Calculate the tax credit for research and development expenses, considering factors such as company size, eligible R&D costs, and the amount of qualified research activities.'},
-  { id: 'rothIRA', title: 'Roth IRA Form', description: 'Manage Roth IRA contributions, including Annual Contribution and AGI Before Applying the Strategy.' },
-  { id: 'healthInsuranceDeduction2', title: 'Health Insurance Deduction Form', description: 'Manage Health Insurance Premiums and Self-Employment Income, including deductions and adjustments before applying the strategy.'},
-  { id: 'healthInsuranceDeduction', title: 'Health Insurance Deduction Form', description: 'Manage Health Insurance Premiums and Self-Employment Income'},
-  { id: 'ActiveRealEstateForm', title: 'Active Real Estate Form', description: 'Manage Active Real Estate Income and Losses, including Gross Income, Net Rental Loss, and Adjusted Gross Income.'},
-  { id: 'BackdoorRothForm', title: 'Back Door Roth Form', description: 'strategy that allows high-income earners to fund a Roth IRA by first making a non-deductible contribution to a Traditional IRA and then immediately converting it to a Roth IRA, effectively bypassing income limits for direct Roth contributions.'},
-  { id: 'CancellationByInsolvencyForm', title: 'Cancellation Of Debt Income By Insolvency Form', description: 'Cancellation of debt income by insolvency.'},
-  { id: 'simpleIRA', title: 'Simple IRA Form', description: 'Manage Simple IRA contributions, including Employer and Employee Contributions.'},
-  { id: 'startupCostOptimization', title: 'Startup Cost Optimization Form', description: 'Optimize and manage startup costs. Input expenses, forecasted revenue, and financing options to ensure efficient allocation of resources and maximum profitability.'},
-  { id: 'stateTaxSavings', title: 'State Tax Savings Form', description: 'Calculate and manage state tax savings. Input taxable income, deductions, and applicable state tax rates to optimize tax planning and minimize state tax liabilities.'},
-  { id: 'traditionalIRA', title: 'Traditional IRA Contributions Form', description: 'Calculate and manage contributions to a Traditional IRA. Input income, contribution limits, and tax deductions to optimize retirement savings and minimize current tax liabilities.'},
-  { id: 'unreimbursedExpenses', title: 'Unreimbursed Expenses Form', description: 'Track and manage unreimbursed business expenses. Input expenses such as travel, supplies, and meals to optimize deductions and reduce taxable income.'},
-  { id: 'charitableDonationSavings', title: 'Charitable Donation Savings Form', description: 'Track and manage charitable donations for tax savings. Input donations, applicable tax deductions, and optimize contributions to reduce taxable income and maximize charitable giving benefits.'},
-  { id: 'influencerOptimization', title: 'Influencer Optimization Form', description: 'Optimize influencer marketing strategies. Input campaign details, audience metrics, and ROI to maximize reach, engagement, and conversion rates for better brand partnerships and marketing efficiency.'},
+  
+    { code: '1', id: 'depreciation', title: 'Depreciation Form', description: 'Calculate accelerated depreciation (Section 179 and Bonus).' },
+    { code: '1', id: 'augusta', title: 'Augusta Rule Form', description: 'Calculate deductions under the Augusta Rule.' },
+    { code: '1', id: 'prepaid', title: 'Prepaid Expenses Form', description: 'Manage and calculate prepaid expenses deductions.' },
+    { code: '1', id: 'hireKids', title: 'Hire Your Kids Form', description: 'Hire Your Kids Form' },
+    { code: '1', id: 'charitableRemainderTrust', title: 'Charitable Remainder Form', description: 'Calculate charitable remainder deductions.' },
+    { code: '1', id: 'reimbursment', title: 'Reimbursment of Personal Vehicle Form', description: 'Calculate reimbursment for personal vehicle.' },
+    { code: '1', id: 'hireFamily', title: 'Hire Your Family Form', description: 'Calculate deductions for hiring your family members.' },
+    { code: '1', id: 'qualifiedOpportunityFunds', title: 'Qualified Opportunity Funds (QOF) Form', description: 'Calculate deductions for investing in Qualified Opportunity Funds.' },
+    { code: '1', id: 'healthSavings', title: "Health Savings Account (HSA) - Employee's Benefits Form", description: "Calculate deductions for contributions to Health Savings Accounts (HSA) based on employee's benefits." },
+    { code: '1', id: 'lifetimeLearningCredit', title: 'MAGI Form', description: 'calaculate Lifetime Learning Credit.' },
+    { code: '2', id: 'amendedPriorYears', title: 'Amended Prior Year Form', description: 'Calculate adjustments for amended tax returns from prior years.' },
+    { code: '2', id: 'exemptionQualifiedSmall', title: 'Exemption For Qualified Small Business Stock Form', description: 'Calculate the exemption for capital gains on the sale of Qualified Small Business Stock (QSBS) as per IRS guidelines.' },
+    { code: '2', id: 'costSegregation', title: 'Cost Segregation Form', description: 'Calculate the new annual depreciation and other values for cost segregation as per IRS guidelines for real estate properties.' },
+    { code: '2', id: 'savingsPlan', title: 'Savings Plan Form', description: 'Calculate projected savings for future goals, accounting for annual contributions, interest rates, and time periods.' },
+    { code: '2', id: 'educationAssistance', title: 'Education Assistance Form', description: 'Evaluate the impact of providing educational assistance to employees, including per-employee assistance amounts, limits, and total employees benefited.' },
+    { code: '2', id: 'educationTaxCredit', title: 'Education Tax Credit Form', description: 'Calculate the tax credit for education expenses, considering factors such as filing status, income, qualified expenses, and the number of students benefited.' },
+    { code: '2', id: 'accountableplanform', title: 'Accountable Plan Form', description: 'Manage Accountable Plan reimbursement values.' },
+    { code: '2', id: 'adoptionincentiveform', title: 'Adoption Incentive Form', description: 'Calculate Adoption Incentive values.' },
+    { code: '2', id: 'deferredCapitalGain', title: 'Deferred Capital Gain Form', description: 'Calculate Deferred Capital Gain values.' },
+    { code: '2', id: 'healthReimbursement', title: 'Health Reimbursement Arrangement Form', description: 'Calculate the total benefits of the Health Reimbursement Arrangement based on employee benefits.' },
+    { code: '3', id: 'incomeShifting', title: 'Income Shifting Form', description: 'Calculate the tax benefits of shifting income between family members or entities to optimize overall tax liability.' },
+    { code: '3', id: 'lifeInsurance', title: 'Life Insurance Form', description: 'Evaluate the benefits and tax implications of incorporating life insurance into your financial strategy.' },
+    { code: '3', id: 'maximizeMiscellaneousExpenses', title: 'Maximize Miscellaneous Expenses Form', description: 'Analyze and optimize the reclassification of income and expenses to maximize tax deductions and improve financial strategies.' },
+    { code: '3', id: 'mealsDeduction', title: 'Meals Deduction Form', description: 'Analyze and optimize meal-related expenses for tax deduction purposes, maximizing allowable deductions and improving financial strategies.' },
+    { code: '3', id: 'lossesDeduction', title: 'Net Operating Losses (NOL) Form', description: 'Calculate and manage Net Operating Losses (NOL) with ease. Input filing details, taxable income, and NOL carryforward to generate accurate deductions and limitations automatically.' },
+    { code: '3', id: 'solo401k', title: 'Solo 401(k) Form', description: 'Easily calculate and manage Solo 401(k) contributions. Input filing details, gross income, and deferral amounts to ensure accurate results and compliance with contribution limits.' },
+    { code: '3', id: 'researchAndDevelopmentCredit', title: 'Research & Development Credit Form', description: 'Calculate the tax credit for research and development expenses, considering factors such as company size, eligible R&D costs, and the amount of qualified research activities.' },
+    { code: '3', id: 'rothIRA', title: 'Roth IRA Form', description: 'Manage Roth IRA contributions, including Annual Contribution and AGI Before Applying the Strategy.' },
+    { code: '3', id: 'healthInsuranceDeduction2', title: 'Health Insurance Deduction Form', description: 'Manage Health Insurance Premiums and Self-Employment Income, including deductions and adjustments before applying the strategy.' },
+    { code: '3', id: 'healthInsuranceDeduction', title: 'Health Insurance Deduction Form', description: 'Manage Health Insurance Premiums and Self-Employment Income.' },
+    { code: '4', id: 'ActiveRealEstateForm', title: 'Active Real Estate Form', description: 'Manage Active Real Estate Income and Losses, including Gross Income, Net Rental Loss, and Adjusted Gross Income.' },
+    { code: '4', id: 'BackdoorRothForm', title: 'Back Door Roth Form', description: 'Strategy that allows high-income earners to fund a Roth IRA by first making a non-deductible contribution to a Traditional IRA and then immediately converting it to a Roth IRA, effectively bypassing income limits for direct Roth contributions.' },
+    { code: '4', id: 'CancellationByInsolvencyForm', title: 'Cancellation Of Debt Income By Insolvency Form', description: 'Cancellation of debt income by insolvency.' },
+    { code: '4', id: 'simpleIRA', title: 'Simple IRA Form', description: 'Manage Simple IRA contributions, including Employer and Employee Contributions.' },
+    { code: '4', id: 'startupCostOptimization', title: 'Startup Cost Optimization Form', description: 'Optimize and manage startup costs. Input expenses, forecasted revenue, and financing options to ensure efficient allocation of resources and maximum profitability.' },
+    { code: '4', id: 'stateTaxSavings', title: 'State Tax Savings Form', description: 'Calculate and manage state tax savings. Input taxable income, deductions, and applicable state tax rates to optimize tax planning and minimize state tax liabilities.' },
+    { code: '4', id: 'traditionalIRA', title: 'Traditional IRA Contributions Form', description: 'Calculate and manage contributions to a Traditional IRA. Input income, contribution limits, and tax deductions to optimize retirement savings and minimize current tax liabilities.' },
+    { code: '4', id: 'unreimbursedExpenses', title: 'Unreimbursed Expenses Form', description: 'Track and manage unreimbursed business expenses. Input expenses such as travel, supplies, and meals to optimize deductions and reduce taxable income.' },
+    { code: '4', id: 'charitableDonationSavings', title: 'Charitable Donation Savings Form', description: 'Track and manage charitable donations for tax savings. Input donations, applicable tax deductions, and optimize contributions to reduce taxable income and maximize charitable giving benefits.' },
+    { code: '4', id: 'influencerOptimization', title: 'Influencer Optimization Form', description: 'Optimize influencer marketing strategies. Input campaign details, audience metrics, and ROI to maximize reach, engagement, and conversion rates for better brand partnerships and marketing efficiency.' }
+  
   
   
 
@@ -58,11 +60,12 @@ const FormSelector = ({ onSelectForm }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [userData, setUserData] = useState(null); // Para almacenar los datos del usuario
-  //const [favorites, setFavorites] = useState({}); // Estado para almacenar los favoritos
+  const [filteredForms, setFilteredForms] = useState([]); // Formularios filtrados según user_level
   const [favorites, setFavorites] = useState(() => {
     const savedFavorites = localStorage.getItem('formFavorites');
     return savedFavorites ? JSON.parse(savedFavorites) : {};
   });
+
   const navigate = useNavigate();
 
     // Función para ordenar los formularios con favoritos primero
@@ -84,7 +87,7 @@ const FormSelector = ({ onSelectForm }) => {
     };
 
   // Verificar si hay un token activo al cargar el componente
-  useEffect(() => {
+ useEffect(() => {
     const token = localStorage.getItem('authToken');
 
     if (!token) {
@@ -100,7 +103,16 @@ const FormSelector = ({ onSelectForm }) => {
             Authorization: `Bearer ${token}`, // Envía el token al backend
           },
         });
-        setUserData(response.data); // Almacena los datos del usuario
+        const userData = response.data;
+        setUserData(userData); // Almacena los datos del usuario
+
+   
+       // Obtener formularios filtrados desde el backend
+       const formsResponse = await axios.get(`https://taxbackend-production.up.railway.app/forms/${userData.user_level}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setFilteredForms(formsResponse.data);
+
       } catch (error) {
         console.error('Error al validar el token:', error.message);
         localStorage.removeItem('authToken'); // Elimina el token si no es válido
@@ -111,10 +123,7 @@ const FormSelector = ({ onSelectForm }) => {
     validateToken();
   }, [navigate]);
 
-  // Filtrar los formularios por el término de búsqueda
-  {/*const filteredForms = forms.filter((form) =>
-    form.title.toLowerCase().includes(searchTerm.toLowerCase())
-  );*/}
+ 
 
   const handleLogout = () => {
     localStorage.removeItem('authToken'); // Elimina el token
@@ -134,7 +143,10 @@ const FormSelector = ({ onSelectForm }) => {
   };
   
   // Obtener la lista ordenada de formularios
-  const sortedAndFilteredForms = getSortedForms(forms, favorites, searchTerm);
+  const sortedAndFilteredForms = getSortedForms(filteredForms, favorites, searchTerm);
+
+  
+
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -203,8 +215,8 @@ const FormSelector = ({ onSelectForm }) => {
 
         {/* Contenido del FormSelector */}
         <Box sx={{ mt: 5}}>
-      {/* Contenedor del logo */}
-      <Box sx={{ textAlign: 'center', mb: 4, marginTop:-1}}>
+        {/* Contenedor del logo */}
+        <Box sx={{ textAlign: 'center', mb: 4, marginTop:-1}}>
         
       </Box>
 
