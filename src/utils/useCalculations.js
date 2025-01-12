@@ -2,7 +2,7 @@ import {
   calculateNetIncome,
   calculateNetIncomeAugusta,
   calculateNetIncomeCRT,
-  calculateSelfEmploymentTax,
+  
   calculateNetIncomeKids,
   calculateReimbursment,
   calculateNetIncomeAmanda,
@@ -34,7 +34,7 @@ import {
   calculateTaxableIncome,
   calculateTaxableIncome2,
   calculateTaxableIncome1120S,
-  calculateTaxableIncome1065,
+
   calculateTaxableIncome1040nr,
   getMarginalTaxRateAndLevel,
   getMarginalTaxRateAndLevel1120S,
@@ -53,7 +53,7 @@ import {
   calculateNetIncomeHSA,
   calculateNIITThreshold,
   calculateNIITThreshold2,
-  calculateTaxcredits,
+  
   calculateNetIncomeAccountableplan,
   calculateNetIncomeAdoptionPlan
   
