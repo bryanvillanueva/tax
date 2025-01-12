@@ -59,7 +59,6 @@ const Favorites = ({ onSelectForm }) => {
        return savedFavorites ? JSON.parse(savedFavorites) : {};
      });
    
-    
     const [drawerOpen, setDrawerOpen] = useState(false);
     const navigate = useNavigate();
     const [userData ,setUserData] = useState(null); // Para almacenar los datos del usuario
@@ -132,7 +131,7 @@ const Favorites = ({ onSelectForm }) => {
 
   return (
     <Box sx={{ mt: 5, textAlign: 'center' }}>
-       {/* Logo */}
+            {/* Logo */}
             <Box sx={{ textAlign: 'center', my: 4, marginTop: 8, }}>
               <img
                 src="https://tax.bryanglen.com/logo.png"
