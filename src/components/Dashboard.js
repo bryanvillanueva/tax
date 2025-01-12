@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Container, CssBaseline, SpeedDial, SpeedDialAction } from '@mui/material';
+import { Box, Typography, Container, CssBaseline, IconButton } from '@mui/material';
 import { useParams, useNavigate } from 'react-router-dom';
-import HomeIcon from '@mui/icons-material/Home';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import SpeedDialIcon from '@mui/icons-material/MoreVert';
 import DepreciationForm from './DepreciationForm';
 import AugustaRuleForm from './AugustaRuleForm';
 import PrepaidExpensesForm from './PrepaidExpensesForm';
@@ -46,6 +43,9 @@ import ActiveRealEstateForm from './ActiveRealEstateForm';
 import BackdoorRothForm from './BackdoorRothForm';
 import CancellationByInsolvencyForm from './CancellationByInsolvencyForm';
 import FormSelector from './FormSelector';
+import CustomSpeedDial from './CustomSpeedDial';
+import CustomDrawer from './CustomDrawer';
+import MenuIcon from '@mui/icons-material/Menu';
 import axios from 'axios';
 
 
@@ -54,8 +54,9 @@ const Dashboard = () => {
   const { formId } = useParams(); // Obtiene el formId de la URL
   const navigate = useNavigate();
   const [results, setResults] = useState(null);
-  const [open, setOpen] = useState(false);
+  //const [open, setOpen] = useState(false);
    const [userData, setUserData] = useState(null); 
+   const [drawerOpen, setDrawerOpen] = useState(false);
 
   // Verificar si hay un token activo al cargar el componente
   useEffect(() => {
@@ -85,23 +86,15 @@ const Dashboard = () => {
     validateToken();
   }, [navigate]);
 
+  useEffect(() => {
+    setResults(null); // Reinicia los resultados cuando cambia el formulario
+  }, [formId]);
+
   const handleSelectForm = (form) => {
     navigate(`/form-selector/${form}`); // Navega a la ruta con el ID del formulario
     setResults(null);
   };
 
-  const actions = [
-    {
-      icon: <HomeIcon sx={{ color: '#0954de' }} />, // Ícono Home con azul del botón principal
-      name: 'Home',
-      action: () => navigate('/form-selector'),
-    },
-    {
-      icon: <FavoriteIcon sx={{ color: '#ff0000' }} />, // Ícono Favorites en rojo
-      name: 'Favorites',
-      action: () => navigate('/favorites'),
-    },
-  ];
 
   const renderForm = () => {
     switch (formId) {
@@ -280,6 +273,35 @@ const Dashboard = () => {
   return (
     <Container>
       <CssBaseline />
+     {/* Botón para abrir el Drawer */} 
+     <IconButton
+  size="large"
+  onClick={() => setDrawerOpen(true)}
+  sx={{
+    position: 'absolute',
+    top: 16,
+    left: 16,
+    color: '#fff',
+    backgroundColor: '#0858e6',
+    transition: 'transform 0.2s, background-color 0.2s', // Transición suave para hover y pulse
+    '&:hover': {
+      backgroundColor: '#0746b0', // Azul oscuro al hacer hover
+      transform: 'scale(1.1)', // Efecto de pulse al hover
+    },
+    '&:active': {
+      transform: 'scale(0.95)', // Pequeño efecto de clic
+    },
+  }}
+>
+  <MenuIcon />
+</IconButton>
+
+      {/* Reutiliza el Drawer */}
+      <CustomDrawer
+        drawerOpen={drawerOpen}
+        setDrawerOpen={setDrawerOpen}
+        userData={userData}
+      />
 
       {/* Logo */}
       <Box sx={{ textAlign: 'center', my: 4, marginTop: 8, }}>
@@ -302,35 +324,7 @@ const Dashboard = () => {
 
         {formId && (
 
-      /* Speed Dial */
-      <SpeedDial
-        ariaLabel="Navigation Actions"
-        sx={{
-          position: 'fixed',
-          bottom: 32,
-          right: 32,
-          '& .MuiFab-primary': {
-            backgroundColor: '#0954de', // Color de fondo del SpeedDial principal
-            '&:hover': {
-              backgroundColor: '#0746b0', // Color de hover
-            },
-          },
-        }}
-        icon={<SpeedDialIcon />}
-        onClose={() => setOpen(false)}
-        onOpen={() => setOpen(true)}
-        open={open}
-      >
-        {actions.map((action) => (
-          <SpeedDialAction
-            key={action.name}
-            icon={action.icon} // Colores definidos en cada acción
-            tooltipTitle={action.name}
-            tooltipOpen
-            onClick={action.action}
-          />
-        ))}
-      </SpeedDial>
+          <CustomSpeedDial />
         )}
 
 {results && formId !== 'CancellationByInsolvencyForm' && formId !== 'BackdoorRothForm' && formId !== 'deferredCapitalGain' && formId !== 'ActiveRealEstateForm' && (

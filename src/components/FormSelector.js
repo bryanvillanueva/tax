@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Typography, Grid, Card, CardActionArea, CardContent, TextField, Container, Drawer, IconButton, List, ListItem, ListItemText, Divider, Button, Avatar } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-import LogoutIcon from '@mui/icons-material/Logout';
+import CustomDrawer from './CustomDrawer'; // Importa el Drawer reutilizable
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { useNavigate } from 'react-router-dom';
@@ -151,60 +151,35 @@ const FormSelector = ({ onSelectForm }) => {
   return (
     <Box sx={{ display: 'flex' }}>
       
-      {/* Drawer */}
-      <Drawer
-        anchor="left"
-        open={drawerOpen}
-        onClose={() => setDrawerOpen(false)}  
-      >
-        <Box sx={{ width: 250, p: 2 }}>
-          {userData && (
-            <>
-              <Box sx={{ textAlign: 'center', mb: 2 }}>
-                <Avatar
-                  sx={{ width: 64, height: 64, mx: 'auto', mb: 1 }}
-                  src={userData.profilePicture || 'https://tax.bryanglen.com/user.png'} // Reemplaza con un campo de imagen si existe
-                  alt={userData.firstName}
-                />
-                <Typography variant="h6" sx={{ fontWeight: 'bold', fontFamily: 'Montserrat, sans-serif' }}>
-                  {`${userData.first_name} ${userData.last_name}`}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  {userData.email}
-                </Typography>
-              </Box>
-              <Divider sx={{ mb: 2 }} />
-            </>
-          )}
-          <List>
-            <ListItem button onClick={() => navigate('/profile')}>
-              <ListItemText primary="Profile" />
-            </ListItem>
-            <ListItem button onClick={() => navigate('/form-selector')}>
-                <ListItemText primary="Dashboard" />
-            </ListItem>
-            <ListItem button onClick={() => navigate('/favorites')}>
-              <ListItemText primary="Favorites" />
-            </ListItem>
-            <ListItem button onClick={() => window.open('https://tax.bryanglen.com/shop-2/', '_blank')}>
-               <ListItemText primary="Shop" />
-            </ListItem>
-            <ListItem button onClick={() => navigate('/support')}>
-              <ListItemText primary="Support" />
-            </ListItem>
-          </List>
-          <Divider sx={{ my: 2 }} />
-          <Button
-            variant="contained"
-            color="primary"
-            startIcon={<LogoutIcon />}
-            fullWidth
-            onClick={handleLogout}
-          >
-            Logout
-          </Button>
-        </Box>
-      </Drawer>
+     {/* Botón para abrir el Drawer */}
+     <IconButton
+  size="large"
+  onClick={() => setDrawerOpen(true)}
+  sx={{
+    position: 'absolute',
+    top: 16,
+    left: 16,
+    color: '#fff',
+    backgroundColor: '#0858e6',
+    transition: 'transform 0.2s, background-color 0.2s', // Transición suave para hover y pulse
+    '&:hover': {
+      backgroundColor: '#0746b0', // Azul oscuro al hacer hover
+      transform: 'scale(1.1)', // Efecto de pulse al hover
+    },
+    '&:active': {
+      transform: 'scale(0.95)', // Pequeño efecto de clic
+    },
+  }}
+>
+  <MenuIcon />
+</IconButton>
+
+      {/* Reutiliza el Drawer */}
+      <CustomDrawer
+        drawerOpen={drawerOpen}
+        setDrawerOpen={setDrawerOpen}
+        userData={userData}
+      />
 
       {/* Contenido principal */}
       <Box sx={{ flex: 1 }}>

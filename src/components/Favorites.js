@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Grid, Card, CardActionArea, CardContent, IconButton ,Fab, Container, Drawer, List, ListItem, ListItemText, Divider, Button, Avatar } from '@mui/material';
+import { Box, Typography, Grid, Card, CardActionArea, CardContent, IconButton} from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-import LogoutIcon from '@mui/icons-material/Logout';
+import CustomDrawer from './CustomDrawer';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { useNavigate } from 'react-router-dom';
-import HomeIcon from '@mui/icons-material/Home';
+import CustomSpeedDial from './CustomSpeedDial';
 import axios from 'axios';
 
 
@@ -141,92 +141,42 @@ const Favorites = ({ onSelectForm }) => {
             </Box>
 
       {/* Drawer */}
-      <Drawer
-        anchor="left"
-        open={drawerOpen}
-        onClose={() => setDrawerOpen(false)}  
-      >
-        <Box sx={{ width: 250, p: 2 }}>
-          {userData && (
-            <>
-              <Box sx={{ textAlign: 'center', mb: 2 }}>
-                <Avatar
-                  sx={{ width: 64, height: 64, mx: 'auto', mb: 1 }}
-                  src={userData.profilePicture || 'https://tax.bryanglen.com/user.png'} // Reemplaza con un campo de imagen si existe
-                  alt={userData.firstName}
-                />
-                <Typography variant="h6" sx={{ fontWeight: 'bold', fontFamily: 'Montserrat, sans-serif' }}>
-                  {`${userData.first_name} ${userData.last_name}`}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  {userData.email}
-                </Typography>
-              </Box>
-              <Divider sx={{ mb: 2 }} />
-            </>
-          )}
-          <List>
-            <ListItem button onClick={() => navigate('/profile')}>
-              <ListItemText primary="Profile" />
-            </ListItem>
-            <ListItem button onClick={() => navigate('/form-selector')}>
-              <ListItemText primary="Dashboard" />
-            </ListItem>
-            <ListItem button onClick={() => navigate('/favorites')}>
-              <ListItemText primary="Favorites" />
-            </ListItem>
-            <ListItem button onClick={() => window.open('https://tax.bryanglen.com/shop-2/', '_blank')}>
-               <ListItemText primary="Shop" />
-            </ListItem>
-            <ListItem button onClick={() => navigate('/support')}>
-              <ListItemText primary="Support" />
-            </ListItem>
-          </List>
-          <Divider sx={{ my: 2 }} />
-          <Button
-            variant="contained"
-            color="primary"
-            startIcon={<LogoutIcon />}
-            fullWidth
-            onClick={handleLogout}
-          >
-            Logout
-          </Button>
-        </Box>
-      </Drawer>
+      
        {/* Botón para abrir el Drawer */}
-       <IconButton size='large'
-          onClick={() => setDrawerOpen(true)}
-          sx={{ position: 'absolute', top: 16, left: 16, color: '#fff', backgroundColor: '#0858e6',}}
-        >
-          <MenuIcon />
-        </IconButton>
+       <IconButton
+  size="large"
+  onClick={() => setDrawerOpen(true)}
+  sx={{
+    position: 'absolute',
+    top: 16,
+    left: 16,
+    color: '#fff',
+    backgroundColor: '#0858e6',
+    transition: 'transform 0.2s, background-color 0.2s', // Transición suave para hover y pulse
+    '&:hover': {
+      backgroundColor: '#0746b0', // Azul oscuro al hacer hover
+      transform: 'scale(1.1)', // Efecto de pulse al hover
+    },
+    '&:active': {
+      transform: 'scale(0.95)', // Pequeño efecto de clic
+    },
+  }}
+>
+  <MenuIcon />
+</IconButton>
+
+      {/* Reutiliza el Drawer */}
+      <CustomDrawer
+        drawerOpen={drawerOpen}
+        setDrawerOpen={setDrawerOpen}
+        userData={userData}
+      />
       
       <Typography variant="h4" gutterBottom sx={{ fontFamily: 'Montserrat, sans-serif', fontWeight: 'bold' }}>
         Favorites
       </Typography>
 
-      <Fab
-            color="primary"
-            aria-label="back"
-            onClick={() => {
-                // Redirigir al FormSelector
-                navigate('/');
-              }}
-            sx={{
-              position: 'fixed',
-              bottom: 32,
-              right: 32,
-              width: 80,
-              height: 80,
-              backgroundColor: '#0858e6',
-              '&:hover': {
-                backgroundColor: '#064bb5',
-              },
-            }}
-          >
-            <HomeIcon sx={{ color: '#fff' }} />
-          </Fab>
+      <CustomSpeedDial /> {/* Incluye el SpeedDial */}
 
       {favoriteForms.length === 0 ? (
         <Typography variant="body1" sx={{ mt: 2, fontFamily: 'Montserrat, sans-serif' }}>
