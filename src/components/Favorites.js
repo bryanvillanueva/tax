@@ -54,11 +54,25 @@ const forms = [
 ];
 
 const Favorites = ({ onSelectForm }) => {
-    const [favorites, setFavorites] = useState({});
+    const [favorites, setFavorites] = useState(() => {
+       const savedFavorites = localStorage.getItem('formFavorites');
+       return savedFavorites ? JSON.parse(savedFavorites) : {};
+     });
+   
     const [drawerOpen, setDrawerOpen] = useState(false);
     const navigate = useNavigate();
     const [userData ,setUserData] = useState(null); // Para almacenar los datos del usuario
   
+
+    const handleRemoveFavorite = (formId, event) => {
+      event.stopPropagation(); // Previene que se active el CardActionArea
+      const newFavorites = { ...favorites };
+      delete newFavorites[formId];
+      setFavorites(newFavorites);
+      localStorage.setItem('formFavorites', JSON.stringify(newFavorites));
+  };
+
+
   // Verificar si hay un token activo al cargar el componente
   useEffect(() => {
     const token = localStorage.getItem('authToken');
@@ -117,7 +131,7 @@ const Favorites = ({ onSelectForm }) => {
 
   return (
     <Box sx={{ mt: 5, textAlign: 'center' }}>
-       {/* Logo */}
+            {/* Logo */}
             <Box sx={{ textAlign: 'center', my: 4, marginTop: 8, }}>
               <img
                 src="https://tax.bryanglen.com/logo.png"
@@ -224,6 +238,7 @@ const Favorites = ({ onSelectForm }) => {
             <Grid item xs={12} sm={6} md={3} key={form.id}>
               <Card variant="outlined" sx={{ height: '100%', borderRadius: '12px', position: 'relative' }}>
                 <IconButton
+                 onClick={(e) => handleRemoveFavorite(form.id, e)}
                   sx={{
                     position: 'absolute',
                     top: 8,
