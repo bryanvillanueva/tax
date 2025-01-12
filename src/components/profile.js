@@ -5,7 +5,7 @@ import {
   Avatar,
   Tabs,
   Tab,
-  Fab,
+  IconButton,
   Container,
   TextField,
   Button,
@@ -13,18 +13,13 @@ import {
   CircularProgress,
   Alert,
   InputAdornment,
-  IconButton,
-  Drawer,
-  List,
-  ListItem,
-  ListItemText,
-  Divider,
+  
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import HomeIcon from '@mui/icons-material/Home';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import LogoutIcon from '@mui/icons-material/Logout';
+import CustomDrawer from './CustomDrawer';
+import CustomSpeedDial from './CustomSpeedDial'; // Importa el SpeedDial
 import MenuIcon from '@mui/icons-material/Menu';
 import axios from 'axios';
 
@@ -115,70 +110,34 @@ const Profile = () => {
 
   return (
     <>
-      {/* Drawer */}
-      <Drawer
-        anchor="left"
-        open={drawerOpen}
-        onClose={() => setDrawerOpen(false)}
-      >
-        <Box sx={{ width: 250, p: 2 }}>
-          {userData && (
-            <>
-              <Box sx={{ textAlign: 'center', mb: 2 }}>
-                <Avatar
-                  sx={{ width: 64, height: 64, mx: 'auto', mb: 1 }}
-                  src={userData.profilePicture || 'https://tax.bryanglen.com/user.png'}
-                  alt={userData.firstName}
-                />
-                <Typography variant="h6" sx={{ fontWeight: 'bold', fontFamily: 'Montserrat, sans-serif' }}>
-                  {`${userData.first_name} ${userData.last_name}`}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  {userData.email}
-                </Typography>
-              </Box>
-              <Divider sx={{ mb: 2 }} />
-            </>
-          )}
-          <List>
-            <ListItem button onClick={() => navigate('/profile')}>
-              <ListItemText primary="Profile" />
-            </ListItem>
-            <ListItem button onClick={() => navigate('/form-selector')}>
-              <ListItemText primary="Dashboard" />
-            </ListItem>
-            <ListItem button onClick={() => navigate('/favorites')}>
-              <ListItemText primary="Favorites" />
-            </ListItem>
-            <ListItem button onClick={() => window.open('https://tax.bryanglen.com/shop-2/', '_blank')}>
-              <ListItemText primary="Shop" />
-            </ListItem>
-            <ListItem button onClick={() => navigate('/support')}>
-              <ListItemText primary="Support" />
-            </ListItem>
-          </List>
-          <Divider sx={{ my: 2 }} />
-          <Button
-            variant="contained"
-            color="primary"
-            startIcon={<LogoutIcon />}
-            fullWidth
-            onClick={handleLogout}
-          >
-            Logout
-          </Button>
-        </Box>
-      </Drawer>
-      {/* Fin del Drawer */}
+<IconButton
+  size="large"
+  onClick={() => setDrawerOpen(true)}
+  sx={{
+    position: 'absolute',
+    top: 16,
+    left: 16,
+    color: '#fff',
+    backgroundColor: '#0858e6',
+    transition: 'transform 0.2s, background-color 0.2s', // Transición suave para hover y pulse
+    '&:hover': {
+      backgroundColor: '#0746b0', // Azul oscuro al hacer hover
+      transform: 'scale(1.1)', // Efecto de pulse al hover
+    },
+    '&:active': {
+      transform: 'scale(0.95)', // Pequeño efecto de clic
+    },
+  }}
+>
+  <MenuIcon />
+</IconButton>
 
-      {/* Botón para abrir el Drawer */}
-      <IconButton
-        size="large"
-        onClick={() => setDrawerOpen(true)}
-        sx={{ position: 'absolute', top: 16, left: 16, color: '#fff', backgroundColor: '#0858e6' }}
-      >
-        <MenuIcon />
-      </IconButton>
+      {/* Reutiliza el Drawer */}
+      <CustomDrawer
+        drawerOpen={drawerOpen}
+        setDrawerOpen={setDrawerOpen}
+        userData={userData}
+      />
 
       <Container maxWidth="md" sx={{ backgroundColor: '#fff', borderRadius: '20px', padding: '20px' }}>
         <Box sx={{ textAlign: 'center', my: 4 }}>
@@ -322,14 +281,7 @@ const Profile = () => {
           </Box>
         )}
 
-        <Fab
-          color="primary"
-          aria-label="home"
-          sx={{ position: 'fixed', bottom: 24, right: 24, width: 70, height: 70 }}
-          onClick={() => navigate('/form-selector')}
-        >
-          <HomeIcon sx={{ fontSize: 36 }} />
-        </Fab>
+       <CustomSpeedDial /> {/* Incluye el SpeedDial */}
 
         <Snackbar
           open={!!success || !!error}
