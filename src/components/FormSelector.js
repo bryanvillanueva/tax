@@ -6,6 +6,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { CircularProgress } from '@mui/material';
 
 // Lista de formularios disponibles
 const forms = [
@@ -67,6 +68,7 @@ const FormSelector = ({ onSelectForm }) => {
   });
 
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
 
     // Función para ordenar los formularios con favoritos primero
     const getSortedForms = (formsList, favoritesObj, searchTerm) => {
@@ -87,39 +89,38 @@ const FormSelector = ({ onSelectForm }) => {
     };
 
   // Verificar si hay un token activo al cargar el componente
- useEffect(() => {
-    const token = localStorage.getItem('authToken');
-
-    if (!token) {
-      navigate('/'); // Redirige al login si no hay token
-      return;
-    }
-
-    // Validar el token con el backend y obtener los datos del usuario
+  useEffect(() => {
     const validateToken = async () => {
       try {
+        setLoading(true); // Activa el loader al iniciar la carga
+        const token = localStorage.getItem('authToken');
+  
+        if (!token) {
+          navigate('/'); // Redirige al login si no hay token
+          return;
+        }
+  
         const response = await axios.get('https://taxbackend-production.up.railway.app/user', {
-          headers: {
-            Authorization: `Bearer ${token}`, // Envía el token al backend
-          },
+          headers: { Authorization: `Bearer ${token}` },
         });
         const userData = response.data;
-        setUserData(userData); // Almacena los datos del usuario
-
-   
-       // Obtener formularios filtrados desde el backend
-       const formsResponse = await axios.get(`https://taxbackend-production.up.railway.app/forms/${userData.user_level}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setFilteredForms(formsResponse.data);
-
+        setUserData(userData);
+  
+        // Obtener formularios filtrados
+        const formsResponse = await axios.get(
+          `https://taxbackend-production.up.railway.app/forms/${userData.user_level}`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        setFilteredForms(formsResponse.data);
       } catch (error) {
         console.error('Error al validar el token:', error.message);
-        localStorage.removeItem('authToken'); // Elimina el token si no es válido
-        navigate('/'); // Redirige al login
+        localStorage.removeItem('authToken');
+        navigate('/');
+      } finally {
+        setLoading(false); // Desactiva el loader al terminar
       }
     };
-
+  
     validateToken();
   }, [navigate]);
 
@@ -144,7 +145,6 @@ const FormSelector = ({ onSelectForm }) => {
   
   // Obtener la lista ordenada de formularios
   const sortedAndFilteredForms = getSortedForms(filteredForms, favorites, searchTerm);
-
   
 
 
@@ -179,6 +179,9 @@ const FormSelector = ({ onSelectForm }) => {
           <List>
             <ListItem button onClick={() => navigate('/profile')}>
               <ListItemText primary="Profile" />
+            </ListItem>
+            <ListItem button onClick={() => navigate('/form-selector')}>
+                <ListItemText primary="Dashboard" />
             </ListItem>
             <ListItem button onClick={() => navigate('/favorites')}>
               <ListItemText primary="Favorites" />
@@ -256,7 +259,11 @@ const FormSelector = ({ onSelectForm }) => {
         />
       </Container>
 
-      {/* Contenedor de los formularios */}
+      {loading ? (
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
+              <CircularProgress color="primary" />
+            </Box>
+          ) : (
       <Grid
   container
   spacing={2}
@@ -311,8 +318,10 @@ const FormSelector = ({ onSelectForm }) => {
    </CardActionArea>
  </Card>
 </Grid>
+
 ))}
 </Grid>
+ )}
     </Box>
   </Box>
 </Box>

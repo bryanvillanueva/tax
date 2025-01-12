@@ -155,6 +155,9 @@ const Favorites = ({ onSelectForm }) => {
             <ListItem button onClick={() => navigate('/profile')}>
               <ListItemText primary="Profile" />
             </ListItem>
+            <ListItem button onClick={() => navigate('/form-selector')}>
+              <ListItemText primary="Dashboard" />
+            </ListItem>
             <ListItem button onClick={() => navigate('/favorites')}>
               <ListItemText primary="Favorites" />
             </ListItem>
