@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
-import { Box, Typography, Fab, Container, CssBaseline } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Box, Typography, Container, CssBaseline, SpeedDial, SpeedDialAction } from '@mui/material';
 import { useParams, useNavigate } from 'react-router-dom';
 import HomeIcon from '@mui/icons-material/Home';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import SpeedDialIcon from '@mui/icons-material/MoreVert';
 import DepreciationForm from './DepreciationForm';
 import AugustaRuleForm from './AugustaRuleForm';
 import PrepaidExpensesForm from './PrepaidExpensesForm';
@@ -44,22 +46,62 @@ import ActiveRealEstateForm from './ActiveRealEstateForm';
 import BackdoorRothForm from './BackdoorRothForm';
 import CancellationByInsolvencyForm from './CancellationByInsolvencyForm';
 import FormSelector from './FormSelector';
+import axios from 'axios';
+
 
 
 const Dashboard = () => {
   const { formId } = useParams(); // Obtiene el formId de la URL
   const navigate = useNavigate();
   const [results, setResults] = useState(null);
+  const [open, setOpen] = useState(false);
+   const [userData, setUserData] = useState(null); 
+
+  // Verificar si hay un token activo al cargar el componente
+  useEffect(() => {
+    const token = localStorage.getItem('authToken');
+
+    if (!token) {
+      navigate('/'); // Redirige al login si no hay token
+      return;
+    }
+
+    // Validar el token con el backend y obtener los datos del usuario
+    const validateToken = async () => {
+      try {
+        const response = await axios.get('https://taxbackend-production.up.railway.app/user', {
+          headers: {
+            Authorization: `Bearer ${token}`, // Envía el token al backend
+          },
+        });
+        setUserData(response.data); // Almacena los datos del usuario
+      } catch (error) {
+        console.error('Error al validar el token:', error.message);
+        localStorage.removeItem('authToken'); // Elimina el token si no es válido
+        navigate('/'); // Redirige al login
+      }
+    };
+
+    validateToken();
+  }, [navigate]);
 
   const handleSelectForm = (form) => {
     navigate(`/form-selector/${form}`); // Navega a la ruta con el ID del formulario
     setResults(null);
   };
 
-  const handleBackToSelector = () => {
-    navigate('/form-selector'); // Vuelve a la página principal del dashboard
-    setResults(null);
-  };
+  const actions = [
+    {
+      icon: <HomeIcon sx={{ color: '#0954de' }} />, // Ícono Home con azul del botón principal
+      name: 'Home',
+      action: () => navigate('/form-selector'),
+    },
+    {
+      icon: <FavoriteIcon sx={{ color: '#ff0000' }} />, // Ícono Favorites en rojo
+      name: 'Favorites',
+      action: () => navigate('/favorites'),
+    },
+  ];
 
   const renderForm = () => {
     switch (formId) {
@@ -259,24 +301,36 @@ const Dashboard = () => {
         {renderForm()}
 
         {formId && (
-          <Fab
-            color="primary"
-            aria-label="back"
-            onClick={handleBackToSelector}
-            sx={{
-              position: 'fixed',
-              bottom: 32,
-              right: 32,
-              width: 80,
-              height: 80,
-              backgroundColor: '#0858e6',
-              '&:hover': {
-                backgroundColor: '#064bb5',
-              },
-            }}
-          >
-            <HomeIcon sx={{ color: '#fff' }} />
-          </Fab>
+
+      /* Speed Dial */
+      <SpeedDial
+        ariaLabel="Navigation Actions"
+        sx={{
+          position: 'fixed',
+          bottom: 32,
+          right: 32,
+          '& .MuiFab-primary': {
+            backgroundColor: '#0954de', // Color de fondo del SpeedDial principal
+            '&:hover': {
+              backgroundColor: '#0746b0', // Color de hover
+            },
+          },
+        }}
+        icon={<SpeedDialIcon />}
+        onClose={() => setOpen(false)}
+        onOpen={() => setOpen(true)}
+        open={open}
+      >
+        {actions.map((action) => (
+          <SpeedDialAction
+            key={action.name}
+            icon={action.icon} // Colores definidos en cada acción
+            tooltipTitle={action.name}
+            tooltipOpen
+            onClick={action.action}
+          />
+        ))}
+      </SpeedDial>
         )}
 
 {results && formId !== 'CancellationByInsolvencyForm' && formId !== 'BackdoorRothForm' && formId !== 'deferredCapitalGain' && formId !== 'ActiveRealEstateForm' && (

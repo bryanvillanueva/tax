@@ -171,8 +171,8 @@ const FormSelector = ({ onSelectForm }) => {
             <ListItem button onClick={() => navigate('/favorites')}>
               <ListItemText primary="Favorites" />
             </ListItem>
-            <ListItem button onClick={() => navigate('/recent')}>
-              <ListItemText primary="Recent" />
+            <ListItem button onClick={() => window.open('https://tax.bryanglen.com/shop-2/', '_blank')}>
+               <ListItemText primary="Shop" />
             </ListItem>
             <ListItem button onClick={() => navigate('/support')}>
               <ListItemText primary="Support" />
