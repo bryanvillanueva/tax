@@ -67,7 +67,7 @@ const ResultsDisplay = ({ results, formTitle }) => {
   <TableRow sx={{ backgroundColor: '#e8f2ff' }}>
     <TableCell>Self-Employment Rate</TableCell>
     <TableCell>
-      {results.formType === '1120' ? '0%' : `${results.selfEmploymentRate}%`}
+      {results.formType === '1120' ? '0%' : results.formType === '1065' ? '15.3%' : results.formType === 'Schedule C/F' ? '15.3%' : results.formType === '1040NR - Schedule E' ? '0%' : results.formType === '1120S' ? '0%' : `${results.selfEmploymentRate}%`}
     </TableCell>
   </TableRow>
 
@@ -79,23 +79,34 @@ const ResultsDisplay = ({ results, formTitle }) => {
   <TableRow sx={{ backgroundColor: '#e8f2ff' }}>
     <TableCell>Adjusted Gross Income (AGI)</TableCell>
     <TableCell>
-  {results.formType === '1120' ? 'Not applicable' : results.formType === '1120S' ? formatCurrency(results.agi1120S) : formatCurrency(results.agi)}
-</TableCell>
+    {results.formType === '1120'
+      ? 'Not Applicable'
+      : results.formType === '1120S'
+      ? formatCurrency(results.agi1120S)
+      : results.formType === '1040 - Schedule C/F' && results.partnerType === 'Passive'
+      ? formatCurrency(results.agi)
+      : results.formType === '1040 - Schedule C/F' && results.partnerType === 'Active'
+      ? formatCurrency(results.agi)
+      : results.formType === '1040NR - Schedule E'
+      ? formatCurrency(results.agi1120S)
+      : formatCurrency(results.agi)}
+  </TableCell>
   </TableRow>
   <TableRow sx={{ backgroundColor: '#e8f2ff' }}>
       <TableCell>Qualified Business Income Deduction</TableCell>
-      <TableCell>{results.formType === '1040NR - Schedule E' ? formatCurrency(results.QBID): '0'}</TableCell>
+      <TableCell> {results.formType === '1120' ? 'Not Applicable' : formatCurrency(results.QBID || 0)}
+  </TableCell>
   </TableRow>
   <TableRow sx={{ backgroundColor: '#e8f2ff' }}>
     <TableCell>Standard Deduction</TableCell>
     <TableCell>
-      {results.formType === '1120' ? 'Not applicable' : formatCurrency(results.standardDeduction)}
+      {results.formType === '1120' ? 'Not Applicable' : formatCurrency(results.standardDeduction)}
     </TableCell>
   </TableRow>
   <TableRow sx={{ backgroundColor: '#e8f2ff' }}>
     <TableCell>Taxable Income</TableCell>
     <TableCell>
-      {results.formType === '1120' ? formatCurrency(results.corpTaxableIncome) : results.formType === '1065' ? formatCurrency(results.taxableIncome1065) : results.formType === '1120S' ? formatCurrency(results.taxableIncome1120S) : results.formType === '1040NR - Schedule E' ? formatCurrency(results.taxableincome1040nr) : formatCurrency(results.taxableIncome)}
+      {results.formType === '1120' ? formatCurrency(results.corpTaxableIncome) : results.formType === '1065' ? formatCurrency(results.taxableIncome) : results.formType === '1120S' ? formatCurrency(results.taxableIncome1120S) : results.formType === '1040NR - Schedule E' ? formatCurrency(results.taxableIncome1120S) : formatCurrency(results.taxableIncome)}
     </TableCell>
   </TableRow>
   {/* Fila vacía para separación */}
@@ -106,25 +117,25 @@ const ResultsDisplay = ({ results, formTitle }) => {
   <TableRow sx={{ backgroundColor: '#e8f2ff' }}>
     <TableCell>Tax Due (Self-Employment)</TableCell>
     <TableCell>
-      {results.formType === '1120' ? formatCurrency(0) : results.formType === '1120S' ? '$0.00' : formatCurrency(results.totalSE)}
+      {results.formType === '1120' ? formatCurrency(0) : results.formType === '1120S' ? '$0.00' : results.formType === '1040NR - Schedule E' ? '$0.00' : formatCurrency(results.totalSE)}
     </TableCell>
   </TableRow>
   <TableRow sx={{ backgroundColor: '#e8f2ff' }}>
     <TableCell>Tax Due (Income tax rate)</TableCell>
     <TableCell>
-    {results.formType === '1120' ? formatCurrency(results.corpTaxDue) : results.formType === '1065' ? formatCurrency(results.taxDue1065) : results.formType === '1120S' ?  formatCurrency(results.taxDue1120S) : results.formType === '1040NR - Schedule E' ?  formatCurrency(results.taxDue1040nr) : formatCurrency(results.taxDue)}
+    {results.formType === '1120' ? formatCurrency(results.corpTaxDue) : results.formType === '1065' ? formatCurrency(results.taxDue) : results.formType === '1120S' ?  formatCurrency(results.taxDue1120S) : results.formType === '1040NR - Schedule E' ?  formatCurrency(results.taxDue1120S) : formatCurrency(results.taxDue)}
     </TableCell>
   </TableRow>
   <TableRow sx={{ backgroundColor: '#e8f2ff' }}>
     <TableCell>Tax Credits</TableCell>
     <TableCell>
-      {results.formType === '1120' ? 'Not applicable' : formatCurrency(results.taxCredits)}
+      {results.formType === '1120' ? '$0.00' : formatCurrency(results.taxCredits)}
     </TableCell>
   </TableRow>
   <TableRow sx={{ backgroundColor: '#e8f2ff' }}>
     <TableCell>Total Tax Due</TableCell>
     <TableCell>
-      {results.formType === '1120' ? formatCurrency(results.corpTaxDue) : results.formType === '1065' ? formatCurrency(results.totalTaxDue1065) : results.formType === '1120S' ? formatCurrency(results.taxDue1120S) : results.formType === '1040NR - Schedule E' ? formatCurrency(results.totalTaxDue1040nr) : formatCurrency(results.totalTaxDue)}
+      {results.formType === '1120' ? formatCurrency(results.corpTaxDue) : results.formType === '1065' ? formatCurrency(results.totalTaxDue) : results.formType === '1120S' ? formatCurrency(results.taxDue1120S) : results.formType === '1040NR - Schedule E' ? formatCurrency(results.taxDue1120S) : formatCurrency(results.totalTaxDue)}
     </TableCell>
   </TableRow>
   
@@ -137,19 +148,22 @@ const ResultsDisplay = ({ results, formTitle }) => {
     <TableCell>Effective Tax Rate</TableCell>
     <TableCell>
 
-      {results.formType === '1120' ? `${results.corpEffectiveTaxRate}%` : results.formType === '1065' ? `${results.effectiveTaxRate1065}%` : results.formType === '1120S' ?  `${results.effectiveTaxRate1120S}%`  : results.formType === '1040NR - Schedule E' ?  `${results.effectiveTaxRate1040nr}%`  : `${results.effectiveTaxRate}%`}
+      {results.formType === '1120' ? `${results.corpEffectiveTaxRate}%` : results.formType === '1065' ? `${results.effectiveTaxRate}%` : results.formType === '1120S' ?  `${results.effectiveTaxRate1120S}%`  : results.formType === '1040NR - Schedule E' ?  `${results.effectiveTaxRate1120S}%`  : `${results.effectiveTaxRate}%`}
     </TableCell>
   </TableRow>
   <TableRow sx={{ backgroundColor: '#e8f2ff' }}>
     <TableCell>Marginal Tax Rate</TableCell>
     <TableCell>
-    {results.formType === '1120' ? '21%' : results.formType === '1120S' ?  `${results.marginalRate1120s}%`  : results.formType === '1040NR - Schedule E' ?  `${results.marginalRate1040nr}%`  : `${results.marginalRate}%`}
+    {results.formType === '1120' ? '21%' : results.formType === '1120S' ?  `${results.marginalRate1120s}%`  : results.formType === '1040NR - Schedule E' ?  `${results.marginalRate1120s}%`  : `${results.marginalRate}%`}
     </TableCell>
   </TableRow>
 </TableBody>
  </Table>
   </TableContainer>
 
+
+
+           {/*opcion sin estrategia*/} 
       <Typography variant="h5" gutterBottom>
       Values without strategy
       </Typography>
@@ -170,7 +184,7 @@ const ResultsDisplay = ({ results, formTitle }) => {
       </TableRow>
       <TableRow sx={{ backgroundColor: '#fff9c4' }}>
         <TableCell>Self-Employment Rate</TableCell>
-        <TableCell>{results.formType === '1120' ? '0%' : `${results.selfEmploymentRate}%`}</TableCell>
+        <TableCell>{results.formType === '1120' ? '0%' : results.formType === '1120S' ? '0%' : `${results.selfEmploymentRate}%`}</TableCell>
       </TableRow>
       <TableRow sx={{ backgroundColor: '#fff9c4' }}>
         <TableCell>Marginal Tax Rate</TableCell>
@@ -184,15 +198,15 @@ const ResultsDisplay = ({ results, formTitle }) => {
 
       <TableRow sx={{ backgroundColor: '#fff9c4' }}>
         <TableCell>Adjusted Gross Income (AGI)</TableCell>
-        <TableCell>{results.formType === '1120' ? 'Not applicable' : formatCurrency(results.agi2)}</TableCell>
+        <TableCell>{results.formType === '1120' ? 'Not Applicable' : formatCurrency(results.agi2)}</TableCell>
       </TableRow>
       <TableRow sx={{ backgroundColor: '#fff9c4' }}>
       <TableCell>Qualified Business Income Deduction</TableCell>
-      <TableCell>{results.formType === '1120' ? '$0.00' : 'Not applicable'}</TableCell>
+      <TableCell>{'Not Applicable'}</TableCell>
   </TableRow>
       <TableRow sx={{ backgroundColor: '#fff9c4' }}>
         <TableCell>Standard Deduction</TableCell>
-        <TableCell>{results.formType === '1120' ? 'Not applicable' : formatCurrency(results.standardDeduction2)}</TableCell>
+        <TableCell>{results.formType === '1120' ? 'Not Applicable' : formatCurrency(results.standardDeduction)}</TableCell>
       </TableRow>
       <TableRow sx={{ backgroundColor: '#fff9c4' }}>
         <TableCell>Taxable Income</TableCell>
@@ -206,7 +220,7 @@ const ResultsDisplay = ({ results, formTitle }) => {
 
       <TableRow sx={{ backgroundColor: '#fff9c4' }}>
         <TableCell>Tax Due (Self-Employment)</TableCell>
-        <TableCell>{results.formType === '1120' ? '$0.00' : formatCurrency(results.totalSE2)}</TableCell>
+        <TableCell>{results.formType === '1120' ? '$0.00' : results.formType === '1120S' ? '$0.00' : formatCurrency(results.totalSE2)}</TableCell>
       </TableRow>
       <TableRow sx={{ backgroundColor: '#fff9c4' }}>
         <TableCell>Tax Due (Income tax rate)</TableCell>
@@ -214,11 +228,11 @@ const ResultsDisplay = ({ results, formTitle }) => {
       </TableRow>
       <TableRow sx={{ backgroundColor: '#fff9c4' }}>
         <TableCell>Tax Credits</TableCell>
-            <TableCell>Not applicable</TableCell>
+            <TableCell>{'$0.00'}</TableCell>
       </TableRow>
       <TableRow sx={{ backgroundColor: '#fff9c4' }}>
         <TableCell>Total Tax Due</TableCell>
-        <TableCell> {results.formType === '1120' ? formatCurrency(results.corpTaxDue2) : formatCurrency(results.totalTaxDue2)}</TableCell>  
+        <TableCell> {results.formType === '1120' ? formatCurrency(results.corpTaxDue2) : results.formType === '1120S' ? formatCurrency(results.taxDue2) : formatCurrency(results.totalTaxDue2)}</TableCell>  
       </TableRow>
       
       {/* Fila Vacía para Separación */}
@@ -231,8 +245,8 @@ const ResultsDisplay = ({ results, formTitle }) => {
         <TableCell>{results.formType === '1120' ? `${results.corpEffectiveTaxRate}%` : `${results.effectiveTaxRate2}%`}</TableCell>
       </TableRow>
       <TableRow sx={{ backgroundColor: '#fff9c4' }}>
-             <TableCell>Effective SE Rate</TableCell>
-             <TableCell>{ results.formType === '1120' ? '0%' : `${results.effectiveSERate2}%`}</TableCell>
+        <TableCell>Effective SE Rate</TableCell>
+        <TableCell>{ results.formType === '1120' ? '0%' : results.formType === '1120S' ? '0%' : `${results.effectiveSERate2}%`}</TableCell>
       </TableRow>
     </TableBody>
   </Table>
@@ -282,6 +296,11 @@ const ResultsDisplay = ({ results, formTitle }) => {
               <TableCell>NIIT Threshold</TableCell>
               <TableCell>{formatCurrency(results.niitThreshold)}</TableCell>
             </TableRow>
+            {/*Falta agregar formula correcta */}
+            <TableRow sx={{ backgroundColor: '#52a6d8' }}>
+              <TableCell>NIIT Invest income</TableCell>
+              <TableCell>{formatCurrency(results.niitThreshold)}</TableCell>
+            </TableRow>
           </TableBody>
         </Table>
       </TableContainer>
@@ -327,6 +346,11 @@ Additional calculations without strategy
       </TableRow>
       <TableRow sx={{ backgroundColor: '#b3e5fc' }}>
           <TableCell>NIIT Threshold</TableCell>
+          <TableCell>{formatCurrency(results.niitThreshold2)}</TableCell>
+      </TableRow>
+      {/*Falta agregar formula correcta */}
+      <TableRow sx={{ backgroundColor: '#b3e5fc' }}>
+          <TableCell>NIIT Invest income</TableCell>
           <TableCell>{formatCurrency(results.niitThreshold2)}</TableCell>
       </TableRow>
     </TableBody>

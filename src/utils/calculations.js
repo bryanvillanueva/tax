@@ -17,9 +17,8 @@ import {
 //estrategias en orden
 
 // Calcular el Net Income según el tipo de inversión (Section 179 o Bonus)
-export function calculateNetIncome(grossIncome, cost, investType) {
-  const deduction = investType === 'Section 179' ? cost : cost * 0.8;
-  return Math.max(0, grossIncome - deduction); // Evita valores negativos
+export function calculateNetIncome(grossIncome, deduction179 ) { 
+  return Math.max(0, grossIncome - deduction179); // Evita valores negativos
 }
 
 // Calcular el Net Income para Hire Your Kids
@@ -256,7 +255,7 @@ export function calculateAGI(netIncome, selfEmploymentTax) {
 // Calcular el Taxable Income 1040
 export function calculateTaxableIncome(agi, filingStatus) {
   const standardDeduction = standardDeductions[filingStatus] || 0;
-  return Math.max(0, agi - standardDeduction);
+  return Math.max(0, agi - standardDeduction );
 }
 
 // Calcular el Taxable Income2 sin estrategia
@@ -278,8 +277,14 @@ export function calculateTaxableIncome1040nr(agi, filingStatus, QBID) {
 // calcular el Taxable Income 1065
 export function calculateTaxableIncome1065(agi, filingStatus) {
   const standardDeduction = standardDeductions[filingStatus] || 0;
-  return Math.max(0, agi - standardDeduction);
+  return Math.max(0, agi - standardDeduction );
 }
+
+//CALCULAR QBID
+export function calculateQBID(taxableIncome, filingStatus) {
+  return Math.max(0,taxableIncome,filingStatus  )
+}
+
 
 // Calcular el NIIT Threshold y el no formula
 export function calculateNIITThreshold(netIncome, filingStatus, partnerType) {
@@ -291,7 +296,7 @@ export function calculateNIITThreshold(netIncome, filingStatus, partnerType) {
 
   if (netIncome > threshold) {
     const excess = netIncome - threshold;
-    return (excess * 0.038).toFixed(2); // Formatear a dos decimales
+    return (excess * 0.038).toFixed(2); // Formatear a dos decimales 0.038 es el tax rate NIIT
   }
 
   return 0;
@@ -306,7 +311,7 @@ export function calculateNIITThreshold2(netIncome2, filingStatus, partnerType) {
 
   if (netIncome2 > threshold) {
     const excess = netIncome2 - threshold;
-    return (excess * 0.038).toFixed(2); // Formatear a dos decimales
+    return (excess * 0.038).toFixed(2); // Formatear a dos decimales 0.038 es el tax rate NIIT
   }
 
   return 0;

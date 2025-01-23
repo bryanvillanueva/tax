@@ -186,7 +186,7 @@ const Dashboard = () => {
   const getFormTitle = () => {
     switch (formId) {
       case 'depreciation':
-        return 'Depreciation Form';
+        return 'Accelerated Depreciation (Section 179) Form';
       case 'augusta':
         return 'Augusta Rule Form';
       case 'prepaid':
