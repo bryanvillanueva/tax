@@ -11,7 +11,7 @@ import { CircularProgress } from '@mui/material';
 // Lista de formularios disponibles
 const forms = [
   
-    { code: '1', id: 'depreciation', title: 'Accelerated Depreciation (Section 179) Form', description: 'Calculate accelerated depreciation (Section 179 and Bonus).' },
+    { code: '1', id: 'depreciation', title: 'Accelerated Depreciation (Section 179) Form', description: 'Calculate accelerated depreciation (Section 179).' },
     { code: '1', id: 'augusta', title: 'Augusta Rule Form', description: 'Calculate deductions under the Augusta Rule.' },
     { code: '1', id: 'prepaid', title: 'Prepaid Expenses Form', description: 'Manage and calculate prepaid expenses deductions.' },
     { code: '1', id: 'hireKids', title: 'Hire Your Kids Form', description: 'Hire Your Kids Form' },

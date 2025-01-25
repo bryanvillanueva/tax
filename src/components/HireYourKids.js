@@ -14,6 +14,7 @@ const HireYourKidsForm = ({ onCalculate }) => {
   const [totalIRAContribution, setTotalIRAContribution] = useState('');
   const [partnershipStatus, setPartnershipStatus] = useState('Yes');
   const [formType, setFormType] = useState('1040 - Schedule C/F');
+  const [QBID, setQbid] = useState('');
   const [error, setError] = useState(null);
 
   const { performCalculations } = useCalculations();
@@ -60,8 +61,9 @@ const HireYourKidsForm = ({ onCalculate }) => {
       hireKidsDeduction: totalDeduction,
       formType,
       calculationType: 'hireKids', // Línea agregada para especificar el tipo de cálculo
+      QBID: parseFloat(QBID),
     });
-  
+   console.log(totalDeduction);
     onCalculate(results);
   };
   
@@ -126,10 +128,6 @@ const HireYourKidsForm = ({ onCalculate }) => {
                 <MenuItem value="Active">Active</MenuItem>
                 <MenuItem value="Passive">Passive</MenuItem>
               </TextField>
-            </Grid>
-
-            {/* Lado Derecho */}
-            <Grid item xs={12} md={6}>
               <TextField
                 label="Children's Base Salary"
                 fullWidth
@@ -138,6 +136,11 @@ const HireYourKidsForm = ({ onCalculate }) => {
                 onChange={(e) => setChildrenBaseSalary(e.target.value)}
                 margin="normal"
               />
+            </Grid>
+
+            {/* Lado Derecho */}
+            <Grid item xs={12} md={6}>
+            
 
               <TextField
                 label="Total IRA Contribution"
@@ -174,6 +177,15 @@ const HireYourKidsForm = ({ onCalculate }) => {
                 <MenuItem value="1120S">1120S</MenuItem>
                 <MenuItem value="1120">1120</MenuItem>
               </TextField>
+
+              <TextField
+              label="QBID (Qualified Business Income Deduction)"
+              fullWidth
+              type="number"
+              value={QBID}
+              onChange={(e) => setQbid(e.target.value)}
+              margin="normal"
+              />
             </Grid>
           </Grid>
 

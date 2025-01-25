@@ -43,13 +43,13 @@ const DepreciationForm = ({ onCalculate }) => {
     // Calcular la deducción basada en las selecciones
     const calculatedDepreciation = calculateLimitDepreciation();
     setLimitDepreciation(calculatedDepreciation);
-    console.log('calculatedDepreciation', calculatedDepreciation);
+    
 
     const depreciation = cost;
 
     const deduction179 = calculatedDepreciation > 0 ? calculatedDepreciation : cost;
 
-    console.log(deduction179);
+
 
 
     setError(null);
