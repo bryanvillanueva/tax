@@ -220,7 +220,7 @@ const useCalculations = () => {
 
      //QBID 1040NR
      QBID = parseFloat(QBID) || 0;
-     dagi = parseFloat(dagi) || 10000; 
+     dagi = parseFloat(dagi) || 0; 
 
     
       // Cálculo para 1040CF/1065 1/3
@@ -282,8 +282,8 @@ const useCalculations = () => {
 
       // calculos para el formulario 1120S/1040NR 2/4
      const agi1120S = netIncome;
-     const AgiCalculation2y4 = calculateAGI2y4 (agi1120S, standardDeduction, dagi, selfEmploymentTax);
-     const taxableIncome1120S = calculateTaxableIncome1120S(AgiCalculation2y4, filingStatus) - QBID;
+     const AgiCalculation2y4 = calculateAGI2y4 (agi1120S, standardDeduction, dagi);
+     const taxableIncome1120S = calculateTaxableIncome1120S(AgiCalculation2y4, filingStatus, dagi) - QBID;
      const taxDue1120S = calculateTaxDue1120S(filingStatus, taxableIncome1120S);
      const effectiveTaxRate1120S = taxableIncome1120S !== 0 ? ((taxDue1120S / taxableIncome1120S) * 100).toFixed(2) : '0.00';
      const {marginalRate1120s, level1120s } = getMarginalTaxRateAndLevel1120S(filingStatus, taxableIncome1120S);

@@ -247,7 +247,7 @@ export function calculateSEMedicare(netIncome) {
   return (netIncome * 0.9235) * 0.029; // Aplicar 2.9% directamente al Net Income
 }
 
-// Calcular el AGI (Adjusted Gross Income)
+// Calcular el AGI (Adjusted Gross Income) 1/3
 export function calculateAGI(netIncome, standardDeduction, dagi, selfEmploymentTax) {
   
   // Evaluar la deducción AGI dentro de la función
@@ -282,10 +282,15 @@ export function calculateTaxableIncome2(agi2, filingStatus) {
   return Math.max(0, agi2 - standardDeduction);
 }
 // Calcular el Taxable Income 1120S
-export function calculateTaxableIncome1120S(AgiCalculation2y4, filingStatus) {
+export function calculateTaxableIncome1120S(AgiCalculation2y4, filingStatus, dagi) {
   const standardDeduction = standardDeductions[filingStatus] || 0;
-  return Math.max(0, AgiCalculation2y4 - standardDeduction);
+  const agiDeduction = dagi > standardDeduction ? dagi : 0;
+  if (agiDeduction > standardDeduction) {
+    return Math.max(0, AgiCalculation2y4);
+  }
+  return Math.max(0, AgiCalculation2y4 - standardDeduction );
 }
+
 // calcular el Taxable Income 1040nr
 export function calculateTaxableIncome1040nr(agi, filingStatus, QBID) {
  const standardDeduction = standardDeductions[filingStatus] || 0;
