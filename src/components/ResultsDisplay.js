@@ -82,13 +82,13 @@ const ResultsDisplay = ({ results, formTitle }) => {
     {results.formType === '1120'
       ? 'Not Applicable'
       : results.formType === '1120S'
-      ? formatCurrency(results.agi1120S)
+      ? formatCurrency(results.AgiCalculation2y4)
       : results.formType === '1040 - Schedule C/F' && results.partnerType === 'Passive'
       ? formatCurrency(results.agi)
       : results.formType === '1040 - Schedule C/F' && results.partnerType === 'Active'
       ? formatCurrency(results.agi)
       : results.formType === '1040NR - Schedule E'
-      ? formatCurrency(results.agi1120S)
+      ? formatCurrency(results.AgiCalculation2y4)
       : formatCurrency(results.agi)}
   </TableCell>
   </TableRow>

@@ -31,6 +31,7 @@ import {
   calculateNetIncomeResearchAndDevelopmentCredit,
   calculateSEMedicare,
   calculateAGI,
+  calculateAGI2y4,
   calculateTaxableIncome,
   calculateTaxableIncome2,
   calculateTaxableIncome1120S,
@@ -100,11 +101,12 @@ const useCalculations = () => {
     deductionDonation,
     deductionInfluencer,
     QBID,
+    dagi,
+    
   }) => {
     // Calcular Net Income según el tipo de cálculo
     let netIncome;
     
-    QBID = parseFloat(QBID) || 0;
 
     // Calcular Net Income según el tipo de cálculo
     switch (calculationType) {
@@ -217,19 +219,22 @@ const useCalculations = () => {
     console.log(`Selected Form Type: ${formType}`);
 
      //QBID 1040NR
-     
+     QBID = parseFloat(QBID) || 0;
+     dagi = parseFloat(dagi) || 10000; 
+
     
       // Cálculo para 1040CF/1065 1/3
       // Modify the calculation section for self-employment tax and related values
+      
       const seSocialSecurity = partnerType === 'Active' ? Math.min(netIncome * 0.9235, 168600) * 0.124 : 
       formType === '1040 - Schedule C/F' ? Math.min(netIncome * 0.9235, 168600) * 0.124 : 0;
       const seMedicare = partnerType === 'Active' ? calculateSEMedicare(netIncome) : 
       formType === '1040 - Schedule C/F' ? calculateSEMedicare(netIncome) : 0;
       const selfEmploymentTax = partnerType === 'Active' ? seSocialSecurity + seMedicare : 
       formType === '1040 - Schedule C/F' ? seSocialSecurity + seMedicare : 0;
-      const agi = calculateAGI(netIncome, selfEmploymentTax);
       const standardDeduction = standardDeductions[filingStatus];
-      const taxableIncome = calculateTaxableIncome(agi, filingStatus, formType, QBID ) - QBID;
+      const agi = calculateAGI(netIncome, standardDeduction, dagi, selfEmploymentTax );
+      const taxableIncome = calculateTaxableIncome(agi, filingStatus, dagi, formType ) - QBID;
       const { marginalRate, level } = getMarginalTaxRateAndLevel(filingStatus, taxableIncome);
       const taxDue = calculateTaxDue(filingStatus, taxableIncome);
       const taxCredits = taxCreditsResults || 0;
@@ -277,7 +282,8 @@ const useCalculations = () => {
 
       // calculos para el formulario 1120S/1040NR 2/4
      const agi1120S = netIncome;
-     const taxableIncome1120S = calculateTaxableIncome1120S(agi1120S, filingStatus) - QBID;
+     const AgiCalculation2y4 = calculateAGI2y4 (agi1120S, standardDeduction, dagi, selfEmploymentTax);
+     const taxableIncome1120S = calculateTaxableIncome1120S(AgiCalculation2y4, filingStatus) - QBID;
      const taxDue1120S = calculateTaxDue1120S(filingStatus, taxableIncome1120S);
      const effectiveTaxRate1120S = taxableIncome1120S !== 0 ? ((taxDue1120S / taxableIncome1120S) * 100).toFixed(2) : '0.00';
      const {marginalRate1120s, level1120s } = getMarginalTaxRateAndLevel1120S(filingStatus, taxableIncome1120S);
@@ -305,6 +311,7 @@ const useCalculations = () => {
         agi,
         agi2,
         agi1120S,
+        AgiCalculation2y4,
         standardDeduction,
         taxableIncome,
         taxableIncome2,
@@ -346,6 +353,7 @@ const useCalculations = () => {
         niitThreshold2,
         formType,  
         QBID, 
+        dagi,
        };
     };
   
