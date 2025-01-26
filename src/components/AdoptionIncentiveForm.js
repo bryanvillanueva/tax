@@ -18,13 +18,14 @@ const AdoptionIncentiveForm = ({ onCalculate }) => {
   const [AdoptionCreditLimit, setAdoptionCreditLimit] = useState('');
   const [reduction, setReduction] = useState('');
   const [totalCredit, setTotalCredit] = useState('');
+  const [QBID, setQbid] = useState('');
   const [formType, setFormType] = useState('1040 - Schedule C/F');
   const [error, setError] = useState(null);
 
   const { performCalculations } = useCalculations();
 
   // Constantes fijas importadas
-  const seSocialSecurity = partnerType === 'Active' ? Math.min(grossIncome * 0.9235, 168600) * 0.124 : 0;
+  const seSocialSecurity = partnerType === 'Active' ? Math.min(grossIncome * 0.9235, 160200) * 0.124 : 0;
   const seMedicare = partnerType === 'Active' ? calculateSEMedicare(grossIncome) : 0;
   const selfEmploymentTax = partnerType === 'Active' ? seSocialSecurity + seMedicare : 0;
   const agi = calculateAGI(grossIncome, selfEmploymentTax);
@@ -128,6 +129,7 @@ const AdoptionIncentiveForm = ({ onCalculate }) => {
       return;
     }
 
+
     
 
     setError(null);
@@ -143,6 +145,8 @@ const AdoptionIncentiveForm = ({ onCalculate }) => {
       filingStatus,
       taxCreditsResults,
       formType,
+      totalCredit,
+      QBID: parseFloat(QBID),
       calculationType: 'adoptionAndIra',
     });
 
@@ -208,35 +212,8 @@ const AdoptionIncentiveForm = ({ onCalculate }) => {
                 <MenuItem value="Active">Active</MenuItem>
                 <MenuItem value="Passive">Passive</MenuItem>
               </TextField>
-
               <TextField
-                label="Total Adoption Expenses"
-                fullWidth
-                value={TotalAdoptionExpenses}
-                margin="normal"
-                disabled // Campo deshabilitado
-                InputProps={{
-                  sx: { fontWeight: 'bold', color: '#00000' }, // Texto en negrita y color oscuro
-                }}
-              />
-
-              <TextField
-                label="Reduction Percentage"
-                fullWidth
-                value={reduction}
-                margin="normal"
-                disabled // Campo deshabilitado
-                InputProps={{
-                  sx: { fontWeight: 'bold', color: '#00000' }, // Texto en negrita y color oscuro
-                }}
-              />
-
-            </Grid>
-
-            {/* Right side: Adoption Expenses, Children Adopted, and IRA Early Withdrawal */}
-            <Grid item xs={12} md={6}>
-              <TextField
-                label="Adoption Expenses per Child"
+                label="Adoption Expenses per children"
                 fullWidth
                 type="number"
                 value={adoptionExpenses}
@@ -253,15 +230,20 @@ const AdoptionIncentiveForm = ({ onCalculate }) => {
                 margin="normal"
               />
 
-              <TextField
-                label="IRA Early Withdrawal Amount"
+
+            </Grid>
+
+            {/* Right side: Adoption Expenses, Children Adopted, and IRA Early Withdrawal */}
+            <Grid item xs={12} md={6}>
+              
+            <TextField
+                label="IRA Early Withdrawal (both parents)"
                 fullWidth
                 type="number"
                 value={iraEarlyWithdrawal}
                 onChange={(e) => setIraEarlyWithdrawal(e.target.value)}
                 margin="normal"
               />
-
               <TextField
                 label="IRA Early Withdrawal Limit"
                 fullWidth
@@ -283,7 +265,6 @@ const AdoptionIncentiveForm = ({ onCalculate }) => {
                   sx: { fontWeight: 'bold', color: '#00000' }, // Texto en negrita y color oscuro
                 }}
               />
-
               <TextField
                 select
                 label="Form Type"
@@ -293,12 +274,15 @@ const AdoptionIncentiveForm = ({ onCalculate }) => {
                 margin="normal"
               >
                 <MenuItem value="1040 - Schedule C/F">1040 - Schedule C/F</MenuItem>
-                <MenuItem value="1040NR - Schedule E">1040NR - Schedule E</MenuItem>
-                <MenuItem value="1065">1065</MenuItem>
-                <MenuItem value="1120S">1120S</MenuItem>
-                <MenuItem value="1120">1120</MenuItem>
               </TextField>
-             
+              <TextField
+                label="QBID (Qualified Business Income Deduction)"
+                fullWidth
+                type="number"
+                value={QBID}
+                onChange={(e) => setQbid(e.target.value)}
+                margin="normal"
+              />
             </Grid>
           </Grid>
 

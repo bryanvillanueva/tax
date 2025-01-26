@@ -9,25 +9,30 @@ const EducationTaxCreditForm = ({ onCalculate }) => {
   const [taxpayerMAGI, setTaxpayerMAGI] = useState('');
   const [qualifiedEducationExpenses, setQualifiedEducationExpenses] = useState('');
   const [MFJ, setMFJ] = useState('No');
+  const [MTAR, setMTAR] = useState('yes');
   const [partnerType, setPartnerType] = useState('Active'); 
   const [filingStatus, setFilingStatus] = useState('MFJ'); 
   const [limit, setLimit] = useState(''); 
   const [phaseOut, setPhaseOut] = useState(''); 
   const [maximumRefundable, setMaximumRefundable] = useState(null); 
   const [formType, setFormType] = useState('1040 - Schedule C/F');
+  const [QBID, setQbid] = useState('');
   const [error, setError] = useState(null);
 
   const { performCalculations } = useCalculations();
 
-  // Función para calcular el límite
-  const calculateLimit = (MFJ, taxpayerMAGI) => {
-    if (!taxpayerMAGI) return 0;
-    if (MFJ === 'Yes') {
-      return Math.max(180000 - taxpayerMAGI, 0); // Si es MFJ, 180000 menos MAGI
-    } else {
-      return Math.max(90000 - taxpayerMAGI, 0); // Si no es MFJ, 90000 menos MAGI
-    }
-  };
+// Función para calcular el límite
+const calculateLimit = (MFJ, taxpayerMAGI) => {
+  if (!taxpayerMAGI) return 0; // Si no hay MAGI, retorna 0
+  
+  if (MFJ === 'Yes') {
+    const result = 180000 - taxpayerMAGI; // Calcula el límite para MFJ
+    return result >= 0 ? result : 0; // Si el resultado es negativo, retorna 0
+  } else {
+    const result = 90000 - taxpayerMAGI; // Calcula el límite para no MFJ
+    return result >= 0 ? result : 0; // Si el resultado es negativo, retorna 0
+  }
+};
 
   // Función para calcular el Phase-out
   const calculatePhaseOut = (MFJ) => {
@@ -40,18 +45,74 @@ const EducationTaxCreditForm = ({ onCalculate }) => {
 
   // Recalcular el límite y Phase-out cuando MFJ o MAGI cambian
   useEffect(() => {
+    // Calcula el límite usando la nueva lógica
     const calculatedLimit = calculateLimit(MFJ, taxpayerMAGI);
-    setLimit(calculatedLimit);
-    
-    const calculatedPhaseOut = calculatePhaseOut(MFJ);
-    setPhaseOut(calculatedPhaseOut); 
-  }, [MFJ, taxpayerMAGI]);
+    setLimit(calculatedLimit); // Actualiza el estado del límite
+  
+    // Calcula el Phase-out según MFJ
+    const calculatedPhaseOut = MFJ === 'Yes' ? 20000 : 10000; // Valores para MFJ y no MFJ
+    setPhaseOut(calculatedPhaseOut); // Actualiza el estado del Phase-out
+  }, [MFJ, taxpayerMAGI]); // Solo se ejecuta cuando MFJ o MAGI cambian
+  
 
-  const calculateTaxCredits = (limit, phaseOut, qualifiedEducationExpenses) => {
-    return limit >= phaseOut
-      ? qualifiedEducationExpenses * 0.2
-      : (limit / phaseOut) * qualifiedEducationExpenses;
+  // Funcion para calcular el Non refundable Tax Credits
+
+  const calculateNRTC = (limit, phaseOut, qualifiedEducationExpenses) => {
+    // Validar los valores de entrada
+    if (!limit || !phaseOut || !qualifiedEducationExpenses) {
+      console.log('Invalid inputs for NRTC calculation.');
+      return 0;
+    }
+  
+    let NRTC;
+  
+    // Verificar si Limit >= Phase-out (PO)
+    if (limit >= phaseOut) {
+      // Si QEE >= 4000
+      if (qualifiedEducationExpenses >= 4000) {
+        NRTC = (4000 - 2000) + 500; // 2500
+      } else {
+        NRTC = (qualifiedEducationExpenses - 2000) + 500;
+      }
+    } else {
+      // Si Limit < Phase-out
+      if (qualifiedEducationExpenses >= 4000) {
+        NRTC = ((4000 - 2000) + 500) * (limit / phaseOut);
+      } else {
+        NRTC = ((qualifiedEducationExpenses - 2000) + 500) * (limit / phaseOut);
+      }
+    }
+  
+    console.log('NRTC Calculation Result:', NRTC);
+    return NRTC;
   };
+
+  // Calcular los Non Refundable Tax Credits
+  const NRTC = calculateNRTC(limit, phaseOut, parseFloat(qualifiedEducationExpenses));
+
+  
+// calcular los Tax credits
+  const calculateTaxCredits = (limit, phaseOut, qualifiedEducationExpenses, MTAR, maximumRefundable, NRTC) => {
+    // Validar los valores de entrada
+    if (!limit || !phaseOut || !qualifiedEducationExpenses) {
+      console.log('Invalid inputs for tax credits calculation.');
+      return 0;
+    }
+  
+    // Nueva lógica: Si MTAR es "Yes", retorna MAR; de lo contrario, retorna NRTC
+    if (MTAR === 'Yes') {
+      console.log('Tax Credits Result (MAR):', maximumRefundable);
+      return maximumRefundable;
+    } else {
+      console.log('Tax Credits Result (NRTC):', NRTC);
+      return NRTC;
+    }
+  };
+
+  // Calcular los Tax Credits (Tax results)
+  const taxCreditsResults = calculateTaxCredits(limit, phaseOut, parseFloat(qualifiedEducationExpenses), MTAR, maximumRefundable, NRTC);
+    
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -74,11 +135,11 @@ const EducationTaxCreditForm = ({ onCalculate }) => {
 
     setError(null);
 
-    // Calcular los Tax Credits
-    const taxCreditsResults = calculateTaxCredits(limit, phaseOut, parseFloat(qualifiedEducationExpenses));
     
+    
+
     // Calcular el Maximum Refundable
-    const maxRefundable = taxCreditsResults * 0.4;
+    const maxRefundable = NRTC * 0.4;
     setMaximumRefundable(maxRefundable);
 
     const results = performCalculations({
@@ -90,7 +151,10 @@ const EducationTaxCreditForm = ({ onCalculate }) => {
       filingStatus,
       taxCreditsResults,
       formType,
+      MTAR: MTAR === 'Yes',
+      NRTC,
       calculationType: 'educationTaxCredit',
+      QBID: parseFloat(QBID),
     });
     
     onCalculate(results);
@@ -131,19 +195,6 @@ const EducationTaxCreditForm = ({ onCalculate }) => {
                 <MenuItem value="MFJ">Married Filing Jointly</MenuItem>
 
               </TextField>
-
-              <TextField
-                select
-                label="Married Filing Jointly (MFJ)"
-                fullWidth
-                value={MFJ}
-                onChange={(e) => setMFJ(e.target.value)}
-                margin="normal"
-              >
-                <MenuItem value="Yes">Yes</MenuItem>
-                <MenuItem value="No">No</MenuItem>
-              </TextField>
-
               <TextField
                 label="Gross Income"
                 fullWidth
@@ -152,7 +203,6 @@ const EducationTaxCreditForm = ({ onCalculate }) => {
                 onChange={(e) => setGrossIncome(e.target.value)}
                 margin="normal"
               />
-
               <TextField
                 select
                 label="Partner Type"
@@ -164,9 +214,6 @@ const EducationTaxCreditForm = ({ onCalculate }) => {
                 <MenuItem value="Active">Active</MenuItem>
                 <MenuItem value="Passive">Passive</MenuItem>
               </TextField>
-            </Grid>
-
-            <Grid item xs={12} md={6}>
               <TextField
                 label="Taxpayer Modified Adjusted Gross Income (MAGI)"
                 fullWidth
@@ -175,6 +222,20 @@ const EducationTaxCreditForm = ({ onCalculate }) => {
                 onChange={(e) => setTaxpayerMAGI(e.target.value)}
                 margin="normal"
               />
+            </Grid>
+
+            <Grid item xs={12} md={6}>
+            <TextField
+                select
+                label="Married Filing Jointly (MFJ)"
+                fullWidth
+                value={MFJ}
+                onChange={(e) => setMFJ(e.target.value)}
+                margin="normal"
+              >
+                <MenuItem value="Yes">Yes</MenuItem>
+                <MenuItem value="No">No</MenuItem>
+              </TextField>
               <TextField
                 label="Qualified Education Expenses"
                 fullWidth
@@ -183,39 +244,17 @@ const EducationTaxCreditForm = ({ onCalculate }) => {
                 onChange={(e) => setQualifiedEducationExpenses(e.target.value)}
                 margin="normal"
               />
-
              <TextField
-                label="Limit (if zero, no credit available)"
+                select
+                label="Make the AOTC refundable?"
                 fullWidth
-                value={limit === 0 ? 'Not Credit Available' : limit} // Muestra "Not Credit Available" si el límite es 0
-                disabled // Campo deshabilitado
+                value={MTAR}
+                onChange={(e) => setMTAR(e.target.value)}
                 margin="normal"
-                InputProps={{
-                  sx: { fontWeight: 'bold', color: '#333' }, // Texto en negrita y color oscuro
-                }}
-              />
-
-             <TextField
-                label="Phase-out"
-                fullWidth
-                value={phaseOut}
-                disabled // Campo deshabilitado
-                margin="normal"
-                InputProps={{
-                  sx: { fontWeight: 'bold', color: '#333' }, // Texto en negrita y color oscuro
-                }}
-              />
-              {maximumRefundable !== null && ( // Mostrar Maximum Refundable si ya está calculado
-                <TextField
-                  label="Maximum Amount Refundable"
-                  fullWidth
-                  value={maximumRefundable}
-                  InputProps={{
-                    readOnly: true, // Solo lectura para el resultado
-                  }}
-                  margin="normal"
-                />
-              )}
+              >
+                <MenuItem value="Yes">Yes</MenuItem>
+                <MenuItem value="No">No</MenuItem>
+              </TextField>
 
               <TextField
                 select
@@ -231,6 +270,14 @@ const EducationTaxCreditForm = ({ onCalculate }) => {
                 <MenuItem value="1120S">1120S</MenuItem>
                 <MenuItem value="1120">1120</MenuItem>
               </TextField>
+              <TextField
+                label="QBID (Qualified Business Income Deduction)"
+                fullWidth
+                type="number"
+                value={QBID}
+                onChange={(e) => setQbid(e.target.value)}
+                margin="normal"
+              />
             </Grid>
           </Grid>
 

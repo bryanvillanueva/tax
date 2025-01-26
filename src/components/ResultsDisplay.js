@@ -1,5 +1,5 @@
-import React from 'react';
-import { Typography, Box, Table, TableBody, TableCell, TableContainer, TableRow, TableHead, Paper, Button } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Typography, Box, Table, TableBody, TableCell, TableContainer, TableRow, TableHead, Paper, Button, Alert } from '@mui/material';
 import ExportPDF from './ExportPDF';
 
 const formatCurrency = (value) => {
@@ -13,6 +13,18 @@ const formatCurrency = (value) => {
 };
 
 const ResultsDisplay = ({ results, formTitle }) => {
+
+  const [showAlert, setShowAlert] = useState(false);
+
+  // useEffect para comparar totalCredit y taxDue
+  useEffect(() => {
+    if (results.totalCredit > results.taxDue) {
+      setShowAlert(true); // Mostrar alerta si totalCredit > taxDue
+    } else {
+      setShowAlert(false); // Ocultar alerta en caso contrario
+    }
+  }, [results.totalCredit, results.taxDue]);
+
   const handlePrint = () => {
     window.print();
   };
@@ -23,6 +35,14 @@ const ResultsDisplay = ({ results, formTitle }) => {
       <Typography variant="h5" gutterBottom sx={{ fontFamily: 'Montserrat, sans-serif', }}>
         Calculation Results
       </Typography>
+
+{/* Mostrar alerta si totalCredit > taxDue */}
+      {showAlert && (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          The <strong>Total Credit</strong> cannot be greater than the <strong>Tax Due</strong>. Please review the values.
+        </Alert>
+      )} 
+
 
        {/* Primera Tabla de Resultados */}
        <TableContainer component={Paper} sx={{ mb: 4, marginBottom: '55px', marginTop: '35px' }}>

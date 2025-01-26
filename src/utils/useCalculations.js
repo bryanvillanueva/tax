@@ -56,6 +56,7 @@ import {
   calculateNIITThreshold2,
   calcularNIITInvestIncome,
   calcularNIITInvestIncome2,
+  calculateNetIncomeCapital,
   calculateNetIncomeAccountableplan,
   calculateNetIncomeAdoptionPlan
   
@@ -140,7 +141,7 @@ const useCalculations = () => {
         netIncome = calculateNetIncomeAmanda(grossIncome);
         break;
       case 'exemptionQualifiedSmall':
-        netIncome = calculateNetIncomeExemptionQualifiedSmall(grossIncome, capitalGainQSBS);
+        netIncome = calculateNetIncomeExemptionQualifiedSmall(grossIncome);
         break;
       case 'costSegregation':
         netIncome = calculateNetIncomeCostSegregation(grossIncome, deduction);
@@ -214,9 +215,12 @@ const useCalculations = () => {
       case 'influencerOptimization':
           netIncome = calculateNetIncomeInfluencer(grossIncome, deductionInfluencer);
         break;
+        case 'deferredCapitalGain':
+          netIncome = calculateNetIncomeCapital(grossIncome);
+        break;
       case 'standard':
           netIncome = calculateNetIncome(grossIncome, deduction179);
-        break;
+        break; 
     }
     console.log(`Selected Form Type: ${formType}`);
 
@@ -244,8 +248,8 @@ const useCalculations = () => {
       const additionalMedicare = calculateAdditionalMedicare(filingStatus, netIncome);
       const selfEmploymentRate = partnerType === 'Active' ? getSelfEmploymentRate() : 
       formType === '1040 - Schedule C/F' ? getSelfEmploymentRate() : 0;
-      const totalTaxDue = taxDue + selfEmploymentTax - taxCredits;
-      //const totalTaxDue = taxDue + selfEmploymentTax + additionalMedicare;
+      //const totalTaxDue = taxDue + selfEmploymentTax - taxCredits;
+      const totalTaxDue = (taxDue + selfEmploymentTax + additionalMedicare) - taxCredits;
       const effectiveTaxRate = taxableIncome !== 0 ? ((taxDue / taxableIncome) * 100).toFixed(2) : '0.00';
       const seDeduction = selfEmploymentTax / 2;
       
@@ -260,10 +264,10 @@ const useCalculations = () => {
       const taxableIncome2 = calculateTaxableIncome2(agi2, filingStatus);
       const taxDue2 = calculateTaxDue2(filingStatus, taxableIncome2);
       const additionalMedicare2 = calculateAdditionalMedicare2(filingStatus, netIncome2);
-      const totalTaxDue2 = taxDue2 + selfEmploymentTax2;
+      const totalTaxDue2 = (taxDue2 + selfEmploymentTax2 + additionalMedicare2) - taxCredits;
       const effectiveTaxRate2 = taxableIncome2 !== 0 ? ((taxDue2 / taxableIncome2) * 100).toFixed(2) : '0.00';
       const { marginalRate2, level2 } = getMarginalTaxRateAndLevel2(filingStatus, taxableIncome2);
-      const effectiveSERate = netIncome > 0 ?  ((selfEmploymentTax / netIncome) * 100).toFixed(2) : '0.00';
+      const effectiveSERate = netIncome > 0 ?  (((selfEmploymentTax + additionalMedicare)/ netIncome) * 100).toFixed(2) : '0.00';
       
        
      // Calcular NIIT Threshold
@@ -280,7 +284,7 @@ const useCalculations = () => {
       const corpTaxDue = corpTaxableIncome * 0.21;
       const corpTaxDue2 = corpTaxableIncome2 * 0.21;
       const corpEffectiveTaxRate = corpTaxableIncome !== 0 ? ((corpTaxDue / corpTaxableIncome) * 100).toFixed(2) : '0.00';
-      const effectiveSERate2 = netIncome2 > 0 ? ((selfEmploymentTax2 / netIncome2) * 100).toFixed(2) : '0.00';
+      const effectiveSERate2 = netIncome2 > 0 ? (((selfEmploymentTax2 + additionalMedicare2) / netIncome2) * 100).toFixed(2) : '0.00';
       
       
      
@@ -338,7 +342,7 @@ const useCalculations = () => {
         seDeduction2,
         seMedicare,
         totalSE: selfEmploymentTax + additionalMedicare,
-        totalSE2: selfEmploymentTax2,
+        totalSE2: selfEmploymentTax2 + additionalMedicare2,
         additionalMedicare,
         additionalMedicare2,
         corpTaxableIncome,
@@ -361,6 +365,8 @@ const useCalculations = () => {
         formType,  
         QBID, 
         dagi,
+        totalCredit: taxCreditsResults,
+        
        };
     };
   
