@@ -13,6 +13,7 @@ const EducationAssistanceForm = ({ onCalculate }) => {
   const [employeeLimit, setEmployeeLimit] = useState('');
   const [employeesBenefited, setEmployeesBenefited] = useState('');
   const [formType, setFormType] = useState('1040 - Schedule C/F');
+  const [QBID, setQbid] = useState('');
 
   const { performCalculations } = useCalculations();
 
@@ -52,6 +53,7 @@ const EducationAssistanceForm = ({ onCalculate }) => {
       totalEducationalAssistance,
       formType,
       calculationType: 'educationAssistance',
+      QBID: parseFloat(QBID),
       
     });
 
@@ -160,6 +162,14 @@ const EducationAssistanceForm = ({ onCalculate }) => {
                 <MenuItem value="1120S">1120S</MenuItem>
                 <MenuItem value="1120">1120</MenuItem>
               </TextField>
+              <TextField
+                label="QBID (Qualified Business Income Deduction)"
+                fullWidth
+                type="number"
+                value={QBID}
+                onChange={(e) => setQbid(e.target.value)}
+                margin="normal"
+              />
             </Grid>
           </Grid>
 

@@ -11,6 +11,7 @@ const AmendedPriorYearsForm = ({ onCalculate }) => {
   const [marginalRate, setMarginalRate] = useState('');
   const [originalTaxableIncome, setOriginalTaxableIncome] = useState('');
   const [askForRefund, setAskForRefund] = useState('No');
+  const [QBID, setQbid] = useState('');
   const [formType, setFormType] = useState('1040 - Schedule C/F');
   const [error, setError] = useState(null);
 
@@ -63,6 +64,7 @@ const AmendedPriorYearsForm = ({ onCalculate }) => {
       adjustedTax: taxCreditsResults,
       taxCreditsResults,
       formType,
+      QBID: parseFloat(QBID),
       calculationType: 'amendedPriorYears',
     });
     
@@ -179,19 +181,27 @@ const AmendedPriorYearsForm = ({ onCalculate }) => {
                 <MenuItem value="No">No</MenuItem>
               </TextField>
                <TextField
-                              select
-                              label="Form Type"
-                              fullWidth
-                              value={formType}
-                              onChange={(e) => setFormType(e.target.value)}
-                              margin="normal"
-                            >
-                              <MenuItem value="1040 - Schedule C/F">1040 - Schedule C/F</MenuItem>
-                              <MenuItem value="1040NR - Schedule E">1040NR - Schedule E</MenuItem>
-                              <MenuItem value="1065">1065</MenuItem>
-                              <MenuItem value="1120S">1120S</MenuItem>
-                              <MenuItem value="1120">1120</MenuItem>
-                            </TextField>
+                select
+                label="Form Type"
+                fullWidth
+                 value={formType}
+                 onChange={(e) => setFormType(e.target.value)}
+                 margin="normal"
+                >
+                <MenuItem value="1040 - Schedule C/F">1040 - Schedule C/F</MenuItem>
+                <MenuItem value="1040NR - Schedule E">1040NR - Schedule E</MenuItem>
+                <MenuItem value="1065">1065</MenuItem>
+                <MenuItem value="1120S">1120S</MenuItem>
+                <MenuItem value="1120">1120</MenuItem>
+                </TextField>
+               <TextField
+                  label="QBID (Qualified Business Income Deduction)"
+                  fullWidth
+                  type="number"
+                  value={QBID}
+                  onChange={(e) => setQbid(e.target.value)}
+                  margin="normal"
+                  />
             </Grid>
           </Grid>
 

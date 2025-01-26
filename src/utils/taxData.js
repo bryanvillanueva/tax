@@ -104,12 +104,13 @@ export const seBaseMultiplier = 0.9235;
 export const medicareRate = 0.029;
 export const additionalMedicareRate = 0.009;
 export const niitRate = 0.038;
+
 export const additionalMedicareThreshold = {
   Single: 200000,
   MFJ: 250000,
   MFS: 125000,
   HH: 200000,
-  QSS: 250000,
+  QSS: 200000,
 };
 
 export const niitThresholds = {

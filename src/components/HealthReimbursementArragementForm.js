@@ -12,6 +12,7 @@ const HealthReimbursementArrangementForm = ({ onCalculate }) => {
   const [numberOfEmployeesBenefited, setNumberOfEmployeesBenefited] = useState('');
   const [formType, setFormType] = useState('1040 - Schedule C/F');
   const [error, setError] = useState(null);
+    const [QBID, setQbid] = useState('');
 
   const { performCalculations } = useCalculations(); 
 
@@ -56,6 +57,7 @@ const HealthReimbursementArrangementForm = ({ onCalculate }) => {
       partnerType,
       formType,
       calculationType: 'healthReimbursement',
+      QBID: parseFloat(QBID),
     });
 
     
@@ -155,6 +157,14 @@ const HealthReimbursementArrangementForm = ({ onCalculate }) => {
                 <MenuItem value="1120S">1120S</MenuItem>
                 <MenuItem value="1120">1120</MenuItem>
               </TextField>
+              <TextField
+                label="QBID (Qualified Business Income Deduction)"
+                fullWidth
+                type="number"
+                value={QBID}
+                onChange={(e) => setQbid(e.target.value)}
+                margin="normal"
+              />
             </Grid>
           </Grid>
 

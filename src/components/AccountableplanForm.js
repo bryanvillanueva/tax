@@ -10,6 +10,7 @@ const AccountablePlanForm = ({ onCalculate }) => {
   const [partnerType, setPartnerType] = useState('Active');
   const [totalReimbursableExpenses, setTotalReimbursableExpenses] = useState('');
   const [formType, setFormType] = useState('1040 - Schedule C/F');
+   const [QBID, setQbid] = useState('');
   const [error, setError] = useState(null);
 
   
@@ -40,6 +41,7 @@ const AccountablePlanForm = ({ onCalculate }) => {
       totalReimbursableExpenses: parseFloat(totalReimbursableExpenses),
       partnerType,
       formType,
+      QBID: parseFloat(QBID),
       calculationType: 'accountablePlan', // Línea actualizada para especificar el tipo de cálculo
     });
   
@@ -132,6 +134,14 @@ const AccountablePlanForm = ({ onCalculate }) => {
                 <MenuItem value="1120S">1120S</MenuItem>
                 <MenuItem value="1120">1120</MenuItem>
               </TextField>
+              <TextField
+                label="QBID (Qualified Business Income Deduction)"
+                fullWidth
+                type="number"
+                value={QBID}
+                onChange={(e) => setQbid(e.target.value)}
+                margin="normal"
+              />
             </Grid>
           </Grid>
 
