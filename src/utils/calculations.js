@@ -9,6 +9,7 @@ import {
   additionalMedicareThreshold,
   niitThresholds,
   taxAccumulators,
+  niitRate,
  
 } from './taxData';
 
@@ -28,11 +29,8 @@ export function calculateNetIncomeKids(grossIncome, hireKidsDeduction) {
 
 
 //Calcualar el Net Income para Prepaid Expenses
-export function calculateNetIncomePrepaid(grossIncome, totalExpenses, totalNonPrepaidExpenses) {
-  const maxPrepaidDeduction = grossIncome * 0.2; // El máximo permitido será un 20% del ingreso bruto (ajustable según reglas)
-  const prepaidDeduction = totalExpenses - totalNonPrepaidExpenses;
-  const finalDeduction = Math.min(Math.max(0, prepaidDeduction), maxPrepaidDeduction);
-  return Math.max(0, grossIncome - finalDeduction); // Evita valores negativos
+export function calculateNetIncomePrepaid(grossIncome, totalExpenses, ) {
+  return Math.max(0, grossIncome - totalExpenses); // Evita valores negativos
 }
 
 
@@ -44,8 +42,8 @@ export function calculateNetIncomeAugusta(grossIncome, averageMonthlyRent, daysO
 
 
 // Calcular el Net Income para Charitable Remainder Trust (CRT)
-export function calculateNetIncomeCRT(grossIncome, presentValue) {
-  return Math.max(0, grossIncome - presentValue);// Evita valores negativos
+export function calculateNetIncomeCRT(grossIncome) {
+  return Math.max(0, grossIncome );// Evita valores negativos
   };
 
 
@@ -71,11 +69,13 @@ export function calculateNetIncomeQOF(grossIncome, reductionInNetIncome) {
 }
 
 // Calcular el Net Income para Health Savings Accounts (HSA)
-export function calculateNetIncomeHSA(grossIncome, hsac, ewhd) {
-  const hsaContribution = hsac * ewhd; 
+export function calculateNetIncomeHSA(grossIncome, hsaContribution ) {
   return Math.max(0, grossIncome - hsaContribution); // Evita valores negativos
 }
-
+//calcular el net income para life Time Learning Credit
+export function calcualteNetIncomeLifeTimeLearningCredit(grossIncome) {
+  return Math.max(0, grossIncome ); // Evita valores negativos
+}
 //calcular el Net income para amandaPriorYears    
 export function calculateNetIncomeAmanda(grossIncome) {
   return Math.max(0, grossIncome ); // Evita valores negativos{
@@ -118,7 +118,7 @@ export function calculateNetIncomeEducationTaxCredit(grossIncome) {
   return Math.max(0, grossIncome ); // Evita valores negativos
 }
 
-//calcular el Net income para educationTaxCredit
+//calcular el Net income para reimbursement
 export function calculateNetIncomeHealthReimbursement(grossIncome, totalBenefits) {
   return Math.max(0, grossIncome - totalBenefits); // Evita valores negativos
 }
@@ -197,7 +197,7 @@ export function calculateNetIncomeUnreimbursedExpenses (grossIncome, reductionUn
 export function calculateNetIncomeCharitableDonation (grossIncome,deductionDonation ){
   return Math.max(0, grossIncome - deductionDonation); // Evita valores negativos
 }
-
+//calcular Net Income para influencer
 export function calculateNetIncomeInfluencer (grossIncome, deductionInfluencer){
   return Math.max(0, grossIncome - deductionInfluencer); // Evita valores negativos
 }
@@ -340,6 +340,28 @@ export function calculateNIITThreshold2(netIncome2, filingStatus, partnerType) {
   return 0;
 }
 
+// Función para calcular el NIIT Invest income
+export function calcularNIITInvestIncome(agi, filingStatus,partnerType, partOfInvestmentIncome) {
+  const umbral = niitThresholds[filingStatus] || 0;  
+  const niitR = niitRate;
+
+  if (partnerType === "Passive" && agi > umbral) {
+    return partOfInvestmentIncome * niitR;
+  } else {
+    return 0;
+  }
+}
+// Función para calcular el NIIT Invest income2
+export function calcularNIITInvestIncome2(agi2, filingStatus, partnerType, partOfInvestmentIncome) {
+  const umbral = niitThresholds[filingStatus] || 0;  
+  const niitR = niitRate;
+
+  if (partnerType === "Passive" && agi2 > umbral) {
+    return partOfInvestmentIncome * niitR;
+  } else {
+    return 0;
+  }
+}
 // Obtener el Marginal Tax Rate y el Income Level
 export function getMarginalTaxRateAndLevel(filingStatus, taxableIncome) {
   const brackets = taxBrackets[filingStatus];
@@ -587,3 +609,4 @@ export function getSelfEmploymentRate() {
 export function calculateTaxcredits(taxCreditsResults) {
 return taxCreditsResults;
 }
+

@@ -34,7 +34,7 @@ import TraditionalIRAContributionsForm from './TraditionalIRAContributionsForm';
 import UnreimbursedPartnershipExpensesForm from './UnreimbursedPartnershipExpensesForm';
 import CharitableDonationOfAppreciatedAssetsForm from './CharitableDonationOfAppreciatedAssetsForm';
 import InfluencerOptimizationForm from './InfluencerOptimizationForm';
-import HealthInsuranceDeductionForm from './HealthInsuranceDeductionForm';
+import SEPContributionsForm from './SEPContributionsForm';
 import MaximizeMiscellaneousExpensesForm from './MaximizeMiscellaneousExpensesForm';
 import HealthReimbursementArrangementForm from './HealthReimbursementArragementForm';
 import HealthInsuranceDeductionForm2 from './HealthInsuranceDeductionForm2';
@@ -152,8 +152,8 @@ const Dashboard = () => {
           return <Solo401kForm onCalculate={setResults} />;
       case 'researchAndDevelopmentCredit':
           return <ResearchAndDevelopmentCreditForm onCalculate={setResults} />;
-      case 'healthInsuranceDeduction':
-          return <HealthInsuranceDeductionForm onCalculate={setResults} />;
+      case 'sepContributions':
+          return <SEPContributionsForm onCalculate={setResults} />;
       case 'healthInsuranceDeduction2':
           return <HealthInsuranceDeductionForm2 onCalculate={setResults} />;
       case 'rothIRA':
@@ -194,7 +194,7 @@ const Dashboard = () => {
       case 'hireKids':
         return 'Hire Your Kids Form';
       case 'charitableRemainderTrust':
-        return 'Charitable Remainder Form';
+        return 'Charitable Remainder Trus Form';
       case 'reimbursment':
         return 'Reimbursment Of Personal Vehicle Form';
       case 'hireFamily':
@@ -239,10 +239,10 @@ const Dashboard = () => {
           return 'Solo 401(k) Form';
       case 'researchAndDevelopmentCredit':
           return 'Research & Development Credit Form';
-      case 'healthInsuranceDeduction':
-          return 'Health Insurance Deduction Form';
+      case 'sepContributions':
+          return 'SEP Contributions Form';
       case 'healthInsuranceDeduction2':
-          return 'Health Insurance Deduction Form (Est. 29)';
+          return 'Health Insurance Deduction Form';
       case 'rothIRA':
           return 'Roth IRA Form';
       case 'ActiveRealEstateForm':

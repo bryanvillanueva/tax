@@ -4,6 +4,7 @@ import useCalculations from '../utils/useCalculations';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 
 
+
 const AugustaRuleForm = ({ onCalculate }) => {
   const [filingStatus, setFilingStatus] = useState('Single');
   const [grossIncome, setGrossIncome] = useState('');
@@ -11,6 +12,7 @@ const AugustaRuleForm = ({ onCalculate }) => {
   const [daysOfRent, setDaysOfRent] = useState('');
   const [partnerType, setPartnerType] = useState('Active');
   const [formType, setFormType] = useState('1040 - Schedule C/F');
+  const [QBID, setQbid] = useState('');
   const [error, setError] = useState(null);
 
   const { performCalculations } = useCalculations();
@@ -44,6 +46,7 @@ const AugustaRuleForm = ({ onCalculate }) => {
       isAugustaRule: true,
       formType,
       calculationType: 'augusta',
+      QBID: parseFloat(QBID),
     });
 
     onCalculate(results);
@@ -113,7 +116,7 @@ const AugustaRuleForm = ({ onCalculate }) => {
 
             <Grid item xs={12} md={6}>
               <TextField
-                label="Average Monthly Rent"
+                label="Average Monthly Rent In The Residential Area"
                 fullWidth
                 type="number"
                 value={averageMonthlyRent}
@@ -143,6 +146,14 @@ const AugustaRuleForm = ({ onCalculate }) => {
                 <MenuItem value="1120S">1120S</MenuItem>
                 <MenuItem value="1120">1120</MenuItem>
               </TextField>
+               <TextField
+                label="QBID (Qualified Business Income Deduction)"
+                fullWidth
+                type="number"
+                value={QBID}
+                onChange={(e) => setQbid(e.target.value)}
+                margin="normal"
+              />
             </Grid>
           </Grid>
 

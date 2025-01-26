@@ -3,6 +3,7 @@ import { TextField, Button, Container, Box, MenuItem, Alert, Grid } from '@mui/m
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import useCalculations from '../utils/useCalculations';
 
+
 const HealthInsuranceDeductionForm2 = ({ onCalculate }) => {
   const [filingStatus, setFilingStatus] = useState('Single');
   const [grossIncome, setGrossIncome] = useState('');
@@ -10,6 +11,7 @@ const HealthInsuranceDeductionForm2 = ({ onCalculate }) => {
   const [healthInsurancePremium, setHealthInsurancePremium] = useState('');
   const [selfEmploymentIncome, setSelfEmploymentIncome] = useState('');
   const [formType, setFormType] = useState('1040 - Schedule C/F');
+  const [QBID, setQbid] = useState('');
   const [error, setError] = useState(null);
 
   const { performCalculations } = useCalculations();
@@ -48,6 +50,7 @@ const HealthInsuranceDeductionForm2 = ({ onCalculate }) => {
       partnerType,
       incomeReduction,
       calculationType: 'healthInsuranceDeduction2', 
+      QBID: parseFloat(QBID),
     });
 
     onCalculate(results);
@@ -148,6 +151,15 @@ const HealthInsuranceDeductionForm2 = ({ onCalculate }) => {
                 <MenuItem value="1065">1065</MenuItem>
                 <MenuItem value="1120s">1120s</MenuItem>
               </TextField>
+              
+              <TextField
+                label="QBID (Qualified Business Income Deduction)"
+                fullWidth
+                type="number"
+                value={QBID}
+                onChange={(e) => setQbid(e.target.value)}
+                margin="normal"
+              />
             </Grid>
           </Grid>
 

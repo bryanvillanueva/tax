@@ -11,10 +11,34 @@ const Solo401kForm = ({ onCalculate }) => {
   const [employerContribution, setEmployerContribution] = useState('');
   const [employeeContribution, setEmployeeContribution] = useState('');
   const [taxPayerAge, setTaxPayerAge] = useState('');
+  const [typeCompany, setTypeCompany] = useState('Sole Prop');
   const [formType, setFormType] = useState('1040 - Schedule C/F');
+  const [QBID, setQbid] = useState('');
   const [error, setError] = useState(null);
 
   const { performCalculations } = useCalculations();
+
+  const calculateTotalDeduction = (
+    typeCompany,
+    employerContribution,
+    employerContributionLimit,
+    totalAnnualContribution,
+    totalLimit
+  ) => {
+    let deduction;
+
+    if (typeCompany === '1120') {
+      const cappedEmployerContribution = Math.min(
+        employerContribution,
+        employerContributionLimit
+      );
+      deduction = Math.min(totalAnnualContribution, totalLimit, cappedEmployerContribution);
+    } else {
+      deduction = Math.min(totalAnnualContribution, totalLimit);
+    }
+
+    return deduction;
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -26,7 +50,7 @@ const Solo401kForm = ({ onCalculate }) => {
     }
 
     if (!employeeWages || parseFloat(employeeWages) <= 0) {
-      setError('Deferral Amount is required and must be greater than 0.');
+      setError('Employee Wages is required and must be greater than 0.');
       return;
     }
 
@@ -34,14 +58,14 @@ const Solo401kForm = ({ onCalculate }) => {
       setError('Employer Contribution is required and must be greater than 0.');
       return;
     }
-    
+
     if (!employeeContribution || parseFloat(employeeContribution) <= 0) {
-      setError('Employer Contribution is required and must be greater than 0.');
+      setError('Employee Contribution is required and must be greater than 0.');
       return;
     }
 
     if (!taxPayerAge || parseFloat(taxPayerAge) <= 0) {
-      setError('Employer Contribution is required and must be greater than 0.');
+      setError('Tax Payer Age is required and must be greater than 0.');
       return;
     }
 
@@ -49,16 +73,18 @@ const Solo401kForm = ({ onCalculate }) => {
     const employeeContributionLimit = parseFloat(taxPayerAge) >= 50 ? 30500 : 23000;
     const employerContributionLimit = parseFloat(employeeWages) * 0.25;
     const totalLimit = parseFloat(taxPayerAge) >= 50 ? 76500 : 69000;
-    const totalContributions = Math.min(
-      employeeContributionLimit,
-      parseFloat(employeeContribution)
-    ) + Math.min(
-      employerContributionLimit,
-      parseFloat(employerContribution)
-    );
-    const totalAnnualContribution = totalContributions >= totalLimit ? totalLimit : totalContributions;
+    const totalContributions =
+      Math.min(employeeContributionLimit, parseFloat(employeeContribution)) +
+      Math.min(employerContributionLimit, parseFloat(employerContribution));
+    const totalAnnualContribution = Math.min(totalContributions, totalLimit);
 
-    const deductionSolo401k = totalAnnualContribution - parseFloat(employerContribution);
+    const deductionSolo401k = calculateTotalDeduction(
+      typeCompany,
+      parseFloat(employerContribution),
+      employerContributionLimit,
+      totalAnnualContribution,
+      totalLimit
+    );
 
     setError(null);
 
@@ -78,8 +104,9 @@ const Solo401kForm = ({ onCalculate }) => {
       totalAnnualContribution,
       deductionSolo401k,
       calculationType: 'solo401k',
+      QBID: parseFloat(QBID),
     });
-    
+
     onCalculate(results);
   };
 
@@ -88,15 +115,20 @@ const Solo401kForm = ({ onCalculate }) => {
       <Box sx={{ position: 'relative', mt: 5 }}>
         {/* Enlace en la esquina superior derecha */}
         <Box sx={{ position: 'absolute', top: -10, right: 0 }}>
-        <Button
-         href="https://tax.bryanglen.com/data/Strategies-Structure.pdf"
-         target="_blank"
-         sx={{ textTransform: 'none', backgroundColor: '#ffffff', color: '#0858e6', fontSize: '0.875rem', marginBottom: '150px' }}
-         startIcon={<InfoOutlinedIcon />}
-         >
-          View Strategy Details
-         </Button>
-
+          <Button
+            href="https://tax.bryanglen.com/data/Strategies-Structure.pdf"
+            target="_blank"
+            sx={{
+              textTransform: 'none',
+              backgroundColor: '#ffffff',
+              color: '#0858e6',
+              fontSize: '0.875rem',
+              marginBottom: '150px',
+            }}
+            startIcon={<InfoOutlinedIcon />}
+          >
+            View Strategy Details
+          </Button>
         </Box>
 
         {error && (
@@ -146,6 +178,20 @@ const Solo401kForm = ({ onCalculate }) => {
               </TextField>
 
               <TextField
+                select
+                label="Type of Company"
+                fullWidth
+                value={typeCompany}
+                onChange={(e) => setTypeCompany(e.target.value)}
+                margin="normal"
+              >
+                <MenuItem value="Sole Prop">Sole Prop</MenuItem>
+                <MenuItem value="1065">1065</MenuItem>
+                <MenuItem value="1120S">1120S</MenuItem>
+                <MenuItem value="1120">1120</MenuItem>
+              </TextField>
+
+              <TextField
                 label="Employee Wages"
                 fullWidth
                 type="number"
@@ -157,7 +203,7 @@ const Solo401kForm = ({ onCalculate }) => {
 
             {/* Lado Derecho */}
             <Grid item xs={12} md={6}>
-            <TextField
+              <TextField
                 label="Employee Contribution"
                 fullWidth
                 type="number"
@@ -176,7 +222,6 @@ const Solo401kForm = ({ onCalculate }) => {
               />
 
               <TextField
-                
                 label="Tax Payer Age"
                 fullWidth
                 type="number"
@@ -184,8 +229,6 @@ const Solo401kForm = ({ onCalculate }) => {
                 onChange={(e) => setTaxPayerAge(e.target.value)}
                 margin="normal"
               />
-               
-            
 
               <TextField
                 select
@@ -198,6 +241,15 @@ const Solo401kForm = ({ onCalculate }) => {
                 <MenuItem value="1040 - Schedule C/F">1040 - Schedule C/F</MenuItem>
                 <MenuItem value="1040NR - Schedule E">1040NR - Schedule E</MenuItem>
               </TextField>
+
+              <TextField
+                label="QBID (Qualified Business Income Deduction)"
+                fullWidth
+                type="number"
+                value={QBID}
+                onChange={(e) => setQbid(e.target.value)}
+                margin="normal"
+              />
             </Grid>
           </Grid>
 

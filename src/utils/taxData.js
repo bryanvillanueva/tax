@@ -53,7 +53,7 @@ export const taxAccumulators = {
     17168.50,
     39110.50,
     55678.50,
-    183647.25
+    183647.25,
   ],
   MFJ: [
   2320.00, 
@@ -61,7 +61,7 @@ export const taxAccumulators = {
   34337.00, 
   78221.00, 
   111357.00, 
-  196669.50
+  196669.50,
 ],
   MFS: [
    1160.00, 
@@ -69,7 +69,7 @@ export const taxAccumulators = {
    17168.50, 
    39110.50, 
    55678.50, 
-   98334.75
+   98334.75,
   ],
   HH: [
   1665.00, 
@@ -77,7 +77,7 @@ export const taxAccumulators = {
   15469.00, 
   37417.00, 
   53977.00, 
-  181954.50
+  181954.50,
 ],
   QSS: [
     2320.00, 
@@ -85,7 +85,7 @@ export const taxAccumulators = {
     34337.00, 
     78221.00, 
     111357.00, 
-    196669.50
+    196669.50,  
   ]
     ,
 };
@@ -99,7 +99,7 @@ export const standardDeductions = {
 };
 
 export const socialSecurityRate = 0.124;
-export const socialSecurityWageBase = 168600;
+export const socialSecurityWageBase = 160200;
 export const seBaseMultiplier = 0.9235;
 export const medicareRate = 0.029;
 export const additionalMedicareRate = 0.009;

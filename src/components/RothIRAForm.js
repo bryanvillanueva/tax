@@ -3,6 +3,7 @@ import { TextField, Button, Container, Box, MenuItem, Alert, Grid } from '@mui/m
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import useCalculations from '../utils/useCalculations';
 
+
 const RothIRAForm = ({ onCalculate }) => {
   const [filingStatus, setFilingStatus] = useState('Single');
   const [grossIncome, setGrossIncome] = useState('');
@@ -17,77 +18,97 @@ const RothIRAForm = ({ onCalculate }) => {
   const [standardContributionLimit, setStandardContributionLimit] = useState('');
   const [limitContribution, setLimitContribution] = useState(0);
   const [totalExemptIncome, setTotalExemptIncome] = useState(0);
+  const [isApplicable, setIsApplicable] = useState("Yes");
+  const [QBID, setQbid] = useState('');
   const [error, setError] = useState(null);
 
   const { performCalculations } = useCalculations();
-  //
-  useEffect(() => {
-    const calculateThreshold = (filingStatus) => {
-      let incomeLimit, phaseOut;
-      if (filingStatus === 'MFJ' || filingStatus === 'QSS') {
-        incomeLimit = 230000;
-        phaseOut = 10000;
-      } else {
-        incomeLimit = 146000;
-        phaseOut = 15000;
-      }
-      setIncomeLimit(incomeLimit);
-      setPhaseOut(phaseOut);
-    };
-    calculateThreshold(filingStatus);   
-  }, [filingStatus]);
 
-  useEffect(() => {
-    if (agiBeforeStrategy >= incomeLimit) {
-      const calculatedLimit =
-        standardContributionLimit -
-        (standardContributionLimit * ((agiBeforeStrategy - incomeLimit) / phaseOut));
-      setLimitContribution(calculatedLimit);
-    } else {
-      setLimitContribution(standardContributionLimit);
-    }
-  }, [agiBeforeStrategy, incomeLimit, phaseOut, standardContributionLimit]);
-  //caulcular total exempt income
-  useEffect(() => {
-    if (annualContribution && limitContribution && average) {
-      const exemptIncome =
-        Math.min(parseFloat(annualContribution), parseFloat(limitContribution)) *
-        (parseFloat(average) / 100);
-      setTotalExemptIncome(Math.floor(exemptIncome)); 
-      
-    }
-  }, [annualContribution, limitContribution, average]);
+    // Ajustar income limit y phaseOut según filingStatus
+    useEffect(() => {
+      const calculateThreshold = (filingStatus) => {
+        let incomeLimit, phaseOut;
+        if (filingStatus === 'MFJ' || filingStatus === 'QSS') {
+          incomeLimit = 230000;
+          phaseOut = 10000;
+        } else {
+          incomeLimit = 146000;
+          phaseOut = 15000;
+        }
+        setIncomeLimit(incomeLimit);
+        setPhaseOut(phaseOut);
+      };
+      calculateThreshold(filingStatus);
+    }, [filingStatus]);
   
+    // Calcular el límite de contribución
+useEffect(() => {
+  let calculatedLimit = standardContributionLimit;
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  if (agiBeforeStrategy >= incomeLimit) {
+    calculatedLimit = Math.max(
+      0,
+      standardContributionLimit - 
+      (standardContributionLimit * ((agiBeforeStrategy - incomeLimit) / phaseOut))
+    );
+  }
 
-    // Validaciones
-    if (!grossIncome || parseFloat(grossIncome) <= 0) {
-      setError('Gross Income is required and must be greater than 0.');
-      return;
-    }
+  setLimitContribution(calculatedLimit); // Asegura que el valor sea >= 0
+}, [agiBeforeStrategy, incomeLimit, phaseOut, standardContributionLimit]);
 
-    if (!annualContribution || parseFloat(annualContribution) <= 0) {
-      setError('Annual Contribution is required and must be greater than 0.');
-      return;
-    }
+// Calcular Total Exempt Income
+useEffect(() => {
+  if (limitContribution > 0 && annualContribution && average) {
+    const exemptIncome = Math.max(
+      0,
+      Math.min(parseFloat(annualContribution), parseFloat(limitContribution)) * 
+      (parseFloat(average) / 100)
+    );
+    setTotalExemptIncome(Math.floor(exemptIncome));
+  } else {
+    setTotalExemptIncome(0); // Si limitContribution es negativo, el total es 0
+  }
+}, [annualContribution, limitContribution, average]);
 
-    if (!agiBeforeStrategy || parseFloat(agiBeforeStrategy) <= 0) {
-      setError('AGI Before Applying the Strategy is required and must be greater than 0.');
-      return;
-    }
-
-    if (!taxPayerAge || parseFloat(taxPayerAge) <= 0) {
-      setError('Tax Payer Age is required and must be greater than 0.');
-      return;
-    }
-
-    const standardLimit = parseFloat(taxPayerAge) >= 50 ? 8000 : 7000;
-    setStandardContributionLimit(standardLimit);
-    setError(null);
-
-    const averagePercentage = parseFloat(average) / 100;
+  
+    // Determinar si es "Applicable"
+    useEffect(() => {
+      if (parseFloat(agiBeforeStrategy) >= parseFloat(incomeLimit) + parseFloat(phaseOut)) {
+        setIsApplicable("No");
+      } else {
+        setIsApplicable("Yes");
+      }
+    }, [agiBeforeStrategy, incomeLimit, phaseOut]);
+  
+    const handleSubmit = (e) => {
+      e.preventDefault();
+  
+      // Validaciones
+      if (!grossIncome || parseFloat(grossIncome) <= 0) {
+        setError('Gross Income is required and must be greater than 0.');
+        return;
+      }
+  
+      if (!annualContribution || parseFloat(annualContribution) <= 0) {
+        setError('Annual Contribution is required and must be greater than 0.');
+        return;
+      }
+  
+      if (!agiBeforeStrategy || parseFloat(agiBeforeStrategy) <= 0) {
+        setError('AGI Before Applying the Strategy is required and must be greater than 0.');
+        return;
+      }
+  
+      if (!taxPayerAge || parseFloat(taxPayerAge) <= 0) {
+        setError('Tax Payer Age is required and must be greater than 0.');
+        return;
+      }
+  
+      const standardLimit = parseFloat(taxPayerAge) >= 50 ? 8000 : 7000;
+      setStandardContributionLimit(standardLimit);
+      setError(null);
+  
+      const averagePercentage = parseFloat(average) / 100;
 
     const results = performCalculations({
       filingStatus,
@@ -104,6 +125,7 @@ const RothIRAForm = ({ onCalculate }) => {
       agiBeforeStrategy: parseFloat(agiBeforeStrategy),
       totalExemptIncome,
       calculationType: 'rothIRA',
+      QBID: parseFloat(QBID),
     });
 
     onCalculate(results);
@@ -200,11 +222,7 @@ const RothIRAForm = ({ onCalculate }) => {
                 onChange={(e) => setTaxPayerAge(e.target.value)}
                 margin="normal"
               />
-            </Grid>
-
-            {/* Right Side */}
-            <Grid item xs={12} md={6}>
-              <TextField
+               <TextField
                 label="Average % interest paid by the account"
                 fullWidth
                 type="number"
@@ -212,6 +230,11 @@ const RothIRAForm = ({ onCalculate }) => {
                 onChange={(e) => setAverage(e.target.value)}
                 margin="normal"
               />
+            </Grid>
+
+            {/* Right Side */}
+            <Grid item xs={12} md={6}>
+             
               <TextField
                 label="Income Limit"
                 fullWidth
@@ -234,6 +257,15 @@ const RothIRAForm = ({ onCalculate }) => {
                 fullWidth
                 type="number"
                 value={standardContributionLimit}
+                margin="normal"
+                disabled
+              />
+                <TextField
+                label="Applicable "
+                fullWidth
+                type="text"
+                value={isApplicable}
+
                 margin="normal"
                 disabled
               />
@@ -268,6 +300,14 @@ const RothIRAForm = ({ onCalculate }) => {
                 <MenuItem value="1120S">1120S</MenuItem>
                 <MenuItem value="1120">1120</MenuItem>
               </TextField>
+                <TextField
+                label="QBID (Qualified Business Income Deduction)"
+                fullWidth
+                type="number"
+                value={QBID}
+                onChange={(e) => setQbid(e.target.value)}
+                margin="normal"
+              />
             </Grid>
           </Grid>
 

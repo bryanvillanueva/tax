@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { TextField, Button, Container, Box, MenuItem, Alert, Grid } from '@mui/material';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import useCalculations from '../utils/useCalculations';
+
 
 const NetOperatingLossesForm = ({ onCalculate }) => {
   const [filingStatus, setFilingStatus] = useState('Single');
@@ -12,9 +13,20 @@ const NetOperatingLossesForm = ({ onCalculate }) => {
   const [totalNOL, setTotalNOL] = useState(0);
   const [partnerType, setPartnerType] = useState('Active');
   const [formType, setFormType] = useState('1040 - Schedule C/F');
+  const [QBID, setQbid] = useState('');
   const [error, setError] = useState(null);
 
   const { performCalculations } = useCalculations();
+
+  useEffect(() => {
+    // Calculate limitation automatically when taxableIncomeNol changes
+    if (taxableIncomeNol) {
+      const calculatedLimitation = parseFloat(taxableIncomeNol) * 0.8;
+      setLimitation(calculatedLimitation); // Round to 2 decimals
+    } else {
+      setLimitation(0); // Reset if no value
+    }
+  }, [taxableIncomeNol]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -26,26 +38,16 @@ const NetOperatingLossesForm = ({ onCalculate }) => {
     }
 
     if (!amendmentNOL || parseFloat(amendmentNOL) <= 0) {
-      setError('Amendment Prior Tax Ruturns - Nol, are required and must be greater than 0.');
+      setError('Amendment Prior Tax Returns - Nol, are required and must be greater than 0.');
       return;
     }
-    if (!taxableIncomeNol || parseFloat(taxableIncomeNol) <= 0) {
-        setError('Taxable income are required and must be greater than 0.');
-        return;
-    }
-   
-    
-    if (taxableIncomeNol) {
-        const calculatedLimitation = parseFloat(taxableIncomeNol) * 0.8;
-        setLimitation(calculatedLimitation.toFixed(2)); // Round to 2 decimals
-      } else {
-        setLimitation(0); // Reset if no value
-      }
 
-      
-    const totalNOL = parseFloat(limitation) > parseFloat(amendmentNOL) ? parseFloat(amendmentNOL): parseFloat(limitation); 
-    console.log(totalNOL);
-    console.log(limitation);
+    if (!taxableIncomeNol || parseFloat(taxableIncomeNol) <= 0) {
+      setError('Taxable income is required and must be greater than 0.');
+      return;
+    }
+
+    const totalNOL = parseFloat(limitation) > parseFloat(amendmentNOL) ? parseFloat(amendmentNOL) : parseFloat(limitation); 
 
     setError(null);
 
@@ -59,11 +61,18 @@ const NetOperatingLossesForm = ({ onCalculate }) => {
       partnerType,
       formType,
       calculationType: 'lossesDeduction', // Id del formulario
+      QBID: parseFloat(QBID),
     });
-   
+
     onCalculate(results);
   };
-
+// Function to format numbers with commas and no decimals
+const formatCurrency = (value) => {
+  return new Intl.NumberFormat('en-US', { 
+    style: 'decimal', 
+    maximumFractionDigits: 0 
+  }).format(value);
+};
   return (
     <Container>
       <Box sx={{ position: 'relative', mt: 5 }}>
@@ -124,12 +133,6 @@ const NetOperatingLossesForm = ({ onCalculate }) => {
                 <MenuItem value="Active">Active</MenuItem>
                 <MenuItem value="Passive">Passive</MenuItem>
               </TextField>
-            
-            </Grid>
-
-            {/* Right Side */}
-            <Grid item xs={12} md={6}>
-             
               <TextField
               fullWidth
               label="Amendment Prior Tax Returns - NOL Carryforward"
@@ -139,6 +142,12 @@ const NetOperatingLossesForm = ({ onCalculate }) => {
                onChange={(e) => setAmendmentNOL(e.target.value)}
                 margin="normal"
             />
+            </Grid>
+
+            {/* Right Side */}
+            <Grid item xs={12} md={6}>
+             
+             
 
             <TextField
               fullWidth
@@ -153,10 +162,10 @@ const NetOperatingLossesForm = ({ onCalculate }) => {
             <TextField
               fullWidth
               label="Limitation (80% of Taxable Income - Net)"
-              value={limitation}
+              value={formatCurrency(limitation)}
               variant="outlined"
               InputProps={{
-                readOnly: true, // Hacer el campo solo lectura
+                readOnly: true, // Make the field read-only
               }}
               disabled
               margin='normal'
@@ -176,6 +185,14 @@ const NetOperatingLossesForm = ({ onCalculate }) => {
                 <MenuItem value="1120S">1120S</MenuItem>
                 <MenuItem value="1120">1120</MenuItem>
               </TextField>
+              <TextField
+                label="QBID (Qualified Business Income Deduction)"
+                fullWidth
+                type="number"
+                value={QBID}
+                onChange={(e) => setQbid(e.target.value)}
+                margin="normal"
+              />
             </Grid>
           </Grid>
 
