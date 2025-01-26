@@ -4,6 +4,7 @@ import useCalculations from '../utils/useCalculations';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 
 
+
 const PrepaidExpensesForm = ({ onCalculate }) => {
   const [filingStatus, setFilingStatus] = useState('Single');
   const [grossIncome, setGrossIncome] = useState('');
@@ -11,8 +12,8 @@ const PrepaidExpensesForm = ({ onCalculate }) => {
   const [cost, setCost] = useState('');
   const [partnerType, setPartnerType] = useState('Active');
   const [totalExpenses, setTotalExpenses] = useState('');
-  const [totalNonPrepaidExpenses, setTotalNonPrepaidExpenses] = useState('');
   const [formType, setFormType] = useState('1040 - Schedule C/F');
+  const [QBID, setQbid] = useState('');
   const [error, setError] = useState(null);
 
   const { performCalculations } = useCalculations();
@@ -30,10 +31,7 @@ const PrepaidExpensesForm = ({ onCalculate }) => {
       return;
     }
 
-    if (!totalNonPrepaidExpenses || parseFloat(totalNonPrepaidExpenses) <= 0) {
-      setError('Total Non-Prepaid Expenses is required and must be greater than 0.');
-      return;
-    }
+ 
 
     setError(null);
 
@@ -44,9 +42,9 @@ const PrepaidExpensesForm = ({ onCalculate }) => {
       investType,
       partnerType,
       totalExpenses: parseFloat(totalExpenses),
-      totalNonPrepaidExpenses: parseFloat(totalNonPrepaidExpenses),
       formType,
       calculationType: 'prepaid',
+      QBID: parseFloat(QBID),
     });
 
     onCalculate(results);
@@ -117,7 +115,7 @@ const PrepaidExpensesForm = ({ onCalculate }) => {
             {/* Lado Derecho */}
             <Grid item xs={12} md={6}>
               <TextField
-                label="Total Expenses"
+                label="Expenses That Can Be Prepaid"
                 fullWidth
                 type="number"
                 value={totalExpenses}
@@ -125,14 +123,7 @@ const PrepaidExpensesForm = ({ onCalculate }) => {
                 margin="normal"
               />
 
-              <TextField
-                label="Total Non-Prepaid Expenses"
-                fullWidth
-                type="number"
-                value={totalNonPrepaidExpenses}
-                onChange={(e) => setTotalNonPrepaidExpenses(e.target.value)}
-                margin="normal"
-              />
+             
               <TextField
                 select
                 label="Form Type"
@@ -147,6 +138,14 @@ const PrepaidExpensesForm = ({ onCalculate }) => {
                 <MenuItem value="1120S">1120S</MenuItem>
                 <MenuItem value="1120">1120</MenuItem>
               </TextField>
+               <TextField
+                label="QBID (Qualified Business Income Deduction)"
+                fullWidth
+                type="number"
+                value={QBID}
+                onChange={(e) => setQbid(e.target.value)}
+                margin="normal"
+              />
             </Grid>
           </Grid>
 

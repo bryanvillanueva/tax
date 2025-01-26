@@ -4,6 +4,7 @@ import useCalculations from '../utils/useCalculations';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 
 
+
 const ResearchAndDevelopmentCreditForm = ({ onCalculate }) => {
   const [filingStatus, setFilingStatus] = useState('Single'); 
   const [grossIncome, setGrossIncome] = useState('');
@@ -11,6 +12,7 @@ const ResearchAndDevelopmentCreditForm = ({ onCalculate }) => {
   const [qualifiedResearchExpenses, setQualifiedResearchExpenses] = useState('');
   const [methodUsed, setMethodUsed] = useState('ASC'); 
   const [formType, setFormType] = useState('1040 - Schedule C/F');
+  const [QBID, setQbid] = useState('');
   const [error, setError] = useState(null);
 
   const { performCalculations } = useCalculations();
@@ -54,6 +56,7 @@ const ResearchAndDevelopmentCreditForm = ({ onCalculate }) => {
       credit,
       formType,
       calculationType: 'researchAndDevelopmentCredit',
+      QBID: parseFloat(QBID),
     });
     
     onCalculate(results);
@@ -118,12 +121,7 @@ const ResearchAndDevelopmentCreditForm = ({ onCalculate }) => {
                 <MenuItem value="Active">Active</MenuItem>
                 <MenuItem value="Passive">Passive</MenuItem>
               </TextField>
-              
-            </Grid>
-
-            <Grid item xs={12} md={6}>
-              
-            <TextField
+              <TextField
                 label="Qualified Research Expenses"
                 fullWidth
                 type="number"
@@ -131,6 +129,12 @@ const ResearchAndDevelopmentCreditForm = ({ onCalculate }) => {
                 onChange={(e) => setQualifiedResearchExpenses(e.target.value)}
                 margin="normal"
               />
+              
+            </Grid>
+
+            <Grid item xs={12} md={6}>
+              
+            
               
 
              <TextField
@@ -168,6 +172,14 @@ const ResearchAndDevelopmentCreditForm = ({ onCalculate }) => {
                 <MenuItem value="1120S">1120S</MenuItem>
                 <MenuItem value="1120">1120</MenuItem>
               </TextField>
+                  <TextField
+                label="QBID (Qualified Business Income Deduction)"
+                fullWidth
+                type="number"
+                value={QBID}
+                onChange={(e) => setQbid(e.target.value)}
+                margin="normal"
+              />
             </Grid>
           </Grid>
 

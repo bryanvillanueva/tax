@@ -8,8 +8,10 @@ const MealsDeductionForm = ({ onCalculate }) => {
   const [grossIncome, setGrossIncome] = useState('');
   const [mealExpenses, setMealExpenses] = useState('');
   const [cienDeductible, setCienDeductible] = useState('');
+  const [ochentaDeductible, setOchentaDeductible] = useState(''); // New state for 80% Deductible
   const [partnerType, setPartnerType] = useState('Active');
   const [formType, setFormType] = useState('1040 - Schedule C/F');
+  const [QBID, setQbid] = useState('');
   const [error, setError] = useState(null);
 
   const { performCalculations } = useCalculations();
@@ -28,29 +30,30 @@ const MealsDeductionForm = ({ onCalculate }) => {
       return;
     }
     if (!cienDeductible || parseFloat(cienDeductible) <= 0) {
-        setError('Meal Expenses are required and must be greater than 0.');
+        setError('100% Deductible is required and must be greater than 0.');
         return;
     }
-   
+    // Si ochentaDeductible no tiene valor, se toma como 0
+    const ochentaDeductibleValue = ochentaDeductible ? parseFloat(ochentaDeductible) : 0;
 
-    const cincuentaDeductible = parseFloat(mealExpenses) - parseFloat(cienDeductible);
-    const deductionMeals = (cincuentaDeductible * 0.50) + parseFloat(cienDeductible);
-    
-
-
+    const cincuentaDeductible = parseFloat(mealExpenses) - ochentaDeductibleValue - parseFloat(cienDeductible);
+    const deductionMeals = (parseFloat(cincuentaDeductible) * 0.50) + (ochentaDeductibleValue  * 0.80) + parseFloat(cienDeductible);
+    console.log(deductionMeals);
     setError(null);
 
-    // Call the calculation hook with calculationType 'mealsDeduction'
+    // Call the calculation hook with calculationType 'mealsDeduction'  
     const results = performCalculations({
       filingStatus,
       grossIncome: parseFloat(grossIncome),
       mealExpenses: parseFloat(mealExpenses),
       cienDeductible: parseFloat(cienDeductible),
+      ochentaDeductible: ochentaDeductibleValue, 
       cincuentaDeductible,
       partnerType,
-      deductionMeals,
+      deductionMeals, 
       formType,
-      calculationType: 'mealsDeduction', // Updated line for meals deduction calculation
+      calculationType: 'mealsDeduction',
+      QBID: parseFloat(QBID),
     });
    
     onCalculate(results);
@@ -64,7 +67,7 @@ const MealsDeductionForm = ({ onCalculate }) => {
           <Button
             href="https://tax.bryanglen.com/data/Strategies-Structure.pdf"
             target="_blank"
-            sx={{ textTransform: 'none', backgroundColor: '#ffffff', color: '#0858e6', fontSize: '0.875remc', marginBottom: '150px' }}
+            sx={{ textTransform: 'none', backgroundColor: '#ffffff', color: '#0858e6', fontSize: '0.875rem', marginBottom: '150px' }}
             startIcon={<InfoOutlinedIcon />}
           >
             View Strategy Details
@@ -115,11 +118,7 @@ const MealsDeductionForm = ({ onCalculate }) => {
                 <MenuItem value="Active">Active</MenuItem>
                 <MenuItem value="Passive">Passive</MenuItem>
               </TextField>
-            </Grid>
-
-            {/* Right Side */}
-            <Grid item xs={12} md={6}>
-            <TextField
+              <TextField
                 label="Meal Expenses"
                 fullWidth
                 type="number"
@@ -127,12 +126,25 @@ const MealsDeductionForm = ({ onCalculate }) => {
                 onChange={(e) => setMealExpenses(e.target.value)}
                 margin="normal"
               />
-            <TextField
+            </Grid>
+
+            {/* Right Side */}
+            <Grid item xs={12} md={6}>
+              
+              <TextField
                 label="100% Deductible"
                 fullWidth
                 type="number"
                 value={cienDeductible}
                 onChange={(e) => setCienDeductible(e.target.value)}
+                margin="normal"
+              />
+              <TextField
+                label="80% Deductible"  
+                fullWidth
+                type="number"
+                value={ochentaDeductible}
+                onChange={(e) => setOchentaDeductible(e.target.value)}
                 margin="normal"
               />
               <TextField
@@ -149,6 +161,14 @@ const MealsDeductionForm = ({ onCalculate }) => {
                 <MenuItem value="1120S">1120S</MenuItem>
                 <MenuItem value="1120">1120</MenuItem>
               </TextField>
+              <TextField
+                label="QBID (Qualified Business Income Deduction)"
+                fullWidth
+                type="number"
+                value={QBID}
+                onChange={(e) => setQbid(e.target.value)}
+                margin="normal"
+              />
             </Grid>
           </Grid>
 

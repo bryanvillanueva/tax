@@ -3,6 +3,7 @@ import { TextField, Button, Container, Box, MenuItem, Alert, Grid } from '@mui/m
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import useCalculations from '../utils/useCalculations';
 
+
 const MaximizeMiscellaneousExpensesForm = ({ onCalculate }) => {
   const [filingStatus, setFilingStatus] = useState('Single');
   const [grossIncome, setGrossIncome] = useState('');
@@ -12,6 +13,7 @@ const MaximizeMiscellaneousExpensesForm = ({ onCalculate }) => {
   const [reclassificationIncomeOriginYear, setReclassificationIncomeOriginYear] = useState('Current Year');
   const [reclassificationExpensesOriginYear, setReclassificationExpensesOriginYear] = useState('Current Year');
   const [formType, setFormType] = useState('1040 - Schedule C/F');
+  const [QBID, setQbid] = useState('');
   const [error, setError] = useState(null);
 
   const { performCalculations } = useCalculations();
@@ -36,19 +38,20 @@ const MaximizeMiscellaneousExpensesForm = ({ onCalculate }) => {
     }
     
     // Lógica para calcular Net Income Increase
-      const netIncomeIncrease =
-      (reclassificationIncomeOriginYear === 'Next Year' ? parseFloat(reclassificationIncome) : 0) +
-      (reclassificationExpensesOriginYear === 'Current Year' ? parseFloat(reclassificationExpenses) : 0);
+const netIncomeIncrease =
+(reclassificationIncomeOriginYear === 'Current Year' ? parseFloat(reclassificationIncome) : 0) +
+(reclassificationExpensesOriginYear === 'Next Year' ? parseFloat(reclassificationExpenses) : 0);
 
-      // Lógica para calcular Net Income Decrease
-     const netIncomeDecrease =
-     (reclassificationIncomeOriginYear === 'Current Year' ? -parseFloat(reclassificationIncome) : 0) +
-     (reclassificationExpensesOriginYear === 'Next Year' ? -parseFloat(reclassificationExpenses) : 0);
+// Lógica para calcular Net Income Decrease
+const netIncomeDecrease =
+(reclassificationIncomeOriginYear === 'Next Year' ? -parseFloat(reclassificationIncome) : 0) +
+(reclassificationExpensesOriginYear === 'Current Year' ? -parseFloat(reclassificationExpenses) : 0);
 
-      //total dedution
-      const totalNetDeductionMaxi = parseFloat(netIncomeIncrease) + parseFloat(netIncomeDecrease);
+// Total deduction
+const totalNetDeductionMaxi = parseFloat(netIncomeIncrease) + parseFloat(netIncomeDecrease);
 
-    setError(null);
+setError(null);
+
 
     const results = performCalculations({
       filingStatus,
@@ -63,6 +66,7 @@ const MaximizeMiscellaneousExpensesForm = ({ onCalculate }) => {
       totalNetDeductionMaxi,
       partnerType,
       calculationType: 'maximizeMiscellaneousExpenses', 
+      QBID: parseFloat(QBID),
     });
   
     onCalculate(results);
@@ -187,6 +191,14 @@ const MaximizeMiscellaneousExpensesForm = ({ onCalculate }) => {
                 <MenuItem value="1120S">1120S</MenuItem>
                 <MenuItem value="1120">1120</MenuItem>
               </TextField>
+              <TextField
+                label="QBID (Qualified Business Income Deduction)"
+                fullWidth
+                type="number"
+                value={QBID}
+                onChange={(e) => setQbid(e.target.value)}
+                margin="normal"
+              />
             </Grid>
           </Grid>
 

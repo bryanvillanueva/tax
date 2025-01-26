@@ -4,6 +4,7 @@ import useCalculations from '../utils/useCalculations';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 
 
+
 const CharitableRemainderForm = ({ onCalculate }) => {
   const [filingStatus, setFilingStatus] = useState('Single');
   const [grossIncome, setGrossIncome] = useState('');
@@ -12,6 +13,8 @@ const CharitableRemainderForm = ({ onCalculate }) => {
   const [presentValue, setPresentValue] = useState('');
   const [savingsInTax, setSavingsInTax] = useState(''); // Automatically calculated but still shown
   const [formType, setFormType] = useState('1040 - Schedule C/F');
+  const [QBID, setQbid] = useState('');
+  const [dagi, setDagi] = useState('');
   const [error, setError] = useState(null);
 
   const { performCalculations } = useCalculations();
@@ -50,6 +53,8 @@ const CharitableRemainderForm = ({ onCalculate }) => {
       filingStatus,
       formType,
       calculationType: 'charitableRemainderTrust',
+      QBID: parseFloat(QBID),
+      dagi: parseFloat(dagi),
     });
 
     onCalculate(results);
@@ -115,6 +120,14 @@ const CharitableRemainderForm = ({ onCalculate }) => {
                 <MenuItem value="Active">Active</MenuItem>
                 <MenuItem value="Passive">Passive</MenuItem>
               </TextField>
+              <TextField
+                label="Deduction To AGI"
+                fullWidth
+                type="number"
+                value={dagi}
+                onChange={(e) => setDagi(e.target.value)}
+                margin="normal"
+              />
             </Grid>
 
             {/* Right side: CGAS, PVAD, and Savings in Capital Gain Tax */}
@@ -163,6 +176,14 @@ const CharitableRemainderForm = ({ onCalculate }) => {
                 <MenuItem value="1120S">1120S</MenuItem>
                 <MenuItem value="1120">1120</MenuItem>
               </TextField>
+              <TextField
+                label="QBID (Qualified Business Income Deduction)"
+                fullWidth
+                type="number"
+                value={QBID}
+                onChange={(e) => setQbid(e.target.value)}
+                margin="normal"
+              />
             </Grid>
           </Grid>
 

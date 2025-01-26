@@ -2,7 +2,7 @@ import {
   calculateNetIncome,
   calculateNetIncomeAugusta,
   calculateNetIncomeCRT,
-  
+  calcualteNetIncomeLifeTimeLearningCredit,
   calculateNetIncomeKids,
   calculateReimbursment,
   calculateNetIncomeAmanda,
@@ -54,6 +54,8 @@ import {
   calculateNetIncomeHSA,
   calculateNIITThreshold,
   calculateNIITThreshold2,
+  calcularNIITInvestIncome,
+  calcularNIITInvestIncome2,
   calculateNetIncomeCapital,
   calculateNetIncomeAccountableplan,
   calculateNetIncomeAdoptionPlan
@@ -73,13 +75,11 @@ const useCalculations = () => {
     totalNonPrepaidExpenses,
     hireKidsDeduction,
     hireFamilyDeduction,
-    presentValue,
     tve,
     pbuv,
     reductionInNetIncome,
     calculationType = 'standard',
-    hsac,
-    ewhd,
+    hsaContribution,
     taxCreditsResults,
     totalReimbursableExpenses,
     capitalGainQSBS,
@@ -102,7 +102,7 @@ const useCalculations = () => {
     deductionInfluencer,
     QBID,
     dagi,
-    
+    partOfInvestmentIncome,
   }) => {
     // Calcular Net Income según el tipo de cálculo
     let netIncome;
@@ -126,10 +126,13 @@ const useCalculations = () => {
         netIncome = calculateNetIncomeQOF(grossIncome, reductionInNetIncome);
         break;
       case 'healthSavings':
-        netIncome = calculateNetIncomeHSA(grossIncome, hsac, ewhd);
+        netIncome = calculateNetIncomeHSA(grossIncome, hsaContribution);
+        break;
+      case 'lifetimeLearningCredit':
+        netIncome = calcualteNetIncomeLifeTimeLearningCredit(grossIncome);
         break;
       case 'charitableRemainderTrust':
-        netIncome = calculateNetIncomeCRT(grossIncome, presentValue);
+        netIncome = calculateNetIncomeCRT(grossIncome);
         break;
       case 'reimbursment':
         netIncome = calculateReimbursment(grossIncome, tve, pbuv);
@@ -185,7 +188,7 @@ const useCalculations = () => {
       case 'rothIRA':
         netIncome = calculateNetIncomeRothIRA(grossIncome);
         break;
-      case 'healthInsuranceDeduction':
+      case 'sepContributions':
         netIncome = calculateNetIncomeHealthInsuranceDeduction(grossIncome, totalContribution, );
         break;
       case 'healthInsuranceDeduction2':
@@ -224,13 +227,14 @@ const useCalculations = () => {
      //QBID 1040NR
      QBID = parseFloat(QBID) || 0;
      dagi = parseFloat(dagi) || 0; 
+     partOfInvestmentIncome = parseFloat(partOfInvestmentIncome) || 0;
 
     
       // Cálculo para 1040CF/1065 1/3
       // Modify the calculation section for self-employment tax and related values
       
-      const seSocialSecurity = partnerType === 'Active' ? Math.min(netIncome * 0.9235, 168600) * 0.124 : 
-      formType === '1040 - Schedule C/F' ? Math.min(netIncome * 0.9235, 168600) * 0.124 : 0;
+      const seSocialSecurity = partnerType === 'Active' ? Math.min(netIncome * 0.9235, 160200) * 0.124 : 
+      formType === '1040 - Schedule C/F' ? Math.min(netIncome * 0.9235, 160200) * 0.124 : 0;
       const seMedicare = partnerType === 'Active' ? calculateSEMedicare(netIncome) : 
       formType === '1040 - Schedule C/F' ? calculateSEMedicare(netIncome) : 0;
       const selfEmploymentTax = partnerType === 'Active' ? seSocialSecurity + seMedicare : 
@@ -251,7 +255,7 @@ const useCalculations = () => {
       
 
       // Resultados adicionales para cálculos alternativos 
-      const seSocialSecurity2 = partnerType === 'Active' ? Math.min(grossIncome * 0.9235, 168600) * 0.124 : 0;
+      const seSocialSecurity2 = partnerType === 'Active' ? Math.min(grossIncome * 0.9235, 160200) * 0.124 : 0;
       const seMedicare2 = partnerType === 'Active' ? calculateSEMedicare(grossIncome) : 0;
       const selfEmploymentTax2 = partnerType === 'Active' ? seSocialSecurity2 + seMedicare2 : 0;
       const seDeduction2 = selfEmploymentTax2 / 2;
@@ -269,9 +273,11 @@ const useCalculations = () => {
      // Calcular NIIT Threshold
       const niitThreshold = calculateNIITThreshold(netIncome, filingStatus, partnerType);
       const niitThreshold2 = calculateNIITThreshold2(netIncome2, filingStatus, partnerType);
-    
+      const calcularNIITInvest = calcularNIITInvestIncome(agi, filingStatus, partnerType, partOfInvestmentIncome)
+      const calcularNIITInvest2 = calcularNIITInvestIncome2(agi2, filingStatus, partnerType, partOfInvestmentIncome)
+      console.log(calcularNIITInvest, "2:",calcularNIITInvest2);
 
-  
+
       // Cálculo para Corporations (1120)
       const corpTaxableIncome = netIncome;
       const corpTaxableIncome2 = netIncome2;
@@ -354,6 +360,8 @@ const useCalculations = () => {
         effectiveSERate2,
         niitThreshold,
         niitThreshold2,
+        calcularNIITInvest,
+        calcularNIITInvest2,
         formType,  
         QBID, 
         dagi,

@@ -319,7 +319,7 @@ const ResultsDisplay = ({ results, formTitle }) => {
             {/*Falta agregar formula correcta */}
             <TableRow sx={{ backgroundColor: '#52a6d8' }}>
               <TableCell>NIIT Invest income</TableCell>
-              <TableCell>{formatCurrency(results.niitThreshold)}</TableCell>
+              <TableCell>{formatCurrency(results.calcularNIITInvest)}</TableCell>
             </TableRow>
           </TableBody>
         </Table>
@@ -371,7 +371,7 @@ Additional calculations without strategy
       {/*Falta agregar formula correcta */}
       <TableRow sx={{ backgroundColor: '#b3e5fc' }}>
           <TableCell>NIIT Invest income</TableCell>
-          <TableCell>{formatCurrency(results.niitThreshold2)}</TableCell>
+          <TableCell>{formatCurrency(results.calcularNIITInvest2)}</TableCell>
       </TableRow>
     </TableBody>
   </Table>

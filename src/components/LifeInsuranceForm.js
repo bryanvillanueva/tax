@@ -4,6 +4,7 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import useCalculations from '../utils/useCalculations';
 
 
+
 const LifeInsuranceForm = ({ onCalculate }) => {
   const [filingStatus, setFilingStatus] = useState('Single');
   const [grossIncome, setGrossIncome] = useState('');
@@ -15,6 +16,7 @@ const LifeInsuranceForm = ({ onCalculate }) => {
   const [totalInterestOverTheYears, setTotalInterestOverTheYears] = useState('');
   const [totalContributed, setTotalContributed] = useState('');
   const [totalInterest, setTotalInterest] = useState('');
+  const [QBID, setQbid] = useState('');
   const [error, setError] = useState(null);
 
  
@@ -88,6 +90,7 @@ const LifeInsuranceForm = ({ onCalculate }) => {
       totalInterestOverTheYears: totalInterestOverTheYears, 
       totalContributed: totalContributed,
       totalInterest: totalInterest,
+      QBID: parseFloat(QBID)
     });
    
     onCalculate(results);
@@ -162,133 +165,68 @@ const LifeInsuranceForm = ({ onCalculate }) => {
                 margin="normal"
               />
               
-              <TextField
-  label="Plan's Elected Average Interest Rate (%)"
-  fullWidth
-  type="number"
-  value={plansElectedAverageInterestRate}
-  onChange={(e) => {
-    const inputValue = e.target.value;
-    
-    // Permitir borrar el campo (si el input está vacío o es un número positivo)
-    if (inputValue === '' || parseFloat(inputValue) >= 0) {
-      setPlansElectedAverageInterestRate(inputValue);
-    }
-  }}
-  InputProps={{
-    endAdornment: <span style={{ marginLeft: 5, color: '#555' }}>%</span>, // Mostrar el símbolo de porcentaje
-  }}
-  margin="normal"
-/>
-            </Grid>
+                <TextField
+    label="Plan's Elected Average Interest Rate (%)"
+    fullWidth
+    type="number"
+    value={plansElectedAverageInterestRate}
+    onChange={(e) => {
+      const inputValue = e.target.value;
+      
+      // Permitir borrar el campo (si el input está vacío o es un número positivo)
+      if (inputValue === '' || parseFloat(inputValue) >= 0) {
+        setPlansElectedAverageInterestRate(inputValue);
+      }
+    }}
+    InputProps={{
+      endAdornment: <span style={{ marginLeft: 5, color: '#555' }}>%</span>, // Mostrar el símbolo de porcentaje
+    }}
+    margin="normal"
+  />
+              </Grid>
 
 
 
-            {/* Lado Derecho */}
-            <Grid item xs={12} md={6}>
-             
+              {/* Lado Derecho */}
+              <Grid item xs={12} md={6}>
               
-              <TextField
-                label="Total of Years"
+                
+                <TextField
+                  label="Total of Years"
+                  fullWidth
+                  type="number"
+                  value={totalOfYears}
+                  onChange={(e) => setTotalOfYears(e.target.value)}
+                  margin="normal"
+                />
+                
+                <TextField
+                label="Total Interest Over The Years"
                 fullWidth
-                type="number"
-                value={totalOfYears}
-                onChange={(e) => setTotalOfYears(e.target.value)}
+                type="text"
+                value={totalInterestOverTheYears}
                 margin="normal"
-              />
-              
-              <TextField
-  label="Total Interest Over The Years"
-  fullWidth
-  type="text"
-  value={totalInterestOverTheYears}
-  margin="normal"
-  InputProps={{
-    readOnly: true, // Campo de solo lectura
-  }}
-  sx={{
-    '& .MuiInputBase-input': {
-      backgroundColor: '#f5f5f5', // Fondo gris
-      color: '#000', // Texto negro
-    },
-    '& .MuiInputBase-input:focus': {
-      backgroundColor: '#f5f5f5', // Mantener gris cuando está enfocado
-    },
-    '& .MuiOutlinedInput-root': {
-      '&:hover .MuiOutlinedInput-notchedOutline': {
-        borderColor: '#e0e0e0', // Sin cambio de color en hover
-      },
-      '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-        borderColor: '#e0e0e0', // Sin cambio de color en enfoque
-      },
-    },
-    '& .MuiOutlinedInput-notchedOutline': {
-      borderColor: '#e0e0e0', // Borde gris claro
-    },
-  }}
-/>
-<TextField
-  label="Total Contributed"
-  fullWidth
-  type="text"
-  value={totalContributed}
-  margin="normal"
-  InputProps={{
-    readOnly: true, // Campo de solo lectura
-  }}
-  sx={{
-    '& .MuiInputBase-input': {
-      backgroundColor: '#f5f5f5', // Fondo gris
-      color: '#000', // Texto negro
-    },
-    '& .MuiInputBase-input:focus': {
-      backgroundColor: '#f5f5f5', // Mantener gris cuando está enfocado
-    },
-    '& .MuiOutlinedInput-root': {
-      '&:hover .MuiOutlinedInput-notchedOutline': {
-        borderColor: '#e0e0e0', // Sin cambio de color en hover
-      },
-      '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-        borderColor: '#e0e0e0', // Sin cambio de color en enfoque
-      },
-    },
-    '& .MuiOutlinedInput-notchedOutline': {
-      borderColor: '#e0e0e0', // Borde gris claro
-    },
-  }}
-/>
+                disabled 
+                />
 
+                <TextField
+                label="Total Contributed"
+                fullWidth
+                type="text"
+                value={totalContributed}
+                margin="normal"
+                disabled 
+                />
 
-<TextField
-  label="Total Interest"
-  fullWidth
-  type="text"
-  value={totalInterest}
-  margin="normal"
-  InputProps={{
-    readOnly: true, // Campo de solo lectura
-  }}
-  sx={{
-    '& .MuiInputBase-input': {
-      backgroundColor: '#f5f5f5', // Fondo gris
-      color: '#000', // Texto negro
-    },
-    '& .MuiInputBase-input:focus': {
-      backgroundColor: '#f5f5f5', // Mantener gris cuando está enfocado
-    },
-    '& .MuiOutlinedInput-root': {
-      '&:hover .MuiOutlinedInput-notchedOutline': {
-        borderColor: '#e0e0e0', // Sin cambio de color en hover
-      },
-      '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-        borderColor: '#e0e0e0', // Sin cambio de color en enfoque
-      },
-    },
-    '& .MuiOutlinedInput-notchedOutline': {
-      borderColor: '#e0e0e0', // Borde gris claro
-    },
-  }}
-/>
+                <TextField
+                label="Total Interest"
+                fullWidth
+                type="text"
+                value={totalInterest}
+                margin="normal"
+                disabled 
+                />
+
 
 
                 <TextField
@@ -300,11 +238,17 @@ const LifeInsuranceForm = ({ onCalculate }) => {
                 margin="normal"
               >
                 <MenuItem value="1040 - Schedule C/F">1040 - Schedule C/F</MenuItem>
-                <MenuItem value="1040NR - Schedule E">1040NR - Schedule E</MenuItem>
-                <MenuItem value="1065">1065</MenuItem>
-                <MenuItem value="1120S">1120S</MenuItem>
-                <MenuItem value="1120">1120</MenuItem>
+               
               </TextField>
+
+               <TextField
+                label="QBID (Qualified Business Income Deduction)"
+                fullWidth
+                type="number"
+                value={QBID}
+                onChange={(e) => setQbid(e.target.value)}
+                margin="normal"
+              />
             </Grid>
           </Grid>
 

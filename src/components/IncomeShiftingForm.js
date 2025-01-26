@@ -4,6 +4,7 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import useCalculations from '../utils/useCalculations';
 
 
+
 const IncomeShiftingForm = ({ onCalculate }) => {
   const [filingStatus, setFilingStatus] = useState('Single');
   const [grossIncome, setGrossIncome] = useState('');
@@ -11,6 +12,7 @@ const IncomeShiftingForm = ({ onCalculate }) => {
   const [ordinaryIncomeShifted, setOrdinaryIncomeShifted] = useState('');
   const [capitalGainShifted, setcapitalGainShifted] = useState('');
   const [formType, setFormType] = useState('1040 - Schedule C/F');
+  const [QBID, setQbid] = useState('');
   const [error, setError] = useState(null);
 
   
@@ -52,6 +54,7 @@ const IncomeShiftingForm = ({ onCalculate }) => {
       totalIncomeShifted,
       formType,
       calculationType: 'incomeShifting', 
+      QBID: parseFloat(QBID),
     });
    
     onCalculate(results);
@@ -152,6 +155,14 @@ const IncomeShiftingForm = ({ onCalculate }) => {
                 <MenuItem value="1120S">1120S</MenuItem>
                 <MenuItem value="1120">1120</MenuItem>
               </TextField>
+              <TextField
+                label="QBID (Qualified Business Income Deduction)"
+                fullWidth
+                type="number"
+                value={QBID}
+                onChange={(e) => setQbid(e.target.value)}
+                margin="normal"
+              />
             </Grid>
           </Grid>
 

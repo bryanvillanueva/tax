@@ -3,7 +3,7 @@ import { TextField, Button, Container, Box, MenuItem, Alert, Grid } from '@mui/m
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import useCalculations from '../utils/useCalculations';
 
-const HealthInsuranceDeductionForm = ({ onCalculate }) => {
+const SEPContributionsForm = ({ onCalculate }) => {
   const [filingStatus, setFilingStatus] = useState('Single');
   const [grossIncome, setGrossIncome] = useState('');
   const [partnerType, setPartnerType] = useState('Active');
@@ -11,37 +11,38 @@ const HealthInsuranceDeductionForm = ({ onCalculate }) => {
   const [numberOfQualifiedEmployees, setNumberOfQualifiedEmployees] = useState('');
   const [averageContributionPerEmployee, setAverageContributionPerEmployee] = useState('');
   const [formType, setFormType] = useState('1040 - Schedule C/F');
+  const [QBID, setQbid] = useState('');
+  const [partOfInvestmentIncome, setPartOfInvestmentIncome] = useState('');
   const [error, setError] = useState(null);
 
   const { performCalculations } = useCalculations();
 
- // constantes fijas
- const LIMIT_ONE = 69000; 
- const LIMIT_TWO = averageQualifiedEmployeesCompensation ? averageQualifiedEmployeesCompensation * 0.25 : 0;
+  // Updated constants for the limits
+  const LIMIT_ONE = 69000; 
+  const LIMIT_TWO = averageQualifiedEmployeesCompensation ? averageQualifiedEmployeesCompensation * 0.25 : 0;
 
- const totalContribution = (() => {
- const avgContribution = averageContributionPerEmployee || 0;
- const numEmployees = numberOfQualifiedEmployees || 0;
+  const totalContribution = (() => {
+    const avgContribution = averageContributionPerEmployee || 0;
+    const numEmployees = numberOfQualifiedEmployees || 0;
 
- if (avgContribution > LIMIT_TWO || avgContribution > LIMIT_ONE) {
-   const minLimit = Math.min(LIMIT_ONE, LIMIT_TWO);
-   return minLimit * numEmployees;
- } else {
-   return avgContribution * numEmployees;
- }
- })();
- 
+    if (avgContribution > LIMIT_TWO || avgContribution > LIMIT_ONE) {
+      const minLimit = Math.min(LIMIT_ONE, LIMIT_TWO);
+      return minLimit * numEmployees;
+    } else {
+      return avgContribution * numEmployees;
+    }
+  })();
+  
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Validaciones de los campos
+    // Validations
     if (!grossIncome || parseFloat(grossIncome) <= 0) {
       setError('Gross Income is required and must be greater than 0.');
       return;
     }
 
     setError(null);
-
 
     const results = performCalculations({
       filingStatus,
@@ -52,7 +53,10 @@ const HealthInsuranceDeductionForm = ({ onCalculate }) => {
       numberOfQualifiedEmployees,
       averageContributionPerEmployee,
       totalContribution,
-      calculationType: 'healthInsuranceDeduction', 
+      calculationType: 'sepContributions', 
+      QBID: parseFloat(QBID),
+      partOfInvestmentIncome: parseFloat(partOfInvestmentIncome),
+
     });
 
     onCalculate(results);
@@ -61,7 +65,7 @@ const HealthInsuranceDeductionForm = ({ onCalculate }) => {
   return (
     <Container>
       <Box sx={{ position: 'relative', mt: 5 }}>
-        {/* Enlace en la esquina superior derecha */}
+        {/* Link in the top right corner */}
         <Box sx={{ position: 'absolute', top: -10, right: 0 }}>
           <Button
             href="https://tax.bryanglen.com/data/Strategies-Structure.pdf"
@@ -81,7 +85,7 @@ const HealthInsuranceDeductionForm = ({ onCalculate }) => {
 
         <form onSubmit={handleSubmit}>
           <Grid container spacing={2}>
-            {/* Lado Izquierdo */}
+            {/* Left Side */}
             <Grid item xs={12} md={6}>
               <TextField
                 select
@@ -106,7 +110,14 @@ const HealthInsuranceDeductionForm = ({ onCalculate }) => {
                 onChange={(e) => setGrossIncome(e.target.value)}
                 margin="normal"
               />
-              
+               <TextField
+                label="Part Of Investment Income (if any)"
+                fullWidth
+                type="number"
+                value={partOfInvestmentIncome}
+                onChange={(e) => setPartOfInvestmentIncome(e.target.value)}
+                margin="normal"
+              />
               <TextField
                 select
                 label="Type of Partner"
@@ -118,13 +129,6 @@ const HealthInsuranceDeductionForm = ({ onCalculate }) => {
                 <MenuItem value="Active">Active</MenuItem>
                 <MenuItem value="Passive">Passive</MenuItem>
               </TextField>
-
-                
-
-            </Grid>
-
-        {/* Lado Derecho */}
-              <Grid item xs={12} md={6}>
               <TextField
                 label="Average Qualified Employees Compensation"
                 fullWidth
@@ -142,6 +146,11 @@ const HealthInsuranceDeductionForm = ({ onCalculate }) => {
                 margin="normal"
               />
 
+            </Grid>
+
+            {/* Right Side */}
+            <Grid item xs={12} md={6}>
+             
               <TextField
                 label="Average Contribution Per Employee"
                 fullWidth
@@ -150,7 +159,20 @@ const HealthInsuranceDeductionForm = ({ onCalculate }) => {
                 onChange={(e) => setAverageContributionPerEmployee(e.target.value)}
                 margin="normal"
               />
-
+                <TextField
+                label="Limit 1 - Per Employee"
+                fullWidth
+                value={LIMIT_ONE}
+                disabled
+                margin="normal"
+              />
+              <TextField
+                label="Limit 2 - Per Employee - 25% Wages"
+                fullWidth
+                value={LIMIT_TWO}
+                disabled
+                margin="normal"
+              />
               <TextField
                 select
                 label="Form Type"
@@ -163,7 +185,19 @@ const HealthInsuranceDeductionForm = ({ onCalculate }) => {
                 <MenuItem value="1040NR - Schedule E">1040NR - Schedule E</MenuItem>
                 <MenuItem value="1065">1065</MenuItem>
                 <MenuItem value="1120s">1120s</MenuItem>
+                <MenuItem value="1120">1120</MenuItem>
               </TextField>
+              <TextField
+                label="QBID (Qualified Business Income Deduction)"
+                fullWidth
+                type="number"
+                value={QBID}
+                onChange={(e) => setQbid(e.target.value)}
+                margin="normal"
+              />
+
+          
+            
             </Grid>
           </Grid>
 
@@ -178,4 +212,4 @@ const HealthInsuranceDeductionForm = ({ onCalculate }) => {
   );
 };
 
-export default HealthInsuranceDeductionForm;
+export default SEPContributionsForm;

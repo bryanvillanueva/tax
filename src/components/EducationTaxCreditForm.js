@@ -192,11 +192,8 @@ const calculateLimit = (MFJ, taxpayerMAGI) => {
                 onChange={(e) => setFilingStatus(e.target.value)}
                 margin="normal"
               >
-                <MenuItem value="Single">Single</MenuItem>
                 <MenuItem value="MFJ">Married Filing Jointly</MenuItem>
-                <MenuItem value="MFS">Married Filing Separately</MenuItem>
-                <MenuItem value="HH">Head of Household</MenuItem>
-                <MenuItem value="QSS">Qualified Surviving Spouse</MenuItem>
+
               </TextField>
               <TextField
                 label="Gross Income"
