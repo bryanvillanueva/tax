@@ -67,8 +67,8 @@ const FormSelector = ({ onSelectForm }) => {
     return savedFavorites ? JSON.parse(savedFavorites) : {};
   });
 
-  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
     // Función para ordenar los formularios con favoritos primero
     const getSortedForms = (formsList, favoritesObj, searchTerm) => {
@@ -151,28 +151,7 @@ const FormSelector = ({ onSelectForm }) => {
   return (
     <Box sx={{ display: 'flex' }}>
       
-     {/* Botón para abrir el Drawer */}
-     <IconButton
-  size="large"
-  onClick={() => setDrawerOpen(true)}
-  sx={{
-    position: 'absolute',
-    top: 16,
-    left: 16,
-    color: '#fff',
-    backgroundColor: '#0858e6',
-    transition: 'transform 0.2s, background-color 0.2s', // Transición suave para hover y pulse
-    '&:hover': {
-      backgroundColor: '#0746b0', // Azul oscuro al hacer hover
-      transform: 'scale(1.1)', // Efecto de pulse al hover
-    },
-    '&:active': {
-      transform: 'scale(0.95)', // Pequeño efecto de clic
-    },
-  }}
->
-  <MenuIcon />
-</IconButton>
+     
 
       {/* Reutiliza el Drawer */}
       <CustomDrawer
@@ -183,15 +162,7 @@ const FormSelector = ({ onSelectForm }) => {
 
       {/* Contenido principal */}
       <Box sx={{ flex: 1 }}>
-        {/* Botón para abrir el Drawer */}
-        <IconButton size='large'
-          onClick={() => setDrawerOpen(true)}
-          sx={{ position: 'absolute', top: 16, left: 16, color: '#fff', backgroundColor: '#0858e6',}}
-        >
-          <MenuIcon />
-        </IconButton>
-
-        {/* Contenido del FormSelector */}
+       
         <Box sx={{ mt: 5}}>
         {/* Contenedor del logo */}
         <Box sx={{ textAlign: 'center', mb: 4, marginTop:-1}}>

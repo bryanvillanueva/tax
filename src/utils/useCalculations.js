@@ -273,10 +273,7 @@ const useCalculations = () => {
      // Calcular NIIT Threshold
       const niitThreshold = calculateNIITThreshold(netIncome, filingStatus, partnerType);
       const niitThreshold2 = calculateNIITThreshold2(netIncome2, filingStatus, partnerType);
-      const calcularNIITInvest = calcularNIITInvestIncome(agi, filingStatus, partnerType, partOfInvestmentIncome)
-      const calcularNIITInvest2 = calcularNIITInvestIncome2(agi2, filingStatus, partnerType, partOfInvestmentIncome)
-      console.log(calcularNIITInvest, "2:",calcularNIITInvest2);
-
+      
 
       // Cálculo para Corporations (1120)
       const corpTaxableIncome = netIncome;
@@ -308,8 +305,11 @@ const useCalculations = () => {
     const taxableIncome1065 = calculateTaxableIncome1120S(agi1120S, filingStatus);
     const effectiveTaxRate1065 = taxableIncome1065 !== 0 ? ((taxDue1120S / taxableIncome1065) * 100).toFixed(2) : '0.00';
 
-    
-   
+    // Calcular NIIT InvestIncome
+    const calcularNIITInvest = calcularNIITInvestIncome(agi1120S, filingStatus, partnerType, partOfInvestmentIncome)
+    const calcularNIITInvest2 = calcularNIITInvestIncome2(agi1120S, filingStatus, partnerType, partOfInvestmentIncome)
+    console.log(calcularNIITInvest, "2:",calcularNIITInvest2);
+
 
       return {
         netIncome,
