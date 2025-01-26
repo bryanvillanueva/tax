@@ -114,7 +114,7 @@ const Profile = () => {
   size="large"
   onClick={() => setDrawerOpen(true)}
   sx={{
-    position: 'absolute',
+    position: 'fixed',
     top: 16,
     left: 16,
     color: '#fff',

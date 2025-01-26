@@ -60,6 +60,7 @@ const CustomDrawer = ({ drawerOpen, setDrawerOpen, userData }) => {
           startIcon={<LogoutIcon />}
           fullWidth
           onClick={handleLogout}
+          
         >
           Logout
         </Button>

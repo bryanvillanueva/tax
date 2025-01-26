@@ -355,11 +355,11 @@ export function calcularNIITInvestIncome(agi, filingStatus,partnerType, partOfIn
   }
 }
 // Función para calcular el NIIT Invest income2
-export function calcularNIITInvestIncome2(agi2, filingStatus, partnerType, partOfInvestmentIncome) {
+export function calcularNIITInvestIncome2(agi1120S, filingStatus, partnerType, partOfInvestmentIncome) {
   const umbral = niitThresholds[filingStatus] || 0;  
   const niitR = niitRate;
 
-  if (partnerType === "Passive" && agi2 > umbral) {
+  if (partnerType === "Passive" && agi1120S > umbral) {
     return partOfInvestmentIncome * niitR;
   } else {
     return 0;
