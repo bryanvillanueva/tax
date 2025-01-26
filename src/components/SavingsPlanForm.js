@@ -14,10 +14,12 @@ const SavingsPlanForm = ({ onCalculate }) => {
   const [annualContribution, setAnnualContribution] = useState('');
   const [numberOfChildren, setNumberOfChildren] = useState('');
   const [averageInterestRate, setAverageInterestRate] = useState('');
+  const [taxPayerMarginaltRate, setTaxPayerMarginaltRate] = useState('');
   const [totalYears, setTotalYears] = useState('');
   const [totalAnnualContribution, setTotalAnnualContribution] = useState(null);
   const [futureValue, setFutureValue] = useState(null);
   const [totalTaxSavings, setTotalTaxSavings] = useState(null);
+   const [QBID, setQbid] = useState('');
   const [formType, setFormType] = useState('1040 - Schedule C/F');
   const [error, setError] = useState(null);
 
@@ -70,7 +72,7 @@ const SavingsPlanForm = ({ onCalculate }) => {
     const taxableIncome = calculateTaxableIncome(agi, filingStatus);
     const { marginalRate } = getMarginalTaxRateAndLevel(filingStatus, taxableIncome);
     const futureValue = (totalAnnualContribution * Math.pow(1 + parseFloat(averageInterestRate) / 100 / 12, 12 * parseInt(totalYears))) - totalAnnualContribution;
-    const totalTaxSavings = futureValue * (marginalRate);
+    const totalTaxSavings = (futureValue * taxPayerMarginaltRate) * 100;
     
 
     setTotalAnnualContribution(totalAnnualContribution);
@@ -91,6 +93,7 @@ const SavingsPlanForm = ({ onCalculate }) => {
       averageInterestRate: parseFloat(averageInterestRate),
       totalYears: parseInt(totalYears),
       formType,
+      QBID: parseFloat(QBID),
       calculationType: 'savingsPlan',
     });
 
@@ -140,7 +143,7 @@ const SavingsPlanForm = ({ onCalculate }) => {
                 label="Gross Income"
                 fullWidth
                 type="number"
-                value={grossIncome}
+                value={grossIncome} 
                 onChange={(e) => setGrossIncome(e.target.value)}
                 margin="normal"
               />
@@ -158,10 +161,10 @@ const SavingsPlanForm = ({ onCalculate }) => {
               </TextField>
 
               <TextField
-                label="Annual Contribution per Child"
+                label="Annual Contribution Per Children"
                 fullWidth
                 type="number"
-                value={annualContribution}
+                value={annualContribution }
                 onChange={(e) => setAnnualContribution(e.target.value)}
                 margin="normal"
               />
@@ -176,10 +179,7 @@ const SavingsPlanForm = ({ onCalculate }) => {
                   sx: { fontWeight: 'bold', color: '#333' },
                 }}
               />
-            </Grid>
-
-            <Grid item xs={12} md={6}>
-              <TextField
+                <TextField
                 label="Number of Children"
                 fullWidth
                 type="number"
@@ -187,7 +187,9 @@ const SavingsPlanForm = ({ onCalculate }) => {
                 onChange={(e) => setNumberOfChildren(e.target.value)}
                 margin="normal"
               />
+            </Grid>
 
+            <Grid item xs={12} md={6}>
               <TextField
                 label="Plan's Average Interest Rate (%)"
                 fullWidth
@@ -195,6 +197,9 @@ const SavingsPlanForm = ({ onCalculate }) => {
                 value={averageInterestRate}
                 onChange={(e) => setAverageInterestRate(e.target.value)}
                 margin="normal"
+                InputProps={{
+                  endAdornment: <span>%</span>,
+                }}
               />
 
               <TextField
@@ -206,7 +211,7 @@ const SavingsPlanForm = ({ onCalculate }) => {
                 margin="normal"
               />
               <TextField
-                label="Total Interest Over the Years"
+                label="Total interes over the first years"
                 fullWidth
                 type="text"
                 value={futureValue !== null ? futureValue.toFixed(2) : ''}
@@ -216,11 +221,32 @@ const SavingsPlanForm = ({ onCalculate }) => {
                   sx: { fontWeight: 'bold', color: '#333' }, // Negrita y color más oscuro
                 }}
               />
+              
               <TextField
-                label="Total Tax Savings"
+                label="Taxpayer's marginal rate"
+                fullWidth
+                type="number"
+                value={taxPayerMarginaltRate}
+                onChange={(e) => setTaxPayerMarginaltRate(e.target.value)}
+                margin="normal"
+                InputProps={{
+                  endAdornment: <span style={{ marginLeft: '8px' }}>%</span>,
+                }}
+              />
+              <TextField
+                label="Total Estimate Tax Savings"
                 fullWidth
                 type="text"
-                value={totalTaxSavings !== null ? totalTaxSavings.toFixed(2) : ''}
+                value={
+                  totalTaxSavings !== null
+                    ? new Intl.NumberFormat('en-US', {
+                        style: 'currency',
+                        currency: 'USD',
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      }).format(totalTaxSavings)
+                    : ''
+                }
                 margin="normal"
                 disabled
                 InputProps={{
@@ -241,6 +267,14 @@ const SavingsPlanForm = ({ onCalculate }) => {
                 <MenuItem value="1120S">1120S</MenuItem>
                 <MenuItem value="1120">1120</MenuItem>
               </TextField>
+                            <TextField
+                              label="QBID (Qualified Business Income Deduction)"
+                              fullWidth
+                              type="number"
+                              value={QBID}
+                              onChange={(e) => setQbid(e.target.value)}
+                              margin="normal"
+                            />
             </Grid>
           </Grid>
 

@@ -83,7 +83,7 @@ export function calculateNetIncomeAmanda(grossIncome) {
 
 // calcular el Net income para exemptionQualifiedSmall
 export function calculateNetIncomeExemptionQualifiedSmall(grossIncome, capitalGainQSBS) {
-  return Math.max(0, grossIncome - capitalGainQSBS); // Evita valores negativos{
+  return Math.max(0, grossIncome ); // Evita valores negativos{
 }
 
 // calcular el Net income para costSegregation
@@ -200,6 +200,9 @@ export function calculateNetIncomeCharitableDonation (grossIncome,deductionDonat
 
 export function calculateNetIncomeInfluencer (grossIncome, deductionInfluencer){
   return Math.max(0, grossIncome - deductionInfluencer); // Evita valores negativos
+}
+export function calculateNetIncomeCapital (grossIncome){
+  return Math.max(0, grossIncome); // Evita valores negativos
 }
 
 
@@ -569,13 +572,13 @@ export function calculateTaxDue1065(filingStatus, taxableincome1065) {
 // Calcular Additional Medicare Tax
 export function calculateAdditionalMedicare(filingStatus, netIncome) {
   const threshold = additionalMedicareThreshold[filingStatus];
-  return netIncome > threshold ? (netIncome - threshold) * additionalMedicareRate : 0;
+  return netIncome > threshold ? ((netIncome * 0.9235) - threshold) * additionalMedicareRate : 0;
 }
 
 // Calcular Additional Medicare Tax
 export function calculateAdditionalMedicare2(filingStatus, netIncome2) {
   const threshold = additionalMedicareThreshold[filingStatus];
-  return netIncome2 > threshold ? (netIncome2 - threshold) * additionalMedicareRate : 0;
+  return netIncome2 > threshold ? ((netIncome2 * 0.9235) - threshold ) * additionalMedicareRate : 0;
 }
 
 // Obtener la Self-Employment Rate fija (15.3%)

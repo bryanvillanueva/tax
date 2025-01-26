@@ -15,17 +15,22 @@ const CostSegregationForm = ({ onCalculate }) => {
   const [error, setError] = useState(null);
   const [formType, setFormType] = useState('1040 - Schedule C/F');
   const [newDepreciation, setNewDepreciation] = useState(null); 
+  const [QBID, setQbid] = useState('');
 
   const { performCalculations } = useCalculations();
 
   const calculateNewDepreciation = (realEstateValue, assetsReclassifiedValue, assetsUsefulLife) => {
     if (realEstateValue && assetsReclassifiedValue && assetsUsefulLife) {
-      const depreciation = ((realEstateValue - assetsReclassifiedValue) / (39 * 12)) + (assetsReclassifiedValue / assetsUsefulLife);
+      const depreciation = ((realEstateValue - assetsReclassifiedValue) / (39 * 12)) + ((assetsReclassifiedValue / (assetsUsefulLife * 12)));
       return depreciation;
     } else {
       return 0; 
     }
   };
+ const AAD = (newDepreciation - depreciation ) *12;
+ console.log("AAD: ", AAD); 
+  
+
 
   useEffect(() => {
     const calculatedDepreciation = realEstateValue ? realEstateValue / (39 * 12) : 0; 
@@ -59,7 +64,7 @@ const CostSegregationForm = ({ onCalculate }) => {
       parseInt(assetsUsefulLife)
     );
 
-    const calculatedDeduction = newDepreciation - depreciation; 
+    const calculatedDeduction = newDepreciation * 12; 
     
     const results = performCalculations({
       filingStatus,
@@ -71,7 +76,9 @@ const CostSegregationForm = ({ onCalculate }) => {
       assetsUsefulLife: parseInt(assetsUsefulLife),
       deduction: calculatedDeduction,  
       formType,
+      AAD: parseFloat(AAD),
       calculationType: 'costSegregation',
+      QBID: parseFloat(QBID),
     });
 
     onCalculate(results);
@@ -151,19 +158,18 @@ const CostSegregationForm = ({ onCalculate }) => {
                 onChange={(e) => setRealEstateValue(e.target.value)}
                 margin="normal"
               />
-            </Grid>
-
-            {/* Right side with 4 fields */}
-            <Grid item xs={12} md={6}>
-              <TextField
-                label="Current Annual Depreciation (39 years)"
+                <TextField
+                label="Current monthly depreciation (39 years)"
                 fullWidth
                 type="text"
                 value={formatCurrency(depreciation)} 
                 margin="normal"
                 disabled
               />
+            </Grid>
 
+            {/* Right side with 4 fields */}
+            <Grid item xs={12} md={6}>
               <TextField
                 label="Value of Assets Reclassified"
                 fullWidth
@@ -195,6 +201,14 @@ const CostSegregationForm = ({ onCalculate }) => {
                 disabled
                 margin="normal"
               />
+              <TextField
+                label="Additional annual depreciation"
+                fullWidth
+                type="text"
+                value={AAD !== null ? formatCurrency(AAD) : 'Calculating...'}
+                disabled
+                margin="normal"
+              />
 
               <TextField
                 select
@@ -210,6 +224,14 @@ const CostSegregationForm = ({ onCalculate }) => {
                 <MenuItem value="1120S">1120S</MenuItem>
                 <MenuItem value="1120">1120</MenuItem>
               </TextField>
+              <TextField
+                label="QBID (Qualified Business Income Deduction)"
+                fullWidth
+                type="number"
+                value={QBID}
+                onChange={(e) => setQbid(e.target.value)}
+                margin="normal"
+              />
             </Grid>
           </Grid>
 

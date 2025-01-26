@@ -13,6 +13,9 @@ const ExemptionQualifiedSmallBusinessStockForm = ({ onCalculate }) => {
   const [yearsHolding, setYearsHolding] = useState('');
   const [theStocksWere, setTheStocksWere] = useState('No');
   const [formType, setFormType] = useState('1040 - Schedule C/F');
+  const [stockAdquisitionDate, setStockAdquisitionDate] = useState('2009');
+  const [QBID, setQbid] = useState('');
+ 
   const [error, setError] = useState(null);
 
   const { performCalculations } = useCalculations();
@@ -49,7 +52,12 @@ const ExemptionQualifiedSmallBusinessStockForm = ({ onCalculate }) => {
 
     const stockProfit = parseFloat(stockSellPrice) - parseFloat(stockCost);
 
-    const limitOfExemption = (parseFloat(stockCost) * 10) < 10000000 ? parseFloat(stockCost) * 10 : 10000000;
+    const limitOfExemption = stockAdquisitionDate === "2009"
+  ? 0.5 // 50%
+  : stockAdquisitionDate === "2010-1"
+  ? 0.75 // 75%
+  : 1; // 100%
+
     console.log('Limit of Exemption:', limitOfExemption);
 
     let finalCapitalGain = parseFloat(capitalGainQSBS);
@@ -57,7 +65,32 @@ const ExemptionQualifiedSmallBusinessStockForm = ({ onCalculate }) => {
       finalCapitalGain = 0;
     }
 
-    finalCapitalGain = finalCapitalGain <= limitOfExemption ? finalCapitalGain : limitOfExemption;
+    finalCapitalGain = Math.min(finalCapitalGain * limitOfExemption, parseFloat(stockCost));
+    console.log('Final Capital Gain:', finalCapitalGain);
+
+ // Función para calcular Total Savings of Capital Gain
+ const calculateTotalSavingsOfCapitalGain = (capitalGainQSBS, limitOfExemption, limitOfExemptionAmount) => {
+  // Calcular el ahorro fiscal potencial
+  const potentialSavings = capitalGainQSBS * limitOfExemption * 0.2;
+
+  // Evaluar las condiciones
+  if (potentialSavings >= limitOfExemptionAmount) {
+    return limitOfExemptionAmount; // Si el ahorro supera el límite, usar el límite
+  } else {
+    return potentialSavings; // De lo contrario, usar el ahorro calculado
+  }
+};
+
+// Llama a la función para calcular Total Savings of Capital Gain (TSCG)
+const totalSavings = calculateTotalSavingsOfCapitalGain(
+  parseFloat(capitalGainQSBS), // CGSQ
+  limitOfExemption, // E%
+  parseFloat(stockCost) // LE
+);
+
+console.log('Total Savings of Capital Gain (TSCG):', totalSavings);
+
+
 
     const results = performCalculations({
       filingStatus,
@@ -70,6 +103,10 @@ const ExemptionQualifiedSmallBusinessStockForm = ({ onCalculate }) => {
       stockProfit,
       theStocksWere,
       formType,
+      stockAdquisitionDate,
+      QBID: parseFloat(QBID),
+      calculateTotalSavingsOfCapitalGain,
+      totalSavings,
       calculationType: 'exemptionQualifiedSmall',
     });
 
@@ -144,10 +181,7 @@ const ExemptionQualifiedSmallBusinessStockForm = ({ onCalculate }) => {
                 onChange={(e) => setStockSellPrice(e.target.value)}
                 margin="normal"
               />
-            </Grid>
-
-            <Grid item xs={12} md={6}>
-              <TextField
+                <TextField
                 label="Stock's Cost"
                 fullWidth
                 type="number"
@@ -164,6 +198,10 @@ const ExemptionQualifiedSmallBusinessStockForm = ({ onCalculate }) => {
                 onChange={(e) => setCapitalGainQSBS(e.target.value)}
                 margin="normal"
               />
+            </Grid>
+
+            <Grid item xs={12} md={6}>
+
 
               <TextField
                 label="Years Holding the Stock (Min 5 Yrs)"
@@ -173,10 +211,23 @@ const ExemptionQualifiedSmallBusinessStockForm = ({ onCalculate }) => {
                 onChange={(e) => setYearsHolding(e.target.value)}
                 margin="normal"
               />
+              <TextField
+              select
+              label="Stock Adquisition Date"
+              fullWidth
+              value={stockAdquisitionDate}
+              onChange={(e) => setStockAdquisitionDate(e.target.value)}
+              margin="normal"
+             >
+              <MenuItem value="2009">Before Feb 17, 2009</MenuItem>
+              <MenuItem value="2010-1">Before Sept 28, 2010</MenuItem>
+              <MenuItem value="2010-2">After Sept 27, 2010</MenuItem>
+
+              </TextField>
 
               <TextField
                 select
-                label="Were the Stocks Sold?"
+                label="The stocks were adquired directly from the QSB"
                 fullWidth
                 value={theStocksWere}
                 onChange={(e) => setTheStocksWere(e.target.value)}
@@ -198,8 +249,15 @@ const ExemptionQualifiedSmallBusinessStockForm = ({ onCalculate }) => {
                 <MenuItem value="1040NR - Schedule E">1040NR - Schedule E</MenuItem>
                 <MenuItem value="1065">1065</MenuItem>
                 <MenuItem value="1120S">1120S</MenuItem>
-                <MenuItem value="1120">1120</MenuItem>
               </TextField>
+              <TextField
+                label="QBID (Qualified Business Income Deduction)"
+                fullWidth
+                type="number"
+                value={QBID}
+                onChange={(e) => setQbid(e.target.value)}
+                margin="normal"
+              />
             </Grid>
           </Grid>
 
