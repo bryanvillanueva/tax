@@ -100,9 +100,21 @@ export function calculateNetIncomeAccountableplan(grossIncome, totalReimbursable
 export function calculateNetIncomeAdoptionPlan(grossIncome) {
   return Math.max(0, grossIncome ); 
 }
+//calcular net income para active real 
+export function calculateNetIncomeActiveRealEstate(grossIncome){
+  return Math.max(0, grossIncome );
+}
+
+// calcular net inoome para Backdoor Roth
+export function calculateNetIncomeBackdoorRoth(grossIncome, ) {
+  return Math.max(0, grossIncome ); 
+}
 
 
-
+//calcular net income Cancellation By Insolvency
+export function calculateNetIncomeCancellationByInsolvency(grossIncome, deductionCancellation) {
+  return Math.max(0, grossIncome - deductionCancellation ); 
+}
 
 // calcular el Net income para savingsPlan
 export function calculateNetIncomeSavingsPlan(grossIncome) {
@@ -110,7 +122,7 @@ export function calculateNetIncomeSavingsPlan(grossIncome) {
 }
 //calcular el Net income para educationAssistance
 export function calculateNetIncomeEducationAssistance(grossIncome, totalEducationalAssistance) {
-return Math.max(0, grossIncome - totalEducationalAssistance); // Evita valores negativos
+  return Math.max(0, grossIncome - totalEducationalAssistance); // Evita valores negativos
 }
 
 //calcular el Net income para educationTaxCredit
@@ -194,8 +206,8 @@ export function calculateNetIncomeUnreimbursedExpenses (grossIncome, reductionUn
 }
 
 //calcular Net Income para Charitable Donation Of Appreciated
-export function calculateNetIncomeCharitableDonation (grossIncome,deductionDonation ){
-  return Math.max(0, grossIncome - deductionDonation); // Evita valores negativos
+export function calculateNetIncomeCharitableDonation (grossIncome ){
+  return Math.max(0, grossIncome ); // Evita valores negativos
 }
 //calcular Net Income para influencer
 export function calculateNetIncomeInfluencer (grossIncome, deductionInfluencer){
@@ -251,20 +263,26 @@ export function calculateSEMedicare(netIncome) {
 }
 
 // Calcular el AGI (Adjusted Gross Income) 1/3
-export function calculateAGI(netIncome, standardDeduction, dagi, selfEmploymentTax) {
+export function calculateAGI(netIncome, standardDeduction, dagi, dagi2, selfEmploymentTax) {
   
-  // Evaluar la deducción AGI dentro de la función
+  // elgie el valor mas alto
   const agiDeduction = dagi > standardDeduction ? dagi : 0;
-  return netIncome - (selfEmploymentTax / 2) - agiDeduction;  
+   
+  // resta dagi al agi
+  const agiDeduction2 = dagi2 || 0;
+
+  return netIncome - (selfEmploymentTax / 2) - agiDeduction - agiDeduction2;  
 
 }
 // Calcular el AGI para 2 y 4 (1120s y 1040nr)
 
-export function calculateAGI2y4(agi1120S, standardDeduction, dagi, selfEmploymentTax) {
+export function calculateAGI2y4(agi1120S, standardDeduction, dagi, dagi2) {
   
   // Evaluar la deducción AGI dentro de la función
   const agiDeduction = dagi > standardDeduction ? dagi : 0;
-  return agi1120S - agiDeduction;  
+    // resta dagi al agi
+    const agiDeduction2 = dagi2 || 0;
+  return agi1120S - agiDeduction -agiDeduction2;  
 
 }
 

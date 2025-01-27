@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { TextField, Button, Container, Typography, Box, MenuItem, Alert, Grid } from '@mui/material';
+import { TextField, Button, Container, Box, MenuItem, Alert, Grid } from '@mui/material';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import useCalculations from '../utils/useCalculations';
+
 
 const formatCurrency = (value) => {
   if (value === undefined || value === null) return '$0.00';
@@ -14,13 +15,15 @@ const formatCurrency = (value) => {
 };
 
 const ActiveRealEstateForm = ({ onCalculate }) => {
-  const [filingStatus, setFilingStatus] = useState('Single');
+  const [filingStatus, setFilingStatus] = useState('MFS');
   const [grossIncome, setGrossIncome] = useState('');
-  const [taxpayerActive, setTaxpayerActive] = useState('Yes'); // Nuevo campo: Dropdown para Taxpayer
-  const [netRentalLoss, setNetRentalLoss] = useState(''); // Nuevo campo: Net Rental Loss
-  const [adjustedGrossIncome, setAdjustedGrossIncome] = useState(''); // Nuevo campo: Adjusted Gross Income
+  const [netRentalLoss, setNetRentalLoss] = useState('');
+  const [adjustedGrossIncome, setAdjustedGrossIncome] = useState('');
   const [formType, setFormType] = useState('1040 - Schedule C/F');
   const [partnerType, setPartnerType] = useState('Active');
+  const [QBID, setQbid] = useState('');
+  const [dagi2, setDagi2] = useState('');
+  const [taxpayerStatus, setTaxpayerStatus] = useState('Living Apart');
   const [error, setError] = useState(null);
   const [calculatedValues, setCalculatedValues] = useState(null);
 
@@ -48,26 +51,45 @@ const ActiveRealEstateForm = ({ onCalculate }) => {
     setError(null);
 
     // Cálculos internos
-    const incomeLimit = filingStatus === 'MFS' ? 75000 : 150000; // Income Limit basado en Filing Status
-    const phaseOut = 50000; // Valor fijo para Phase Out
-    const benefitReduction =
-    adjustedGrossIncome >= incomeLimit
-    ? (adjustedGrossIncome - incomeLimit) >= phaseOut
-      ? phaseOut * 0.5
-      : (adjustedGrossIncome - incomeLimit) * 0.5
-    : 0;
+    const incomeLimit =
+      filingStatus === 'MFS'
+        ? taxpayerStatus === 'Living Apart'
+          ? 50000
+          : taxpayerStatus === 'Living Together'
+          ? 0
+          : 100000
+        : 150000;
+
+    const phaseOut =
+      filingStatus === 'MFS'
+        ? taxpayerStatus === 'Living Apart'
+          ? 25000
+          : taxpayerStatus === 'Living Together'
+          ? 0
+          : 50000
+        : 50000;
+
+    const benefitLimit =
+      adjustedGrossIncome >= incomeLimit
+        ? (adjustedGrossIncome - incomeLimit) >= phaseOut
+          ? 0
+          : phaseOut * 0.5 - (adjustedGrossIncome - incomeLimit) * 0.5
+        : phaseOut * 0.5;
 
     const deductibleAmount =
-      parseFloat(netRentalLoss) >= 25000
-        ? 25000 - benefitReduction
-        : parseFloat(netRentalLoss) - benefitReduction;
+      taxpayerStatus === 'Living Apart'
+        ? Math.min(netRentalLoss, benefitLimit)
+        : taxpayerStatus === 'Living Together'
+        ? 0
+        : Math.min(netRentalLoss, benefitLimit);
 
-        setCalculatedValues({
-          incomeLimit,
-          phaseOut,
-          benefitReduction,
-          deductibleAmount,
-        });
+    // Actualizar valores calculados
+    setCalculatedValues({
+      incomeLimit,
+      phaseOut,
+      benefitLimit,
+      deductibleAmount,
+    });
 
     // Resultados procesados con performCalculations
     const results = performCalculations({
@@ -75,13 +97,15 @@ const ActiveRealEstateForm = ({ onCalculate }) => {
       grossIncome: parseFloat(grossIncome),
       netRentalLoss: parseFloat(netRentalLoss),
       adjustedGrossIncome: parseFloat(adjustedGrossIncome),
-      incomeLimit,
+      incomeLimit,  
       phaseOut,
-      benefitReduction,
+      benefitLimit,
       deductibleAmount,
       formType,
       partnerType,
-      calculationType: 'ActiveRealEstateForm',
+      calculationType: 'ActiveRealEstate',
+      QBID: parseFloat(QBID),
+      dagi2: parseFloat(dagi2),
     });
 
     onCalculate(results);
@@ -90,7 +114,6 @@ const ActiveRealEstateForm = ({ onCalculate }) => {
   return (
     <Container>
       <Box sx={{ position: 'relative', mt: 5 }}>
-        {/* Enlace en la esquina superior derecha */}
         <Box sx={{ position: 'absolute', top: -10, right: 0 }}>
           <Button
             href="https://tax.bryanglen.com/data/Strategies-Structure.pdf"
@@ -140,7 +163,8 @@ const ActiveRealEstateForm = ({ onCalculate }) => {
                 onChange={(e) => setGrossIncome(e.target.value)}
                 margin="normal"
               />
-            <TextField
+
+              <TextField
                 select
                 label="Type of Partner"
                 fullWidth
@@ -151,23 +175,14 @@ const ActiveRealEstateForm = ({ onCalculate }) => {
                 <MenuItem value="Active">Active</MenuItem>
                 <MenuItem value="Passive">Passive</MenuItem>
               </TextField>
-              
-            </Grid>
-
-            <Grid item xs={12} md={6}>
-
-            <TextField
-                select
-                label="Taxpayer is an active participant in real estate"
+               <TextField
+                label="Deduction To AGI"
                 fullWidth
-                value={taxpayerActive}
-                onChange={(e) => setTaxpayerActive(e.target.value)}
+                type="number"
+                value={dagi2}
+                onChange={(e) => setDagi2(e.target.value)}
                 margin="normal"
-              >
-                <MenuItem value="Yes">Yes</MenuItem>
-                <MenuItem value="No">No</MenuItem>
-              </TextField>
-
+              />
 
               <TextField
                 label="Net Rental Loss"
@@ -186,7 +201,55 @@ const ActiveRealEstateForm = ({ onCalculate }) => {
                 onChange={(e) => setAdjustedGrossIncome(e.target.value)}
                 margin="normal"
               />
-          
+
+             
+            </Grid>
+
+            <Grid item xs={12} md={6}>
+            <TextField
+                select
+                label="Taxpayer Status (ITM)"
+                fullWidth
+                value={taxpayerStatus}
+                onChange={(e) => setTaxpayerStatus(e.target.value)}
+                margin="normal"
+              >
+                <MenuItem value="Living Apart">Living Apart</MenuItem>
+                <MenuItem value="Living Together">Living Together</MenuItem>
+                <MenuItem value="Other Status">Other Status</MenuItem>
+              </TextField>
+              <TextField
+                label="Income Limit (ARE)"
+                fullWidth
+                value={calculatedValues ? formatCurrency(calculatedValues.incomeLimit) : formatCurrency(0)}
+                disabled
+                margin="normal"
+              />
+
+              <TextField
+                label="Phase Out"
+                fullWidth
+                value={calculatedValues ? formatCurrency(calculatedValues.phaseOut) : formatCurrency(0)}
+                disabled
+                margin="normal"
+              />
+
+              <TextField
+                label="Benefit Limit (BL)"
+                fullWidth
+                value={calculatedValues ? formatCurrency(calculatedValues.benefitLimit) : formatCurrency(0)}
+                disabled
+                margin="normal"
+              />
+
+              <TextField
+                label="Deductible Amount (DA)"
+                fullWidth
+                value={calculatedValues ? formatCurrency(calculatedValues.deductibleAmount) : formatCurrency(0)}
+                disabled
+                margin="normal"
+              />
+
               <TextField
                 select
                 label="Form Type"
@@ -201,43 +264,16 @@ const ActiveRealEstateForm = ({ onCalculate }) => {
                 <MenuItem value="1120S">1120S</MenuItem>
                 <MenuItem value="1120">1120</MenuItem>
               </TextField>
+
+              <TextField
+                label="QBID (Qualified Business Income Deduction)"
+                fullWidth
+                type="number"
+                value={QBID}
+                onChange={(e) => setQbid(e.target.value)}
+                margin="normal"
+              />
             </Grid>
-            {calculatedValues && (
-            <Grid container spacing={2} sx={{ mt: 2 }}>
-              <Grid item xs={12} md={6}>
-                <TextField
-                  label="Income Limit (ARE)"
-                  fullWidth
-                  value={formatCurrency(calculatedValues.incomeLimit)}
-                  disabled
-                  margin="normal"
-                />
-                <TextField
-                  label="Phase Out"
-                  fullWidth
-                  value={formatCurrency(calculatedValues.phaseOut)}
-                  disabled
-                  margin="normal"
-                />
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <TextField
-                  label="Benefit Reduction (BR)"
-                  fullWidth
-                  value={formatCurrency(calculatedValues.benefitReduction)}
-                  disabled
-                  margin="normal"
-                />
-                <TextField
-                  label="Deductible Amount (DA)"
-                  fullWidth
-                  value={formatCurrency(calculatedValues.deductibleAmount)}
-                  disabled
-                  margin="normal"
-                />
-              </Grid>
-            </Grid>
-          )}
           </Grid>
 
           <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>

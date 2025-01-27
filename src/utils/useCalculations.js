@@ -58,8 +58,11 @@ import {
   calcularNIITInvestIncome2,
   calculateNetIncomeCapital,
   calculateNetIncomeAccountableplan,
-  calculateNetIncomeAdoptionPlan
-  
+  calculateNetIncomeAdoptionPlan,
+  calculateNetIncomeCancellationByInsolvency,
+  calculateNetIncomeActiveRealEstate,
+  calculateNetIncomeBackdoorRoth,
+
 } from '../utils/calculations';
 import { standardDeductions } from '../utils/taxData';
 
@@ -84,6 +87,7 @@ const useCalculations = () => {
     totalReimbursableExpenses,
     capitalGainQSBS,
     deduction,
+    deductionCancellation,
     totalEducationalAssistance,
     totalBenefits,
     totalIncomeShifted,
@@ -98,10 +102,10 @@ const useCalculations = () => {
     deductionStartup,
     totalDeductionTraditionalIRA,
     reductionUnreimbursed,
-    deductionDonation,
     deductionInfluencer,
     QBID,
     dagi,
+    dagi2,
     partOfInvestmentIncome,
   }) => {
     // Calcular Net Income según el tipo de cálculo
@@ -210,12 +214,21 @@ const useCalculations = () => {
           netIncome = calculateNetIncomeUnreimbursedExpenses(grossIncome, reductionUnreimbursed);
         break;
       case 'charitableDonationSavings':
-          netIncome = calculateNetIncomeCharitableDonation(grossIncome, deductionDonation);
+          netIncome = calculateNetIncomeCharitableDonation(grossIncome);
         break;
       case 'influencerOptimization':
           netIncome = calculateNetIncomeInfluencer(grossIncome, deductionInfluencer);
         break;
-        case 'deferredCapitalGain':
+      case 'CancellationByInsolvency':
+          netIncome = calculateNetIncomeCancellationByInsolvency(grossIncome, deductionCancellation);
+        break;
+      case 'ActiveRealEstate':
+          netIncome = calculateNetIncomeActiveRealEstate(grossIncome);
+        break;
+      case 'BackdoorRoth':
+          netIncome = calculateNetIncomeBackdoorRoth(grossIncome);
+        break;
+      case 'deferredCapitalGain':
           netIncome = calculateNetIncomeCapital(grossIncome);
         break;
       case 'standard':
@@ -226,7 +239,8 @@ const useCalculations = () => {
 
      //QBID 1040NR
      QBID = parseFloat(QBID) || 0;
-     dagi = parseFloat(dagi) || 0; 
+     dagi = parseFloat(dagi) || 0; // elgie el valor mas alto entre dagi y standardeduction
+     dagi2 = parseFloat(dagi2) || 0; // resta dagi al agi
      partOfInvestmentIncome = parseFloat(partOfInvestmentIncome) || 0;
 
     
@@ -240,7 +254,7 @@ const useCalculations = () => {
       const selfEmploymentTax = partnerType === 'Active' ? seSocialSecurity + seMedicare : 
       formType === '1040 - Schedule C/F' ? seSocialSecurity + seMedicare : 0;
       const standardDeduction = standardDeductions[filingStatus];
-      const agi = calculateAGI(netIncome, standardDeduction, dagi, selfEmploymentTax );
+      const agi = calculateAGI(netIncome, standardDeduction, dagi, dagi2, selfEmploymentTax );
       const taxableIncome = calculateTaxableIncome(agi, filingStatus, dagi, formType ) - QBID;
       const { marginalRate, level } = getMarginalTaxRateAndLevel(filingStatus, taxableIncome);
       const taxDue = calculateTaxDue(filingStatus, taxableIncome);
@@ -288,7 +302,7 @@ const useCalculations = () => {
 
       // calculos para el formulario 1120S/1040NR 2/4
      const agi1120S = netIncome;
-     const AgiCalculation2y4 = calculateAGI2y4 (agi1120S, standardDeduction, dagi);
+     const AgiCalculation2y4 = calculateAGI2y4 (agi1120S, standardDeduction, dagi, );
      const taxableIncome1120S = calculateTaxableIncome1120S(AgiCalculation2y4, filingStatus, dagi) - QBID;
      const taxDue1120S = calculateTaxDue1120S(filingStatus, taxableIncome1120S);
      const effectiveTaxRate1120S = taxableIncome1120S !== 0 ? ((taxDue1120S / taxableIncome1120S) * 100).toFixed(2) : '0.00';
@@ -308,7 +322,7 @@ const useCalculations = () => {
     // Calcular NIIT InvestIncome
     const calcularNIITInvest = calcularNIITInvestIncome(agi1120S, filingStatus, partnerType, partOfInvestmentIncome)
     const calcularNIITInvest2 = calcularNIITInvestIncome2(agi1120S, filingStatus, partnerType, partOfInvestmentIncome)
-    console.log(calcularNIITInvest, "2:",calcularNIITInvest2);
+ 
 
 
       return {
