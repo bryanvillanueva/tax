@@ -8,7 +8,7 @@ const SimpleIRAForm = ({ onCalculate }) => {
   const [filingStatus, setFilingStatus] = useState('Single');
   const [grossIncome, setGrossIncome] = useState('');
   const [partnerType, setPartnerType] = useState('Active');
-  const [formType, setFormType] = useState('1040 - Schedule C/F');
+  const [formType, setFormType] = useState('1065');
   const [qualifiedEmployees, setQualifiedEmployees] = useState('');
   const [averageCompensation, setAverageCompensation] = useState('');
   const [contributionMethod, setContributionMethod] = useState('Matching');
@@ -16,6 +16,7 @@ const SimpleIRAForm = ({ onCalculate }) => {
   const [averageContribution, setAverageContribution] = useState('');
   const [averageEmployerContribution, setAverageEmployerContribution] = useState(null);
   const [error, setError] = useState(null);
+  const [QBID, setQbid] = useState('');
 
   const { performCalculations } = useCalculations();
 
@@ -84,6 +85,7 @@ const SimpleIRAForm = ({ onCalculate }) => {
       averageEmployerContribution,
       totalEmployerContribution,
       calculationType: 'simpleIRA',
+      QBID: parseFloat(QBID),
     });
 
     onCalculate(results);
@@ -212,13 +214,18 @@ const SimpleIRAForm = ({ onCalculate }) => {
                 onChange={(e) => setFormType(e.target.value)}
                 margin="normal"
               >
-                <MenuItem value="1040 - Schedule C/F">1040 - Schedule C/F</MenuItem>
-                <MenuItem value="1040NR - Schedule E">1040NR - Schedule E</MenuItem>
                 <MenuItem value="1065">1065</MenuItem>
                 <MenuItem value="1120S">1120S</MenuItem>
                 <MenuItem value="1120">1120</MenuItem>
               </TextField>
-
+              <TextField
+                label="QBID (Qualified Business Income Deduction)"
+                fullWidth
+                type="number"
+                value={QBID}
+                onChange={(e) => setQbid(e.target.value)}
+                margin="normal"
+              />
             </Grid>
           </Grid>
 

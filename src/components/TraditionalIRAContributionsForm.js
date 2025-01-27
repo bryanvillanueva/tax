@@ -17,6 +17,8 @@ const TraditionalIRAContributionsForm = ({ onCalculate }) => {
   const [standardContributionLimit, setStandardContributionLimit] = useState('');
   const [applicable, setApplicable] = useState('');
   const [limitContribution, setLimitContribution] = useState('');
+   const [QBID, setQbid] = useState('');
+    const [dagi2, setDagi2] = useState('');
   const [error, setError] = useState(null);
 
   const { performCalculations } = useCalculations();
@@ -82,7 +84,7 @@ const TraditionalIRAContributionsForm = ({ onCalculate }) => {
     : annualContribution;
 
 
-    const totalDeductionTraditionalIRA = annualContribution >= calculatedContribution ? calculatedContribution : annualContribution ;
+    const totalDeductionTraditionalIRA = 0 ;
     
 
      // Actualizar estados
@@ -107,6 +109,8 @@ const TraditionalIRAContributionsForm = ({ onCalculate }) => {
       limitContribution: parseFloat(limitContribution),
       totalDeductionTraditionalIRA,
       calculationType: 'traditionalIRA',
+      QBID: parseFloat(QBID),
+      dagi2: parseFloat(dagi2),
     });
 
     onCalculate(results);
@@ -173,7 +177,14 @@ const TraditionalIRAContributionsForm = ({ onCalculate }) => {
                 <MenuItem value="Active">Active</MenuItem>
                 <MenuItem value="Passive">Passive</MenuItem>
               </TextField>
-
+              <TextField
+                label="Deduction To AGI"
+                fullWidth
+                type="number"
+                value={dagi2}
+                onChange={(e) => setDagi2(e.target.value)}
+                margin="normal"
+              />
               
 
               
@@ -267,8 +278,15 @@ const TraditionalIRAContributionsForm = ({ onCalculate }) => {
                 margin="normal"
               >
                 <MenuItem value="1040 - Schedule C/F">1040 - Schedule C/F</MenuItem>
-            
               </TextField>
+              <TextField
+                label="QBID (Qualified Business Income Deduction)"
+                fullWidth
+                type="number"
+                value={QBID}
+                onChange={(e) => setQbid(e.target.value)}
+                margin="normal"
+              />
             </Grid>
           </Grid>
 

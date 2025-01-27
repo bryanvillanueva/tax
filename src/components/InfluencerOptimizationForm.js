@@ -8,6 +8,7 @@ const InfluencerOptimizationForm = ({ onCalculate }) => {
   const [grossIncome, setGrossIncome] = useState('');
   const [partnerType, setPartnerType] = useState('Active');
   const [formType, setFormType] = useState('1040 - Schedule C/F');
+    const [QBID, setQbid] = useState('');
   
 
   const [optimizationExpenses, setOptimizationExpenses] = useState('');
@@ -48,6 +49,7 @@ const InfluencerOptimizationForm = ({ onCalculate }) => {
       otherDeductions: parseFloat(otherDeductions),
       deductionInfluencer,
       calculationType: 'influencerOptimization',
+      QBID: parseFloat(QBID),
     });
 
     onCalculate(results);
@@ -149,6 +151,14 @@ const InfluencerOptimizationForm = ({ onCalculate }) => {
                 <MenuItem value="1120S">1120S</MenuItem>
                 <MenuItem value="1120">1120</MenuItem>
               </TextField>
+              <TextField
+                label="QBID (Qualified Business Income Deduction)"
+                fullWidth
+                type="number"
+                value={QBID}
+                onChange={(e) => setQbid(e.target.value)}
+                margin="normal"
+              />
             </Grid>
           </Grid>
 
