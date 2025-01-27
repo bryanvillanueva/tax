@@ -3,6 +3,8 @@ import { TextField, Button, Container, Typography, Box, MenuItem, Alert, Grid } 
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import useCalculations from '../utils/useCalculations';
 
+
+
 const formatCurrency = (value) => {
   if (value === undefined || value === null) return '$0.00';
   return new Intl.NumberFormat('en-US', {
@@ -22,8 +24,15 @@ const BackdoorRothForm = ({ onCalculate }) => {
   const [taxpayerAge, setTaxpayerAge] = useState('');
   const [averageInterest, setAverageInterest] = useState('');
   const [marginalTaxRate, setMarginalTaxRate] = useState('');
+  const [formType, setFormType] = useState('1040 - Schedule C/F');
+  const [QBID, setQbid] = useState('');
+  const [calculatedValues, setCalculatedValues] = useState({
+    limitContribution: 0,
+    totalExemptIncome: 0,
+    potentialTaxSavings: 0,
+  });
   const [error, setError] = useState(null);
-  const [calculatedValues, setCalculatedValues] = useState(null);
+  
 
   const { performCalculations } = useCalculations();
 
@@ -89,7 +98,9 @@ const BackdoorRothForm = ({ onCalculate }) => {
       totalExemptIncome,
       potentialTaxSavings,
       partnerType,
-      calculationType: 'BackdoorRothForm',
+      formType,
+      calculationType: 'BackdoorRoth',
+      QBID: parseFloat(QBID),
     });
 
     onCalculate(results);
@@ -160,9 +171,6 @@ const BackdoorRothForm = ({ onCalculate }) => {
                 <MenuItem value="Active">Active</MenuItem>
                 <MenuItem value="Passive">Passive</MenuItem>
               </TextField>
-            </Grid>
-
-            <Grid item xs={12} md={6}>
               <TextField
                 label="Annual Contribution"
                 fullWidth
@@ -189,6 +197,10 @@ const BackdoorRothForm = ({ onCalculate }) => {
                 onChange={(e) => setTaxpayerAge(e.target.value)}
                 margin="normal"
               />
+            </Grid>
+
+            <Grid item xs={12} md={6}>
+              
 
               <TextField
                 label="Average % Interest Paid by the Account"
@@ -207,15 +219,10 @@ const BackdoorRothForm = ({ onCalculate }) => {
                 onChange={(e) => setMarginalTaxRate(e.target.value)}
                 margin="normal"
               />
-            </Grid>
-
-            {calculatedValues && (
-              <Grid container spacing={2} sx={{ mt: 2 }}>
-                <Grid item xs={12} md={6}>
-                  <TextField
+              <TextField
                     label="Limit Contribution"
                     fullWidth
-                    value={formatCurrency(calculatedValues.limitContribution)}
+                    value={formatCurrency(calculatedValues.limitContribution || 0)}
                     disabled
                     margin="normal"
                   />
@@ -223,22 +230,40 @@ const BackdoorRothForm = ({ onCalculate }) => {
                   <TextField
                     label="Total Exempt Income per Contribution"
                     fullWidth
-                    value={formatCurrency(calculatedValues.totalExemptIncome)}
+                    value={formatCurrency(calculatedValues.totalExemptIncome || 0)}
                     disabled
                     margin="normal"
                   />
-                </Grid>
-                <Grid item xs={12} md={6}>
-                  <TextField
+                   <TextField
                     label="Potential Tax Savings"
                     fullWidth
-                    value={formatCurrency(calculatedValues.potentialTaxSavings)}
+                    value={formatCurrency(calculatedValues.potentialTaxSavings || 0)}
                     disabled
                     margin="normal"
                   />
-                </Grid>
-              </Grid>
-            )}
+               <TextField
+                select
+                label="Form Type"
+                fullWidth
+                value={formType}
+                onChange={(e) => setFormType(e.target.value)}
+                margin="normal"
+              >
+                <MenuItem value="1040 - Schedule C/F">1040 - Schedule C/F</MenuItem>
+                
+              </TextField>
+              
+              <TextField
+                label="QBID (Qualified Business Income Deduction)"
+                fullWidth
+                type="number"
+                value={QBID}
+                onChange={(e) => setQbid(e.target.value)}
+                margin="normal"
+              />
+            </Grid>
+
+          
           </Grid>
 
           <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>

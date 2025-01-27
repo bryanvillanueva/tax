@@ -12,7 +12,6 @@ const SEPContributionsForm = ({ onCalculate }) => {
   const [averageContributionPerEmployee, setAverageContributionPerEmployee] = useState('');
   const [formType, setFormType] = useState('1040 - Schedule C/F');
   const [QBID, setQbid] = useState('');
-  const [partOfInvestmentIncome, setPartOfInvestmentIncome] = useState('');
   const [error, setError] = useState(null);
 
   const { performCalculations } = useCalculations();
@@ -55,7 +54,7 @@ const SEPContributionsForm = ({ onCalculate }) => {
       totalContribution,
       calculationType: 'sepContributions', 
       QBID: parseFloat(QBID),
-      partOfInvestmentIncome: parseFloat(partOfInvestmentIncome),
+      
 
     });
 
@@ -110,14 +109,7 @@ const SEPContributionsForm = ({ onCalculate }) => {
                 onChange={(e) => setGrossIncome(e.target.value)}
                 margin="normal"
               />
-               <TextField
-                label="Part Of Investment Income (if any)"
-                fullWidth
-                type="number"
-                value={partOfInvestmentIncome}
-                onChange={(e) => setPartOfInvestmentIncome(e.target.value)}
-                margin="normal"
-              />
+              
               <TextField
                 select
                 label="Type of Partner"

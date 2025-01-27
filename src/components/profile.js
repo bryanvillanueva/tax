@@ -13,19 +13,31 @@ import {
   CircularProgress,
   Alert,
   InputAdornment,
-  
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import CustomDrawer from './CustomDrawer';
-import CustomSpeedDial from './CustomSpeedDial'; // Importa el SpeedDial
+import CustomSpeedDial from './CustomSpeedDial';
 import MenuIcon from '@mui/icons-material/Menu';
+import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import axios from 'axios';
 
 const Profile = () => {
   const [tabValue, setTabValue] = useState(0);
-  const [userData, setUserData] = useState(null);
+  const [userData, setUserData] = useState({
+    first_name: '',
+    last_name: '',
+    email: '',
+    phone: '',
+    company_name: '',
+    product: '',
+    avatar: '',
+  });
   const [newPassword, setNewPassword] = useState('');
   const [currentPassword, setCurrentPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -34,7 +46,19 @@ const Profile = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [capsLock, setCapsLock] = useState(false);
-  const [drawerOpen, setDrawerOpen] = useState(false); // Estado para el Drawer
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [avatarPreview, setAvatarPreview] = useState(null);
+  const [avatarFile, setAvatarFile] = useState(null);
+  const [editMode, setEditMode] = useState(false);
+  const [editedData, setEditedData] = useState({
+    first_name: '',
+    last_name: '',
+    email: '',
+    phone: '',
+    company_name: '',
+    product: '',
+  });
+  const [avatarDialogOpen, setAvatarDialogOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -46,6 +70,7 @@ const Profile = () => {
           headers: { Authorization: `Bearer ${token}` },
         });
         setUserData(response.data);
+        setEditedData(response.data);
       } catch (err) {
         console.error('Error fetching user data:', err);
         navigate('/');
@@ -57,7 +82,110 @@ const Profile = () => {
     fetchUserData();
   }, [navigate]);
 
+  const handleAvatarChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      // Validar el tipo de archivo
+      if (!file.type.startsWith('image/')) {
+        setError('Please upload a valid image file.');
+        return;
+      }
+
+      // Validar el tamaño del archivo (por ejemplo, 5 MB)
+      if (file.size > 5 * 1024 * 1024) {
+        setError('File size must be less than 5 MB.');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setAvatarPreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+      setAvatarFile(file);
+    }
+  };
+
+  const handleSaveAvatar = async () => {
+    if (!avatarFile) return;
+
+    const formData = new FormData();
+    formData.append('avatar', avatarFile);
+
+    setIsLoading(true);
+    try {
+      const token = localStorage.getItem('authToken');
+      const response = await axios.post(
+        'https://taxbackend-production.up.railway.app/user/update-avatar',
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
+
+      setUserData({ ...userData, avatar: response.data.avatar });
+      setSuccess('Avatar updated successfully.');
+      setAvatarPreview(null);
+      setAvatarFile(null);
+      setAvatarDialogOpen(false);
+    } catch (err) {
+      console.error('Error updating avatar:', err);
+      if (err.response?.status === 403) {
+        setError('You do not have permission to update the avatar.');
+      } else {
+        setError('Failed to update avatar. Please try again.');
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleEditProfile = () => {
+    setEditedData(userData);
+    setEditMode(true);
+  };
+
+  const handleSaveProfile = async () => {
+    setIsLoading(true);
+    try {
+      const token = localStorage.getItem('authToken');
+      const response = await axios.put(
+        'https://taxbackend-production.up.railway.app/user/update-profile',
+        editedData,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      setUserData(response.data);
+      setSuccess('Profile updated successfully.');
+      setEditMode(false);
+    } catch (err) {
+      console.error('Error updating profile:', err);
+      setError('Failed to update profile. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setEditedData(userData);
+    setEditMode(false);
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setEditedData({ ...editedData, [name]: value });
+  };
+
   const handlePasswordChange = async () => {
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      setError('Please fill in all fields.');
+      return;
+    }
+
     if (newPassword !== confirmPassword) {
       setError('Passwords do not match.');
       return;
@@ -110,34 +238,29 @@ const Profile = () => {
 
   return (
     <>
-<IconButton
-  size="large"
-  onClick={() => setDrawerOpen(true)}
-  sx={{
-    position: 'fixed',
-    top: 16,
-    left: 16,
-    color: '#fff',
-    backgroundColor: '#0858e6',
-    transition: 'transform 0.2s, background-color 0.2s', // Transición suave para hover y pulse
-    '&:hover': {
-      backgroundColor: '#0746b0', // Azul oscuro al hacer hover
-      transform: 'scale(1.1)', // Efecto de pulse al hover
-    },
-    '&:active': {
-      transform: 'scale(0.95)', // Pequeño efecto de clic
-    },
-  }}
->
-  <MenuIcon />
-</IconButton>
+      <IconButton
+        size="large"
+        onClick={() => setDrawerOpen(true)}
+        sx={{
+          position: 'fixed',
+          top: 16,
+          left: 16,
+          color: '#fff',
+          backgroundColor: '#0858e6',
+          transition: 'transform 0.2s, background-color 0.2s',
+          '&:hover': {
+            backgroundColor: '#0746b0',
+            transform: 'scale(1.1)',
+          },
+          '&:active': {
+            transform: 'scale(0.95)',
+          },
+        }}
+      >
+        <MenuIcon />
+      </IconButton>
 
-      {/* Reutiliza el Drawer */}
-      <CustomDrawer
-        drawerOpen={drawerOpen}
-        setDrawerOpen={setDrawerOpen}
-        userData={userData}
-      />
+      <CustomDrawer drawerOpen={drawerOpen} setDrawerOpen={setDrawerOpen} userData={userData} />
 
       <Container maxWidth="md" sx={{ backgroundColor: '#fff', borderRadius: '20px', padding: '20px' }}>
         <Box sx={{ textAlign: 'center', my: 4 }}>
@@ -158,18 +281,80 @@ const Profile = () => {
             padding: '20px',
             marginTop: '50px',
             borderRadius: '20px',
+            position: 'relative',
           }}
         >
-          <Avatar
-            sx={{ width: 100, height: 100, mx: 'auto', mb: 1 }}
-            src="https://tax.bryanglen.com/user.png"
-            alt="User Avatar"
-          />
+          <Box sx={{ position: 'relative', display: 'inline-block' }}>
+            <Avatar
+              sx={{ width: 100, height: 100, mx: 'auto', mb: 1 }}
+              src={userData?.avatar || 'https://tax.bryanglen.com/user.png'}
+              alt="User Avatar"
+            />
+            <IconButton
+              sx={{
+                position: 'absolute',
+                bottom: 0,
+                right: 0,
+                backgroundColor: '#0858e6',
+                '&:hover': {
+                  backgroundColor: '#0746b0',
+                },
+              }}
+              onClick={() => setAvatarDialogOpen(true)}
+            >
+              <CameraAltIcon sx={{ color: '#fff' }} />
+            </IconButton>
+          </Box>
           <Typography variant="h5" fontWeight="bold">
             {userData?.first_name} {userData?.last_name}
           </Typography>
           <Typography>{userData?.email}</Typography>
         </Box>
+
+        {/* Diálogo para editar el avatar */}
+        <Dialog open={avatarDialogOpen} onClose={() => setAvatarDialogOpen(false)}>
+          <DialogTitle>Change Avatar</DialogTitle>
+          <DialogContent>
+            <Box sx={{ textAlign: 'center', mt: 2 }}>
+              <Avatar
+                sx={{ width: 150, height: 150, mx: 'auto', mb: 2 }}
+                src={avatarPreview || userData?.avatar || 'https://tax.bryanglen.com/user.png'}
+                alt="Preview Avatar"
+              />
+              <input
+                accept="image/*"
+                style={{ display: 'none' }}
+                id="avatar-upload"
+                type="file"
+                onChange={handleAvatarChange}
+              />
+              <label htmlFor="avatar-upload">
+                <Button variant="contained" component="span" sx={{ mb: 2 }}>
+                  Upload Image
+                </Button>
+              </label>
+            </Box>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              onClick={() => setAvatarDialogOpen(false)}
+              sx={{ color: '#666', '&:hover': { backgroundColor: '#f5f5f5' } }}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleSaveAvatar}
+              variant="contained"
+              sx={{
+                backgroundColor: '#0858e6',
+                '&:hover': { backgroundColor: '#0746b0' },
+              }}
+              disabled={!avatarFile || isLoading}
+            >
+              {isLoading ? 'Saving...' : 'Save'}
+            </Button>
+          </DialogActions>
+        </Dialog>
 
         <Tabs value={tabValue} onChange={handleTabChange} centered sx={{ marginTop: 2 }}>
           <Tab label="Public Profile" />
@@ -182,12 +367,103 @@ const Profile = () => {
               Personal Information
             </Typography>
             <Box sx={{ backgroundColor: '#f3f3f3', p: 4, borderRadius: '20px' }}>
-              <Typography sx={{ marginBottom: '10px' }}><b>First Name:</b> {userData?.first_name}</Typography>
-              <Typography sx={{ marginBottom: '10px' }}><b>Last Name:</b> {userData?.last_name}</Typography>
-              <Typography sx={{ marginBottom: '10px' }}><b>Email:</b> {userData?.email}</Typography>
-              <Typography sx={{ marginBottom: '10px' }}><b>Phone:</b> {userData?.phone}</Typography>
-              <Typography sx={{ marginBottom: '10px' }}><b>Company:</b> {userData?.company}</Typography>
-              <Typography sx={{ marginBottom: '10px' }}><b>Product:</b> {userData?.product}</Typography>
+              {editMode ? (
+                <>
+                  <TextField
+                    label="First Name"
+                    name="first_name"
+                    fullWidth
+                    value={editedData.first_name || ''}
+                    onChange={handleInputChange}
+                    sx={{ mb: 2 }}
+                  />
+                  <TextField
+                    label="Last Name"
+                    name="last_name"
+                    fullWidth
+                    value={editedData.last_name || ''}
+                    onChange={handleInputChange}
+                    sx={{ mb: 2 }}
+                  />
+                  <TextField
+                    label="Email"
+                    name="email"
+                    fullWidth
+                    value={editedData.email || ''}
+                    onChange={handleInputChange}
+                    sx={{ mb: 2 }}
+                  />
+                  <TextField
+                    label="Phone"
+                    name="phone"
+                    fullWidth
+                    value={editedData.phone || ''}
+                    onChange={handleInputChange}
+                    sx={{ mb: 2 }}
+                  />
+                  <TextField
+                    label="Company"
+                    name="company_name"
+                    fullWidth
+                    value={editedData.company_name || ''}
+                    onChange={handleInputChange}
+                    sx={{ mb: 2 }}
+                  />
+                  <TextField
+                    label="Product"
+                    name="product"
+                    fullWidth
+                    value={editedData.product || ''}
+                    onChange={handleInputChange}
+                    sx={{ mb: 2 }}
+                  />
+                  <Box sx={{ display: 'flex', gap: 2 }}>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={handleSaveProfile}
+                      disabled={isLoading}
+                    >
+                      {isLoading ? 'Saving...' : 'Save'}
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      color="secondary"
+                      onClick={handleCancelEdit}
+                    >
+                      Cancel
+                    </Button>
+                  </Box>
+                </>
+              ) : (
+                <>
+                  <Typography sx={{ marginBottom: '10px' }}>
+                    <b>First Name:</b> {userData?.first_name || 'N/A'}
+                  </Typography>
+                  <Typography sx={{ marginBottom: '10px' }}>
+                    <b>Last Name:</b> {userData?.last_name || 'N/A'}
+                  </Typography>
+                  <Typography sx={{ marginBottom: '10px' }}>
+                    <b>Email:</b> {userData?.email || 'N/A'}
+                  </Typography>
+                  <Typography sx={{ marginBottom: '10px' }}>
+                    <b>Phone:</b> {userData?.phone || 'N/A'}
+                  </Typography>
+                  <Typography sx={{ marginBottom: '10px' }}>
+                    <b>Company:</b> {userData?.company_name || 'N/A'}
+                  </Typography>
+                  <Typography sx={{ marginBottom: '10px' }}>
+                    <b>Product:</b> {userData?.product || 'N/A'}
+                  </Typography>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleEditProfile}
+                  >
+                    Edit Profile
+                  </Button>
+                </>
+              )}
             </Box>
           </Box>
         )}
@@ -281,7 +557,7 @@ const Profile = () => {
           </Box>
         )}
 
-       <CustomSpeedDial /> {/* Incluye el SpeedDial */}
+        <CustomSpeedDial />
 
         <Snackbar
           open={!!success || !!error}

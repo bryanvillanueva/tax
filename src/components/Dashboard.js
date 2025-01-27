@@ -327,7 +327,7 @@ const Dashboard = () => {
           <CustomSpeedDial />
         )}
 
-{results && formId !== 'CancellationByInsolvencyForm' && formId !== 'BackdoorRothForm' && formId !== 'ActiveRealEstateForm' && (
+{results && formId !== ''  && (
   <ResultsDisplay results={results} formTitle={getFormTitle()} />
 )}
 

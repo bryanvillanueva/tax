@@ -20,8 +20,11 @@ const CancellationByInsolvencyForm = ({ onCalculate }) => {
   const [totalAssets, setTotalAssets] = useState('');
   const [totalLiabilities, setTotalLiabilities] = useState('');
   const [debtForgiven, setDebtForgiven] = useState('');
+  const [formType, setFormType] = useState('1040 - Schedule C/F');
+  const [QBID, setQbid] = useState('');
   const [error, setError] = useState(null);
-  const [calculatedValues, setCalculatedValues] = useState(null);
+  const [insolvencyAmount, setInsolvencyAmount] = useState(0); // Nuevo estado para Insolvency Amount
+  const [taxableIncomeInsolvency, setTaxableIncomeInsolvency] = useState(0); // Nuevo estado para Taxable Income (Insolvency)
 
   const { performCalculations } = useCalculations();
 
@@ -52,18 +55,18 @@ const CancellationByInsolvencyForm = ({ onCalculate }) => {
     setError(null);
 
     // Cálculos internos
-    const insolvencyAmount =
+    const insolvencyAmountCalc =
       totalLiabilities - totalAssets <= 0 ? 0 : totalLiabilities - totalAssets;
 
-    const taxableIncomeInsolvency =
-      insolvencyAmount >= debtForgiven
+    const taxableIncomeInsolvencyCalc =
+      insolvencyAmountCalc >= debtForgiven
         ? 0
-        : debtForgiven - insolvencyAmount;
+        : debtForgiven - insolvencyAmountCalc;
 
-    setCalculatedValues({
-      insolvencyAmount,
-      taxableIncomeInsolvency,
-    });
+    // Actualizamos los estados de los campos
+    setInsolvencyAmount(insolvencyAmountCalc);
+    setTaxableIncomeInsolvency(taxableIncomeInsolvencyCalc);
+    console.log(taxableIncomeInsolvencyCalc);
 
     // Resultados procesados con performCalculations
     const results = performCalculations({
@@ -72,13 +75,17 @@ const CancellationByInsolvencyForm = ({ onCalculate }) => {
       totalAssets: parseFloat(totalAssets),
       totalLiabilities: parseFloat(totalLiabilities),
       debtForgiven: parseFloat(debtForgiven),
-      insolvencyAmount,
-      taxableIncomeInsolvency,
+      insolvencyAmount: insolvencyAmountCalc,
+      taxableIncomeInsolvency: taxableIncomeInsolvencyCalc,
+      deductionCancellation: taxableIncomeInsolvencyCalc, 
       partnerType,
-      calculationType: 'CancellationByInsolvencyForm',
+      formType,
+      calculationType: 'CancellationByInsolvency',
+      QBID: parseFloat(QBID),
     });
-
+    
     onCalculate(results);
+    
   };
 
   return (
@@ -146,9 +153,6 @@ const CancellationByInsolvencyForm = ({ onCalculate }) => {
                 <MenuItem value="Active">Active</MenuItem>
                 <MenuItem value="Passive">Passive</MenuItem>
               </TextField>
-            </Grid>
-
-            <Grid item xs={12} md={6}>
               <TextField
                 label="Total Assets"
                 fullWidth
@@ -166,6 +170,10 @@ const CancellationByInsolvencyForm = ({ onCalculate }) => {
                 onChange={(e) => setTotalLiabilities(e.target.value)}
                 margin="normal"
               />
+            </Grid>
+
+            <Grid item xs={12} md={6}>
+              
 
               <TextField
                 label="Debt Forgiven"
@@ -175,30 +183,47 @@ const CancellationByInsolvencyForm = ({ onCalculate }) => {
                 onChange={(e) => setDebtForgiven(e.target.value)}
                 margin="normal"
               />
-            </Grid>
 
-            {calculatedValues && (
-              <Grid container spacing={2} sx={{ mt: 2 }}>
-                <Grid item xs={12} md={6}>
-                  <TextField
-                    label="Insolvency Amount"
-                    fullWidth
-                    value={formatCurrency(calculatedValues.insolvencyAmount)}
-                    disabled
-                    margin="normal"
-                  />
-                </Grid>
-                <Grid item xs={12} md={6}>
-                  <TextField
-                    label="Taxable Income (Insolvency)"
-                    fullWidth
-                    value={formatCurrency(calculatedValues.taxableIncomeInsolvency)}
-                    disabled
-                    margin="normal"
-                  />
-                </Grid>
-              </Grid>
-            )}
+              <TextField
+                label="Insolvency Amount"
+                fullWidth
+                value={formatCurrency(insolvencyAmount)}
+                disabled
+                margin="normal"
+              />
+
+              <TextField
+                label="Taxable Income (Insolvency)"
+                fullWidth
+                value={formatCurrency(taxableIncomeInsolvency)}
+                disabled
+                margin="normal"
+              />
+
+              <TextField
+                select
+                label="Form Type"
+                fullWidth
+                value={formType}
+                onChange={(e) => setFormType(e.target.value)}
+                margin="normal"
+              >
+                <MenuItem value="1040 - Schedule C/F">1040 - Schedule C/F</MenuItem>
+                <MenuItem value="1040NR - Schedule E">1040NR - Schedule E</MenuItem>
+                <MenuItem value="1065">1065</MenuItem>
+                <MenuItem value="1120S">1120S</MenuItem>
+                <MenuItem value="1120">1120</MenuItem>
+              </TextField>
+
+              <TextField
+                label="QBID (Qualified Business Income Deduction)"
+                fullWidth
+                type="number"
+                value={QBID}
+                onChange={(e) => setQbid(e.target.value)}
+                margin="normal"
+              />
+            </Grid>
           </Grid>
 
           <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
