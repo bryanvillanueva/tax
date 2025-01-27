@@ -10,6 +10,7 @@ const StartupCostOptimizationForm = ({ onCalculate }) => {
   const [formType, setFormType] = useState('1040 - Schedule C/F');
   const [totalStartupCosts, setTotalStartupCosts] = useState('');
   const [optimizationAmount, setOptimizationAmount] = useState('');
+  const [QBID, setQbid] = useState('');
   const [error, setError] = useState(null);
 
   const { performCalculations } = useCalculations();
@@ -49,8 +50,12 @@ const StartupCostOptimizationForm = ({ onCalculate }) => {
     const reduction = calculateReduction(limit1, totalStartupCosts, phaseOut);
   
     // Cálculo de la primera deducción
-    const firstDeduction = (totalStartupCosts - reduction) >= limit1 ? limit1 : totalStartupCosts - reduction;
-  
+    const calculateFirstDeduction = (totalStartupCosts, limit1, reduction) => {
+       return totalStartupCosts >= limit1 ? limit1 - reduction : totalStartupCosts;
+    };
+   
+    const firstDeduction = calculateFirstDeduction(totalStartupCosts, limit1, reduction);
+
     // Cálculo del monto diferido y mensual
     const deferredAmount = totalStartupCosts - firstDeduction;
     const monthlyAmount = (deferredAmount / 180).toFixed(2); 
@@ -80,6 +85,7 @@ const StartupCostOptimizationForm = ({ onCalculate }) => {
       deductionStartup: parseFloat(deductionStartup), 
       optimizationAmount: parsedOptimizationAmount,
       calculationType: 'startupCostOptimization',
+      QBID: parseFloat(QBID),
     });
   
     onCalculate(results);
@@ -183,6 +189,15 @@ const StartupCostOptimizationForm = ({ onCalculate }) => {
                 <MenuItem value="1120S">1120S</MenuItem>
                 <MenuItem value="1120">1120</MenuItem>
               </TextField>
+
+              <TextField
+                label="QBID (Qualified Business Income Deduction)"
+                fullWidth
+                type="number"
+                value={QBID}
+                onChange={(e) => setQbid(e.target.value)}
+                margin="normal"
+              />
             </Grid>
           </Grid>
 

@@ -8,6 +8,7 @@ const StateTaxSavingsForm = ({ onCalculate }) => {
   const [grossIncome, setGrossIncome] = useState('');
   const [partnerType, setPartnerType] = useState('Active');
   const [formType, setFormType] = useState('1040 - Schedule C/F');
+   const [QBID, setQbid] = useState('');
   
   const [federalTaxableIncome, setFederalTaxableIncome] = useState('');
   const [currentStateRate, setCurrentStateRate] = useState('');
@@ -73,6 +74,7 @@ const StateTaxSavingsForm = ({ onCalculate }) => {
       currentStateTax: parseFloat(currentTaxRounded),
       newStateTax: parseFloat(newTaxRounded),
       taxSavings: parseFloat(savingsRounded),
+      QBID: parseFloat(QBID),
       calculationType: 'stateTaxSavings',
     });
     onCalculate(results);
@@ -215,6 +217,14 @@ const StateTaxSavingsForm = ({ onCalculate }) => {
                 <MenuItem value="1120S">1120S</MenuItem>
                 <MenuItem value="1120">1120</MenuItem>
               </TextField>
+              <TextField
+                label="QBID (Qualified Business Income Deduction)"
+                fullWidth
+                type="number"
+                value={QBID}
+                onChange={(e) => setQbid(e.target.value)}
+                margin="normal"
+              />
             </Grid>
           </Grid>
 
