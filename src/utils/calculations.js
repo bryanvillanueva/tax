@@ -282,7 +282,7 @@ export function calculateAGI2y4(agi1120S, standardDeduction, dagi, dagi2) {
   const agiDeduction = dagi > standardDeduction ? dagi : 0;
     // resta dagi al agi
     const agiDeduction2 = dagi2 || 0;
-  return agi1120S - agiDeduction -agiDeduction2;  
+  return agi1120S - agiDeduction - agiDeduction2;  
 
 }
 

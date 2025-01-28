@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { TextField, Button, Container, Box, MenuItem, Alert, Grid } from '@mui/material';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import useCalculations from '../utils/useCalculations';
@@ -9,58 +9,52 @@ const CharitableDonationOfAppreciatedAssetsForm = ({ onCalculate }) => {
   const [grossIncome, setGrossIncome] = useState('');
   const [partnerType, setPartnerType] = useState('Active');
   const [formType, setFormType] = useState('1040 - Schedule C/F');
-  const [dagi, setDagi] = useState('');
   const [costBasis, setCostBasis] = useState('');
   const [sellPrice, setSellPrice] = useState('');
   const [amountOfChirableDonation, setAmountOfChirableDonation] = useState('');
   const [savings, setSavings] = useState('');
+  const [dagi2, setDagi2] = useState('');
   const [error, setError] = useState(null);
 
   const { performCalculations } = useCalculations();
 
-  // Efecto para actualizar el valor de `dagi` cuando cambia el `filingStatus`
-  useEffect(() => {
-    const standardDeduction = standardDeductions[filingStatus] || 0;
-    setDagi(-standardDeduction); // Inicialmente, `dagi` es el valor negativo de la deducción estándar
-  }, [filingStatus]);
-
   const handleSubmit = (e) => {
     e.preventDefault();
-  
+
     // Validaciones
     if (!grossIncome || parseFloat(grossIncome) <= 0) {
       setError('Gross Income is required and must be greater than 0.');
       return;
     }
-  
+
     if (!costBasis || parseFloat(costBasis) <= 0) {
       setError('Cost Basis is required and must be greater than 0.');
       return;
     }
-  
+
     if (!sellPrice || parseFloat(sellPrice) <= 0) {
       setError('Sell Price is required and must be greater than 0.');
       return;
     }
-  
-    // Calcular el monto de la donación caritativa
-    const amountOfChirableDonationCalculated = parseFloat(sellPrice);
-    const savingsCalculated = (sellPrice - costBasis) * 0.20; // Ahorro del 20%
-  
-    // Obtener la deducción estándar basada en el estado de filingStatus
+
+    // Obtener la deducción estándar para el estado de filingStatus
     const standardDeduction = standardDeductions[filingStatus] || 0;
-  
-    // Calcular el nuevo valor de `dagi` restando la deducción estándar del monto de la donación
-    const newDagi = amountOfChirableDonationCalculated - standardDeduction;
-  
+
+    // Cálculo del monto de la donación caritativa y ahorros
+    const amountOfChirableDonationCalculated = parseFloat(sellPrice);
+    const savingsCalculated = (amountOfChirableDonationCalculated - parseFloat(costBasis)) * 0.20;
+
+    // Calcular el valor de `dagi2` localmente
+    const newDagi2 = amountOfChirableDonationCalculated - standardDeduction;
+
     // Actualizar los estados
     setAmountOfChirableDonation(amountOfChirableDonationCalculated);
     setSavings(savingsCalculated);
-    setDagi(newDagi); // Actualizar el estado `dagi` para otros usos
-  
+    setDagi2(newDagi2);
+
     setError(null);
-  
-    // Llamar a performCalculations con el valor de `newDagi` parseado
+
+    // Llamar a performCalculations usando el valor calculado directamente
     const results = performCalculations({
       filingStatus,
       grossIncome: parseFloat(grossIncome),
@@ -71,16 +65,15 @@ const CharitableDonationOfAppreciatedAssetsForm = ({ onCalculate }) => {
       amountOfChirableDonation: amountOfChirableDonationCalculated,
       savings: savingsCalculated,
       calculationType: 'charitableDonationSavings',
-      dagi: parseFloat(newDagi), // Pasar `newDagi` parseado directamente
+      dagi2: parseFloat(newDagi2), // Usar el valor calculado directamente
     });
-  
+
     onCalculate(results);
   };
 
   return (
     <Container>
       <Box sx={{ position: 'relative', mt: 5 }}>
-        {/* Link en la esquina superior derecha */}
         <Box sx={{ position: 'absolute', top: -10, right: 0 }}>
           <Button
             href="https://tax.bryanglen.com/data/Charitable-Donation-Strategy.pdf"
@@ -100,7 +93,6 @@ const CharitableDonationOfAppreciatedAssetsForm = ({ onCalculate }) => {
 
         <form onSubmit={handleSubmit}>
           <Grid container spacing={2}>
-            {/* Lado izquierdo */}
             <Grid item xs={12} md={6}>
               <TextField
                 select
@@ -125,7 +117,7 @@ const CharitableDonationOfAppreciatedAssetsForm = ({ onCalculate }) => {
                 onChange={(e) => setGrossIncome(e.target.value)}
                 margin="normal"
               />
-              
+
               <TextField
                 select
                 label="Partner Type"
@@ -137,21 +129,20 @@ const CharitableDonationOfAppreciatedAssetsForm = ({ onCalculate }) => {
                 <MenuItem value="Active">Active</MenuItem>
                 <MenuItem value="Passive">Passive</MenuItem>
               </TextField>
+
               <TextField
-                label="Deduction To AGI"
+                label="Deduction to AGI"
                 fullWidth
                 type="number"
-                value={dagi}
-                onChange={(e) => setDagi(e.target.value)}
+                value={dagi2}
                 margin="normal"
+                InputProps={{ readOnly: true }}
                 disabled
               />
-              
             </Grid>
 
-            {/* Lado derecho */}
             <Grid item xs={12} md={6}>
-            <TextField
+              <TextField
                 label="Cost Basis"
                 fullWidth
                 type="number"
@@ -167,7 +158,6 @@ const CharitableDonationOfAppreciatedAssetsForm = ({ onCalculate }) => {
                 onChange={(e) => setSellPrice(e.target.value)}
                 margin="normal"
               />
-              
               <TextField
                 label="Amount of Charitable Donation"
                 fullWidth
