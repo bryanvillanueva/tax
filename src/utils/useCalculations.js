@@ -302,7 +302,7 @@ const useCalculations = () => {
 
       // calculos para el formulario 1120S/1040NR 2/4
      const agi1120S = netIncome;
-     const AgiCalculation2y4 = calculateAGI2y4 (agi1120S, standardDeduction, dagi, );
+     const AgiCalculation2y4 = calculateAGI2y4 (agi1120S, standardDeduction, dagi, dagi2);
      const taxableIncome1120S = calculateTaxableIncome1120S(AgiCalculation2y4, filingStatus, dagi) - QBID;
      const taxDue1120S = calculateTaxDue1120S(filingStatus, taxableIncome1120S);
      const effectiveTaxRate1120S = taxableIncome1120S !== 0 ? ((taxDue1120S / taxableIncome1120S) * 100).toFixed(2) : '0.00';
@@ -324,7 +324,7 @@ const useCalculations = () => {
     const calcularNIITInvest2 = calcularNIITInvestIncome2(agi1120S, filingStatus, partnerType, partOfInvestmentIncome)
  
 
-
+console.log(dagi2);
       return {
         netIncome,
         netIncome2,
