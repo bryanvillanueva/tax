@@ -1,3 +1,4 @@
+import { ExplicitRounded } from '@mui/icons-material';
 import {
   taxBrackets,
   standardDeductions,
@@ -213,16 +214,45 @@ export function calculateNetIncomeCharitableDonation (grossIncome ){
 export function calculateNetIncomeInfluencer (grossIncome, deductionInfluencer){
   return Math.max(0, grossIncome - deductionInfluencer); // Evita valores negativos
 }
+
+// calcular net income para deferred Capital Gain
 export function calculateNetIncomeCapital (grossIncome){
   return Math.max(0, grossIncome); // Evita valores negativos
 }
+//calcular net income para covul
+export function calculateNetIncomeCovul(grossIncome) {
+  return Math.max(0, grossIncome); // Evita valores negativos
+}
+//calcular net income para depletionDeduction
+export function calculateNetIncomeDepletionDeduction (grossIncome, yearDepletion){
+  return Math.max(0, grossIncome - yearDepletion); // Evita valores negativos
+}
+
+//calcular Net income para Qualified Dividends
+export function calculateNetIncomeQualifiedDividends (grossIncome){
+  return Math.max(0, grossIncome ); // Evita valores negativos
+}
 
 
+//calcular net income para Donor Advised Fund
+export function calculateNetIncomeDonorAdvisedFund (grossIncome){
+  return Math.max(0, grossIncome ); // Evita valores negativos
+}
 
+//calcular Net income para Electric vehicle credits
+export function calculateNetIncomeElectricVehicleCredits (grossIncome){
+  return Math.max(0, grossIncome ); // Evita valores negativos
+}
 
+// calcular net income para Employee Stock Ownership Plan
+export function calculateNetIncomeEmployeeStockOwnershipPlan (grossIncome, sharesValueContributed){
+  return Math.max(0, grossIncome - sharesValueContributed); // Evita valores negativos
+}
 
-
-
+//calcular net income para Federal Solar Investment Tax Credit
+export function calculateNetIncomeFederalSolarInvestmentTaxCredit (grossIncome){
+  return Math.max(0, grossIncome ); // Evita valores negativos
+}
 
 
 

@@ -42,6 +42,16 @@ import NetOperatingLossesForm from './NetOperatingLossesForm';
 import ActiveRealEstateForm from './ActiveRealEstateForm';
 import BackdoorRothForm from './BackdoorRothForm';
 import CancellationByInsolvencyForm from './CancellationByInsolvencyForm';
+import COVULForm from './COVULForm';
+import DepletionDeductionForm from './DepletionDeductionForm';
+import QualifiedDividendsForm from './QualifiedDividendsForm';
+import DonorAdvisedFundForm from './DonorAdvisedFundForm';
+import ElectricVehicleCreditsForm from './ElectricVehicleCreditsForm';
+import ESOPForm from './ESOPForm';
+import FederalSolarInvestmentTaxCreditForm from './FederalSolarInvestmentTaxCreditForm';
+import FinancedInsuranceForm from './FinancedInsuranceForm';
+import FinancedSoftwareLeasebackForm from './FinancedSoftwareLeasebackForm';
+import ForeignEarnedIncomeExclusionForm from './ForeignEarnedIncomeExclusionForm';
 import FormSelector from './FormSelector';
 import CustomSpeedDial from './CustomSpeedDial';
 import CustomDrawer from './CustomDrawer';
@@ -178,6 +188,26 @@ const Dashboard = () => {
             return <CharitableDonationOfAppreciatedAssetsForm onCalculate={setResults} />;
       case 'influencerOptimization':
             return <InfluencerOptimizationForm onCalculate={setResults} />;
+      case 'Covul':
+            return <COVULForm onCalculate={setResults} />;
+      case 'DepletionDeduction':
+            return <DepletionDeductionForm onCalculate={setResults} />;
+      case 'QualifiedDividends':
+            return <QualifiedDividendsForm onCalculate={setResults} />;
+      case 'DonorAdvisedFund':
+            return <DonorAdvisedFundForm onCalculate={setResults} />;
+      case 'ElectricVehicleCredits':
+            return <ElectricVehicleCreditsForm onCalculate={setResults} />;
+      case 'ESOP':
+            return <ESOPForm onCalculate={setResults} />;
+      case 'FederalSolarInvestmentTaxCredit':
+            return <FederalSolarInvestmentTaxCreditForm onCalculate={setResults} />;
+      case 'FinancedInsurance':
+            return <FinancedInsuranceForm onCalculate={setResults} />;
+      case 'FinancedSoftwareLeaseback':
+            return <FinancedSoftwareLeasebackForm onCalculate={setResults} />;
+      case 'ForeignEarnedIncomeExclusion':
+            return <ForeignEarnedIncomeExclusionForm onCalculate={setResults} />;
       default:
         return <FormSelector onSelectForm={handleSelectForm} />;
     }
@@ -265,6 +295,26 @@ const Dashboard = () => {
             return 'Charitable Donation Savings Form'
       case 'influencerOptimization':
             return 'Influencer Optimization Form'
+      case 'Covul':
+            return 'Corporate-Owned Variable Universal Life (COVUL) Form'
+      case 'DepletionDeduction':
+            return 'Depletion Deduction For Royalties Form'
+      case 'QualifiedDividends':
+            return 'Dividends Form'
+      case 'DonorAdvisedFund':
+            return 'Donor Advised Fund Form'
+      case 'ElectricVehicleCredits':
+            return 'Electric Vehicle Credits Form'
+      case 'ESOP':
+            return 'Employee Stock Ownership Plan (ESOP) Form'
+      case 'FederalSolarInvestmentTaxCredit':
+            return 'Federal Solar Investment Tax Credit Form'
+      case 'FinancedInsurance':
+            return 'Financed Insurance For Business Risks Form'
+      case 'FinancedSoftwareLeaseback':
+            return 'Financed Software Leaseback Form'
+      case 'ForeignEarnedIncomeExclusion':
+            return 'Foreign Earned Income Exlusion Form'
       default:
         return '';
     }

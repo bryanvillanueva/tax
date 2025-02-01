@@ -28,6 +28,13 @@ import {
   calculateNetIncomeUnreimbursedExpenses,
   calculateNetIncomeCharitableDonation,
   calculateNetIncomeInfluencer,
+  calculateNetIncomeCovul,
+  calculateNetIncomeDepletionDeduction,
+  calculateNetIncomeQualifiedDividends,
+  calculateNetIncomeDonorAdvisedFund,
+  calculateNetIncomeElectricVehicleCredits,
+  calculateNetIncomeEmployeeStockOwnershipPlan,
+  calculateNetIncomeFederalSolarInvestmentTaxCredit,
   calculateNetIncomeResearchAndDevelopmentCredit,
   calculateSEMedicare,
   calculateAGI,
@@ -107,6 +114,8 @@ const useCalculations = () => {
     dagi,
     dagi2,
     partOfInvestmentIncome,
+    yearDepletion,
+    sharesValueContributed,
   }) => {
     // Calcular Net Income según el tipo de cálculo
     let netIncome;
@@ -231,6 +240,27 @@ const useCalculations = () => {
       case 'deferredCapitalGain':
           netIncome = calculateNetIncomeCapital(grossIncome);
         break;
+      case 'Covul':
+          netIncome = calculateNetIncomeCovul(grossIncome);
+        break;
+      case 'DepletionDeduction':
+          netIncome = calculateNetIncomeDepletionDeduction(grossIncome, yearDepletion );
+        break;
+      case 'QualifiedDividends':
+          netIncome = calculateNetIncomeQualifiedDividends(grossIncome );
+        break;
+      case 'DonorAdvisedFund':
+          netIncome = calculateNetIncomeDonorAdvisedFund(grossIncome );
+        break;
+      case 'ElectricVehicleCredits':
+          netIncome = calculateNetIncomeElectricVehicleCredits(grossIncome );
+        break;
+      case 'ESOP':
+          netIncome = calculateNetIncomeEmployeeStockOwnershipPlan(grossIncome, sharesValueContributed );
+        break;
+      case 'FederalSolarInvestmentTaxCredit':
+          netIncome = calculateNetIncomeFederalSolarInvestmentTaxCredit(grossIncome );
+        break;
       case 'standard':
           netIncome = calculateNetIncome(grossIncome, deduction179);
         break; 
@@ -278,7 +308,7 @@ const useCalculations = () => {
       const taxableIncome2 = calculateTaxableIncome2(agi2, filingStatus);
       const taxDue2 = calculateTaxDue2(filingStatus, taxableIncome2);
       const additionalMedicare2 = calculateAdditionalMedicare2(filingStatus, netIncome2);
-      const totalTaxDue2 = (taxDue2 + selfEmploymentTax2 + additionalMedicare2) - taxCredits;
+      const totalTaxDue2 = (taxDue2 + selfEmploymentTax2 + additionalMedicare2) ;
       const effectiveTaxRate2 = taxableIncome2 !== 0 ? ((taxDue2 / taxableIncome2) * 100).toFixed(2) : '0.00';
       const { marginalRate2, level2 } = getMarginalTaxRateAndLevel2(filingStatus, taxableIncome2);
       const effectiveSERate = netIncome > 0 ?  (((selfEmploymentTax + additionalMedicare)/ netIncome) * 100).toFixed(2) : '0.00';
