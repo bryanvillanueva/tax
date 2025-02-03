@@ -28,18 +28,7 @@ const ForeignEarnedIncomeExclusionForm = ({ onCalculate }) => {
 
   const { performCalculations } = useCalculations();
 
-  const calculateForeignDeduction = () => {
-    const QFI = parseFloat(qualifiedForeignIncome);
-    const IEL = incomeExclusionLimit;
-
-    // Calcular Foreign Deduction
-    let FD = 0;
-    if (doesTaxpayerQualify === "Yes") {
-      FD = QFI >= IEL ? IEL : QFI;
-    }
-    setForeignDeduction(FD);
-  };
-
+  
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -62,7 +51,17 @@ const ForeignEarnedIncomeExclusionForm = ({ onCalculate }) => {
     setError(null);
 
     // Calcular valores
-    calculateForeignDeduction();
+    
+      const QFI = parseFloat(qualifiedForeignIncome);
+      const IEL = incomeExclusionLimit;
+  
+      // Calcular Foreign Deduction
+      let FD = 0;
+      if (doesTaxpayerQualify === "Yes") {
+        FD = QFI >= IEL ? IEL : QFI;
+      }
+      
+  
 
     // Pasar resultados a la función onCalculate
     const results = performCalculations({
@@ -74,7 +73,7 @@ const ForeignEarnedIncomeExclusionForm = ({ onCalculate }) => {
       doesTaxpayerQualify,
       qualifiedForeignIncome: parseFloat(qualifiedForeignIncome),
       incomeExclusionLimit,
-      foreignDeduction,
+      foreignDeduction: FD,
       calculationType: "ForeignEarnedIncomeExclusion",
     });
 
@@ -154,7 +153,11 @@ const ForeignEarnedIncomeExclusionForm = ({ onCalculate }) => {
                 <MenuItem value="Yes">Yes</MenuItem>
                 <MenuItem value="No">No</MenuItem>
               </TextField>
-              <TextField
+
+            </Grid>
+
+            <Grid item xs={12} md={6}>
+            <TextField
                 label="Qualified Foreign Income (QFI)"
                 fullWidth
                 type="number"
@@ -162,9 +165,6 @@ const ForeignEarnedIncomeExclusionForm = ({ onCalculate }) => {
                 onChange={(e) => setQualifiedForeignIncome(e.target.value)}
                 margin="normal"
               />
-            </Grid>
-
-            <Grid item xs={12} md={6}>
               <TextField
                 label="Income Exclusion Limit (IEL)"
                 fullWidth

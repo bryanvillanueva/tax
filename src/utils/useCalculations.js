@@ -69,6 +69,10 @@ import {
   calculateNetIncomeCancellationByInsolvency,
   calculateNetIncomeActiveRealEstate,
   calculateNetIncomeBackdoorRoth,
+  calculateNetIncomeFinancedInsurance,
+  calculateNetIncomeFinancedSoftware,
+  calculateNetIncomeForeignEarnedIncome,
+
 
 } from '../utils/calculations';
 import { standardDeductions } from '../utils/taxData';
@@ -116,6 +120,10 @@ const useCalculations = () => {
     partOfInvestmentIncome,
     yearDepletion,
     sharesValueContributed,
+    financedDeduction,
+    softwareLeasebackDeduction,
+    foreignDeduction,
+    
   }) => {
     // Calcular Net Income según el tipo de cálculo
     let netIncome;
@@ -261,7 +269,16 @@ const useCalculations = () => {
       case 'FederalSolarInvestmentTaxCredit':
           netIncome = calculateNetIncomeFederalSolarInvestmentTaxCredit(grossIncome );
         break;
-      case 'standard':
+      case 'FinancedInsurance':
+          netIncome = calculateNetIncomeFinancedInsurance (grossIncome, financedDeduction); 
+        break;
+        case 'FinancedSoftwareLeaseback':
+          netIncome = calculateNetIncomeFinancedSoftware (grossIncome, softwareLeasebackDeduction);
+        break;  
+      case 'ForeignEarnedIncomeExclusion':
+          netIncome = calculateNetIncomeForeignEarnedIncome (grossIncome, foreignDeduction);
+        break;   
+          case 'standard':
           netIncome = calculateNetIncome(grossIncome, deduction179);
         break; 
     }
@@ -354,7 +371,7 @@ const useCalculations = () => {
     const calcularNIITInvest2 = calcularNIITInvestIncome2(agi1120S, filingStatus, partnerType, partOfInvestmentIncome)
  
 
-console.log(dagi2);
+
       return {
         netIncome,
         netIncome2,
@@ -410,6 +427,7 @@ console.log(dagi2);
         QBID, 
         dagi,
         totalCredit: taxCreditsResults,
+        calculationType,
         
        };
     };

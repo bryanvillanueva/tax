@@ -254,6 +254,21 @@ export function calculateNetIncomeFederalSolarInvestmentTaxCredit (grossIncome){
   return Math.max(0, grossIncome ); // Evita valores negativos
 }
 
+//calcular net income para FINANCED INSURANCE FOR BUSINESS RISKS
+export function calculateNetIncomeFinancedInsurance (grossIncome, financedDeduction){
+  return Math.max(0, grossIncome - financedDeduction ); // Evita valores negativos
+}
+
+//calcular net income para FINANCED Software
+export function calculateNetIncomeFinancedSoftware (grossIncome, softwareLeasebackDeduction){
+  return Math.max(0, grossIncome - softwareLeasebackDeduction ); // Evita valores negativos
+}
+
+//calcular net income para Foreign Earned Income Exclusion
+export function calculateNetIncomeForeignEarnedIncome (grossIncome, foreignDeduction){
+  return Math.max(0, grossIncome - foreignDeduction ); // Evita valores negativos
+}
+
 
 
 

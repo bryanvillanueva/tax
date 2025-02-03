@@ -15,7 +15,7 @@ const FinancedSoftwareLeasebackForm = ({ onCalculate }) => {
   // Campos fijos
   const [filingStatus, setFilingStatus] = useState("Single");
   const [partnerType, setPartnerType] = useState("Active");
-  const [formType, setFormType] = useState("1120");
+  const [formType, setFormType] = useState("1040 - Schedule C/F");
   const [grossIncome, setGrossIncome] = useState("");
   const [QBID, setQbid] = useState("");
   const [error, setError] = useState(null);
@@ -29,19 +29,6 @@ const FinancedSoftwareLeasebackForm = ({ onCalculate }) => {
 
   const { performCalculations } = useCalculations();
 
-  const calculateLeaseback = () => {
-    const SI = parseFloat(softwareInvestment);
-    const RV = parseFloat(residualValue);
-    const LNY = parseFloat(leasingNumberOfYears);
-
-    // Calcular Lease Expenses (LE)
-    const LE = (SI - RV) / LNY;
-    setLeaseExpenses(LE);
-
-    // Calcular Software Leaseback Deduction
-    const SLD = LE;
-    setSoftwareLeasebackDeduction(SLD);
-  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -70,7 +57,18 @@ const FinancedSoftwareLeasebackForm = ({ onCalculate }) => {
     setError(null);
 
     // Calcular valores
-    calculateLeaseback();
+    
+    const SI = parseFloat(softwareInvestment);
+    const RV = parseFloat(residualValue);
+    const LNY = parseFloat(leasingNumberOfYears);
+
+    // Calcular Lease Expenses (LE)
+    const LE = (SI - RV) / LNY;
+    setLeaseExpenses(LE);
+
+    // Calcular Software Leaseback Deduction
+    const SLD = LE;
+  
 
     // Pasar resultados a la función onCalculate
     const results = performCalculations({
@@ -83,7 +81,7 @@ const FinancedSoftwareLeasebackForm = ({ onCalculate }) => {
       leasingNumberOfYears: parseFloat(leasingNumberOfYears),
       residualValue: parseFloat(residualValue),
       leaseExpenses,
-      softwareLeasebackDeduction,
+      softwareLeasebackDeduction: SLD,
       calculationType: "FinancedSoftwareLeaseback",
     });
 
@@ -168,7 +166,11 @@ const FinancedSoftwareLeasebackForm = ({ onCalculate }) => {
                 onChange={(e) => setLeasingNumberOfYears(e.target.value)}
                 margin="normal"
               />
-              <TextField
+              
+            </Grid>
+
+            <Grid item xs={12} md={6}>
+            <TextField
                 label="Residual Value (RV)"
                 fullWidth
                 type="number"
@@ -176,9 +178,6 @@ const FinancedSoftwareLeasebackForm = ({ onCalculate }) => {
                 onChange={(e) => setResidualValue(e.target.value)}
                 margin="normal"
               />
-            </Grid>
-
-            <Grid item xs={12} md={6}>
               <TextField
                 label="Lease Expenses (LE)"
                 fullWidth

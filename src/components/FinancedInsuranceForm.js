@@ -29,22 +29,7 @@ const FinancedInsuranceForm = ({ onCalculate }) => {
 
   const { performCalculations } = useCalculations();
 
-  const calculateFinancedInsurance = () => {
-    const LFIP = parseFloat(loanForInsurancePremium);
-    const LAR = parseFloat(loanAnnualRate) / 100; // Convertir a decimal
-
-    // Calcular First Year Interest Expenses (FYIE)
-    const FYIE = LFIP * LAR;
-    setFirstYearInterestExpenses(FYIE);
-
-    // Calcular Insurance Premiums (IP)
-    const IP = LFIP;
-    setInsurancePremiums(IP);
-
-    // Calcular Financed Deduction (FD)
-    const FD = IP + FYIE;
-    setFinancedDeduction(FD);
-  };
+  
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -68,7 +53,22 @@ const FinancedInsuranceForm = ({ onCalculate }) => {
     setError(null);
 
     // Calcular valores
-    calculateFinancedInsurance();
+    
+      const LFIP = parseFloat(loanForInsurancePremium);
+      const LAR = parseFloat(loanAnnualRate) / 100; // Convertir a decimal
+  
+      // Calcular First Year Interest Expenses (FYIE)
+      const FYIE = LFIP * LAR;
+      setFirstYearInterestExpenses(FYIE);
+  
+      // Calcular Insurance Premiums (IP)
+      const IP = LFIP;
+      setInsurancePremiums(IP);
+  
+      // Calcular Financed Deduction (FD)
+      const FD = IP + FYIE;
+
+    
 
     // Pasar resultados a la función onCalculate
     const results = performCalculations({
@@ -81,7 +81,7 @@ const FinancedInsuranceForm = ({ onCalculate }) => {
       loanAnnualRate: parseFloat(loanAnnualRate),
       firstYearInterestExpenses,
       insurancePremiums,
-      financedDeduction,
+      financedDeduction: FD,
       calculationType: "FinancedInsurance",
     });
 
