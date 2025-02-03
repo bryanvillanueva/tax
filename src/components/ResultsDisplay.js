@@ -12,7 +12,7 @@ const formatCurrency = (value) => {
   }).format(value);
 };
 
-const ResultsDisplay = ({ results, formTitle }) => {
+const ResultsDisplay = ({ results, formTitle, calculationType }) => {
 
   const [showAlert, setShowAlert] = useState(false);
 
@@ -29,6 +29,7 @@ const ResultsDisplay = ({ results, formTitle }) => {
     window.print();
   };
   console.log('Results:', results)
+  console.log('Form:', results.calculationType)
 
   return (
     <Box sx={{ mt: 4 }}>
@@ -99,17 +100,19 @@ const ResultsDisplay = ({ results, formTitle }) => {
   <TableRow sx={{ backgroundColor: '#e8f2ff' }}>
     <TableCell>Adjusted Gross Income (AGI)</TableCell>
     <TableCell>
-    {results.formType === '1120'
-      ? 'Not Applicable'
+    {
+  results.formType === '1120'
+    ? 'Not Applicable'
+    : results.calculationType === 'charitableDonationSavings'
+      ? formatCurrency(results.agi2)
       : results.formType === '1120S'
-      ? formatCurrency(results.AgiCalculation2y4)
-      : results.formType === '1040 - Schedule C/F' && results.partnerType === 'Passive'
-      ? formatCurrency(results.agi)
-      : results.formType === '1040 - Schedule C/F' && results.partnerType === 'Active'
-      ? formatCurrency(results.agi)
-      : results.formType === '1040NR - Schedule E'
-      ? formatCurrency(results.AgiCalculation2y4)
-      : formatCurrency(results.agi)}
+        ? formatCurrency(results.AgiCalculation2y4)
+        : results.formType === '1040 - Schedule C/F' && (results.partnerType === 'Passive' || results.partnerType === 'Active')
+          ? formatCurrency(results.agi)
+          : results.formType === '1040NR - Schedule E'
+            ? formatCurrency(results.AgiCalculation2y4)
+            : formatCurrency(results.agi)
+}
   </TableCell>
   </TableRow>
   <TableRow sx={{ backgroundColor: '#e8f2ff' }}>

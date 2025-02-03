@@ -13,7 +13,8 @@ const CharitableDonationOfAppreciatedAssetsForm = ({ onCalculate }) => {
   const [sellPrice, setSellPrice] = useState('');
   const [amountOfChirableDonation, setAmountOfChirableDonation] = useState('');
   const [savings, setSavings] = useState('');
-  const [dagi2, setDagi2] = useState('');
+  const [dagi, setDagi] = useState('');
+  const standardDeduction = standardDeductions[filingStatus];
   const [error, setError] = useState(null);
 
   const { performCalculations } = useCalculations();
@@ -37,20 +38,25 @@ const CharitableDonationOfAppreciatedAssetsForm = ({ onCalculate }) => {
       return;
     }
 
-    // Obtener la deducción estándar para el estado de filingStatus
-    const standardDeduction = standardDeductions[filingStatus] || 0;
+     
 
     // Cálculo del monto de la donación caritativa y ahorros
     const amountOfChirableDonationCalculated = parseFloat(sellPrice);
     const savingsCalculated = (amountOfChirableDonationCalculated - parseFloat(costBasis)) * 0.20;
 
-    // Calcular el valor de `dagi2` localmente
-    const newDagi2 = amountOfChirableDonationCalculated - standardDeduction;
+     // Actualizar los estados
+     setAmountOfChirableDonation(amountOfChirableDonationCalculated);
+     setSavings(savingsCalculated);
 
-    // Actualizar los estados
-    setAmountOfChirableDonation(amountOfChirableDonationCalculated);
-    setSavings(savingsCalculated);
-    setDagi2(newDagi2);
+    // Calcular DAGI
+    if (amountOfChirableDonationCalculated >= standardDeduction ) {
+      setDagi(amountOfChirableDonationCalculated); // Updates DAGI state automatically
+    } else {
+      setDagi(0);
+    }
+
+    const newDagi2 = amountOfChirableDonationCalculated;
+  
 
     setError(null);
 
@@ -65,7 +71,7 @@ const CharitableDonationOfAppreciatedAssetsForm = ({ onCalculate }) => {
       amountOfChirableDonation: amountOfChirableDonationCalculated,
       savings: savingsCalculated,
       calculationType: 'charitableDonationSavings',
-      dagi2: parseFloat(newDagi2), // Usar el valor calculado directamente
+      dagi: parseFloat(newDagi2), // Usar el valor calculado directamente
     });
 
     onCalculate(results);
@@ -134,11 +140,19 @@ const CharitableDonationOfAppreciatedAssetsForm = ({ onCalculate }) => {
                 label="Deduction to AGI"
                 fullWidth
                 type="number"
-                value={dagi2}
+                value={dagi}
                 margin="normal"
                 InputProps={{ readOnly: true }}
                 disabled
               />
+                <TextField
+                label="Standar Deduction"
+                fullWidth
+                type="number"
+                value={standardDeduction}
+                margin="normal"
+                disabled
+                />
             </Grid>
 
             <Grid item xs={12} md={6}>

@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import useCalculations from "../utils/useCalculations";
+import { standardDeductions } from '../utils/taxData';
 
 const DonorAdvisedFundForm = ({ onCalculate }) => {
     // Campos fijos
@@ -23,12 +24,10 @@ const DonorAdvisedFundForm = ({ onCalculate }) => {
     const [usualAnnualDonation, setUsualAnnualDonation] = useState("");
     const [yearsGroupingCharitableContribution, setYearsGroupingCharitableContribution] = useState("");
     const [totalCharitableContributionFirstYear, setTotalCharitableContributionFirstYear] = useState(0);
-    
-  
+    const standardDeduction = standardDeductions[filingStatus];
+
     const { performCalculations } = useCalculations();
-  
    
-     
 
     const handleSubmit = (e) => {
       e.preventDefault();
@@ -57,9 +56,15 @@ const DonorAdvisedFundForm = ({ onCalculate }) => {
       // Calcular Total Charitable Contribution First Year (TCCFY)
       const TCCFY = Math.floor(TUAD * YGCC);
       setTotalCharitableContributionFirstYear(TCCFY);
+
+      if (TCCFY >= standardDeduction ) {
+        setDagi(TCCFY); // Updates DAGI state automatically
+      } else {
+        setDagi(0);
+      }
   
       // Asignar el valor de TCCFY a DAGI
-      setDagi(TCCFY); // Updates DAGI state automatically
+      
       const updatedDagi = TCCFY;
      
       // Pasar resultados a la función onCalculate
@@ -149,6 +154,15 @@ const DonorAdvisedFundForm = ({ onCalculate }) => {
                   onChange={(e) => setDagi(e.target.value)}
                   margin="normal"
                   disabled
+                />
+                <TextField
+                label="Standar Deduction"
+                fullWidth
+                type="number"
+                value={standardDeduction}
+                margin="normal"
+                disabled
+
                 />
               </Grid>
   
