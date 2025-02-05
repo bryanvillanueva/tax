@@ -54,6 +54,7 @@ import FinancedSoftwareLeasebackForm from './FinancedSoftwareLeasebackForm';
 import ForeignEarnedIncomeExclusionForm from './ForeignEarnedIncomeExclusionForm';
 import FormSelector from './FormSelector';
 import CustomSpeedDial from './CustomSpeedDial';
+import CustomAppBar from './CustomAppBar';
 import CustomDrawer from './CustomDrawer';
 import MenuIcon from '@mui/icons-material/Menu';
 import axios from 'axios';
@@ -323,6 +324,7 @@ const Dashboard = () => {
   return (
     <Container>
       <CssBaseline />
+      <CustomAppBar userData={userData} onMenuClick={() => setDrawerOpen(true)} />
      {/* Botón para abrir el Drawer */} 
      <IconButton
   size="large"

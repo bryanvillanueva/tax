@@ -103,8 +103,6 @@ const ResultsDisplay = ({ results, formTitle, calculationType }) => {
     {
   results.formType === '1120'
     ? 'Not Applicable'
-    : results.calculationType === 'charitableDonationSavings'
-      ? formatCurrency(results.agi2)
       : results.formType === '1120S'
         ? formatCurrency(results.AgiCalculation2y4)
         : results.formType === '1040 - Schedule C/F' && (results.partnerType === 'Passive' || results.partnerType === 'Active')

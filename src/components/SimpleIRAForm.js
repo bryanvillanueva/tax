@@ -161,13 +161,7 @@ const SimpleIRAForm = ({ onCalculate }) => {
                 onChange={(e) => setQualifiedEmployees(e.target.value)}
                 margin="normal"
               />
-
-              
-            </Grid>
-
-            {/* Lado Derecho */}
-            <Grid item xs={12} md={6}>
-            <TextField
+             <TextField
                 label="Annual Average Employee Compensation"
                 fullWidth
                 type="number"
@@ -175,6 +169,12 @@ const SimpleIRAForm = ({ onCalculate }) => {
                 onChange={(e) => setAverageCompensation(e.target.value)}
                 margin="normal"
               />
+              
+            </Grid>
+
+            {/* Lado Derecho */}
+            <Grid item xs={12} md={6}>
+            
 
               
               <TextField

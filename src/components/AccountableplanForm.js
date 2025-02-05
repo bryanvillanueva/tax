@@ -96,6 +96,17 @@ const AccountablePlanForm = ({ onCalculate }) => {
                 onChange={(e) => setGrossIncome(e.target.value)}
                 margin="normal"
               />
+              <TextField
+                select
+                label="Type of Partner"
+                fullWidth
+                value={partnerType}
+                onChange={(e) => setPartnerType(e.target.value)}
+                margin="normal"
+                >
+                <MenuItem value="Active">Active</MenuItem>
+                <MenuItem value="Passive">Passive</MenuItem>
+                </TextField>
             </Grid>
 
             {/* Lado Derecho */}
@@ -108,17 +119,7 @@ const AccountablePlanForm = ({ onCalculate }) => {
                 onChange={(e) => setTotalReimbursableExpenses(e.target.value)}
                 margin="normal"
               />
-               <TextField
-                select
-                label="Type of Partner"
-                fullWidth
-                value={partnerType}
-                onChange={(e) => setPartnerType(e.target.value)}
-                margin="normal"
-                >
-                <MenuItem value="Active">Active</MenuItem>
-                <MenuItem value="Passive">Passive</MenuItem>
-                </TextField>
+               
 
                 <TextField
                 select

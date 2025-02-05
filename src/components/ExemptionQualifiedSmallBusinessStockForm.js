@@ -190,7 +190,11 @@ console.log('Total Savings of Capital Gain (TSCG):', totalSavings);
                 margin="normal"
               />
 
-              <TextField
+           
+            </Grid>
+
+            <Grid item xs={12} md={6}>
+            <TextField
                 label="Capital Gain in the Sale of QSBS"
                 fullWidth
                 type="number"
@@ -198,10 +202,6 @@ console.log('Total Savings of Capital Gain (TSCG):', totalSavings);
                 onChange={(e) => setCapitalGainQSBS(e.target.value)}
                 margin="normal"
               />
-            </Grid>
-
-            <Grid item xs={12} md={6}>
-
 
               <TextField
                 label="Years Holding the Stock (Min 5 Yrs)"

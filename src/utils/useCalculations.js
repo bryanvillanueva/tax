@@ -301,8 +301,8 @@ const useCalculations = () => {
       const selfEmploymentTax = partnerType === 'Active' ? seSocialSecurity + seMedicare : 
       formType === '1040 - Schedule C/F' ? seSocialSecurity + seMedicare : 0;
       const standardDeduction = standardDeductions[filingStatus];
-      const agi = calculateAGI(netIncome, standardDeduction, dagi, dagi2, selfEmploymentTax );
-      const taxableIncome = calculateTaxableIncome(agi, filingStatus, dagi, formType ) - QBID;
+      const agi = calculateAGI(netIncome, standardDeduction, selfEmploymentTax );
+      const taxableIncome = calculateTaxableIncome(agi, filingStatus, dagi, dagi2, formType ) - QBID;
       const { marginalRate, level } = getMarginalTaxRateAndLevel(filingStatus, taxableIncome);
       const taxDue = calculateTaxDue(filingStatus, taxableIncome);
       const taxCredits = taxCreditsResults || 0;
@@ -349,8 +349,8 @@ const useCalculations = () => {
 
       // calculos para el formulario 1120S/1040NR 2/4
      const agi1120S = netIncome;
-     const AgiCalculation2y4 = calculateAGI2y4 (agi1120S, standardDeduction, dagi, dagi2);
-     const taxableIncome1120S = calculateTaxableIncome1120S(AgiCalculation2y4, filingStatus, dagi) - QBID;
+     const AgiCalculation2y4 = calculateAGI2y4 (agi1120S);
+     const taxableIncome1120S = calculateTaxableIncome1120S(AgiCalculation2y4, filingStatus, dagi, dagi2) - QBID;
      const taxDue1120S = calculateTaxDue1120S(filingStatus, taxableIncome1120S);
      const effectiveTaxRate1120S = taxableIncome1120S !== 0 ? ((taxDue1120S / taxableIncome1120S) * 100).toFixed(2) : '0.00';
      const {marginalRate1120s, level1120s } = getMarginalTaxRateAndLevel1120S(filingStatus, taxableIncome1120S);
