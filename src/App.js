@@ -5,6 +5,7 @@ import Dashboard from './components/Dashboard';
 import ChangePassword from './components/ChangePassword';
 import Profile from './components/profile';
 import Favorites from './components/Favorites';
+import UsersModule from './components/UsersModule';
 
 const App = () => {
   return (
@@ -15,6 +16,7 @@ const App = () => {
       <Route path="/form-selector/:formId" element={<Dashboard />} /> {/* Nueva ruta para formularios específicos */}
       <Route path="/profile" element={<Profile />} />
       <Route path="/favorites" element={<Favorites />} />
+      <Route path="/usersModule" element={<UsersModule />} />
     </Routes>
   );
 };

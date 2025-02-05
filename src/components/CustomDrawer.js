@@ -46,6 +46,9 @@ const CustomDrawer = ({ drawerOpen, setDrawerOpen, userData }) => {
           <ListItem button onClick={() => navigate('/favorites')} sx={{ cursor: 'pointer' }}>
             <ListItemText primary="Favorites" />
           </ListItem>
+          <ListItem button onClick={() => navigate('/usersModule')} sx={{ cursor: 'pointer' }}>
+            <ListItemText primary="Admin" />
+          </ListItem>
           <ListItem button onClick={() => window.open('https://tax.bryanglen.com/shop-2/', '_blank')} sx={{ cursor: 'pointer' }}>
             <ListItemText primary="Shop" />
           </ListItem>
