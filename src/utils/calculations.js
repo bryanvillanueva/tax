@@ -308,38 +308,30 @@ export function calculateSEMedicare(netIncome) {
 }
 
 // Calcular el AGI (Adjusted Gross Income) 1/3
-export function calculateAGI(netIncome, standardDeduction, dagi, dagi2, selfEmploymentTax) {
-  
-  // elgie el valor mas alto
-  const agiDeduction = dagi > standardDeduction ? dagi : 0;
-   
-  // resta dagi al agi
-  const agiDeduction2 = dagi2 || 0;
-
-  return netIncome - (selfEmploymentTax / 2) - agiDeduction - agiDeduction2;  
-
+export function calculateAGI(netIncome, standardDeduction, selfEmploymentTax) {
+  return netIncome - (selfEmploymentTax / 2);  
 }
+
 // Calcular el AGI para 2 y 4 (1120s y 1040nr)
-
-export function calculateAGI2y4(agi1120S, standardDeduction, dagi, dagi2) {
-  
-  // Evaluar la deducción AGI dentro de la función
-  const agiDeduction = dagi > standardDeduction ? dagi : 0;
-    // resta dagi al agi
-    const agiDeduction2 = dagi2 || 0;
-  return agi1120S - agiDeduction - agiDeduction2;  
-
+export function calculateAGI2y4(agi1120S) {
+  return agi1120S;
 }
 
-// Calcular el Taxable Income 1040
-export function calculateTaxableIncome(agi, filingStatus, dagi) {
+// Calcular el Taxable Income  (1/3)
+export function calculateTaxableIncome(agi, filingStatus, dagi, dagi2) {
   const standardDeduction = standardDeductions[filingStatus] || 0;
+  
+  // Elige el valor más alto
   const agiDeduction = dagi > standardDeduction ? dagi : 0;
-
-  if (agiDeduction > standardDeduction) {
-    return Math.max(0, agi);
+  // Resta dagi2 al agi
+  const agiDeduction2 = dagi2 || 0;
+  
+  // Si dagi o dagi2 tienen valores, no restar standardDeduction
+  if (agiDeduction > 0 || agiDeduction2 > 0) {
+    return Math.max(0, agi - agiDeduction - agiDeduction2);
   }
-  return Math.max(0, agi - standardDeduction );
+  
+  return Math.max(0, agi - standardDeduction);
 }
 
 // Calcular el Taxable Income2 sin estrategia
@@ -347,15 +339,24 @@ export function calculateTaxableIncome2(agi2, filingStatus) {
   const standardDeduction = standardDeductions[filingStatus] || 0;
   return Math.max(0, agi2 - standardDeduction);
 }
-// Calcular el Taxable Income 1120S
-export function calculateTaxableIncome1120S(AgiCalculation2y4, filingStatus, dagi) {
+
+// Calcular el Taxable Income  (2/4)
+export function calculateTaxableIncome1120S(AgiCalculation2y4, filingStatus, dagi, dagi2) {
   const standardDeduction = standardDeductions[filingStatus] || 0;
+  
+  // Elige el valor más alto
   const agiDeduction = dagi > standardDeduction ? dagi : 0;
-  if (agiDeduction > standardDeduction) {
-    return Math.max(0, AgiCalculation2y4);
+  // Resta dagi2 al agi
+  const agiDeduction2 = dagi2 || 0;
+  
+  // Si dagi o dagi2 tienen valores, no restar standardDeduction
+  if (agiDeduction > 0 || agiDeduction2 > 0) {
+    return Math.max(0, AgiCalculation2y4 - agiDeduction - agiDeduction2);
   }
-  return Math.max(0, AgiCalculation2y4 - standardDeduction );
+  
+  return Math.max(0, AgiCalculation2y4 - standardDeduction);
 }
+
 
 // calcular el Taxable Income 1040nr
 export function calculateTaxableIncome1040nr(agi, filingStatus, QBID) {

@@ -152,7 +152,11 @@ const FederalSolarInvestmentTaxCreditForm = ({ onCalculate }) => {
                 onChange={(e) => setQualifiedInvestment(e.target.value)}
                 margin="normal"
               />
-              <TextField
+           
+            </Grid>
+
+            <Grid item xs={12} md={6}>
+            <TextField
                 label="Rate for Year of Place in Service (RYPS) (%)"
                 fullWidth
                 type="number"
@@ -160,9 +164,6 @@ const FederalSolarInvestmentTaxCreditForm = ({ onCalculate }) => {
                 onChange={(e) => setRateYearPlaceService(e.target.value)}
                 margin="normal"
               />
-            </Grid>
-
-            <Grid item xs={12} md={6}>
               <TextField
                 label="Credit Amount (CA)"
                 fullWidth
@@ -171,7 +172,7 @@ const FederalSolarInvestmentTaxCreditForm = ({ onCalculate }) => {
                 margin="normal"
                 disabled
               />
-              {/* Se eliminó el campo Total Credit (TC) de la interfaz */}
+              
               <TextField
                 select
                 label="Form Type"

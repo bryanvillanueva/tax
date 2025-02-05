@@ -117,10 +117,6 @@ const UnreimbursedPartnershipExpensesForm = ({ onCalculate }) => {
                 <MenuItem value="Active">Active</MenuItem>
                 <MenuItem value="Passive">Passive</MenuItem>
               </TextField>
-            </Grid>
-
-            {/* Right Side */}
-            <Grid item xs={12} md={6}>
               <TextField
                 label="Unreimbursed Expenses Incurred"
                 fullWidth
@@ -129,6 +125,11 @@ const UnreimbursedPartnershipExpensesForm = ({ onCalculate }) => {
                 onChange={(e) => setUnreimbursedExpenses(e.target.value)}
                 margin="normal"
               />
+            </Grid>
+
+            {/* Right Side */}
+            <Grid item xs={12} md={6}>
+             
 
               <TextField
                 label="Non-Deductible Amount"

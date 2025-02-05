@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { TextField, Button, Container, Box, MenuItem, Alert, Grid } from '@mui/material';
 import useCalculations from '../utils/useCalculations';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import { standardDeductions } from '../utils/taxData';
+
 
 
 
@@ -15,6 +17,7 @@ const CharitableRemainderForm = ({ onCalculate }) => {
   const [formType, setFormType] = useState('1040 - Schedule C/F');
   const [QBID, setQbid] = useState('');
   const [dagi, setDagi] = useState('');
+  const standardDeduction = standardDeductions[filingStatus];
   const [error, setError] = useState(null);
 
   const { performCalculations } = useCalculations();
@@ -128,6 +131,14 @@ const CharitableRemainderForm = ({ onCalculate }) => {
                 onChange={(e) => setDagi(e.target.value)}
                 margin="normal"
               />
+               <TextField
+                label="Standar Deduction"
+                fullWidth
+                type="number"
+                value={standardDeduction}
+                margin="normal"
+                disabled
+                />
             </Grid>
 
             {/* Right side: CGAS, PVAD, and Savings in Capital Gain Tax */}
