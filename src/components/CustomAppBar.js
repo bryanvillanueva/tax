@@ -23,7 +23,7 @@ const UserProfile = ({ userData }) => {
         background: 'linear-gradient(135deg, #0858e6 0%, #0055A4 100%)',
         boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.2)',
         color: 'white',
-        zIndex: 9999, // Asegura que esté por encima de todo
+        zIndex: 3, // Asegura que esté por encima de todo
         cursor: 'pointer', // Cambiar el cursor a pointer para indicar que es clickable
         '@media (max-width: 600px)': {
           padding: '0px', // Reducir el padding en móviles

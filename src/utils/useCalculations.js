@@ -36,6 +36,9 @@ import {
   calculateNetIncomeEmployeeStockOwnershipPlan,
   calculateNetIncomeFederalSolarInvestmentTaxCredit,
   calculateNetIncomeResearchAndDevelopmentCredit,
+  calculateNetIncomeGroupHealthInsurance,
+  calculateNetIncomeGroupingRelatedActivities,
+  calculateNetIncomeHomeOfficeDeduction,
   calculateSEMedicare,
   calculateAGI,
   calculateAGI2y4,
@@ -72,6 +75,8 @@ import {
   calculateNetIncomeFinancedInsurance,
   calculateNetIncomeFinancedSoftware,
   calculateNetIncomeForeignEarnedIncome,
+  calculateNetIncomeHistoricalPreservationEasement,
+  calculateNetIncomeInstallmentSale,
 
 
 } from '../utils/calculations';
@@ -123,6 +128,9 @@ const useCalculations = () => {
     financedDeduction,
     softwareLeasebackDeduction,
     foreignDeduction,
+    groupHealthInsuranceDeduction,
+    homeOfficeDeduction,
+    installmentSaleDeduction,
     
   }) => {
     // Calcular Net Income según el tipo de cálculo
@@ -272,12 +280,28 @@ const useCalculations = () => {
       case 'FinancedInsurance':
           netIncome = calculateNetIncomeFinancedInsurance (grossIncome, financedDeduction); 
         break;
-        case 'FinancedSoftwareLeaseback':
+      case 'FinancedSoftwareLeaseback':
           netIncome = calculateNetIncomeFinancedSoftware (grossIncome, softwareLeasebackDeduction);
         break;  
       case 'ForeignEarnedIncomeExclusion':
           netIncome = calculateNetIncomeForeignEarnedIncome (grossIncome, foreignDeduction);
         break;   
+      case 'GroupHealthInsurance':
+          netIncome = calculateNetIncomeGroupHealthInsurance (grossIncome, groupHealthInsuranceDeduction);
+        break;   
+      case 'GroupingRelatedActivities':
+          netIncome = calculateNetIncomeGroupingRelatedActivities (grossIncome);
+        break;   
+      case 'HomeOfficeDeduction':
+          netIncome = calculateNetIncomeHomeOfficeDeduction (grossIncome, homeOfficeDeduction);
+        break;   
+      case 'HistoricalPreservationEasement':
+          netIncome = calculateNetIncomeHistoricalPreservationEasement (grossIncome);
+        break;  
+      case 'InstallmentSale':
+          netIncome = calculateNetIncomeInstallmentSale (grossIncome, installmentSaleDeduction);
+        break;  
+
           case 'standard':
           netIncome = calculateNetIncome(grossIncome, deduction179);
         break; 
