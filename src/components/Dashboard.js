@@ -53,6 +53,11 @@ import FinancedInsuranceForm from './FinancedInsuranceForm';
 import FinancedSoftwareLeasebackForm from './FinancedSoftwareLeasebackForm';
 import ForeignEarnedIncomeExclusionForm from './ForeignEarnedIncomeExclusionForm';
 import FormSelector from './FormSelector';
+import GroupHealthInsuranceForm from './GroupHealthInsuranceForm';
+import GroupingRelatedActivitiesForm from './GroupingRelatedActivitiesForm';
+import HistoricalPreservationEasementForm from './HistoricalPreservationEasementForm';
+import HomeOfficeDeductionForm from './HomeOfficeDeductionForm';
+import InstallmentSaleForm from './InstallmentSaleForm';
 import CustomSpeedDial from './CustomSpeedDial';
 import CustomAppBar from './CustomAppBar';
 import CustomDrawer from './CustomDrawer';
@@ -153,7 +158,7 @@ const Dashboard = () => {
           return <IncomeShiftingForm onCalculate={setResults} />;
       case 'lifeInsurance':
           return <LifeInsuranceForm onCalculate={setResults} />;
-        case 'maximizeMiscellaneousExpenses':
+      case 'maximizeMiscellaneousExpenses':
           return <MaximizeMiscellaneousExpensesForm onCalculate={setResults} />;
       case 'mealsDeduction':
           return <MealsDeductionForm onCalculate={setResults} />;
@@ -209,6 +214,16 @@ const Dashboard = () => {
             return <FinancedSoftwareLeasebackForm onCalculate={setResults} />;
       case 'ForeignEarnedIncomeExclusion':
             return <ForeignEarnedIncomeExclusionForm onCalculate={setResults} />;
+      case 'GroupHealthInsurance':
+            return <GroupHealthInsuranceForm onCalculate={setResults} />;
+      case 'GroupingRelatedActivities':
+            return <GroupingRelatedActivitiesForm onCalculate={setResults} />;
+      case 'HistoricalPreservationEasement':
+            return <HistoricalPreservationEasementForm onCalculate={setResults} />;
+      case 'HomeOfficeDeduction':
+            return <HomeOfficeDeductionForm onCalculate={setResults} />;
+      case 'InstallmentSale':
+            return <InstallmentSaleForm onCalculate={setResults} />;
       default:
         return <FormSelector onSelectForm={handleSelectForm} />;
     }
@@ -316,6 +331,16 @@ const Dashboard = () => {
             return 'Financed Software Leaseback Form'
       case 'ForeignEarnedIncomeExclusion':
             return 'Foreign Earned Income Exlusion Form'
+      case 'GroupHealthInsurance':
+            return 'Group Health Insurance Form'
+      case 'GroupingRelatedActivities':
+            return 'Grouping Related Activities - Section 469 Form'
+      case 'HistoricalPreservationEasement':
+            return 'Historical Preservation Easement Form'
+      case 'HomeOfficeDeduction':
+            return 'Home Office Deduction Form'
+      case 'InstallmentSale':
+            return 'Installment Sale Form'
       default:
         return '';
     }
@@ -335,7 +360,7 @@ const Dashboard = () => {
     left: 16,
     color: '#fff',
     backgroundColor: '#0858e6',
-    zIndex: 9999,
+    zIndex: 1,
     boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.2)',
     transition: 'transform 0.2s, background-color 0.2s', // Transición suave para hover y pulse
     '&:hover': {
