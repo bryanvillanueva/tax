@@ -335,6 +335,8 @@ const Dashboard = () => {
     left: 16,
     color: '#fff',
     backgroundColor: '#0858e6',
+    zIndex: 9999,
+    boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.2)',
     transition: 'transform 0.2s, background-color 0.2s', // Transición suave para hover y pulse
     '&:hover': {
       backgroundColor: '#0746b0', // Azul oscuro al hacer hover
