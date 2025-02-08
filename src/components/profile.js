@@ -84,34 +84,34 @@ const Profile = () => {
 
   const handleAvatarChange = (e) => {
     const file = e.target.files[0];
-    if (file) {
-      // Validar el tipo de archivo
-      if (!file.type.startsWith('image/')) {
-        setError('Please upload a valid image file.');
-        return;
-      }
-
-      // Validar el tamaño del archivo (por ejemplo, 5 MB)
-      if (file.size > 5 * 1024 * 1024) {
-        setError('File size must be less than 5 MB.');
-        return;
-      }
-
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setAvatarPreview(reader.result);
-      };
-      reader.readAsDataURL(file);
-      setAvatarFile(file);
+  
+    if (!file) return; // Si no se selecciona archivo, salir
+  
+    // Validar el tipo de archivo (solo imágenes)
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+      setError('Invalid file type. Only JPEG, PNG, and WEBP are allowed.');
+      return;
     }
+  
+    // Validar el tamaño del archivo (máximo 5 MB)
+    if (file.size > 5 * 1024 * 1024) {
+      setError('File size must be less than 5 MB.');
+      return;
+    }
+  
+    // Crear previsualización sin sobrecargar memoria
+    setAvatarPreview(URL.createObjectURL(file));
+    setAvatarFile(file);
   };
+  
 
   const handleSaveAvatar = async () => {
     if (!avatarFile) return;
-
+  
     const formData = new FormData();
-    formData.append('avatar', avatarFile);
-
+    formData.append('avatar', avatarFile); // Agregar archivo
+  
     setIsLoading(true);
     try {
       const token = localStorage.getItem('authToken');
@@ -125,23 +125,22 @@ const Profile = () => {
           },
         }
       );
-
-      setUserData({ ...userData, avatar: response.data.avatar });
+  
+      // ✅ Cloudinary devuelve la URL del avatar, así que actualizamos el estado
+      setUserData((prev) => ({ ...prev, avatar: response.data.avatar }));
       setSuccess('Avatar updated successfully.');
       setAvatarPreview(null);
       setAvatarFile(null);
       setAvatarDialogOpen(false);
     } catch (err) {
       console.error('Error updating avatar:', err);
-      if (err.response?.status === 403) {
-        setError('You do not have permission to update the avatar.');
-      } else {
-        setError('Failed to update avatar. Please try again.');
-      }
+      setError('Failed to update avatar. Please try again.');
     } finally {
       setIsLoading(false);
     }
   };
+  
+  
 
   const handleEditProfile = () => {
     setEditedData(userData);
@@ -152,7 +151,7 @@ const Profile = () => {
     setIsLoading(true);
     try {
       const token = localStorage.getItem('authToken');
-      const response = await axios.put(
+      const response = await axios.post(
         'https://taxbackend-production.up.railway.app/user/update-profile',
         editedData,
         {
@@ -316,23 +315,24 @@ const Profile = () => {
           <DialogTitle>Change Avatar</DialogTitle>
           <DialogContent>
             <Box sx={{ textAlign: 'center', mt: 2 }}>
-              <Avatar
-                sx={{ width: 150, height: 150, mx: 'auto', mb: 2 }}
-                src={avatarPreview || userData?.avatar || 'https://tax.bryanglen.com/user.png'}
-                alt="Preview Avatar"
-              />
-              <input
-                accept="image/*"
-                style={{ display: 'none' }}
-                id="avatar-upload"
-                type="file"
-                onChange={handleAvatarChange}
-              />
+            <Avatar
+             sx={{ width: 100, height: 100, mx: 'auto', mb: 1 }}
+             src={userData?.avatar || 'https://tax.bryanglen.com/user.png'}
+             alt="User Avatar"
+             />
               <label htmlFor="avatar-upload">
-                <Button variant="contained" component="span" sx={{ mb: 2 }}>
-                  Upload Image
-                </Button>
+              <input
+               accept="image/jpeg, image/png, image/webp"
+               style={{ display: 'none' }}
+               id="avatar-upload"
+               type="file"
+               onChange={handleAvatarChange}
+               />
+              <Button variant="contained" component="span" sx={{ mb: 2 }}>
+                 Upload Image
+              </Button>
               </label>
+
             </Box>
           </DialogContent>
           <DialogActions>
@@ -409,14 +409,7 @@ const Profile = () => {
                     onChange={handleInputChange}
                     sx={{ mb: 2 }}
                   />
-                  <TextField
-                    label="Product"
-                    name="product"
-                    fullWidth
-                    value={editedData.product || ''}
-                    onChange={handleInputChange}
-                    sx={{ mb: 2 }}
-                  />
+
                   <Box sx={{ display: 'flex', gap: 2 }}>
                     <Button
                       variant="contained"
