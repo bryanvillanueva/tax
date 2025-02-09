@@ -61,6 +61,18 @@ const forms = [
     { code: '4', id: 'FederalSolarInvestmentTaxCredit', title: 'Federal Solar Investment Tax Credit Form', description: 'Calculate federal tax credits for solar energy investments. Input qualified investment and applicable rates to determine eligible tax credits.'},
     { code: '4', id: 'ESOP', title: 'Employee Stock Ownership Plan (ESOP) Form', description: 'Calculate deductions for contributions to an Employee Stock Ownership Plan (ESOP). Input company valuation and percentage of shares to determine deductible amounts.'},
     { code: '4', id: 'ForeignEarnedIncomeExclusion', title: 'Foreign Earned Income Exclusion Form', description: 'Calculate exclusions for foreign earned income. Input qualified foreign income and determine the exclusion limit for tax purposes.'},
+    { code: '4', id: 'GroupHealthInsurance', title: 'Group Health Insurance Form', description: 'Calculate deductions and benefits for group health insurance plans. Input premiums and coverage details to determine eligibility and tax implications.' },
+    { code: '4', id: 'GroupingRelatedActivities', title: 'Grouping Related Activities - Section 469 Form', description: 'Evaluate the grouping of related activities for passive income tax treatment under Section 469. Input activity details to determine eligibility and impact on tax calculations.' },
+    { code: '4', id: 'HistoricalPreservationEasement', title: 'Historical Preservation Easement Form', description: 'Determine tax deductions for historical preservation easements. Input property details and conservation restrictions to calculate allowable deductions.' },
+    { code: '4', id: 'HomeOfficeDeduction', title: 'Home Office Deduction Form', description: 'Calculate deductions for home office expenses. Input workspace details, expenses, and business usage percentage to determine the deductible amount.' },
+    { code: '4', id: 'InstallmentSale', title: 'Installment Sale Form', description: 'Assess tax implications of installment sales. Input sale details, payment schedules, and interest rates to determine taxable income and installment gain.' },
+    { code: '4', id: 'MaximizeItemization', title: 'Maximize Itemization Strategies Form', description: 'Optimize itemized deductions by evaluating eligible expenses to maximize tax benefits.' },  
+    { code: '4', id: 'NoncashCharitableContributions', title: 'Noncash Charitable Contributions Of Unused Goods Form', description: 'Determine the deductible value of donated noncash charitable contributions for tax reporting.' },  
+    { code: '4', id: 'OilAndGasDrillingCost', title: 'Oil And Gas - Drilling Cost Form', description: 'Calculate the deductible drilling costs for oil and gas investments, including intangible drilling expenses.' },  
+    { code: '4', id: 'OilAndGasMLP', title: 'Oil And Gas - Master Limited Partnership (MLP) Form', description: 'Evaluate tax implications and deductions for investments in oil and gas Master Limited Partnerships (MLPs).' },  
+    { code: '4', id: 'OrdinaryLossOnWorthlessStock', title: 'Ordinary Loss on Worthless Stock Form', description: 'Assess and claim deductions for losses on worthless stocks, including qualification criteria for ordinary loss treatment.' },  
+
+
 
   ];
 
@@ -75,6 +87,7 @@ const FormSelector = ({ onSelectForm }) => {
   });
 
   const [loading, setLoading] = useState(true);
+  const [isFixed, setIsFixed] = useState(false);
   const navigate = useNavigate();
 
     // Función para ordenar los formularios con favoritos primero
@@ -131,7 +144,24 @@ const FormSelector = ({ onSelectForm }) => {
     validateToken();
   }, [navigate]);
 
- 
+ // Efecto para manejar el scroll y fijar el buscador
+ useEffect(() => {
+  const handleScroll = () => {
+    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+    const referencePoint = 200; // Ajusta este valor según la posición inicial del contenedor
+
+    if (scrollTop > referencePoint) {
+      setIsFixed(true);
+    } else {
+      setIsFixed(false);
+    }
+  };
+
+  window.addEventListener('scroll', handleScroll);
+  return () => {
+    window.removeEventListener('scroll', handleScroll);
+  };
+}, []);
 
   const handleLogout = () => {
     localStorage.removeItem('authToken'); // Elimina el token
@@ -169,48 +199,74 @@ const FormSelector = ({ onSelectForm }) => {
 
       {/* Contenido principal */}
       <Box sx={{ flex: 1 }}>
-       
-        <Box sx={{ mt: 5}}>
-        {/* Contenedor del logo */}
-        <Box sx={{ textAlign: 'center', mb: 4, marginTop:-1}}>
-        
-      </Box>
+        <Box sx={{ mt: 5 }}>
+          {/* Contenedor del buscador */}
+          <Container
+  sx={{
+    backgroundImage: isFixed
+      ? 'none' // Fondo blanco cuando está fijo
+      : 'url(https://wac-cdn.atlassian.com/misc-assets/webp-images/bg_atl_cloud_hero_small.svg)', // Imagen de fondo cuando no está fijo
+    backgroundColor: isFixed ? '#fff' : 'transparent', // Fondo blanco cuando está fijo
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    borderRadius: '12px',
+    padding: isFixed ? { xs: '8px', sm: '16px' } : { xs: '16px', sm: '32px' }, // Padding reducido en móviles
+    mb: 4,
+    textAlign: 'center',
+    maxWidth: { xs: '90%', sm: '1250px' }, // Ancho reducido en móviles
+    width: isFixed ? { xs: '60%', sm: '50%' } : 'auto', // Ancho del 60% en móviles cuando está fijo
+    position: isFixed ? 'fixed' : 'static', // Cambia la posición según el estado
+    top: isFixed ? 0 : 'auto', // Fija en el top si está fijo
+    left: isFixed ? '50%' : 'auto', // Centra horizontalmente si está fijo
+    transform: isFixed ? 'translateX(-50%)' : 'none', // Ajusta el centrado si está fijo
+    zIndex: 4, // Asegura que esté por encima de otros elementos si está fijo
+    boxShadow: isFixed ? 'none': '0 4px 6px rgba(0, 0, 0, 0.2)', // Sombra opcional
+    
+  }}
+>
+  {/* Título (oculto cuando está fijo) */}
+  <Typography
+    variant="h5"
+    gutterBottom
+    sx={{
+      color: isFixed ? 'transparent' : '#fff', // Oculta el texto cuando está fijo
+      fontWeight: 'bold',
+      fontFamily: 'Montserrat, sans-serif',
+      fontSize: { xs: '1.5rem', sm: '2.125rem' }, // Tamaño de fuente reducido en móviles
+      display: isFixed ? 'none' : 'block', // Oculta el título cuando está fijo
 
-      {/* Contenedor del buscador */}
-      <Container
-        sx={{
-          backgroundImage: 'url(https://wac-cdn.atlassian.com/misc-assets/webp-images/bg_atl_cloud_hero_small.svg)', // URL de la imagen de fondo
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          borderRadius: '12px',
-          padding: '32px',
-          mb: 4,
-          textAlign: 'center',
-          maxWidth: '1250px',
-        }}
-      >
-        <Typography variant="h5" gutterBottom sx={{ color: '#fff', fontWeight: 'bold', fontFamily: 'Montserrat, sans-serif', fontSize: '2.125rem' }}>
-          Search or Select a Form to Continue
-        </Typography>
+    }}
+  >
+    Search or Select a Form to Continue
+  </Typography>
 
-        <TextField
-          fullWidth
-          placeholder="Search for a form..."
-          variant="outlined"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          sx={{
-            backgroundColor: '#fff',
-            fontFamily: 'Montserrat, sans-serif',
-            borderRadius: '8px',
-            '& fieldset': { border: 'none' },
-            '& .MuiOutlinedInput-root': {
-              '&:hover fieldset': { borderColor: '#9ce7ff' },
-              '&.Mui-focused fieldset': { borderColor: '#30C2F3',  fontFamily: 'Montserrat, sans-serif' },
-            },
-          }}
-        />
-      </Container>
+  {/* Barra de búsqueda (siempre visible) */}
+  <TextField
+    fullWidth
+    placeholder="Search for a form..."
+    variant="outlined"
+    value={searchTerm}
+    onChange={(e) => setSearchTerm(e.target.value)}
+    sx={{
+      backgroundColor: '#fff',
+      fontFamily: 'Montserrat, sans-serif',
+      borderRadius: '8px',
+      '& fieldset': {
+        border: isFixed ? '1px solid #0858e6' : 'none', // Borde azul cuando está fijo
+      },
+      '& .MuiOutlinedInput-root': {
+        '&:hover fieldset': { borderColor: '#0055A4' },
+        '&.Mui-focused fieldset': { borderColor: '#0055A4', fontFamily: 'Montserrat, sans-serif' },
+      },
+      transition: 'all 0.3s ease', // Transición suave para el borde
+      fontSize: { xs: '14px', sm: '16px' }, // Tamaño de fuente reducido en móviles
+      
+    }}
+  />
+</Container>
+
+          {/* Espacio adicional para evitar solapamiento con el buscador fijo */}
+          {isFixed && <Box sx={{ height: '200px' }} />}
 
       {loading ? (
             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>

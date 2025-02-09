@@ -61,6 +61,19 @@ const forms = [
   { code: '4', id: 'FederalSolarInvestmentTaxCredit', title: 'Federal Solar Investment Tax Credit Form', description: 'Calculate federal tax credits for solar energy investments. Input qualified investment and applicable rates to determine eligible tax credits.'},
   { code: '4', id: 'ESOP', title: 'Employee Stock Ownership Plan (ESOP) Form', description: 'Calculate deductions for contributions to an Employee Stock Ownership Plan (ESOP). Input company valuation and percentage of shares to determine deductible amounts.'},
   { code: '4', id: 'ForeignEarnedIncomeExclusion', title: 'Foreign Earned Income Exclusion Form', description: 'Calculate exclusions for foreign earned income. Input qualified foreign income and determine the exclusion limit for tax purposes.'},
+  { code: '4', id: 'GroupHealthInsurance', title: 'Group Health Insurance Form', description: 'Calculate deductions and benefits for group health insurance plans. Input premiums and coverage details to determine eligibility and tax implications.' },
+  { code: '4', id: 'GroupingRelatedActivities', title: 'Grouping Related Activities - Section 469 Form', description: 'Evaluate the grouping of related activities for passive income tax treatment under Section 469. Input activity details to determine eligibility and impact on tax calculations.' },
+  { code: '4', id: 'HistoricalPreservationEasement', title: 'Historical Preservation Easement Form', description: 'Determine tax deductions for historical preservation easements. Input property details and conservation restrictions to calculate allowable deductions.' },
+  { code: '4', id: 'HomeOfficeDeduction', title: 'Home Office Deduction Form', description: 'Calculate deductions for home office expenses. Input workspace details, expenses, and business usage percentage to determine the deductible amount.' },
+  { code: '4', id: 'InstallmentSale', title: 'Installment Sale Form', description: 'Assess tax implications of installment sales. Input sale details, payment schedules, and interest rates to determine taxable income and installment gain.' },
+  { code: '4', id: 'MaximizeItemization', title: 'Maximize Itemization Strategies Form', description: 'Optimize itemized deductions by evaluating eligible expenses to maximize tax benefits.' },  
+  { code: '4', id: 'NoncashCharitableContributions', title: 'Noncash Charitable Contributions Of Unused Goods Form', description: 'Determine the deductible value of donated noncash charitable contributions for tax reporting.' },  
+  { code: '4', id: 'OilAndGasDrillingCost', title: 'Oil And Gas - Drilling Cost Form', description: 'Calculate the deductible drilling costs for oil and gas investments, including intangible drilling expenses.' },  
+  { code: '4', id: 'OilAndGasMLP', title: 'Oil And Gas - Master Limited Partnership (MLP) Form', description: 'Evaluate tax implications and deductions for investments in oil and gas Master Limited Partnerships (MLPs).' },  
+  { code: '4', id: 'OrdinaryLossOnWorthlessStock', title: 'Ordinary Loss on Worthless Stock Form', description: 'Assess and claim deductions for losses on worthless stocks, including qualification criteria for ordinary loss treatment.' },  
+
+
+
 
 ];
 

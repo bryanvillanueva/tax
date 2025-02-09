@@ -36,6 +36,9 @@ import {
   calculateNetIncomeEmployeeStockOwnershipPlan,
   calculateNetIncomeFederalSolarInvestmentTaxCredit,
   calculateNetIncomeResearchAndDevelopmentCredit,
+  calculateNetIncomeGroupHealthInsurance,
+  calculateNetIncomeGroupingRelatedActivities,
+  calculateNetIncomeHomeOfficeDeduction,
   calculateSEMedicare,
   calculateAGI,
   calculateAGI2y4,
@@ -72,6 +75,13 @@ import {
   calculateNetIncomeFinancedInsurance,
   calculateNetIncomeFinancedSoftware,
   calculateNetIncomeForeignEarnedIncome,
+  calculateNetIncomeHistoricalPreservationEasement,
+  calculateNetIncomeInstallmentSale,
+  calculateNetIncomeMaximizeItemization,
+  calculateNetIncomeNoncashCharitableContributions,
+  calculateNetIncomeOilAndGasDrillingCost,
+  calculateNetIncomeOilAndGasMLP,
+  calculateNetIncomeOrdinaryLossOnWorthlessStock,
 
 
 } from '../utils/calculations';
@@ -123,6 +133,11 @@ const useCalculations = () => {
     financedDeduction,
     softwareLeasebackDeduction,
     foreignDeduction,
+    groupHealthInsuranceDeduction,
+    homeOfficeDeduction,
+    installmentSaleDeduction,
+    oilAndGasDrillingCostDeduction,
+    ordinaryLossDeduction,
     
   }) => {
     // Calcular Net Income según el tipo de cálculo
@@ -175,10 +190,10 @@ const useCalculations = () => {
         break;
       case 'accountablePlan':
           netIncome = calculateNetIncomeAccountableplan(grossIncome, totalReimbursableExpenses);
-          break;
+        break;
       case 'adoptionAndIra':
           netIncome = calculateNetIncomeAdoptionPlan(grossIncome);
-          break;
+        break;
       case 'educationTaxCredit':
         netIncome = calculateNetIncomeEducationTaxCredit(grossIncome);
         break;
@@ -272,21 +287,52 @@ const useCalculations = () => {
       case 'FinancedInsurance':
           netIncome = calculateNetIncomeFinancedInsurance (grossIncome, financedDeduction); 
         break;
-        case 'FinancedSoftwareLeaseback':
+      case 'FinancedSoftwareLeaseback':
           netIncome = calculateNetIncomeFinancedSoftware (grossIncome, softwareLeasebackDeduction);
         break;  
       case 'ForeignEarnedIncomeExclusion':
           netIncome = calculateNetIncomeForeignEarnedIncome (grossIncome, foreignDeduction);
         break;   
+      case 'GroupHealthInsurance':
+          netIncome = calculateNetIncomeGroupHealthInsurance (grossIncome, groupHealthInsuranceDeduction);
+        break;   
+      case 'GroupingRelatedActivities':
+          netIncome = calculateNetIncomeGroupingRelatedActivities (grossIncome);
+        break;   
+      case 'HomeOfficeDeduction':
+          netIncome = calculateNetIncomeHomeOfficeDeduction (grossIncome, homeOfficeDeduction);
+        break;   
+      case 'HistoricalPreservationEasement':
+          netIncome = calculateNetIncomeHistoricalPreservationEasement (grossIncome);
+        break;  
+      case 'InstallmentSale':
+          netIncome = calculateNetIncomeInstallmentSale (grossIncome, installmentSaleDeduction);
+        break;  
+      case 'MaximizeItemization':
+          netIncome = calculateNetIncomeMaximizeItemization (grossIncome);
+        break;  
+      case 'NoncashCharitableContributions':
+          netIncome = calculateNetIncomeNoncashCharitableContributions (grossIncome);
+        break;
+      case 'OilAndGasDrillingCost':
+          netIncome = calculateNetIncomeOilAndGasDrillingCost (grossIncome, oilAndGasDrillingCostDeduction );
+        break;
+      case 'OilAndGasMLP':
+          netIncome = calculateNetIncomeOilAndGasMLP (grossIncome);
+        break;
+      case 'OrdinaryLossOnWorthlessStock':
+          netIncome = calculateNetIncomeOrdinaryLossOnWorthlessStock (grossIncome, ordinaryLossDeduction);
+        break;
+
           case 'standard':
           netIncome = calculateNetIncome(grossIncome, deduction179);
-        break; 
+          break; 
     }
     console.log(`Selected Form Type: ${formType}`);
 
      //QBID 1040NR
      QBID = parseFloat(QBID) || 0;
-     dagi = parseFloat(dagi) || 0; // elgie el valor mas alto entre dagi y standardeduction
+     dagi = parseFloat(dagi) || 0; // elige el valor mas alto entre dagi y standardeduction
      dagi2 = parseFloat(dagi2) || 0; // resta dagi al agi
      partOfInvestmentIncome = parseFloat(partOfInvestmentIncome) || 0;
 
@@ -301,7 +347,7 @@ const useCalculations = () => {
       const selfEmploymentTax = partnerType === 'Active' ? seSocialSecurity + seMedicare : 
       formType === '1040 - Schedule C/F' ? seSocialSecurity + seMedicare : 0;
       const standardDeduction = standardDeductions[filingStatus];
-      const agi = calculateAGI(netIncome, standardDeduction, selfEmploymentTax );
+      const agi = calculateAGI(netIncome, standardDeduction, selfEmploymentTax);
       const taxableIncome = calculateTaxableIncome(agi, filingStatus, dagi, dagi2, formType ) - QBID;
       const { marginalRate, level } = getMarginalTaxRateAndLevel(filingStatus, taxableIncome);
       const taxDue = calculateTaxDue(filingStatus, taxableIncome);
@@ -370,7 +416,7 @@ const useCalculations = () => {
     const calcularNIITInvest = calcularNIITInvestIncome(agi1120S, filingStatus, partnerType, partOfInvestmentIncome)
     const calcularNIITInvest2 = calcularNIITInvestIncome2(agi1120S, filingStatus, partnerType, partOfInvestmentIncome)
  
-
+console.log(netIncome, standardDeduction, selfEmploymentTax);
 
       return {
         netIncome,
@@ -400,10 +446,10 @@ const useCalculations = () => {
         marginalRate2: (marginalRate2 * 100).toFixed(2),
         incomeLevel2: level2,
         seSocialSecurity,
+        seSocialSecurity2,
+        seDeduction,
         seDeduction2,
         seMedicare,
-        totalSE: selfEmploymentTax + additionalMedicare,
-        totalSE2: selfEmploymentTax2 + additionalMedicare2,
         additionalMedicare,
         additionalMedicare2,
         corpTaxableIncome,
@@ -413,8 +459,6 @@ const useCalculations = () => {
         effectiveTaxRate1120S,
         effectiveTaxRate1065,
         corpEffectiveTaxRate,
-        seDeduction,
-        seSocialSecurity2,
         seMedicare2,
         selfEmploymentTax2,
         effectiveSERate,
@@ -428,11 +472,14 @@ const useCalculations = () => {
         dagi,
         totalCredit: taxCreditsResults,
         calculationType,
+        totalSE: seSocialSecurity + seMedicare,
+        totalSE2: seSocialSecurity2 + seMedicare2,
         
        };
     };
-  
+    
     return { performCalculations };
+  
   };
   
   export default useCalculations;

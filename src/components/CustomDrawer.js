@@ -63,7 +63,6 @@ const CustomDrawer = ({ drawerOpen, setDrawerOpen, userData }) => {
               <ListItemText primary="Admin" />
             </ListItem>
           )}
-
           <ListItem button onClick={() => window.open("https://tax.bryanglen.com/shop-2/", "_blank")} sx={{ cursor: "pointer" }}>
             <ListItemText primary="Shop" />
           </ListItem>
@@ -76,7 +75,7 @@ const CustomDrawer = ({ drawerOpen, setDrawerOpen, userData }) => {
 
         <Button
           variant="contained"
-          color="primary"
+          color="primary" 
           startIcon={<LogoutIcon />}
           fullWidth
           onClick={handleLogout}

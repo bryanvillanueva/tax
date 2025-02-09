@@ -15,7 +15,7 @@ const UserProfile = ({ userData }) => {
       sx={{
         position: 'fixed',
         top: 16,
-        right: 20,
+        right: 16,
         display: 'flex',
         alignItems: 'center',
         padding: '8px 10px',
@@ -23,13 +23,14 @@ const UserProfile = ({ userData }) => {
         background: 'linear-gradient(135deg, #0858e6 0%, #0055A4 100%)',
         boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.2)',
         color: 'white',
-        zIndex: 9999, // Asegura que esté por encima de todo
+        zIndex: 3, // Asegura que esté por encima de todo
         cursor: 'pointer', // Cambiar el cursor a pointer para indicar que es clickable
-        '@media (max-width: 600px)': {
+        '@media (max-width: 800px)': {
           padding: '0px', // Reducir el padding en móviles
           borderRadius: '50%', // Hacerlo circular
           background: 'none', // Quitar el fondo en móviles
-          boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.2)',
+          
+          
         },
       }}
     >
@@ -40,7 +41,7 @@ const UserProfile = ({ userData }) => {
             sx={{
               mr: 2,
               fontWeight: 'bold',
-              '@media (max-width: 600px)': {
+              '@media (max-width: 800px)': {
                 display: 'none', // Ocultar el nombre en móviles
               },
             }}
