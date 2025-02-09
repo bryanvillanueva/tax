@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Container, CssBaseline, IconButton } from '@mui/material';
+import { Box, AppBar, Toolbar, Typography, Container, CssBaseline, IconButton } from '@mui/material';
 import { useParams, useNavigate } from 'react-router-dom';
 import DepreciationForm from './DepreciationForm';
 import AugustaRuleForm from './AugustaRuleForm';
@@ -58,6 +58,11 @@ import GroupingRelatedActivitiesForm from './GroupingRelatedActivitiesForm';
 import HistoricalPreservationEasementForm from './HistoricalPreservationEasementForm';
 import HomeOfficeDeductionForm from './HomeOfficeDeductionForm';
 import InstallmentSaleForm from './InstallmentSaleForm';
+import MaximizeItemizationForm from './MaximizeItemizationForm ';
+import NoncashCharitableContributionsForm from './NoncashCharitableContributionsForm ';
+import OilAndGasDrillingCostForm from './OilAndGasDrillingCostForm';
+import OilAndGasMLPForm from './OilAndGasMLPForm';
+import OrdinaryLossOnWorthlessStockForm from './OrdinaryLossOnWorthlessStockForm';
 import CustomSpeedDial from './CustomSpeedDial';
 import CustomAppBar from './CustomAppBar';
 import CustomDrawer from './CustomDrawer';
@@ -183,47 +188,57 @@ const Dashboard = () => {
       case 'simpleIRA':
           return <SimpleIRAForm onCalculate={setResults} />;
       case 'startupCostOptimization':
-            return <StartupCostOptimizationForm onCalculate={setResults} />;
+          return <StartupCostOptimizationForm onCalculate={setResults} />;
       case 'stateTaxSavings':
-            return <StateTaxSavingsForm onCalculate={setResults} />;
+          return <StateTaxSavingsForm onCalculate={setResults} />;
       case 'traditionalIRA':
-            return <TraditionalIRAContributionsForm onCalculate={setResults} />;
+          return <TraditionalIRAContributionsForm onCalculate={setResults} />;
       case 'unreimbursedExpenses':
-            return <UnreimbursedPartnershipExpensesForm onCalculate={setResults} />;
+          return <UnreimbursedPartnershipExpensesForm onCalculate={setResults} />;
       case 'charitableDonationSavings':
-            return <CharitableDonationOfAppreciatedAssetsForm onCalculate={setResults} />;
+          return <CharitableDonationOfAppreciatedAssetsForm onCalculate={setResults} />;
       case 'influencerOptimization':
-            return <InfluencerOptimizationForm onCalculate={setResults} />;
+          return <InfluencerOptimizationForm onCalculate={setResults} />;
       case 'Covul':
-            return <COVULForm onCalculate={setResults} />;
+          return <COVULForm onCalculate={setResults} />;
       case 'DepletionDeduction':
-            return <DepletionDeductionForm onCalculate={setResults} />;
+          return <DepletionDeductionForm onCalculate={setResults} />;
       case 'QualifiedDividends':
-            return <QualifiedDividendsForm onCalculate={setResults} />;
+          return <QualifiedDividendsForm onCalculate={setResults} />;
       case 'DonorAdvisedFund':
-            return <DonorAdvisedFundForm onCalculate={setResults} />;
+          return <DonorAdvisedFundForm onCalculate={setResults} />;
       case 'ElectricVehicleCredits':
-            return <ElectricVehicleCreditsForm onCalculate={setResults} />;
+          return <ElectricVehicleCreditsForm onCalculate={setResults} />;
       case 'ESOP':
-            return <ESOPForm onCalculate={setResults} />;
+          return <ESOPForm onCalculate={setResults} />;
       case 'FederalSolarInvestmentTaxCredit':
-            return <FederalSolarInvestmentTaxCreditForm onCalculate={setResults} />;
+          return <FederalSolarInvestmentTaxCreditForm onCalculate={setResults} />;
       case 'FinancedInsurance':
-            return <FinancedInsuranceForm onCalculate={setResults} />;
+          return <FinancedInsuranceForm onCalculate={setResults} />;
       case 'FinancedSoftwareLeaseback':
-            return <FinancedSoftwareLeasebackForm onCalculate={setResults} />;
+          return <FinancedSoftwareLeasebackForm onCalculate={setResults} />;
       case 'ForeignEarnedIncomeExclusion':
-            return <ForeignEarnedIncomeExclusionForm onCalculate={setResults} />;
+          return <ForeignEarnedIncomeExclusionForm onCalculate={setResults} />;
       case 'GroupHealthInsurance':
-            return <GroupHealthInsuranceForm onCalculate={setResults} />;
+          return <GroupHealthInsuranceForm onCalculate={setResults} />;
       case 'GroupingRelatedActivities':
-            return <GroupingRelatedActivitiesForm onCalculate={setResults} />;
+          return <GroupingRelatedActivitiesForm onCalculate={setResults} />;
       case 'HistoricalPreservationEasement':
-            return <HistoricalPreservationEasementForm onCalculate={setResults} />;
+          return <HistoricalPreservationEasementForm onCalculate={setResults} />;
       case 'HomeOfficeDeduction':
-            return <HomeOfficeDeductionForm onCalculate={setResults} />;
+          return <HomeOfficeDeductionForm onCalculate={setResults} />;
       case 'InstallmentSale':
-            return <InstallmentSaleForm onCalculate={setResults} />;
+          return <InstallmentSaleForm onCalculate={setResults} />;
+      case 'MaximizeItemization':
+          return <MaximizeItemizationForm onCalculate={setResults} />;
+      case 'NoncashCharitableContributions':
+          return <NoncashCharitableContributionsForm onCalculate={setResults} />;
+      case 'OilAndGasDrillingCost':
+          return <OilAndGasDrillingCostForm onCalculate={setResults} />;
+      case 'OilAndGasMLP':
+          return <OilAndGasMLPForm onCalculate={setResults} />;
+      case 'OrdinaryLossOnWorthlessStock':
+          return <OrdinaryLossOnWorthlessStockForm onCalculate={setResults} />;
       default:
         return <FormSelector onSelectForm={handleSelectForm} />;
     }
@@ -298,49 +313,59 @@ const Dashboard = () => {
       case 'CancellationByInsolvencyForm':
           return 'Cancellation Of Debt Income By Insolvency Form';
       case 'simpleIRA':
-            return 'Simple IRA Form';
+          return 'Simple IRA Form';
       case 'startupCostOptimization':
-            return 'Startup Cost Optimization Form';
+          return 'Startup Cost Optimization Form';
       case 'stateTaxSavings':
-            return 'State Tax Savings Form';
+          return 'State Tax Savings Form';
       case 'traditionalIRA':
-            return 'Traditional IRA Contributions Form';
+          return 'Traditional IRA Contributions Form';
       case 'unreimbursedExpenses':
-            return 'Unreimbursed Expenses Form';
+          return 'Unreimbursed Expenses Form';
       case 'charitableDonationSavings':
-            return 'Charitable Donation Savings Form'
+          return 'Charitable Donation Savings Form'
       case 'influencerOptimization':
-            return 'Influencer Optimization Form'
+          return 'Influencer Optimization Form'
       case 'Covul':
-            return 'Corporate-Owned Variable Universal Life (COVUL) Form'
+          return 'Corporate-Owned Variable Universal Life (COVUL) Form'
       case 'DepletionDeduction':
-            return 'Depletion Deduction For Royalties Form'
+          return 'Depletion Deduction For Royalties Form'
       case 'QualifiedDividends':
-            return 'Dividends Form'
+          return 'Dividends Form'
       case 'DonorAdvisedFund':
-            return 'Donor Advised Fund Form'
+          return 'Donor Advised Fund Form'
       case 'ElectricVehicleCredits':
-            return 'Electric Vehicle Credits Form'
+          return 'Electric Vehicle Credits Form'
       case 'ESOP':
-            return 'Employee Stock Ownership Plan (ESOP) Form'
+          return 'Employee Stock Ownership Plan (ESOP) Form'
       case 'FederalSolarInvestmentTaxCredit':
-            return 'Federal Solar Investment Tax Credit Form'
+          return 'Federal Solar Investment Tax Credit Form'
       case 'FinancedInsurance':
-            return 'Financed Insurance For Business Risks Form'
+          return 'Financed Insurance For Business Risks Form'
       case 'FinancedSoftwareLeaseback':
-            return 'Financed Software Leaseback Form'
+          return 'Financed Software Leaseback Form'
       case 'ForeignEarnedIncomeExclusion':
-            return 'Foreign Earned Income Exlusion Form'
+          return 'Foreign Earned Income Exlusion Form'
       case 'GroupHealthInsurance':
-            return 'Group Health Insurance Form'
+          return 'Group Health Insurance Form'
       case 'GroupingRelatedActivities':
-            return 'Grouping Related Activities - Section 469 Form'
+          return 'Grouping Related Activities - Section 469 Form'
       case 'HistoricalPreservationEasement':
-            return 'Historical Preservation Easement Form'
+          return 'Historical Preservation Easement Form'
       case 'HomeOfficeDeduction':
-            return 'Home Office Deduction Form'
+          return 'Home Office Deduction Form'
       case 'InstallmentSale':
-            return 'Installment Sale Form'
+          return 'Installment Sale Form'
+      case 'MaximizeItemization':
+          return 'Maximize Itemization Strategies Form'
+      case 'NoncashCharitableContributions':
+          return 'Noncash Charitable Contributions Of Unused Goods Form'
+      case 'OilAndGasDrillingCost':
+          return 'Oil And Gas - Drilling Cost Form'
+      case 'OilAndGasMLP':
+          return 'Oil And Gas - Master Limited Partnership (MLP) Form'
+      case 'OrdinaryLossOnWorthlessStock':
+          return 'Ordinary Loss on Worthless Stock Form'
       default:
         return '';
     }
@@ -349,32 +374,44 @@ const Dashboard = () => {
   return (
     <Container>
       <CssBaseline />
-      <CustomAppBar userData={userData} onMenuClick={() => setDrawerOpen(true)} />
-     {/* Botón para abrir el Drawer */} 
-     <IconButton
-  size="large"
-  onClick={() => setDrawerOpen(true)}
-  sx={{
-    position: 'fixed',
-    top: 16,
-    left: 16,
-    color: '#fff',
-    backgroundColor: '#0858e6',
-    zIndex: 1,
-    boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.2)',
-    transition: 'transform 0.2s, background-color 0.2s', // Transición suave para hover y pulse
-    '&:hover': {
-      backgroundColor: '#0746b0', // Azul oscuro al hacer hover
-      transform: 'scale(1.1)', // Efecto de pulse al hover
-    },
-    '&:active': {
-      transform: 'scale(0.95)', // Pequeño efecto de clic
-    },
-  }}
->
-  <MenuIcon />
-</IconButton>
-
+      
+      <AppBar
+        position="fixed" // Fija el AppBar en la parte superior
+        sx={{
+          backgroundColor: '#fff', // Color de fondo rojo
+          boxShadow: 'none', // Elimina la sombra si lo prefieres
+          zIndex: 3,
+          height: '85px',
+          }}
+         >
+        <Toolbar>
+        <CustomAppBar userData={userData} onMenuClick={() => setDrawerOpen(true)} />
+        {/* Botón para abrir el Drawer */} 
+        <IconButton
+        size="large"
+        onClick={() => setDrawerOpen(true)}
+         sx={{
+         position: 'fixed',
+         top: 16,
+         left: 16,
+         color: '#fff',
+         backgroundColor: '#0858e6',
+         zIndex: 1,
+         boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.2)',
+         transition: 'transform 0.2s, background-color 0.2s', // Transición suave para hover y pulse
+         '&:hover': {
+         backgroundColor: '#0746b0', // Azul oscuro al hacer hover
+         transform: 'scale(1.1)', // Efecto de pulse al hover
+          },
+        '&:active': {
+         transform: 'scale(0.95)', // Pequeño efecto de clic
+         },
+         }}
+        >
+        <MenuIcon />
+        </IconButton>
+        </Toolbar>
+        </AppBar>
       {/* Reutiliza el Drawer */}
       <CustomDrawer
         drawerOpen={drawerOpen}
@@ -383,14 +420,20 @@ const Dashboard = () => {
       />
 
       {/* Logo */}
-      <Box sx={{ textAlign: 'center', my: 4, marginTop: 8, }}>
+      <Box sx={{ textAlign: 'center',
+                 my: 4, 
+                 marginTop: 10,
+                 position: 'relative',
+                 zIndex: 4,
+              }}>
         <img
           src="https://tax.bryanglen.com/logo.png"
           alt="Logo"
           style={{ maxWidth: '350px' }}
+          
         />
       </Box>
-
+       
       {/* Contenedor principal */}
       <Box sx={{ my: 4, textAlign: 'center' }}>
         {formId && (

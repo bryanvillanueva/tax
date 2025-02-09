@@ -293,12 +293,28 @@ export function calculateNetIncomeHistoricalPreservationEasement (grossIncome ){
 export function calculateNetIncomeInstallmentSale (grossIncome, installmentSaleDeduction ){
   return Math.max(0, grossIncome - installmentSaleDeduction ); // Evita valores negativos
 }
+//calcular net income para Maximize Itemization Strategies
+export function calculateNetIncomeMaximizeItemization (grossIncome ){
+  return Math.max(0, grossIncome  ); // Evita valores negativos
+}
 
+//calcular net income para Noncash Charitable Contributions
+export function calculateNetIncomeNoncashCharitableContributions (grossIncome ){
+  return Math.max(0, grossIncome  ); // Evita valores negativos
+}
+//calcular net income para  Oil And Gas Drilling Cost
+export function calculateNetIncomeOilAndGasDrillingCost (grossIncome, oilAndGasDrillingCostDeduction ){
+  return Math.max(0, grossIncome - oilAndGasDrillingCostDeduction ); // Evita valores negativos
+}
 
-
-
-
-
+//calcular net income para Oil And Gas MLP
+export function calculateNetIncomeOilAndGasMLP (grossIncome ){
+  return Math.max(0, grossIncome  ); // Evita valores negativos
+}
+//calcular net income para OrdinaryLossOnWorthlessStock
+export function calculateNetIncomeOrdinaryLossOnWorthlessStock (grossIncome, ordinaryLossDeduction ){
+  return Math.max(0, grossIncome - ordinaryLossDeduction  ); // Evita valores negativos
+}
 
 
 
