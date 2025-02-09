@@ -5,7 +5,6 @@ import {
   Typography,
   CircularProgress,
   TextField,
-  MenuItem,
   Table,
   TableBody,
   TableCell,
@@ -13,14 +12,16 @@ import {
   TableHead,
   TableRow,
   Paper,
-  TablePagination,
   IconButton,
+  Grid,
+  Card,
+  CardContent,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import CustomDrawer from "./CustomDrawer";
 import CustomSpeedDial from "./CustomSpeedDial";
 import MenuIcon from "@mui/icons-material/Menu";
-import { RadialBarChart, RadialBar, ResponsiveContainer } from "recharts";
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 import axios from "axios";
 
 const UsersModule = () => {
@@ -32,39 +33,53 @@ const UsersModule = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [totalUsers, setTotalUsers] = useState(0);
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(25);
+  const [productStats, setProductStats] = useState([]);
   const navigate = useNavigate();
+
+  const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#A83279"];
 
   useEffect(() => {
     const fetchUserData = async () => {
       setIsLoading(true);
       try {
         const token = localStorage.getItem("authToken");
-        const response = await axios.get(
+
+        // Obtener usuario autenticado
+        const userResponse = await axios.get(
           "https://taxbackend-production.up.railway.app/user",
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
+          { headers: { Authorization: `Bearer ${token}` } }
         );
 
-        setUserData(response.data);
+        setUserData(userResponse.data);
 
-        if (!["admin", "developer"].includes(response.data.role)) {
+        if (!["admin", "developer"].includes(userResponse.data.role)) {
           navigate("/");
+          return;
         }
 
+        // Obtener lista de usuarios
         const usersResponse = await axios.get(
           "https://taxbackend-production.up.railway.app/users",
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
+          { headers: { Authorization: `Bearer ${token}` } }
         );
 
         setUsers(usersResponse.data);
         setFilteredUsers(usersResponse.data);
         setTotalUsers(usersResponse.data.length);
 
+        // Calcular la cantidad de usuarios por cada producto
+        const productCounts = usersResponse.data.reduce((acc, user) => {
+          acc[user.product] = (acc[user.product] || 0) + 1;
+          return acc;
+        }, {});
+
+        // Convertir datos a formato de gráfico
+        const productChartData = Object.entries(productCounts).map(([product, count]) => ({
+          product,
+          count,
+        }));
+
+        setProductStats(productChartData);
       } catch (error) {
         console.error("Error fetching user data:", error);
         navigate("/");
@@ -72,10 +87,11 @@ const UsersModule = () => {
         setIsLoading(false);
       }
     };
- 
+
     fetchUserData();
   }, [navigate]);
 
+  // Filtrar usuarios por búsqueda y producto seleccionado
   useEffect(() => {
     let updatedUsers = users.filter(
       (user) =>
@@ -90,21 +106,9 @@ const UsersModule = () => {
     setFilteredUsers(updatedUsers);
   }, [searchTerm, productFilter, users]);
 
-  const handleSearchChange = (event) => {
-    setSearchTerm(event.target.value);
-  };
-
-  const handleProductFilterChange = (event) => {
-    setProductFilter(event.target.value);
-  };
-
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
+  // Manejar clic en los números o en el gráfico de pastel
+  const handleFilterChange = (product) => {
+    setProductFilter(productFilter === product ? "" : product);
   };
 
   if (isLoading) {
@@ -145,59 +149,100 @@ const UsersModule = () => {
 
       {/* Contenedor principal */}
       <Container maxWidth="lg" sx={{ backgroundColor: "#fff", borderRadius: "20px", padding: "20px", mt: 4 }}>
-        <Typography variant="h4" textAlign="center" fontWeight="bold" sx={{ mb: 3 }}>
+        <Typography variant="h4" textAlign="center" fontWeight="bold" sx={{ mb: 3, marginBottom: "8%" }}> 
           Dashboard Management
         </Typography>
 
-        {/* Total de usuarios activos con gráfico */}
-        <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-          <Typography variant="h6" sx={{ color: "#0858e6", mb: 1 }}>
-            Total Active Users
-          </Typography>
-          <Box sx={{ position: "relative", width: 150, height: 150 }}>
-            <ResponsiveContainer width="100%" height="100%">
-              <RadialBarChart cx="50%" cy="50%" innerRadius="70%" outerRadius="100%" barSize={15} data={[{ name: "Users", uv: totalUsers, fill: "#0858e6" }]}>
-                <RadialBar minAngle={15} background clockWise dataKey="uv" />
-              </RadialBarChart>
-            </ResponsiveContainer>
-            <Typography
-              variant="h4"
+        <Grid container spacing={3}>
+          {/* Información de usuarios por producto */}
+          <Grid item xs={12} md={4}>
+            <Card
               sx={{
-                position: "absolute",
-                top: "50%",
-                left: "50%",
-                transform: "translate(-50%, -50%)",
-                fontWeight: "bold",
+                mb: 2,
+                backgroundColor: "#0858e6",
+                color: "#fff",
+                textAlign: "center",
+                padding: "10px",
               }}
+              onClick={() => handleFilterChange("")}
             >
-              {totalUsers}
-            </Typography>
-          </Box>
-        </Box>
+              <CardContent>
+                <Typography variant="h6">Total Users</Typography>
+                <Typography variant="h4" fontWeight="bold">
+                  {totalUsers}
+                </Typography>
+              </CardContent>
+            </Card>
 
-        {/* Barra de búsqueda y filtro */}
-        <Box sx={{ display: "flex", gap: 2, mb: 3 }}>
+            {productStats.map(({ product, count }, index) => (
+            <Card
+            key={product}
+            sx={{
+              mb: 2,
+              cursor: "pointer",
+              border: productFilter === product ? "2px solid #0858e6" : "1px solid #ddd",
+              "&:hover": { backgroundColor: "#f5f5f5" },
+              color: COLORS[productStats.findIndex((p) => p.product === product) % COLORS.length], // Color igual al del gráfico
+            }}
+            onClick={() => handleFilterChange(product)}
+          >
+           <CardContent>
+            <Typography variant="h7" sx={{ color: COLORS[index % COLORS.length] }}> {/* 🔹 Aplica el color del gráfico */}
+            {product}
+            </Typography>
+            <Typography variant="h5" fontWeight="bold">
+            {count}
+           </Typography>
+           </CardContent>
+           </Card>
+ ))}
+          </Grid>
+
+          {/* Pie Chart */}
+          <Grid item xs={12} md={8}>
+            <Typography variant="h6" textAlign="center" sx={{ mb: 2 }}>
+              Users per Product
+            </Typography>
+            <ResponsiveContainer width="100%" height={700}>
+              <PieChart>
+              <Pie
+  data={productStats}
+  cx="50%"
+  cy="50%"
+  labelLine={false}
+  outerRadius={220}
+  fill="#8884d8"
+  dataKey="count"
+  nameKey="product"
+  onClick={(data) => handleFilterChange(data.product)}
+  isAnimationActive={false} // Elimina la animación que podría causar bordes
+  activeShape={null} // ✅ Elimina el contorno negro al hacer clic
+  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`} // ✅ Muestra nombres y porcentaje
+>
+  {productStats.map((entry, index) => (
+    <Cell
+      key={`cell-${index}`}
+      fill={COLORS[index % COLORS.length]}
+      opacity={productFilter && productFilter !== entry.product ? 0.4 : 1}
+      style={{ transition: "opacity 0.3s ease-in-out" }}
+    />
+  ))}
+</Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+          </Grid>
+        </Grid>
+
+        {/* Barra de búsqueda */}
+        <Box sx={{ display: "flex", gap: 2, my: 3 }}>
           <TextField
             label="Search User"
             variant="outlined"
             fullWidth
             value={searchTerm}
-            onChange={handleSearchChange}
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
-          <TextField
-            select
-            label="Filter by Product"
-            variant="outlined"
-            fullWidth
-            value={productFilter}
-            onChange={handleProductFilterChange}
-          >
-            <MenuItem value="">All</MenuItem>
-            <MenuItem value="Bronze Package">Bronze Package</MenuItem>
-            <MenuItem value="Silver Package">Silver Package</MenuItem>
-            <MenuItem value="Gold Package">Gold Package</MenuItem>
-            <MenuItem value="Platinum Package">Platinum Package</MenuItem>
-          </TextField>
         </Box>
 
         {/* Tabla de usuarios */}
@@ -213,7 +258,7 @@ const UsersModule = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((user) => (
+              {filteredUsers.map((user) => (
                 <TableRow key={user.email}>
                   <TableCell>{user.first_name} {user.last_name}</TableCell>
                   <TableCell>{user.email}</TableCell>
