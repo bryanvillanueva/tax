@@ -71,6 +71,12 @@ const forms = [
   { code: '4', id: 'OilAndGasDrillingCost', title: 'Oil And Gas - Drilling Cost Form', description: 'Calculate the deductible drilling costs for oil and gas investments, including intangible drilling expenses.' },  
   { code: '4', id: 'OilAndGasMLP', title: 'Oil And Gas - Master Limited Partnership (MLP) Form', description: 'Evaluate tax implications and deductions for investments in oil and gas Master Limited Partnerships (MLPs).' },  
   { code: '4', id: 'OrdinaryLossOnWorthlessStock', title: 'Ordinary Loss on Worthless Stock Form', description: 'Assess and claim deductions for losses on worthless stocks, including qualification criteria for ordinary loss treatment.' },  
+  { code: '4', id: 'passThroughEntity', title: 'Pass-Through Entity Form', description: 'Calculate tax implications and deductions for pass-through entity income, including state tax credits and federal return deductions.' },
+  { code: '4', id: 'passiveLossAndPigs', title: 'Passive Loss And PIGs Form', description: 'Calculate and track passive losses and income, including previous year losses, current year activity, and carried forward amounts.' },
+  { code: '4', id: 'primarySaleExclusion', title: 'Primary Sale Exclusion Form', description: 'Calculate the tax implications of selling assets at a primary sale, including capital gain, estimated capital gain tax, and qualified business income deduction.' },
+  { code: '4', id: 'privateFamilyFoundation', title: 'Private Family Foundation Form', description: 'Calculate and track foundation contributions, including cash and non-cash limitations, total deductible amounts, and qualified business income deductions.' },
+  { code: '4', id: 'qualifiedCharitableDistributions', title: 'Qualified Charitable Distributions Form', description: 'Calculate charitable distributions from IRAs, including age-based requirements, distribution limits, and taxable income implications.' },
+
 
 
 
