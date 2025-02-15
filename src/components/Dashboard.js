@@ -68,7 +68,11 @@ import CustomAppBar from './CustomAppBar';
 import CustomDrawer from './CustomDrawer';
 import MenuIcon from '@mui/icons-material/Menu';
 import axios from 'axios';
-
+import PassThroughEntity from './PassThroughEntity';
+import PassiveLossAndPigs from './PassiveLossAndPigs';
+import PrimarySaleExclusion from './PrimarySaleExclusion';
+import PrivateFamilyFoundation from './PrivateFamilyFoundation';
+import QualifiedCharitableDistributions from './QualifiedCharitableDistributions';
 
 
 const Dashboard = () => {
@@ -239,6 +243,16 @@ const Dashboard = () => {
           return <OilAndGasMLPForm onCalculate={setResults} />;
       case 'OrdinaryLossOnWorthlessStock':
           return <OrdinaryLossOnWorthlessStockForm onCalculate={setResults} />;
+      case 'passThroughEntity':
+          return <PassThroughEntity onCalculate={setResults} />;
+      case 'passiveLossAndPigs':
+          return <PassiveLossAndPigs onCalculate={setResults} />;
+      case 'primarySaleExclusion':
+          return <PrimarySaleExclusion onCalculate={setResults} />;
+      case 'privateFamilyFoundation':
+          return <PrivateFamilyFoundation onCalculate={setResults} />;
+      case 'qualifiedCharitableDistributions':
+          return <QualifiedCharitableDistributions onCalculate={setResults} />;
       default:
         return <FormSelector onSelectForm={handleSelectForm} />;
     }
@@ -366,6 +380,16 @@ const Dashboard = () => {
           return 'Oil And Gas - Master Limited Partnership (MLP) Form'
       case 'OrdinaryLossOnWorthlessStock':
           return 'Ordinary Loss on Worthless Stock Form'
+      case 'passThroughEntity':
+          return 'Pass-Through Entity Form'
+      case 'passiveLossAndPigs':
+          return 'Passive Loss And PIGs Form'
+      case 'primarySaleExclusion':
+          return 'Primary Sale Exclusion Form'    
+      case 'privateFamilyFoundation':
+          return 'Private Family Foundation Form'
+      case 'qualifiedCharitableDistributions':
+          return 'Qualified Charitable Distributions Form'
       default:
         return '';
     }

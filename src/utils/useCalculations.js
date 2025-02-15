@@ -82,8 +82,11 @@ import {
   calculateNetIncomeOilAndGasDrillingCost,
   calculateNetIncomeOilAndGasMLP,
   calculateNetIncomeOrdinaryLossOnWorthlessStock,
-
-
+  calculateNetIncomePassThroughEntity,
+  calculateNetIncomePassiveLossAndPigs,
+  calculateNetIncomePrimarySaleExclusion,
+  calculateNetIncomePrivateFamilyFoundation,
+  calculateNetIncomeQualifiedCharitableDistributions,
 } from '../utils/calculations';
 import { standardDeductions } from '../utils/taxData';
 
@@ -138,7 +141,27 @@ const useCalculations = () => {
     installmentSaleDeduction,
     oilAndGasDrillingCostDeduction,
     ordinaryLossDeduction,
-    
+    plpy,
+    plcy,
+    picy,
+    nicy,
+    plcf,
+    opp,
+    ric,
+    sp,
+    cgl,
+    el,
+    tcg,
+    ecgt,
+    tagi,
+    ccf,
+    nccf,
+    cl,
+    ncl,
+    tcbl,
+    dl,
+    tcd,
+    totalDeductionQCDS,
   }) => {
     // Calcular Net Income según el tipo de cálculo
     let netIncome;
@@ -323,10 +346,24 @@ const useCalculations = () => {
       case 'OrdinaryLossOnWorthlessStock':
           netIncome = calculateNetIncomeOrdinaryLossOnWorthlessStock (grossIncome, ordinaryLossDeduction);
         break;
-
-          case 'standard':
+      case 'passThroughEntity':
+          netIncome = calculateNetIncomePassThroughEntity(grossIncome);
+        break;
+      case 'passiveLossAndPigs':
+        netIncome = calculateNetIncomePassiveLossAndPigs(grossIncome);
+        break;
+      case 'primarySaleExclusion':
+        netIncome = calculateNetIncomePrimarySaleExclusion(grossIncome);
+        break;
+      case 'privateFamilyFoundation':
+        netIncome = calculateNetIncomePrivateFamilyFoundation(grossIncome);
+        break;
+      case 'qualifiedCharitableDistributions':
+        netIncome = calculateNetIncomeQualifiedCharitableDistributions(grossIncome, totalDeductionQCDS);
+        break;
+        case 'standard':
           netIncome = calculateNetIncome(grossIncome, deduction179);
-          break; 
+        break;
     }
     console.log(`Selected Form Type: ${formType}`);
 
@@ -474,8 +511,28 @@ console.log(netIncome, standardDeduction, selfEmploymentTax);
         calculationType,
         totalSE: seSocialSecurity + seMedicare,
         totalSE2: seSocialSecurity2 + seMedicare2,
-        
-       };
+        plpy,
+        plcy,
+        picy,
+        nicy,
+        plcf,
+        opp,
+        ric,
+        sp,
+        cgl,
+        el,
+        tcg,
+        ecgt,
+        tagi,
+        ccf,
+        nccf,
+        cl,
+        ncl,
+        tcbl,
+        dl,
+        tcd,
+        totalDeductionQCDS,
+      };
     };
     
     return { performCalculations };

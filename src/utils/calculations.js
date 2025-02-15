@@ -316,9 +316,30 @@ export function calculateNetIncomeOrdinaryLossOnWorthlessStock (grossIncome, ord
   return Math.max(0, grossIncome - ordinaryLossDeduction  ); // Evita valores negativos
 }
 
+//calcular net income para PassThroughEntity
+export function calculateNetIncomePassThroughEntity(grossIncome) {
+  return Math.max(0, grossIncome); // Evita valores negativos
+}
 
+//calcular net income para PassiveLossAndPigs
+export function calculateNetIncomePassiveLossAndPigs(grossIncome) {
+  return Math.max(0, grossIncome); // Evita valores negativos
+}
 
+//calcular net income para PrimarySaleExclusion
+export function calculateNetIncomePrimarySaleExclusion(grossIncome) {
+  return Math.max(0, grossIncome); // Evita valores negativos
+}
 
+//calcular net income para PrivateFamilyFoundation
+export function calculateNetIncomePrivateFamilyFoundation(grossIncome) {
+  return Math.max(0, grossIncome); // Evita valores negativos
+}
+
+//calcular net income para QualifiedCharitableDistributions
+export function calculateNetIncomeQualifiedCharitableDistributions(grossIncome, totalDeductionQCDS) {
+  return Math.max(0, grossIncome - totalDeductionQCDS); // Evita valores negativos
+}
 
 
 //////cierre de estrategias////////////////////
@@ -705,4 +726,6 @@ export function getSelfEmploymentRate() {
 export function calculateTaxcredits(taxCreditsResults) {
 return taxCreditsResults;
 }
+
+
 
