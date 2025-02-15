@@ -315,6 +315,30 @@ export function calculateNetIncomeOilAndGasMLP (grossIncome ){
 export function calculateNetIncomeOrdinaryLossOnWorthlessStock (grossIncome, ordinaryLossDeduction ){
   return Math.max(0, grossIncome - ordinaryLossDeduction  ); // Evita valores negativos
 }
+//calcular net income para Real Estate Development Charitable
+export function calculateNetIncomeRealEstateDevelopmentCharitable(grossIncome) {
+  return Math.max(0, grossIncome); // Evita valores negativos
+}
+
+//calcular net income para Restricted Stock Units
+export function calculateNetIncomeRestrictedStockUnits(grossIncome) {
+  return Math.max(0, grossIncome); // Evita valores negativos
+}
+
+//calcular net income para Retiree Planning
+export function calculateNetIncomeRetireePlanning(grossIncome) {
+  return Math.max(0, grossIncome); // Evita valores negativos
+}
+
+//calcular net income para S-Corp Revocation
+export function calculateNetIncomeSCorpRevocation(grossIncome) {
+  return Math.max(0, grossIncome); // Evita valores negativos
+}
+
+//calcular net income para Secure Act 20 Strategies
+export function calculateNetIncomeSecureAct20Strategies(grossIncome) {
+  return Math.max(0, grossIncome); // Evita valores negativos
+}
 
 
 

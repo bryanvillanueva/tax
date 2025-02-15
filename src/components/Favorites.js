@@ -71,6 +71,11 @@ const forms = [
   { code: '4', id: 'OilAndGasDrillingCost', title: 'Oil And Gas - Drilling Cost Form', description: 'Calculate the deductible drilling costs for oil and gas investments, including intangible drilling expenses.' },  
   { code: '4', id: 'OilAndGasMLP', title: 'Oil And Gas - Master Limited Partnership (MLP) Form', description: 'Evaluate tax implications and deductions for investments in oil and gas Master Limited Partnerships (MLPs).' },  
   { code: '4', id: 'OrdinaryLossOnWorthlessStock', title: 'Ordinary Loss on Worthless Stock Form', description: 'Assess and claim deductions for losses on worthless stocks, including qualification criteria for ordinary loss treatment.' },  
+  { code: '4', id: 'RealEstateDevelopmentCharitable', title: 'Real Estate Development Charitable Form', description: 'Calculate tax benefits and deductions for charitable contributions related to real estate development projects.' },
+  { code: '4', id: 'RestrictedStockUnits', title: 'Restricted Stock Units Form', description: 'Evaluate tax implications and optimize strategies for restricted stock units (RSUs), including vesting schedules and tax withholding.' },
+  { code: '4', id: 'RetireePlanning', title: 'Retiree Planning Form', description: 'Comprehensive planning tool for retirees to optimize tax strategies, social security benefits, and retirement distributions.' },
+  { code: '4', id: 'SCorpRevocation', title: 'S-Corp Revocation Form', description: 'Analyze tax implications and benefits of revoking S-Corporation status, comparing tax scenarios between S-Corp and C-Corp structures.' },
+  { code: '4', id: 'SecureAct20Strategies', title: 'Secure Act 20 Strategies Form', description: 'Evaluate and implement tax strategies aligned with the SECURE Act 2.0, including retirement planning and distribution options.' },
 
 
 
