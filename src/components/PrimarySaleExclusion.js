@@ -147,9 +147,7 @@ const PrimarySaleExclusion = ({ onCalculate }) => {
                 <MenuItem value="Active">Active</MenuItem>
                 <MenuItem value="Passive">Passive</MenuItem>
               </TextField>
-            </Grid>
 
-            <Grid item xs={12} md={6}>
               <TextField
                 label="Original Purchased Price (OPP)"
                 fullWidth
@@ -182,6 +180,10 @@ const PrimarySaleExclusion = ({ onCalculate }) => {
                 error={sp !== '' && parseFloat(sp) <= 0}
                 helperText={sp !== '' && parseFloat(sp) <= 0 ? 'Must be greater than 0' : ''}
               />
+            </Grid>
+
+            <Grid item xs={12} md={6}>
+             
 
               <TextField
                 label="Capital Gain or Loss (CGL)"
