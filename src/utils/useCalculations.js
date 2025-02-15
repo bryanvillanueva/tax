@@ -82,6 +82,11 @@ import {
   calculateNetIncomeOilAndGasDrillingCost,
   calculateNetIncomeOilAndGasMLP,
   calculateNetIncomeOrdinaryLossOnWorthlessStock,
+  calculateNetIncomeRealEstateDevelopmentCharitable,
+  calculateNetIncomeRestrictedStockUnits,
+  calculateNetIncomeRetireePlanning,
+  calculateNetIncomeSCorpRevocation,
+  calculateNetIncomeSecureAct20Strategies,
 
 
 } from '../utils/calculations';
@@ -322,6 +327,21 @@ const useCalculations = () => {
         break;
       case 'OrdinaryLossOnWorthlessStock':
           netIncome = calculateNetIncomeOrdinaryLossOnWorthlessStock (grossIncome, ordinaryLossDeduction);
+        break;
+      case 'RealEstateDevelopmentCharitable':
+          netIncome = calculateNetIncomeRealEstateDevelopmentCharitable(grossIncome);
+        break;
+      case 'RestrictedStockUnits':
+          netIncome = calculateNetIncomeRestrictedStockUnits(grossIncome);
+        break;
+      case 'RetireePlanning':
+          netIncome = calculateNetIncomeRetireePlanning(grossIncome);
+        break;
+      case 'SCorpRevocation':
+          netIncome = calculateNetIncomeSCorpRevocation(grossIncome);
+        break;
+      case 'SecureAct20Strategies':
+          netIncome = calculateNetIncomeSecureAct20Strategies(grossIncome);
         break;
 
           case 'standard':
