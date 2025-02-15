@@ -87,6 +87,13 @@ import {
   calculateNetIncomePrimarySaleExclusion,
   calculateNetIncomePrivateFamilyFoundation,
   calculateNetIncomeQualifiedCharitableDistributions,
+  calculateNetIncomeRealEstateDevelopmentCharitable,
+  calculateNetIncomeRestrictedStockUnits,
+  calculateNetIncomeRetireePlanning,
+  calculateNetIncomeSCorpRevocation,
+  calculateNetIncomeSecureAct20Strategies,
+
+
 } from '../utils/calculations';
 import { standardDeductions } from '../utils/taxData';
 
@@ -362,6 +369,22 @@ const useCalculations = () => {
         netIncome = calculateNetIncomeQualifiedCharitableDistributions(grossIncome, totalDeductionQCDS);
         break;
         case 'standard':
+      case 'RealEstateDevelopmentCharitable':
+          netIncome = calculateNetIncomeRealEstateDevelopmentCharitable(grossIncome);
+        break;
+      case 'RestrictedStockUnits':
+          netIncome = calculateNetIncomeRestrictedStockUnits(grossIncome);
+        break;
+      case 'RetireePlanning':
+          netIncome = calculateNetIncomeRetireePlanning(grossIncome);
+        break;
+      case 'SCorpRevocation':
+          netIncome = calculateNetIncomeSCorpRevocation(grossIncome);
+        break;
+      case 'SecureAct20Strategies':
+          netIncome = calculateNetIncomeSecureAct20Strategies(grossIncome);
+        break;
+          case 'standard':
           netIncome = calculateNetIncome(grossIncome, deduction179);
         break;
     }

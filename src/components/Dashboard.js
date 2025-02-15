@@ -62,7 +62,12 @@ import MaximizeItemizationForm from './MaximizeItemizationForm ';
 import NoncashCharitableContributionsForm from './NoncashCharitableContributionsForm ';
 import OilAndGasDrillingCostForm from './OilAndGasDrillingCostForm';
 import OilAndGasMLPForm from './OilAndGasMLPForm';
-import OrdinaryLossOnWorthlessStockForm from './OrdinaryLossOnWorthlessStockForm';
+import OrdinaryLossOnWorthlessStockForm from './OrdinaryLossOnWorthlessStockForm';  
+import RealEstateDevelopmentCharitableOptionForm from './RealEstateDevelopmentCharitableOptionForm';
+import RestrictedStockUnitsForm from './RestrictedStockUnitsForm';
+import RetireePlanningForm from './RetireePlanningForm';
+import SCorpRevocationForm from './SCorpRevocationForm';
+import SecureAct20StrategiesForm from './SecureAct20StrategiesForm';
 import CustomSpeedDial from './CustomSpeedDial';
 import CustomAppBar from './CustomAppBar';
 import CustomDrawer from './CustomDrawer';
@@ -253,6 +258,17 @@ const Dashboard = () => {
           return <PrivateFamilyFoundation onCalculate={setResults} />;
       case 'qualifiedCharitableDistributions':
           return <QualifiedCharitableDistributions onCalculate={setResults} />;
+
+      case 'RealEstateDevelopmentCharitable':
+          return <RealEstateDevelopmentCharitableOptionForm onCalculate={setResults} />;
+      case 'RestrictedStockUnits':
+          return <RestrictedStockUnitsForm onCalculate={setResults} />;
+      case 'RetireePlanning':
+          return <RetireePlanningForm onCalculate={setResults} />;
+      case 'SCorpRevocation':
+          return <SCorpRevocationForm onCalculate={setResults} />;
+      case 'SecureAct20Strategies':
+          return <SecureAct20StrategiesForm onCalculate={setResults} />;   
       default:
         return <FormSelector onSelectForm={handleSelectForm} />;
     }
@@ -390,6 +406,16 @@ const Dashboard = () => {
           return 'Private Family Foundation Form'
       case 'qualifiedCharitableDistributions':
           return 'Qualified Charitable Distributions Form'
+      case 'RealEstateDevelopmentCharitable':
+          return 'Real Estate Development Charitable Form'
+      case 'RestrictedStockUnits':
+          return 'Restricted Stock Units Form'
+      case 'RetireePlanning':
+          return 'Retiree Planning Form'
+      case 'SCorpRevocation':
+          return 'S-Corp Revocation Form'
+      case 'SecureAct20Strategies':
+          return 'Secure Act 20 Strategies Form'
       default:
         return '';
     }

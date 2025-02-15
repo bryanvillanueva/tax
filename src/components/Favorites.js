@@ -76,7 +76,11 @@ const forms = [
   { code: '4', id: 'primarySaleExclusion', title: 'Primary Sale Exclusion Form', description: 'Calculate the tax implications of selling assets at a primary sale, including capital gain, estimated capital gain tax, and qualified business income deduction.' },
   { code: '4', id: 'privateFamilyFoundation', title: 'Private Family Foundation Form', description: 'Calculate and track foundation contributions, including cash and non-cash limitations, total deductible amounts, and qualified business income deductions.' },
   { code: '4', id: 'qualifiedCharitableDistributions', title: 'Qualified Charitable Distributions Form', description: 'Calculate charitable distributions from IRAs, including age-based requirements, distribution limits, and taxable income implications.' },
-
+  { code: '4', id: 'RealEstateDevelopmentCharitable', title: 'Real Estate Development Charitable Form', description: 'Calculate tax benefits and deductions for charitable contributions related to real estate development projects.' },
+  { code: '4', id: 'RestrictedStockUnits', title: 'Restricted Stock Units Form', description: 'Evaluate tax implications and optimize strategies for restricted stock units (RSUs), including vesting schedules and tax withholding.' },
+  { code: '4', id: 'RetireePlanning', title: 'Retiree Planning Form', description: 'Comprehensive planning tool for retirees to optimize tax strategies, social security benefits, and retirement distributions.' },
+  { code: '4', id: 'SCorpRevocation', title: 'S-Corp Revocation Form', description: 'Analyze tax implications and benefits of revoking S-Corporation status, comparing tax scenarios between S-Corp and C-Corp structures.' },
+  { code: '4', id: 'SecureAct20Strategies', title: 'Secure Act 20 Strategies Form', description: 'Evaluate and implement tax strategies aligned with the SECURE Act 2.0, including retirement planning and distribution options.' },
 
 
 

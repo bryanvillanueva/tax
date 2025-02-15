@@ -76,6 +76,12 @@ const forms = [
     { code: '4', id: 'primarySaleExclusion', title: 'Primary Sale Exclusion Form', description: 'Calculate the tax implications of selling assets at a primary sale, including capital gain, estimated capital gain tax, and qualified business income deduction.' },
     { code: '4', id: 'privateFamilyFoundation', title: 'Private Family Foundation Form', description: 'Calculate and track foundation contributions, including cash and non-cash limitations, total deductible amounts, and qualified business income deductions.' },
     { code: '4', id: 'qualifiedCharitableDistributions', title: 'Qualified Charitable Distributions Form', description: 'Calculate charitable distributions from IRAs, including age-based requirements, distribution limits, and taxable income implications.' },
+    { code: '4', id: 'RealEstateDevelopmentCharitable', title: 'Real Estate Development Charitable Form', description: 'Calculate tax benefits and deductions for charitable contributions related to real estate development projects.' },
+    { code: '4', id: 'RestrictedStockUnits', title: 'Restricted Stock Units Form', description: 'Evaluate tax implications and timing strategies for restricted stock units (RSUs) compensation.' },
+    { code: '4', id: 'RetireePlanning', title: 'Retiree Planning Form', description: 'Analyze retirement planning strategies including income sources, tax implications and distribution planning.' },
+    { code: '4', id: 'SCorpRevocation', title: 'S-Corp Revocation Form', description: 'Assess tax implications and strategies for revoking S corporation status and converting to C corporation.' },
+    { code: '4', id: 'SecureAct20Strategies', title: 'Secure Act 20 Strategies Form', description: 'Evaluate retirement planning strategies under the SECURE Act including RMD changes and inherited IRA rules.' }
+
 
 
   ];
