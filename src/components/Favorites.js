@@ -81,7 +81,16 @@ const forms = [
   { code: '4', id: 'RetireePlanning', title: 'Retiree Planning Form', description: 'Comprehensive planning tool for retirees to optimize tax strategies, social security benefits, and retirement distributions.' },
   { code: '4', id: 'SCorpRevocation', title: 'S-Corp Revocation Form', description: 'Analyze tax implications and benefits of revoking S-Corporation status, comparing tax scenarios between S-Corp and C-Corp structures.' },
   { code: '4', id: 'SecureAct20Strategies', title: 'Secure Act 20 Strategies Form', description: 'Evaluate and implement tax strategies aligned with the SECURE Act 2.0, including retirement planning and distribution options.' },
-
+  { code: '4', id: 'seriesIBond', title: 'Series I Bond Form', description: 'Calculate interest and tax treatment for Series I Bonds, including inflation adjustments and redemption rules.' },
+  { code: '4', id: 'shortTermRental', title: 'Short-Term Rental Form', description: 'Assess income and deductions for short-term rental properties, covering depreciation, expenses, and tax strategies.' },
+  { code: '4', id: 'bonusDepreciation', title: 'Bonus Depreciation Form', description: 'Compute bonus depreciation benefits for qualifying business assets, factoring in IRS regulations and phase-out schedules.' },
+  { code: '4', id: 'solarPassiveInvestment', title: 'Solar Passive Investment Form', description: 'Evaluate tax credits and deductions for solar energy investments, including passive income strategies and ROI projections.' },
+  { code: '4', id: 'taxFreeIncome', title: 'Tax-Free Income Form', description: 'Analyze sources of tax-free income, including municipal bonds, Roth distributions, and life insurance strategies.' },
+  { code: '4', id: 'workOpportunityTaxCredit', title: 'Work Opportunity Tax Credit Form', description: 'Determine eligibility and potential tax savings for hiring employees under the Work Opportunity Tax Credit (WOTC) program.' },
+  { code: '4', id: '1031Exchange', title: '1031 Exchange Form', description: 'Calculate deferred tax benefits for like-kind real estate exchanges under Section 1031, including reinvestment timelines and qualifications.' },
+  { code: '4', id: 'definedBenefitPlan', title: 'Defined Benefit Plan Form', description: 'Project retirement benefits under a defined benefit plan, considering employer contributions, actuarial calculations, and tax deferrals.' },
+  { code: '4', id: 'structuredInvestmentProgram', title: 'Structured Investment Program Form', description: 'Analyze structured investment programs, including risk-adjusted returns, tax implications, and suitability for various investor profiles.' },
+            
 
 
 

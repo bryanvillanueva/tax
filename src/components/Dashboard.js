@@ -68,6 +68,16 @@ import RestrictedStockUnitsForm from './RestrictedStockUnitsForm';
 import RetireePlanningForm from './RetireePlanningForm';
 import SCorpRevocationForm from './SCorpRevocationForm';
 import SecureAct20StrategiesForm from './SecureAct20StrategiesForm';
+
+import SeriesIBondForm from './SeriesIBondForm';
+import ShortTermRentalForm from './ShortTermRentalForm';
+import BonusDepreciationForm from './BonusDepreciationForm';
+import SolarPassiveInvestmentForm from './SolarPassiveInvestmentForm';
+import TaxFreeIncomeForm from './TaxFreeIncomeForm';
+import WorkOpportunityTaxCreditForm from './WorkOpportunityTaxCreditForm';
+import ExchangeOnRealEstateForm from './ExchangeOnRealEstateForm';
+import DefinedBenefitPlanForm from './DefinedBenefitPlanForm';
+import StructuredInvestmentProgramForm from './StructuredInvestmentProgramForm';
 import CustomSpeedDial from './CustomSpeedDial';
 import CustomAppBar from './CustomAppBar';
 import CustomDrawer from './CustomDrawer';
@@ -268,7 +278,25 @@ const Dashboard = () => {
       case 'SCorpRevocation':
           return <SCorpRevocationForm onCalculate={setResults} />;
       case 'SecureAct20Strategies':
-          return <SecureAct20StrategiesForm onCalculate={setResults} />;   
+          return <SecureAct20StrategiesForm onCalculate={setResults} />; 
+      case 'seriesIBond':
+          return <SeriesIBondForm onCalculate={setResults} />;
+      case 'shortTermRental':
+          return <ShortTermRentalForm onCalculate={setResults} />;
+      case 'bonusDepreciation':
+          return <BonusDepreciationForm onCalculate={setResults} />;
+      case 'solarPassiveInvestment':
+          return <SolarPassiveInvestmentForm onCalculate={setResults} />;
+      case 'taxFreeIncome':
+          return <TaxFreeIncomeForm onCalculate={setResults} />;
+      case 'workOpportunityTaxCredit':
+          return <WorkOpportunityTaxCreditForm onCalculate={setResults} />;
+      case '1031Exchange':
+          return <ExchangeOnRealEstateForm onCalculate={setResults} />;
+      case 'definedBenefitPlan':
+          return <DefinedBenefitPlanForm onCalculate={setResults} />;
+      case 'structuredInvestmentProgram':
+          return <StructuredInvestmentProgramForm onCalculate={setResults} />;
       default:
         return <FormSelector onSelectForm={handleSelectForm} />;
     }
@@ -416,6 +444,27 @@ const Dashboard = () => {
           return 'S-Corp Revocation Form'
       case 'SecureAct20Strategies':
           return 'Secure Act 20 Strategies Form'
+      
+      case 'seriesIBond':
+          return 'Series I Bond Form'
+      case 'shortTermRental':
+          return 'Short-Term Rental Form'
+      case 'bonusDepreciation':
+          return 'Bonus Depreciation Form'
+      case 'solarPassiveInvestment':
+          return 'Solar Passive Investment Form'
+      case 'taxFreeIncome':
+          return 'Tax-Free Income Form'
+      case 'workOpportunityTaxCredit':
+          return 'Work Opportunity Tax Credit Form'
+      case '1031Exchange':
+          return '1031 Exchange Form'
+      case 'definedBenefitPlan':
+          return 'Defined Benefit Plan Form'
+      case 'structuredInvestmentProgram':
+          return 'Structured Investment Program Form'
+          
+          
       default:
         return '';
     }
