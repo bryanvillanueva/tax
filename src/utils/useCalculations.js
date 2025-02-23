@@ -92,6 +92,16 @@ import {
   calculateNetIncomeRetireePlanning,
   calculateNetIncomeSCorpRevocation,
   calculateNetIncomeSecureAct20Strategies,
+  calculateNetIncomeSeriesIBond,
+  calculateNetIncomeShortTermRental,
+  calculateNetIncomeBonusDepreciation,
+  calculateNetIncomeSolarPassiveInvestment,
+  calculateNetIncomeTaxFreeIncome,
+  calculateNetIncomeWorkOpportunityTaxCredit,
+  calculateNetIncome1031Exchange,   
+  calculateNetIncomeDefinedBenefitPlan,
+  calculateNetIncomeStructuredInvestmentProgram,
+
 
 
 } from '../utils/calculations';
@@ -148,27 +158,13 @@ const useCalculations = () => {
     installmentSaleDeduction,
     oilAndGasDrillingCostDeduction,
     ordinaryLossDeduction,
-    plpy,
-    plcy,
-    picy,
-    nicy,
-    plcf,
-    opp,
-    ric,
-    sp,
-    cgl,
-    el,
-    tcg,
-    ecgt,
-    tagi,
-    ccf,
-    nccf,
-    cl,
-    ncl,
-    tcbl,
-    dl,
-    tcd,
     totalDeductionQCDS,
+    bonusDepreciationDeduction, 
+    solarPassiveInvestmentDeduction,
+    taxFreeIncomeDeduction,
+    workOpportunityTaxCreditDeduction,
+    structuredInvestmentProgramDeduction,
+    definedBenefitPlanDeduction,
   }) => {
     // Calcular Net Income según el tipo de cálculo
     let netIncome;
@@ -384,6 +380,33 @@ const useCalculations = () => {
       case 'SecureAct20Strategies':
           netIncome = calculateNetIncomeSecureAct20Strategies(grossIncome);
         break;
+      case 'SeriesIBond':
+          netIncome = calculateNetIncomeSeriesIBond(grossIncome);
+        break;
+      case 'ShortTermRental':
+          netIncome = calculateNetIncomeShortTermRental(grossIncome);
+        break;
+      case 'BonusDepreciation':
+          netIncome = calculateNetIncomeBonusDepreciation(grossIncome, bonusDepreciationDeduction);
+        break;
+      case 'SolarPassiveInvestment':
+          netIncome = calculateNetIncomeSolarPassiveInvestment(grossIncome, solarPassiveInvestmentDeduction);
+        break;
+      case 'TaxFreeIncome':
+          netIncome = calculateNetIncomeTaxFreeIncome(grossIncome);
+        break;
+      case 'WorkOpportunityTaxCredit':
+          netIncome = calculateNetIncomeWorkOpportunityTaxCredit(grossIncome, workOpportunityTaxCreditDeduction);
+        break;
+      case '1031Exchange':
+          netIncome = calculateNetIncome1031Exchange(grossIncome);
+        break;
+      case 'DefinedBenefitPlan':
+          netIncome = calculateNetIncomeDefinedBenefitPlan(grossIncome);
+        break;
+      case 'StructuredInvestmentProgram':
+          netIncome = calculateNetIncomeStructuredInvestmentProgram(grossIncome, structuredInvestmentProgramDeduction);
+        break;
           case 'standard':
           netIncome = calculateNetIncome(grossIncome, deduction179);
         break;
@@ -534,27 +557,7 @@ console.log(netIncome, standardDeduction, selfEmploymentTax);
         calculationType,
         totalSE: seSocialSecurity + seMedicare,
         totalSE2: seSocialSecurity2 + seMedicare2,
-        plpy,
-        plcy,
-        picy,
-        nicy,
-        plcf,
-        opp,
-        ric,
-        sp,
-        cgl,
-        el,
-        tcg,
-        ecgt,
-        tagi,
-        ccf,
-        nccf,
-        cl,
-        ncl,
-        tcbl,
-        dl,
-        tcd,
-        totalDeductionQCDS,
+       
       };
     };
     

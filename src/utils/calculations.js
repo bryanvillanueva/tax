@@ -365,6 +365,66 @@ export function calculateNetIncomeQualifiedCharitableDistributions(grossIncome, 
   return Math.max(0, grossIncome - totalDeductionQCDS); // Evita valores negativos
 }
 
+//calcular net income para Series I Bond
+export function calculateNetIncomeSeriesIBond(grossIncome) {
+  return Math.max(0, grossIncome ); // Evita valores negativos
+}
+
+//calcular net income para Short Term Rental
+export function calculateNetIncomeShortTermRental(grossIncome) {
+  return Math.max(0, grossIncome ); // Evita valores negativos
+}
+
+//calcular net income para Bonus Depreciation
+export function calculateNetIncomeBonusDepreciation(grossIncome, bonusDepreciationDeduction) {
+  return Math.max(0, grossIncome - bonusDepreciationDeduction ); // Evita valores negativos
+}
+
+//calcular net income para Solar Passive Investment
+export function calculateNetIncomeSolarPassiveInvestment(grossIncome, solarPassiveInvestmentDeduction) {
+  return Math.max(0, grossIncome - solarPassiveInvestmentDeduction ); // Evita valores negativos
+}
+
+//calcular net income para Tax Free Income
+export function calculateNetIncomeTaxFreeIncome(grossIncome) {
+  return Math.max(0, grossIncome  ); // Evita valores negativos
+}
+
+//calcular net income para Work Opportunity Tax Credit
+export function calculateNetIncomeWorkOpportunityTaxCredit(grossIncome, workOpportunityTaxCreditDeduction) {
+  return Math.max(0, grossIncome - workOpportunityTaxCreditDeduction ); // Evita valores negativos
+}   
+
+//calcular net income para 1031 Exchange
+export function calculateNetIncome1031Exchange(grossIncome) {
+  return Math.max(0, grossIncome  ); // Evita valores negativos
+}
+
+//calcular net income para Defined Benefit Plan
+export function calculateNetIncomeDefinedBenefitPlan(grossIncome) {
+  return Math.max(0, grossIncome  ); // Evita valores negativos
+}
+
+//calcular net income para Structured Investment Program
+export function calculateNetIncomeStructuredInvestmentProgram(grossIncome, structuredInvestmentProgramDeduction) {
+  return Math.max(0, grossIncome - structuredInvestmentProgramDeduction ); // Evita valores negativos
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //////cierre de estrategias////////////////////
 
