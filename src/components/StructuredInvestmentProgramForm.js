@@ -15,7 +15,7 @@ const StructuredInvestmentProgramForm = ({ onCalculate }) => {
   // Campos fijos
   const [filingStatus, setFilingStatus] = useState("Single");
   const [partnerType, setPartnerType] = useState("Active");
-  const [formType, setFormType] = useState("1040 - Schedule C/F");
+  const [formType, setFormType] = useState("1065");
   const [grossIncome, setGrossIncome] = useState("");
   const [QBID, setQbid] = useState("");
   const [error, setError] = useState(null);
@@ -61,7 +61,7 @@ const StructuredInvestmentProgramForm = ({ onCalculate }) => {
       QBID: parseFloat(QBID),
       INVS: parseFloat(INVS),
       LR: parseFloat(LR),
-      IR: incomeReduction,
+      structuredInvestmentProgramDeduction: incomeReduction,
       calculationType: "StructuredInvestmentProgram", 
     });
 
@@ -131,17 +131,6 @@ const StructuredInvestmentProgramForm = ({ onCalculate }) => {
                 <MenuItem value="Passive">Passive</MenuItem>
               </TextField>
               <TextField
-                label="QBID (Qualified Business Income Deduction)"
-                fullWidth
-                type="number"
-                value={QBID}
-                onChange={(e) => setQbid(e.target.value)}
-                margin="normal"
-              />
-            </Grid>
-
-            <Grid item xs={12} md={6}>
-              <TextField
                 label="Investment (INVS)"
                 fullWidth
                 type="number"
@@ -149,6 +138,10 @@ const StructuredInvestmentProgramForm = ({ onCalculate }) => {
                 onChange={(e) => setINVS(e.target.value)}
                 margin="normal"
               />
+            </Grid>
+
+            <Grid item xs={12} md={6}>
+              
               <TextField
                 label="Losses Reported (LR)"
                 fullWidth
@@ -164,6 +157,26 @@ const StructuredInvestmentProgramForm = ({ onCalculate }) => {
                 value={IR}
                 margin="normal"
                 disabled
+              />
+              <TextField
+                select
+                label="Form Type"
+                fullWidth
+                value={formType}
+                onChange={(e) => setFormType(e.target.value)}
+                margin="normal"
+              >
+                
+                <MenuItem value="1065">1065</MenuItem>
+              
+              </TextField>
+                 <TextField
+                label="QBID (Qualified Business Income Deduction)"
+                fullWidth
+                type="number"
+                value={QBID}
+                onChange={(e) => setQbid(e.target.value)}
+                margin="normal"
               />
             </Grid>
           </Grid>

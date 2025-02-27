@@ -160,11 +160,10 @@ const useCalculations = () => {
     ordinaryLossDeduction,
     totalDeductionQCDS,
     bonusDepreciationDeduction, 
-    solarPassiveInvestmentDeduction,
-    taxFreeIncomeDeduction,
+    SPID,
     workOpportunityTaxCreditDeduction,
     structuredInvestmentProgramDeduction,
-    definedBenefitPlanDeduction,
+    
   }) => {
     // Calcular Net Income según el tipo de cálculo
     let netIncome;
@@ -390,7 +389,7 @@ const useCalculations = () => {
           netIncome = calculateNetIncomeBonusDepreciation(grossIncome, bonusDepreciationDeduction);
         break;
       case 'SolarPassiveInvestment':
-          netIncome = calculateNetIncomeSolarPassiveInvestment(grossIncome, solarPassiveInvestmentDeduction);
+          netIncome = calculateNetIncomeSolarPassiveInvestment(grossIncome, SPID);
         break;
       case 'TaxFreeIncome':
           netIncome = calculateNetIncomeTaxFreeIncome(grossIncome);

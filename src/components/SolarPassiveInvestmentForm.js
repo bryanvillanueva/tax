@@ -146,17 +146,6 @@ const SolarPassiveInvestmentForm = ({ onCalculate }) => {
                 <MenuItem value="Passive">Passive</MenuItem>
               </TextField>
               <TextField
-                label="QBID (Qualified Business Income Deduction)"
-                fullWidth
-                type="number"
-                value={QBID}
-                onChange={(e) => setQbid(e.target.value)}
-                margin="normal"
-              />
-            </Grid>
-
-            <Grid item xs={12} md={6}>
-              <TextField
                 label="Passive Investment (PI)"
                 fullWidth
                 type="number"
@@ -164,6 +153,18 @@ const SolarPassiveInvestmentForm = ({ onCalculate }) => {
                 onChange={(e) => setPI(e.target.value)}
                 margin="normal"
               />
+               <TextField
+                label="Depreciation Reported by Fund (DRF)"
+                fullWidth
+                type="number"
+                value={DRF}
+                onChange={(e) => setDRF(e.target.value)}
+                margin="normal"
+              />
+            </Grid>
+
+            <Grid item xs={12} md={6}>
+              
               <TextField
                 label="Solar Investment Credit (SIC)"
                 fullWidth
@@ -180,14 +181,7 @@ const SolarPassiveInvestmentForm = ({ onCalculate }) => {
                 margin="normal"
                 disabled
               />
-              <TextField
-                label="Depreciation Reported by Fund (DRF)"
-                fullWidth
-                type="number"
-                value={DRF}
-                onChange={(e) => setDRF(e.target.value)}
-                margin="normal"
-              />
+             
               <TextField
                 label="Total Credit"
                 fullWidth
@@ -203,6 +197,28 @@ const SolarPassiveInvestmentForm = ({ onCalculate }) => {
                 value={SPID}
                 margin="normal"
                 disabled
+              />
+               <TextField
+                select
+                label="Form Type"
+                fullWidth
+                value={formType}
+                onChange={(e) => setFormType(e.target.value)}
+                margin="normal"
+              >
+                <MenuItem value="1040 - Schedule C/F">1040 - Schedule C/F</MenuItem>
+                <MenuItem value="1040NR - Schedule E">1040NR - Schedule E</MenuItem>
+                <MenuItem value="1065">1065</MenuItem>
+                <MenuItem value="1120S">1120S</MenuItem>
+                
+              </TextField>
+                 <TextField
+                label="QBID (Qualified Business Income Deduction)"
+                fullWidth
+                type="number"
+                value={QBID}
+                onChange={(e) => setQbid(e.target.value)}
+                margin="normal"
               />
             </Grid>
           </Grid>

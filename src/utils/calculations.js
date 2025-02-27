@@ -381,8 +381,8 @@ export function calculateNetIncomeBonusDepreciation(grossIncome, bonusDepreciati
 }
 
 //calcular net income para Solar Passive Investment
-export function calculateNetIncomeSolarPassiveInvestment(grossIncome, solarPassiveInvestmentDeduction) {
-  return Math.max(0, grossIncome - solarPassiveInvestmentDeduction ); // Evita valores negativos
+export function calculateNetIncomeSolarPassiveInvestment(grossIncome, SPID) {
+  return Math.max(0, grossIncome - SPID ); // Evita valores negativos
 }
 
 //calcular net income para Tax Free Income

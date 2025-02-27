@@ -1,4 +1,3 @@
-// src/components/BonusDepreciationForm.js
 import React, { useState } from "react";
 import {
   TextField,
@@ -8,27 +7,26 @@ import {
   MenuItem,
   Alert,
   Grid,
-        
 } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import useCalculations from "../utils/useCalculations";
 
+
 const BonusDepreciationForm = ({ onCalculate }) => {
-  // Campos fijos
+  // Estados
   const [filingStatus, setFilingStatus] = useState("Single");
   const [partnerType, setPartnerType] = useState("Active");
   const [formType, setFormType] = useState("1040 - Schedule C/F");
   const [grossIncome, setGrossIncome] = useState("");
   const [QBID, setQbid] = useState("");
   const [error, setError] = useState(null);
-
-  // Campos específicos para Bonus Depreciation
+  
   const [CI, setCI] = useState(""); // Costos/Inversión
   const [TVLP, setTVLP] = useState("yes"); // The vehicle is a listed property
   const [TLP, setTLP] = useState("Limited Vehicle"); // Type of listed property
   const [CDFY, setCDFY] = useState(""); // Calculated Depreciation First Year
-  const [TDP, setTDP] = useState(0); // Total depreciation
   const BDR = 0.60; // Bonus Depreciation Rate (60%)
+
 
   const { performCalculations } = useCalculations();
 
@@ -54,17 +52,16 @@ const BonusDepreciationForm = ({ onCalculate }) => {
     setError(null);
 
     // Calcular Bonus Depreciation Limit (BDL)
-    const BDL = TVLP === "no" ? 0 : (TLP === "Limited Vehicle" ? 20400 : parseFloat(CI) * BDR);
+    const calculatedBDL = TVLP === "no" ? 0 : (TLP === "Limited Vehicle" ? 20400 : parseFloat(CI) * BDR);
 
     // Calcular Bonus Depreciation Amount (BDA)
-    const BDA = parseFloat(CI) * BDR;
+    const calculatedBDA = parseFloat(CI) * BDR;
 
     // Calcular Total Depreciation (TDP)
-    const totalDepreciation = TVLP === "no" ? BDA + parseFloat(CDFY) : (TLP === "Limited Vehicle" ? 20400 : BDA + parseFloat(CDFY));
-    setTDP(totalDepreciation);
+    const totalDepreciation = TVLP === "no" ? calculatedBDA + parseFloat(CDFY) : (TLP === "Limited Vehicle" ? 20400 : calculatedBDA + parseFloat(CDFY));
 
     // Pasar resultados a la función onCalculate
-    const results = performCalculations ({
+    const results = performCalculations( {
       filingStatus,
       grossIncome: parseFloat(grossIncome),
       partnerType,
@@ -73,17 +70,20 @@ const BonusDepreciationForm = ({ onCalculate }) => {
       CI: parseFloat(CI),
       TVLP,
       TLP,
-      BDL,
-      BDA,
+      BDL: calculatedBDL,
+      BDA: calculatedBDA,
       CDFY: parseFloat(CDFY),
-      TDP: totalDepreciation,
-      BDR,
-      bonusDepreciationDeduction: totalDepreciation, // Bonus Depreciation Deduction
-      calculationType: "BonusDepreciation", 
+      bonusDepreciationDeduction: totalDepreciation,
+      calculationType: "BonusDepreciation",
     });
 
     onCalculate(results);
   };
+
+  // Calcular totalDepreciation en el renderizado
+  const totalDepreciation = TVLP === "no" 
+    ? parseFloat(CI) * BDR + parseFloat(CDFY) 
+    : (TLP === "Limited Vehicle" ? 20400 : parseFloat(CI) * BDR + parseFloat(CDFY));
 
   return (
     <Container>
@@ -148,17 +148,6 @@ const BonusDepreciationForm = ({ onCalculate }) => {
                 <MenuItem value="Passive">Passive</MenuItem>
               </TextField>
               <TextField
-                label="QBID (Qualified Business Income Deduction)"
-                fullWidth
-                type="number"
-                value={QBID}
-                onChange={(e) => setQbid(e.target.value)}
-                margin="normal"
-              />
-            </Grid>
-
-            <Grid item xs={12} md={6}>
-              <TextField
                 label="Costos/Inversión (CI)"
                 fullWidth
                 type="number"
@@ -190,6 +179,9 @@ const BonusDepreciationForm = ({ onCalculate }) => {
                 <MenuItem value="Not Limited Vehicle">Not Limited Vehicle</MenuItem>
                 <MenuItem value="N/A">N/A</MenuItem>
               </TextField>
+            </Grid>
+
+            <Grid item xs={12} md={6}>
               <TextField
                 label="Calculated Depreciation First Year (CDFY)"
                 fullWidth
@@ -199,10 +191,18 @@ const BonusDepreciationForm = ({ onCalculate }) => {
                 margin="normal"
               />
               <TextField
-                label="Total Depreciation (TDP)"
+                label="Bonus Depreciation Limit (BDL)"
                 fullWidth
                 type="number"
-                value={TDP}
+                value={TVLP === "no" ? 0 : (TLP === "Limited Vehicle" ? 20400 : parseFloat(CI) * BDR)}
+                margin="normal"
+                disabled
+              />
+              <TextField
+                label="Bonus Depreciation Amount (BDA)"
+                fullWidth
+                type="number"
+                value={parseFloat(CI) * BDR}
                 margin="normal"
                 disabled
               />
@@ -218,9 +218,31 @@ const BonusDepreciationForm = ({ onCalculate }) => {
                 label="Bonus Depreciation Deduction"
                 fullWidth
                 type="number"
-                value={TDP}
+                value={totalDepreciation} // Mostrar el valor de la deducción
                 margin="normal"
                 disabled
+              />
+              <TextField
+                select
+                label="Form Type"
+                fullWidth
+                value={formType}
+                onChange={(e) => setFormType(e.target.value)}
+                margin="normal"
+              >
+                <MenuItem value="1040 - Schedule C/F">1040 - Schedule C/F</MenuItem>
+                <MenuItem value="1040NR - Schedule E">1040NR - Schedule E</MenuItem>
+                <MenuItem value="1065">1065</MenuItem>
+                <MenuItem value="1120S">1120S</MenuItem>
+                <MenuItem value="1120">1120</MenuItem>
+              </TextField>
+              <TextField
+                label="QBID (Qualified Business Income Deduction)"
+                fullWidth
+                type="number"
+                value={QBID}
+                onChange={(e) => setQbid(e.target.value)}
+                margin="normal"
               />
             </Grid>
           </Grid>

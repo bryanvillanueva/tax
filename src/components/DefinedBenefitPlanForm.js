@@ -145,18 +145,7 @@ const DefinedBenefitPlanForm = ({ onCalculate }) => {
                 <MenuItem value="Passive">Passive</MenuItem>
               </TextField>
               <TextField
-                label="QBID (Qualified Business Income Deduction)"
-                fullWidth
-                type="number"
-                value={QBID}
-                onChange={(e) => setQbid(e.target.value)}
-                margin="normal"
-              />
-            </Grid>
-
-            <Grid item xs={12} md={6}>
-              <TextField
-                label="Current Salary (W2) (CSW2)"
+                label="Current Salary (W2)"
                 fullWidth
                 type="number"
                 value={CSW2}
@@ -171,6 +160,10 @@ const DefinedBenefitPlanForm = ({ onCalculate }) => {
                 onChange={(e) => setAC(e.target.value)}
                 margin="normal"
               />
+            </Grid>
+
+            <Grid item xs={12} md={6}>
+             
               <TextField
                 label="Taxpayer's Marginal Tax Rate (TMTR)"
                 fullWidth
@@ -194,6 +187,28 @@ const DefinedBenefitPlanForm = ({ onCalculate }) => {
                 value={FICA}
                 margin="normal"
                 disabled
+              />
+              <TextField
+                select
+                label="Form Type"
+                fullWidth
+                value={formType}
+                onChange={(e) => setFormType(e.target.value)}
+                margin="normal"
+              >
+                <MenuItem value="1040 - Schedule C/F">1040 - Schedule C/F</MenuItem>
+                <MenuItem value="1040NR - Schedule E">1040NR - Schedule E</MenuItem>
+                <MenuItem value="1065">1065</MenuItem>
+                <MenuItem value="1120S">1120S</MenuItem>
+                <MenuItem value="1120">1120</MenuItem>
+              </TextField>
+                 <TextField
+                label="QBID (Qualified Business Income Deduction)"
+                fullWidth
+                type="number"
+                value={QBID}
+                onChange={(e) => setQbid(e.target.value)}
+                margin="normal"
               />
             </Grid>
           </Grid>

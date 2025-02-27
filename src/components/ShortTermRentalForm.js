@@ -58,8 +58,8 @@ const ShortTermRentalForm = ({ onCalculate }) => {
       return;
     }
 
-    if (!AOR || parseFloat(AOR) < 0 || parseFloat(AOR) > 1) {
-      setError("Annual occupancy Rate is required and must be a valid percentage (0-1).");
+    if (!AOR || parseFloat(AOR) < 0 || parseFloat(AOR) > 100) {
+      setError("Annual Occupancy Rate must be a valid percentage between 0 and 100.");
       return;
     }
 
@@ -74,20 +74,21 @@ const ShortTermRentalForm = ({ onCalculate }) => {
     const totalInvestment = parseFloat(OPP) + parseFloat(ROC);
     setTI(totalInvestment);
 
-    // Calcular Annual Income (AI)
-    const annualIncome = parseFloat(DRP) * (365 * parseFloat(AOR));
+    // Convertir AOR a decimal y calcular Annual Income (AI)
+    const annualOccupancyRate = parseFloat(AOR) / 100;
+    const annualIncome = parseFloat(DRP) * (365 * annualOccupancyRate);
     setAI(annualIncome);
 
     // Calcular Net Revenue (NR)
     const netRevenue = annualIncome - parseFloat(TE);
     setNR(netRevenue);
 
-    // Calcular Return on Investment (ROI)
-    const returnOnInvestment = totalInvestment / netRevenue;
-    setROI(returnOnInvestment);
+    // Calcular Return on Investment (ROI) como porcentaje
+    const returnOnInvestment = totalInvestment > 0 ? (netRevenue / totalInvestment) * 100 : 0; // Evitar división por cero
+    setROI(returnOnInvestment.toFixed(2)); // Formatear a 2 decimales
 
     // Pasar resultados a la función onCalculate
-    const results = performCalculations ({
+    const results = performCalculations({
       filingStatus,
       grossIncome: parseFloat(grossIncome),
       partnerType,
@@ -96,13 +97,13 @@ const ShortTermRentalForm = ({ onCalculate }) => {
       OPP: parseFloat(OPP),
       ROC: parseFloat(ROC),
       DRP: parseFloat(DRP),
-      AOR: parseFloat(AOR),
+      AOR: annualOccupancyRate,
       TE: parseFloat(TE),
       TI: totalInvestment,
       AI: annualIncome,
       NR: netRevenue,
-      ROI: returnOnInvestment,
-      calculationType: "ShortTermRental",  
+      ROI: returnOnInvestment, // Asegúrate de pasar el ROI formateado
+      calculationType: "ShortTermRental",
     });
 
     onCalculate(results);
@@ -170,17 +171,7 @@ const ShortTermRentalForm = ({ onCalculate }) => {
                 <MenuItem value="Active">Active</MenuItem>
                 <MenuItem value="Passive">Passive</MenuItem>
               </TextField>
-              <TextField
-                label="QBID (Qualified Business Income Deduction)"
-                fullWidth
-                type="number"
-                value={QBID}
-                onChange={(e) => setQbid(e.target.value)}
-                margin="normal"
-              />
-            </Grid>
-
-            <Grid item xs={12} md={6}>
+              
               <TextField
                 label="Original Purchased Price (OPP)"
                 fullWidth
@@ -197,7 +188,7 @@ const ShortTermRentalForm = ({ onCalculate }) => {
                 onChange={(e) => setROC(e.target.value)}
                 margin="normal"
               />
-              <TextField
+               <TextField
                 label="Daily Rental Price (DRP)"
                 fullWidth
                 type="number"
@@ -212,8 +203,10 @@ const ShortTermRentalForm = ({ onCalculate }) => {
                 value={AOR}
                 onChange={(e) => setAOR(e.target.value)}
                 margin="normal"
-                inputProps={{ step: "0.01", min: "0", max: "1" }} // Para porcentaje
               />
+            </Grid>
+
+            <Grid item xs={12} md={6}>
               <TextField
                 label="Total Expenses (TE)"
                 fullWidth
@@ -249,10 +242,31 @@ const ShortTermRentalForm = ({ onCalculate }) => {
               <TextField
                 label="Return on Investment (ROI)"
                 fullWidth
-                type="number"
-                value={ROI}
+                type="text" // Cambiado a "text" para mostrar el porcentaje
+                value={`${ROI}%`} // Mostrar como porcentaje
                 margin="normal"
                 disabled
+              />
+              <TextField
+                select
+                label="Form Type"
+                fullWidth
+                value={formType}
+                onChange={(e) => setFormType(e.target.value)}
+                margin="normal"
+              >
+                <MenuItem value="1040 - Schedule C/F">1040 - Schedule C/F</MenuItem>
+                <MenuItem value="1040NR - Schedule E">1040NR - Schedule E</MenuItem>
+                <MenuItem value="1065">1065</MenuItem>
+                <MenuItem value="1120S">1120S</MenuItem>
+              </TextField>
+              <TextField
+                label="QBID (Qualified Business Income Deduction)"
+                fullWidth
+                type="number"
+                value={QBID}
+                onChange={(e) => setQbid(e.target.value)}
+                margin="normal"
               />
             </Grid>
           </Grid>
