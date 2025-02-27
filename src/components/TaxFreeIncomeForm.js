@@ -1,4 +1,3 @@
-// src/components/TaxFreeIncomeForm.js
 import React, { useState } from "react";
 import {
   TextField,
@@ -46,8 +45,8 @@ const TaxFreeIncomeForm = ({ onCalculate }) => {
       return;
     }
 
-    if (!BAR || parseFloat(BAR) <= 0) {
-      setError("Bond Annual Rate is required and must be greater than 0.");
+    if (!BAR || parseFloat(BAR) <= 0 || parseFloat(BAR) > 100) {
+      setError("Bond Annual Rate is required and must be between 0 and 100.");
       return;
     }
 
@@ -61,34 +60,38 @@ const TaxFreeIncomeForm = ({ onCalculate }) => {
       return;
     }
 
-    if (!MTR || parseFloat(MTR) < 0) {
-      setError("Marginal Tax Rate is required and must be a valid percentage.");
+    if (!MTR || parseFloat(MTR) < 0 || parseFloat(MTR) > 100) {
+      setError("Marginal Tax Rate is required and must be between 0 and 100.");
       return;
     }
 
     setError(null);
 
+    // Convertir BAR y MTR a decimales
+    const barDecimal = parseFloat(BAR) / 100; // Convertir BAR a decimal
+    const mtrDecimal = parseFloat(MTR) / 100; // Convertir MTR a decimal
+
     // Calcular Total Non-taxable Income (TNTI)
-    const totalNonTaxableIncome = (parseFloat(MBI) * parseFloat(BAR)) + parseFloat(LIP) + parseFloat(NTI);
+    const totalNonTaxableIncome = (parseFloat(MBI) * barDecimal) + parseFloat(LIP) + parseFloat(NTI);
     setTNTI(totalNonTaxableIncome);
 
     // Calcular Tax Savings (TS)
-    const taxSavings = totalNonTaxableIncome * (parseFloat(MTR) / 100);
+    const taxSavings = totalNonTaxableIncome * mtrDecimal;
     setTS(taxSavings);
 
     // Pasar resultados a la función onCalculate
-    const results = performCalculations ({
+    const results = performCalculations({
       filingStatus,
       grossIncome: parseFloat(grossIncome),
       partnerType,
       formType,
       QBID: parseFloat(QBID),
       MBI: parseFloat(MBI),
-      BAR: parseFloat(BAR),
+      BAR: barDecimal, // Usar el valor en decimal
       LIP: parseFloat(LIP),
       NTI: parseFloat(NTI),
       TNTI: totalNonTaxableIncome,
-      MTR: parseFloat(MTR),
+      MTR: mtrDecimal, // Usar el valor en decimal
       TS: taxSavings,
       calculationType: "TaxFreeIncome",
     });
@@ -159,17 +162,6 @@ const TaxFreeIncomeForm = ({ onCalculate }) => {
                 <MenuItem value="Passive">Passive</MenuItem>
               </TextField>
               <TextField
-                label="QBID (Qualified Business Income Deduction)"
-                fullWidth
-                type="number"
-                value={QBID}
-                onChange={(e) => setQbid(e.target.value)}
-                margin="normal"
-              />
-            </Grid>
-
-            <Grid item xs={12} md={6}>
-              <TextField
                 label="Municipal Bond Interest (MBI)"
                 fullWidth
                 type="number"
@@ -178,12 +170,13 @@ const TaxFreeIncomeForm = ({ onCalculate }) => {
                 margin="normal"
               />
               <TextField
-                label="Bond Annual Rate (BAR)"
+                label="Bond Annual Rate (BAR) %"
                 fullWidth
                 type="number"
                 value={BAR}
                 onChange={(e) => setBAR(e.target.value)}
                 margin="normal"
+                inputProps={{ min: 0, max: 100 }} // Limitar el rango de entrada
               />
               <TextField
                 label="Life Insurance Payouts (LIP)"
@@ -193,6 +186,9 @@ const TaxFreeIncomeForm = ({ onCalculate }) => {
                 onChange={(e) => setLIP(e.target.value)}
                 margin="normal"
               />
+            </Grid>
+
+            <Grid item xs={12} md={6}>
               <TextField
                 label="Non Taxable Income (NTI)"
                 fullWidth
@@ -200,6 +196,15 @@ const TaxFreeIncomeForm = ({ onCalculate }) => {
                 value={NTI}
                 onChange={(e) => setNTI(e.target.value)}
                 margin="normal"
+              />
+              <TextField
+                label="Marginal Tax Rate (MTR) %"
+                fullWidth
+                type="number"
+                value={MTR}
+                onChange={(e) => setMTR(e.target.value)}
+                margin="normal"
+                inputProps={{ min: 0, max: 100 }} // Limitar el rango de entrada
               />
               <TextField
                 label="Total Non-taxable Income (TNTI)"
@@ -210,20 +215,34 @@ const TaxFreeIncomeForm = ({ onCalculate }) => {
                 disabled
               />
               <TextField
-                label="Marginal Tax Rate (MTR)"
-                fullWidth
-                type="number"
-                value={MTR}
-                onChange={(e) => setMTR(e.target.value)}
-                margin="normal"
-              />
-              <TextField
                 label="Tax Savings (TS)"
                 fullWidth
                 type="number"
                 value={TS}
                 margin="normal"
                 disabled
+              />
+              <TextField
+                select
+                label="Form Type"
+                fullWidth
+                value={formType}
+                onChange={(e) => setFormType(e.target.value)}
+                margin="normal"
+              >
+                <MenuItem value="1040 - Schedule C/F">1040 - Schedule C/F</MenuItem>
+                <MenuItem value="1040NR - Schedule E">1040NR - Schedule E</MenuItem>
+                <MenuItem value="1065">1065</MenuItem>
+                <MenuItem value="1120S">1120S</MenuItem>
+                <MenuItem value="1120">1120</MenuItem>
+              </TextField>
+              <TextField
+                label="QBID (Qualified Business Income Deduction)"
+                fullWidth
+                type="number"
+                value={QBID}
+                onChange={(e) => setQbid(e.target.value)}
+                margin="normal"
               />
             </Grid>
           </Grid>

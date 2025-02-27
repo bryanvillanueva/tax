@@ -1,4 +1,3 @@
-// src/components/WorkOpportunityTaxCreditForm.js
 import React, { useState } from "react";
 import {
   TextField,
@@ -7,7 +6,7 @@ import {
   Box,
   Alert,
   Grid,
-  MenuItem
+  MenuItem,
 } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import useCalculations from "../utils/useCalculations";
@@ -24,13 +23,13 @@ const WorkOpportunityTaxCreditForm = ({ onCalculate }) => {
   // Campos específicos para Work Opportunity Tax Credit
   const [QW120, setQW120] = useState(""); // Qualified Wages First Year - Employees work 120 to 400 hours
   const [QW400, setQW400] = useState(""); // Qualified Wages First Year - Employees work at least 400 hours
-  const [QWSY, setQWSY] = useState(""); // Qualified Wages Second Year - Long Term Family Assistance
+  const [QWSY, setQWSY] = useState(""); // Qualified Wages Second Year - Long Term Family Assistance (vacío por defecto)
   const [TC120, setTC120] = useState(0); // Tax Credit First Year - 120 to 400 Hours
   const [TC400, setTC400] = useState(0); // Tax Credit First Year - At least 400 Hours
   const [TCSY, setTCSY] = useState(0); // Tax Credit Second Year - Long Term Family Assistance
   const [WOTC, setWOTC] = useState(0); // Total Work Opportunity Tax Credit
   const [TC, setTC] = useState(0); // Total Credit
-  const [TD, setTD] = useState(0); // Total Deduction
+  const [WD, setWD] = useState(0); // Work Deduction (antes Total Deduction)
 
   const { performCalculations } = useCalculations();
 
@@ -44,44 +43,41 @@ const WorkOpportunityTaxCreditForm = ({ onCalculate }) => {
     }
 
     if (!QW120 || parseFloat(QW120) < 0) {
-      setError("Qualified Wages First Year - Employees work 120 to 400 hours is required and must be a valid number.");
+      setError("Qualified Wages (120-400 hours) is required and must be a valid number.");
       return;
     }
 
     if (!QW400 || parseFloat(QW400) < 0) {
-      setError("Qualified Wages First Year - Employees work at least 400 hours is required and must be a valid number.");
+      setError("Qualified Wages (400+ hours) is required and must be a valid number.");
       return;
     }
 
-    if (!QWSY || parseFloat(QWSY) < 0) {
-      setError("Qualified Wages Second Year - Long Term Family Assistance is required and must be a valid number.");
-      return;
-    }
+    // Si QWSY no tiene valor, se considera 0 internamente
+    const qwsyValue = QWSY === "" ? 0 : parseFloat(QWSY);
 
     setError(null);
 
     // Calcular Tax Credits
     const taxCredit120 = parseFloat(QW120) * 0.25;
     const taxCredit400 = parseFloat(QW400) * 0.40;
-    const taxCreditSY = parseFloat(QWSY) * 0.50;
-
-    setTC120(taxCredit120);
-    setTC400(taxCredit400);
-    setTCSY(taxCreditSY);
+    const taxCreditSY = qwsyValue * 0.50;
 
     // Calcular Total Work Opportunity Tax Credit (WOTC)
     const totalWOTC = taxCredit120 + taxCredit400 + taxCreditSY;
+
+    // Calcular Work Deduction (WD) como valor positivo
+    const workDeduction = Math.abs(totalWOTC);
+
+    // Actualizar estados
+    setTC120(taxCredit120);
+    setTC400(taxCredit400);
+    setTCSY(taxCreditSY);
     setWOTC(totalWOTC);
-
-    // Calcular Total Credit (TC)
     setTC(totalWOTC);
-
-    // Calcular Total Deduction (TD)
-    const totalDeduction = -totalWOTC;
-    setTD(totalDeduction);
+    setWD(workDeduction);
 
     // Pasar resultados a la función onCalculate
-    const results = performCalculations ({
+    const results = performCalculations({
       filingStatus,
       grossIncome: parseFloat(grossIncome),
       partnerType,
@@ -89,14 +85,14 @@ const WorkOpportunityTaxCreditForm = ({ onCalculate }) => {
       QBID: parseFloat(QBID),
       QW120: parseFloat(QW120),
       QW400: parseFloat(QW400),
-      QWSY: parseFloat(QWSY),
+      QWSY: qwsyValue,
       TC120: taxCredit120,
       TC400: taxCredit400,
       TCSY: taxCreditSY,
       taxCreditsResults: totalWOTC,
       TC: totalWOTC,
-      TD: totalDeduction,
-      calculationType: "WorkOpportunityTaxCredit", 
+      workOpportunityTaxCreditDeduction: workDeduction, // Cambiado de TD a WD
+      calculationType: "WorkOpportunityTaxCredit",
     });
 
     onCalculate(results);
@@ -165,17 +161,6 @@ const WorkOpportunityTaxCreditForm = ({ onCalculate }) => {
                 <MenuItem value="Passive">Passive</MenuItem>
               </TextField>
               <TextField
-                label="QBID (Qualified Business Income Deduction)"
-                fullWidth
-                type="number"
-                value={QBID}
-                onChange={(e) => setQbid(e.target.value)}
-                margin="normal"
-              />
-            </Grid>
-
-            <Grid item xs={12} md={6}>
-              <TextField
                 label="Qualified Wages First Year - Employees work 120 to 400 hours (QW120)"
                 fullWidth
                 type="number"
@@ -207,6 +192,9 @@ const WorkOpportunityTaxCreditForm = ({ onCalculate }) => {
                 margin="normal"
                 disabled
               />
+            </Grid>
+
+            <Grid item xs={12} md={6}>
               <TextField
                 label="Tax Credit First Year - At least 400 Hours (TC400)"
                 fullWidth
@@ -240,12 +228,34 @@ const WorkOpportunityTaxCreditForm = ({ onCalculate }) => {
                 disabled
               />
               <TextField
-                label="Total Deduction (TD)"
+                label="Work Deduction (WD)"
                 fullWidth
                 type="number"
-                value={TD}
+                value={WD}
                 margin="normal"
                 disabled
+              />
+              <TextField
+                select
+                label="Form Type"
+                fullWidth
+                value={formType}
+                onChange={(e) => setFormType(e.target.value)}
+                margin="normal"
+              >
+                <MenuItem value="1040 - Schedule C/F">1040 - Schedule C/F</MenuItem>
+                <MenuItem value="1040NR - Schedule E">1040NR - Schedule E</MenuItem>
+                <MenuItem value="1065">1065</MenuItem>
+                <MenuItem value="1120S">1120S</MenuItem>
+                <MenuItem value="1120">1120</MenuItem>
+              </TextField>
+              <TextField
+                label="QBID (Qualified Business Income Deduction)"
+                fullWidth
+                type="number"
+                value={QBID}
+                onChange={(e) => setQbid(e.target.value)}
+                margin="normal"
               />
             </Grid>
           </Grid>

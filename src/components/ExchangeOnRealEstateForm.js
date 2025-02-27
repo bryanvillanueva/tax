@@ -1,4 +1,3 @@
-// src/components/ExchangeOnRealEstateForm.js
 import React, { useState } from "react";
 import {
   TextField,
@@ -64,7 +63,7 @@ const ExchangeOnRealEstateForm = ({ onCalculate }) => {
     setCGSP(capitalGain);
 
     // Calcular Estimated "Boot" (EBOOT)
-    const estimatedBoot = SP >= PPNP ? (capitalGain >= (SP - PPNP) ? (SP - PPNP) : capitalGain) : 0;
+    const estimatedBoot = Math.max(0, parseFloat(SP) - parseFloat(PPNP));
     setEBOOT(estimatedBoot);
 
     // Calcular Adjusted Cost Basis New Property (ACBNP)
@@ -76,11 +75,11 @@ const ExchangeOnRealEstateForm = ({ onCalculate }) => {
     setETDOB(estimatedTaxDue);
 
     // Calcular Estimated Capital Gain Tax Deferred (ECGTD)
-    const estimatedCapitalGainTaxDeferred = (capitalGain * 0.2) - estimatedTaxDue;
+    const estimatedCapitalGainTaxDeferred = Math.max(0, (capitalGain * 0.2) - estimatedTaxDue);
     setECGTD(estimatedCapitalGainTaxDeferred);
 
     // Pasar resultados a la función onCalculate
-    const results = performCalculations ({
+    const results = performCalculations({
       filingStatus,
       grossIncome: parseFloat(grossIncome),
       partnerType,
@@ -94,7 +93,7 @@ const ExchangeOnRealEstateForm = ({ onCalculate }) => {
       ACBNP: adjustedCostBasis,
       ETDOB: estimatedTaxDue,
       ECGTD: estimatedCapitalGainTaxDeferred,
-      calculationType: "1031Exchange", 
+      calculationType: "1031Exchange",
     });
 
     onCalculate(results);
@@ -163,17 +162,6 @@ const ExchangeOnRealEstateForm = ({ onCalculate }) => {
                 <MenuItem value="Passive">Passive</MenuItem>
               </TextField>
               <TextField
-                label="QBID (Qualified Business Income Deduction)"
-                fullWidth
-                type="number"
-                value={QBID}
-                onChange={(e) => setQbid(e.target.value)}
-                margin="normal"
-              />
-            </Grid>
-
-            <Grid item xs={12} md={6}>
-              <TextField
                 label="Cost Basis of Sold Property (CBSP)"
                 fullWidth
                 type="number"
@@ -190,20 +178,23 @@ const ExchangeOnRealEstateForm = ({ onCalculate }) => {
                 margin="normal"
               />
               <TextField
-                label="Capital Gain on Sold Property (CGSP)"
-                fullWidth
-                type="number"
-                value={CGSP}
-                margin="normal"
-                disabled
-              />
-              <TextField
                 label="Purchased Price New Property (PPNP)"
                 fullWidth
                 type="number"
                 value={PPNP}
                 onChange={(e) => setPPNP(e.target.value)}
                 margin="normal"
+              />
+            </Grid>
+
+            <Grid item xs={12} md={6}>
+              <TextField
+                label="Capital Gain on Sold Property (CGSP)"
+                fullWidth
+                type="number"
+                value={CGSP}
+                margin="normal"
+                disabled
               />
               <TextField
                 label="Estimated 'Boot' (EBOOT)"
@@ -236,6 +227,28 @@ const ExchangeOnRealEstateForm = ({ onCalculate }) => {
                 value={ECGTD}
                 margin="normal"
                 disabled
+              />
+              <TextField
+                select
+                label="Form Type"
+                fullWidth
+                value={formType}
+                onChange={(e) => setFormType(e.target.value)}
+                margin="normal"
+              >
+                <MenuItem value="1040 - Schedule C/F">1040 - Schedule C/F</MenuItem>
+                <MenuItem value="1040NR - Schedule E">1040NR - Schedule E</MenuItem>
+                <MenuItem value="1065">1065</MenuItem>
+                <MenuItem value="1120S">1120S</MenuItem>
+                <MenuItem value="1120">1120</MenuItem>
+              </TextField>
+              <TextField
+                label="QBID (Qualified Business Income Deduction)"
+                fullWidth
+                type="number"
+                value={QBID}
+                onChange={(e) => setQbid(e.target.value)}
+                margin="normal"
               />
             </Grid>
           </Grid>
