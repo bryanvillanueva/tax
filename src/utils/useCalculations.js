@@ -363,7 +363,6 @@ const useCalculations = () => {
       case 'qualifiedCharitableDistributions':
         netIncome = calculateNetIncomeQualifiedCharitableDistributions(grossIncome, totalDeductionQCDS);
         break;
-        case 'standard':
       case 'RealEstateDevelopmentCharitable':
           netIncome = calculateNetIncomeRealEstateDevelopmentCharitable(grossIncome);
         break;
