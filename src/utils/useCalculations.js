@@ -405,7 +405,7 @@ const useCalculations = () => {
       case 'StructuredInvestmentProgram':
           netIncome = calculateNetIncomeStructuredInvestmentProgram(grossIncome, structuredInvestmentProgramDeduction);
         break;
-          case 'standard':
+      case 'standard':
           netIncome = calculateNetIncome(grossIncome, deduction179);
         break;
     }

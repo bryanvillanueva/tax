@@ -68,7 +68,6 @@ import RestrictedStockUnitsForm from './RestrictedStockUnitsForm';
 import RetireePlanningForm from './RetireePlanningForm';
 import SCorpRevocationForm from './SCorpRevocationForm';
 import SecureAct20StrategiesForm from './SecureAct20StrategiesForm';
-
 import SeriesIBondForm from './SeriesIBondForm';
 import ShortTermRentalForm from './ShortTermRentalForm';
 import BonusDepreciationForm from './BonusDepreciationForm';
@@ -88,6 +87,17 @@ import PassiveLossAndPigs from './PassiveLossAndPigs';
 import PrimarySaleExclusion from './PrimarySaleExclusion';
 import PrivateFamilyFoundation from './PrivateFamilyFoundation';
 import QualifiedCharitableDistributions from './QualifiedCharitableDistributions';
+import CollegeStudentStrategiesForm from './CollegeStudentStrategiesForm';
+import SellHomeToSCorpForm from './SellHomeToSCorpForm';
+import GiftingStockStrategyForm from './GiftingStockStrategyForm';
+import RealEstateOptionsForm from './RealEstateOptionsForm';
+import MarriedFilingSeparateForm from './MarriedFilingSeparateForm';
+import IndividualPlanningIdeasForm from './IndividualPlanningIdeasForm';
+import NetInvestmentIncomeTaxForm from './NetInvestmentIncomeTaxForm';
+import MiscTaxCreditsForm from './MiscTaxCreditsForm';
+import RentalStrategies754ElectionForm from './RentalStrategies754ElectionForm';
+import SelfDirectedIRA401KForm from './SelfDirectedIRA401KForm';
+import DayTraderTaxStatusForm from './DayTraderTaxStatusForm';
 
 
 const Dashboard = () => {
@@ -297,6 +307,29 @@ const Dashboard = () => {
           return <DefinedBenefitPlanForm onCalculate={setResults} />;
       case 'structuredInvestmentProgram':
           return <StructuredInvestmentProgramForm onCalculate={setResults} />;
+      case 'selfDirectedIRA401K':
+          return <SelfDirectedIRA401KForm onCalculate={setResults} />;
+      case 'dayTraderTaxStatus':
+          return <DayTraderTaxStatusForm onCalculate={setResults} />;
+      case 'collegeStudentStrategies':
+          return <CollegeStudentStrategiesForm onCalculate={setResults} />;
+      case 'sellHomeToSCorp':
+          return <SellHomeToSCorpForm onCalculate={setResults} />;
+      case 'giftingStockStrategy':
+          return <GiftingStockStrategyForm onCalculate={setResults} />;
+      case 'realEstateOptions':
+          return <RealEstateOptionsForm onCalculate={setResults} />;
+      case 'marriedFilingSeparate':
+          return <MarriedFilingSeparateForm onCalculate={setResults} />;
+      case 'individualPlanningIdeas':
+          return <IndividualPlanningIdeasForm onCalculate={setResults} />;
+      case 'netInvestmentIncomeTax':
+          return <NetInvestmentIncomeTaxForm onCalculate={setResults} />;
+      case 'MiscTaxCredits':
+          return <MiscTaxCreditsForm onCalculate={setResults} />;
+      case 'RentalStrategies754Election':
+         return <RentalStrategies754ElectionForm onCalculate={setResults} />;
+            
       default:
         return <FormSelector onSelectForm={handleSelectForm} />;
     }
@@ -331,7 +364,7 @@ const Dashboard = () => {
       case 'costSegregation':
         return 'Cost Segregation Form';
       case 'savingsPlan':
-        return 'Savings Plan Form';
+        return '529 Savings Plan Form';
       case 'educationAssistance':
         return 'Education Assistance Form';
       case 'educationTaxCredit':
@@ -463,6 +496,29 @@ const Dashboard = () => {
           return 'Defined Benefit Plan Form'
       case 'structuredInvestmentProgram':
           return 'Structured Investment Program Form'
+      case 'selfDirectedIRA401K':
+          return 'Self-Directed IRA & 401K Form';
+      case 'dayTraderTaxStatus':
+          return 'Day Trader Tax Status Form';
+      case 'collegeStudentStrategies':
+          return 'College Student Strategies Form';
+      case 'sellHomeToSCorp':
+          return 'Sell Home to S-Corp Form';
+      case 'giftingStockStrategy':
+          return 'Gifting Stock Strategy Form';
+      case 'realEstateOptions':
+          return 'Real Estate Options Form';
+      case 'marriedFilingSeparate':
+          return 'Married Filing Separate Form';
+      case 'individualPlanningIdeas':
+          return 'Individual Planning Ideas Form';
+      case 'netInvestmentIncomeTax':
+          return 'Net Investment Income Tax Form';
+      case 'miscTaxCredits':
+          return 'Miscellaneous Tax Credits Form';
+      case 'rentalStrategies754Election':
+          return 'Rental Strategies & 754 Election Form';
+
           
           
       default:
