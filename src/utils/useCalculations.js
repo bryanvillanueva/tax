@@ -101,6 +101,17 @@ import {
   calculateNetIncome1031Exchange,   
   calculateNetIncomeDefinedBenefitPlan,
   calculateNetIncomeStructuredInvestmentProgram,
+  calculateNetIncomeSelfDirectedIRA401K,
+  calculateNetIncomeDayTraderTaxStatus,
+  calculateNetIncomeCollegeStudentStrategies,
+  calculateNetIncomeSellHomeToSCorp,
+  calculateNetIncomeGiftingStockStrategy,
+  calculateNetIncomeRealEstateOptions,
+  calculateNetIncomeMarriedFilingSeparate,
+  calculateNetIncomeIndividualPlanningIdeas,
+  calculateNetIncomeNetInvestmentIncomeTax,
+  calculateNetIncomeMiscTaxCredits,
+  calculateNetIncomeRentalStrategies754Election,
 
 
 
@@ -405,6 +416,40 @@ const useCalculations = () => {
       case 'StructuredInvestmentProgram':
           netIncome = calculateNetIncomeStructuredInvestmentProgram(grossIncome, structuredInvestmentProgramDeduction);
         break;
+      case 'SelfDirectedIRA401K':
+          netIncome = calculateNetIncomeSelfDirectedIRA401K(grossIncome);
+        break;
+      case 'DayTraderTaxStatus':
+          netIncome = calculateNetIncomeDayTraderTaxStatus(grossIncome);
+        break;
+      case 'CollegeStudentStrategies':
+          netIncome = calculateNetIncomeCollegeStudentStrategies(grossIncome);
+        break;
+      case 'SellHomeToSCorp':
+         netIncome = calculateNetIncomeSellHomeToSCorp(grossIncome);
+        break;
+      case 'GiftingStockStrategy':
+         netIncome = calculateNetIncomeGiftingStockStrategy(grossIncome);
+        break;
+      case 'RealEstateOptions':
+         netIncome = calculateNetIncomeRealEstateOptions(grossIncome);
+        break;
+      case 'MarriedFilingSeparate':
+         netIncome = calculateNetIncomeMarriedFilingSeparate(grossIncome);
+        break;
+      case 'IndividualPlanningIdeas':
+         netIncome = calculateNetIncomeIndividualPlanningIdeas(grossIncome);
+        break;
+      case 'NetInvestmentIncomeTax':
+         netIncome = calculateNetIncomeNetInvestmentIncomeTax(grossIncome);
+        break;
+      case 'MiscTaxCredits':
+         netIncome = calculateNetIncomeMiscTaxCredits(grossIncome);
+        break;
+      case 'RentalStrategies754Election':
+         netIncome = calculateNetIncomeRentalStrategies754Election(grossIncome);
+        break;
+
       case 'standard':
           netIncome = calculateNetIncome(grossIncome, deduction179);
         break;

@@ -409,6 +409,61 @@ export function calculateNetIncomeDefinedBenefitPlan(grossIncome) {
 export function calculateNetIncomeStructuredInvestmentProgram(grossIncome, structuredInvestmentProgramDeduction) {
   return Math.max(0, grossIncome - structuredInvestmentProgramDeduction ); // Evita valores negativos
 }
+// Calcular net income para Self-Directed IRA & 401K
+export function calculateNetIncomeSelfDirectedIRA401K(grossIncome) {
+  return Math.max(0, grossIncome);
+}
+
+// Calcular net income para Day Trader Tax Status
+export function calculateNetIncomeDayTraderTaxStatus(grossIncome) {
+  return Math.max(0, grossIncome);
+}
+
+// Calcular net income para College Student Strategies
+export function calculateNetIncomeCollegeStudentStrategies(grossIncome) {
+  return Math.max(0, grossIncome);
+}
+
+// Calcular net income para Sell Home to S-Corp
+export function calculateNetIncomeSellHomeToSCorp(grossIncome) {
+  return Math.max(0, grossIncome);
+}
+
+// Calcular net income para Gifting Stock Strategy
+export function calculateNetIncomeGiftingStockStrategy(grossIncome) {
+  return Math.max(0, grossIncome);
+}
+
+// Calcular net income para Real Estate Options
+export function calculateNetIncomeRealEstateOptions(grossIncome) {
+  return Math.max(0, grossIncome);
+}
+
+// Calcular net income para Married Filing Separate
+export function calculateNetIncomeMarriedFilingSeparate(grossIncome) {
+  return Math.max(0, grossIncome);
+}
+
+// Calcular net income para Individual Planning Ideas
+export function calculateNetIncomeIndividualPlanningIdeas(grossIncome) {
+  return Math.max(0, grossIncome);
+}
+
+// Calcular net income para Net Investment Income Tax
+export function calculateNetIncomeNetInvestmentIncomeTax(grossIncome) {
+  return Math.max(0, grossIncome);
+}
+
+// Calcular net income para Miscellaneous Tax Credits
+export function calculateNetIncomeMiscTaxCredits(grossIncome) {
+  return Math.max(0, grossIncome);
+}
+
+// Calcular net income para Rental Strategies & 754 Election
+export function calculateNetIncomeRentalStrategies754Election(grossIncome) {
+  return Math.max(0, grossIncome);
+}
+
 
 
 
