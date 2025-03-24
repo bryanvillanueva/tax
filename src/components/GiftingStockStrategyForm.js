@@ -142,7 +142,7 @@ const GiftingStockStrategyForm = ({ onCalculate }) => {
                 value={grossIncome}
                 onChange={(e) => setGrossIncome(e.target.value)}
                 margin="normal"
-                disabled
+                
               />
               <TextField
                 select
@@ -178,7 +178,7 @@ const GiftingStockStrategyForm = ({ onCalculate }) => {
                 label="Limit per Person (LPP)"
                 fullWidth
                 type="number"
-                value={LPP}
+                value={LPP.toFixed(2)}
                 margin="normal"
                 disabled
               />

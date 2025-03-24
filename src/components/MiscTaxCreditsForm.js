@@ -158,7 +158,7 @@ const MiscTaxCreditsForm = ({ onCalculate }) => {
                 value={grossIncome}
                 onChange={(e) => setGrossIncome(e.target.value)}
                 margin="normal"
-                disabled
+                
               />
               <TextField
                 select
@@ -187,9 +187,6 @@ const MiscTaxCreditsForm = ({ onCalculate }) => {
                 onChange={(e) => setECRR(e.target.value)}
                 margin="normal"
               />
-            </Grid>
-
-            <Grid item xs={12} md={6}>
               <TextField
                 label="Estimated Childcare Tax Credit (ECTC)"
                 fullWidth
@@ -202,10 +199,14 @@ const MiscTaxCreditsForm = ({ onCalculate }) => {
                 label="Limit 1 (L1)"
                 fullWidth
                 type="number"
-                value={L1}
+                value={L1.toFixed(2)}
                 margin="normal"
                 disabled
               />
+            </Grid>
+
+            <Grid item xs={12} md={6}>
+              
               <TextField
                 select
                 label="Company is Eligible for Disabled Access Credit (CEDAC)"
@@ -245,7 +246,7 @@ const MiscTaxCreditsForm = ({ onCalculate }) => {
                 label="Limit 2 (L2)"
                 fullWidth
                 type="number"
-                value={L2}
+                value={L2.toFixed(2)}
                 margin="normal"
                 disabled
               />

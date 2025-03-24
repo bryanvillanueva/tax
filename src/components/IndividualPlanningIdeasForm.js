@@ -147,7 +147,7 @@ const IndividualPlanningIdeasForm = ({ onCalculate }) => {
                 value={grossIncome}
                 onChange={(e) => setGrossIncome(e.target.value)}
                 margin="normal"
-                disabled
+             
               />
               <TextField
                 select
@@ -169,16 +169,32 @@ const IndividualPlanningIdeasForm = ({ onCalculate }) => {
                 margin="normal"
               />
               <TextField
-                label="Individual Marginal Tax Rate (IMTR)"
+                label="Individual Marginal Tax Rate (IMTR) %"
                 fullWidth
                 type="number"
                 value={IMTR}
                 onChange={(e) => setIMTR(e.target.value)}
                 margin="normal"
               />
+               <TextField
+                label="Applying Estimate Tax Payments to Current Tax Return (AETP)"
+                fullWidth
+                type="number"
+                value={AETP}
+                onChange={(e) => setAETP(e.target.value)}
+                margin="normal"
+              />
             </Grid>
 
             <Grid item xs={12} md={6}>
+            <TextField
+                label="Tax Due Current Tax Return (TDCTR)"
+                fullWidth
+                type="number"
+                value={TDCTR}
+                onChange={(e) => setTDCTR(e.target.value)}
+                margin="normal"
+              />
               <TextField
                 label="Corporation Tax Rate (CTR)"
                 fullWidth
@@ -187,22 +203,8 @@ const IndividualPlanningIdeasForm = ({ onCalculate }) => {
                 margin="normal"
                 disabled
               />
-              <TextField
-                label="Applying Estimate Tax Payments to Current Tax Return (AETP)"
-                fullWidth
-                type="number"
-                value={AETP}
-                onChange={(e) => setAETP(e.target.value)}
-                margin="normal"
-              />
-              <TextField
-                label="Tax Due Current Tax Return (TDCTR)"
-                fullWidth
-                type="number"
-                value={TDCTR}
-                onChange={(e) => setTDCTR(e.target.value)}
-                margin="normal"
-              />
+             
+             
               <TextField
                 label="Overpayment (OP)"
                 fullWidth

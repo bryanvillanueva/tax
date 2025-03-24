@@ -47,7 +47,7 @@ const DayTraderTaxStatusForm = ({ onCalculate }) => {
     const expenses = parseFloat(RE) || 0;
     const marginalTaxRate = parseFloat(MTR) || 0;
 
-    const taxSavings = TMEC === "Yes" ? (losses + expenses) * marginalTaxRate : 0;
+    const taxSavings = TMEC === "Yes" ? (losses + expenses) * marginalTaxRate / 100 : 0;
     setTS(taxSavings);
   }, [TMEC, LS, RE, MTR]);
 
@@ -147,7 +147,7 @@ const DayTraderTaxStatusForm = ({ onCalculate }) => {
                 value={grossIncome}
                 onChange={(e) => setGrossIncome(e.target.value)}
                 margin="normal"
-                disabled
+                
               />
               <TextField
                 select
@@ -207,7 +207,7 @@ const DayTraderTaxStatusForm = ({ onCalculate }) => {
                 disabled
               />
               <TextField
-                label="Marginal Tax Rate (MTR)"
+                label="Marginal Tax Rate (MTR) %"
                 fullWidth
                 type="number"
                 value={MTR}

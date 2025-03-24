@@ -183,7 +183,7 @@ const NetInvestmentIncomeTaxForm = ({ onCalculate }) => {
                 value={grossIncome}
                 onChange={(e) => setGrossIncome(e.target.value)}
                 margin="normal"
-                disabled
+                
               />
               <TextField
                 select
@@ -212,10 +212,7 @@ const NetInvestmentIncomeTaxForm = ({ onCalculate }) => {
                 onChange={(e) => setAPI(e.target.value)}
                 margin="normal"
               />
-            </Grid>
-
-            <Grid item xs={12} md={6}>
-              <TextField
+                <TextField
                 label="Reduction or Change to Active Income (RCAI)"
                 fullWidth
                 type="number"
@@ -227,10 +224,14 @@ const NetInvestmentIncomeTaxForm = ({ onCalculate }) => {
                 label="AGI Threshold (AGIT)"
                 fullWidth
                 type="number"
-                value={AGIT}
+                value={AGIT.toFixed(2)}
                 margin="normal"
                 disabled
               />
+            </Grid>
+
+            <Grid item xs={12} md={6}>
+            
               <TextField
                 label="Does Taxpayer Must Calculate NIIT? (DTMC)"
                 fullWidth
@@ -249,7 +250,7 @@ const NetInvestmentIncomeTaxForm = ({ onCalculate }) => {
               <TextField
                 label="Net Investment Income Tax Rate (NIITR)"
                 fullWidth
-                type="number"
+                type="text"
                 value={`${(NIITR * 100).toFixed(2)}%`}
                 margin="normal"
                 disabled

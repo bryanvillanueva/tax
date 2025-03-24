@@ -40,14 +40,14 @@ const CollegeStudentStrategiesForm = ({ onCalculate }) => {
     switch (filingStatus) {
       case "Single":
       case "MFS":
-        standardDeduction = 12950;
+        standardDeduction = 14600;
         break;
       case "MFJ":
       case "QSS":
-        standardDeduction = 25900;
+        standardDeduction = 29200;
         break;
       case "HH":
-        standardDeduction = 19400;
+        standardDeduction = 21900;
         break;
       default:
         standardDeduction = 0;
@@ -61,7 +61,7 @@ const CollegeStudentStrategiesForm = ({ onCalculate }) => {
     const creditFromOtherStrategies = parseFloat(CFOS) || 0;
     const studentTaxRate = parseFloat(SMTR) || 0;
 
-    const studentTaxes = Math.max((selfSupportAmount - SD) * studentTaxRate - creditFromOtherStrategies, 0);
+    const studentTaxes = Math.max((selfSupportAmount - SD) * (studentTaxRate / 100)- creditFromOtherStrategies, 0);
     setSET(studentTaxes);
   }, [SSA, SD, SMTR, CFOS]);
 
@@ -70,7 +70,7 @@ const CollegeStudentStrategiesForm = ({ onCalculate }) => {
     const selfSupportAmount = parseFloat(SSA) || 0;
     const parentsTaxRate = parseFloat(PMTR) || 0;
 
-    const parentsTaxes = selfSupportAmount * parentsTaxRate;
+    const parentsTaxes = selfSupportAmount * parentsTaxRate / 100;
     setPET(parentsTaxes);
   }, [SSA, PMTR]);
 
@@ -179,7 +179,7 @@ const CollegeStudentStrategiesForm = ({ onCalculate }) => {
                 value={grossIncome}
                 onChange={(e) => setGrossIncome(e.target.value)}
                 margin="normal"
-                disabled
+                
               />
               <TextField
                 select
@@ -194,7 +194,7 @@ const CollegeStudentStrategiesForm = ({ onCalculate }) => {
               </TextField>
               <TextField
                 select
-                label="College Student Can Claim Benefits (CSCB)"
+                label="The college student is able to claim the benefits"
                 fullWidth
                 value={CSCB}
                 onChange={(e) => setCSCB(e.target.value)}
@@ -219,10 +219,7 @@ const CollegeStudentStrategiesForm = ({ onCalculate }) => {
                 onChange={(e) => setSSA(e.target.value)}
                 margin="normal"
               />
-            </Grid>
-
-            <Grid item xs={12} md={6}>
-              <TextField
+               <TextField
                 label="Credit from Other Strategies (CFOS)"
                 fullWidth
                 type="number"
@@ -230,7 +227,11 @@ const CollegeStudentStrategiesForm = ({ onCalculate }) => {
                 onChange={(e) => setCFOS(e.target.value)}
                 margin="normal"
               />
-              <TextField
+              
+            </Grid>
+
+            <Grid item xs={12} md={6}>
+            <TextField
                 label="Standard Deduction (SD)"
                 fullWidth
                 type="number"

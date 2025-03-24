@@ -325,9 +325,9 @@ const Dashboard = () => {
           return <IndividualPlanningIdeasForm onCalculate={setResults} />;
       case 'netInvestmentIncomeTax':
           return <NetInvestmentIncomeTaxForm onCalculate={setResults} />;
-      case 'MiscTaxCredits':
+      case 'miscTaxCredits':
           return <MiscTaxCreditsForm onCalculate={setResults} />;
-      case 'RentalStrategies754Election':
+      case 'rentalStrategies754Election':
          return <RentalStrategies754ElectionForm onCalculate={setResults} />;
             
       default:
@@ -338,186 +338,186 @@ const Dashboard = () => {
   const getFormTitle = () => {
     switch (formId) {
       case 'depreciation':
-        return 'Accelerated Depreciation (Section 179) Form';
+        return 'Accelerated Depreciation (Section 179)';
       case 'augusta':
-        return 'Augusta Rule Form';
+        return 'Augusta Rule';
       case 'prepaid':
-        return 'Prepaid Expenses Form';
+        return 'Prepaid Expenses';
       case 'hireKids':
-        return 'Hire Your Kids Form';
+        return 'Hire Your Kids';
       case 'charitableRemainderTrust':
-        return 'Charitable Remainder Trus Form';
+        return 'Charitable Remainder Trus';
       case 'reimbursment':
-        return 'Reimbursment Of Personal Vehicle Form';
+        return 'Reimbursment Of Personal Vehicle';
       case 'hireFamily':
-        return 'Hire Your Family Form';
+        return 'Hire Your Family';
       case 'qualifiedOpportunityFunds':
-        return 'Qualified Opportunity Funds Form';
+        return 'Qualified Opportunity Funds';
       case 'healthSavings':
-        return 'Health Savings Account Form';
+        return 'Health Savings Account';
       case 'lifetimeLearningCredit':
         return 'Lifetime Learning Credit';
       case 'amendedPriorYears':
-        return 'Amended Prior Year Form';
+        return 'Amended Prior Year';
       case 'exemptionQualifiedSmall':
-        return 'Exemption Qualified Small Business Stock Form';
+        return 'Exemption Qualified Small Business Stock ';
       case 'costSegregation':
-        return 'Cost Segregation Form';
+        return 'Cost Segregation';
       case 'savingsPlan':
-        return '529 Savings Plan Form';
+        return '529 Savings Plan';
       case 'educationAssistance':
-        return 'Education Assistance Form';
+        return 'Education Assistance';
       case 'educationTaxCredit':
-        return 'Education Tax Credit Form';
+        return 'Education Tax Credit ';
       case 'accountableplanform':
-        return 'Accountable Plan Form';
+        return 'Accountable Plan';
       case 'adoptionincentiveform':
-        return 'Adoption Incentive Form';
+        return 'Adoption Incentive';
       case 'deferredCapitalGain':
-          return 'Deferred Capital Gain Form';
+          return 'Deferred Capital Gain';
       case 'healthReimbursement':
-          return 'Health Reimbursement Arrangement Form';
+          return 'Health Reimbursement Arrangement';
       case 'incomeShifting':
-          return 'Income Shifting Form';
+          return 'Income Shifting';
       case 'lifeInsurance':
-          return 'Life Insurance Form';
+          return 'Life Insurance ';
       case 'maximizeMiscellaneousExpenses':
-          return 'Maximize Miscellaneous Expenses Form';
+          return 'Maximize Miscellaneous Expenses';
       case 'mealsDeduction':
-          return 'Meals Deduction Form';
+          return 'Meals Deduction';
       case 'lossesDeduction':
-          return 'Net Operating Losses (NOL) Form';
+          return 'Net Operating Losses (NOL)';
       case 'solo401k':
-          return 'Solo 401(k) Form';
+          return 'Solo 401(k)';
       case 'researchAndDevelopmentCredit':
-          return 'Research & Development Credit Form';
+          return 'Research & Development Credit';
       case 'sepContributions':
-          return 'SEP Contributions Form';
+          return 'SEP Contributions ';
       case 'healthInsuranceDeduction2':
-          return 'Health Insurance Deduction Form';
+          return 'Health Insurance Deduction';
       case 'rothIRA':
-          return 'Roth IRA Form';
+          return 'Roth IRA';
       case 'ActiveRealEstateForm':
-          return 'Active Real Estate Form';
+          return 'Active Real Estate';
       case 'BackdoorRothForm':
-          return 'Back Door Roth Form';
+          return 'Back Door Roth ';
       case 'CancellationByInsolvencyForm':
-          return 'Cancellation Of Debt Income By Insolvency Form';
+          return 'Cancellation Of Debt Income By Insolvency ';
       case 'simpleIRA':
-          return 'Simple IRA Form';
+          return 'Simple IRA';
       case 'startupCostOptimization':
-          return 'Startup Cost Optimization Form';
+          return 'Startup Cost Optimization';
       case 'stateTaxSavings':
-          return 'State Tax Savings Form';
+          return 'State Tax Savings';
       case 'traditionalIRA':
-          return 'Traditional IRA Contributions Form';
+          return 'Traditional IRA Contributions';
       case 'unreimbursedExpenses':
-          return 'Unreimbursed Expenses Form';
+          return 'Unreimbursed Expenses';
       case 'charitableDonationSavings':
-          return 'Charitable Donation Savings Form'
+          return 'Charitable Donation Savings'
       case 'influencerOptimization':
-          return 'Influencer Optimization Form'
+          return 'Influencer Optimization';
       case 'Covul':
-          return 'Corporate-Owned Variable Universal Life (COVUL) Form'
+          return 'Corporate-Owned Variable Universal Life (COVUL)';
       case 'DepletionDeduction':
-          return 'Depletion Deduction For Royalties Form'
+          return 'Depletion Deduction For Royalties ';
       case 'QualifiedDividends':
-          return 'Dividends Form'
+          return 'Dividends';
       case 'DonorAdvisedFund':
-          return 'Donor Advised Fund Form'
+          return 'Donor Advised Fund';
       case 'ElectricVehicleCredits':
-          return 'Electric Vehicle Credits Form'
+          return 'Electric Vehicle Credits';
       case 'ESOP':
-          return 'Employee Stock Ownership Plan (ESOP) Form'
+          return 'Employee Stock Ownership Plan (ESOP)';
       case 'FederalSolarInvestmentTaxCredit':
-          return 'Federal Solar Investment Tax Credit Form'
+          return 'Federal Solar Investment Tax Credit';
       case 'FinancedInsurance':
-          return 'Financed Insurance For Business Risks Form'
+          return 'Financed Insurance For Business Risks';
       case 'FinancedSoftwareLeaseback':
-          return 'Financed Software Leaseback Form'
+          return 'Financed Software Leaseback';
       case 'ForeignEarnedIncomeExclusion':
-          return 'Foreign Earned Income Exlusion Form'
+          return 'Foreign Earned Income Exlusion';
       case 'GroupHealthInsurance':
-          return 'Group Health Insurance Form'
+          return 'Group Health Insurance';
       case 'GroupingRelatedActivities':
-          return 'Grouping Related Activities - Section 469 Form'
+          return 'Grouping Related Activities - Section 469';
       case 'HistoricalPreservationEasement':
-          return 'Historical Preservation Easement Form'
+          return 'Historical Preservation Easement';
       case 'HomeOfficeDeduction':
-          return 'Home Office Deduction Form'
+          return 'Home Office Deduction';
       case 'InstallmentSale':
-          return 'Installment Sale Form'
+          return 'Installment Sale';
       case 'MaximizeItemization':
-          return 'Maximize Itemization Strategies Form'
+          return 'Maximize Itemization Strategies';
       case 'NoncashCharitableContributions':
-          return 'Noncash Charitable Contributions Of Unused Goods Form'
+          return 'Noncash Charitable Contributions Of Unused Goods';
       case 'OilAndGasDrillingCost':
-          return 'Oil And Gas - Drilling Cost Form'
+          return 'Oil And Gas - Drilling Cost';
       case 'OilAndGasMLP':
-          return 'Oil And Gas - Master Limited Partnership (MLP) Form'
+          return 'Oil And Gas - Master Limited Partnership (MLP)';
       case 'OrdinaryLossOnWorthlessStock':
-          return 'Ordinary Loss on Worthless Stock Form'
+          return 'Ordinary Loss on Worthless Stock';
       case 'passThroughEntity':
-          return 'Pass-Through Entity Form'
+          return 'Pass-Through Entity';
       case 'passiveLossAndPigs':
-          return 'Passive Loss And PIGs Form'
+          return 'Passive Loss And PIGs';
       case 'primarySaleExclusion':
-          return 'Primary Sale Exclusion Form'    
+          return 'Primary Sale Exclusion';
       case 'privateFamilyFoundation':
-          return 'Private Family Foundation Form'
+          return 'Private Family Foundation ';
       case 'qualifiedCharitableDistributions':
-          return 'Qualified Charitable Distributions Form'
+          return 'Qualified Charitable Distributions';
       case 'RealEstateDevelopmentCharitable':
-          return 'Real Estate Development Charitable Form'
+          return 'Real Estate Development Charitable';
       case 'RestrictedStockUnits':
-          return 'Restricted Stock Units Form'
+          return 'Restricted Stock Units';
       case 'RetireePlanning':
-          return 'Retiree Planning Form'
+          return 'Retiree Planning';
       case 'SCorpRevocation':
-          return 'S-Corp Revocation Form'
+          return 'S-Corp Revocation';
       case 'SecureAct20Strategies':
-          return 'Secure Act 20 Strategies Form'
+          return 'Secure Act 20 Strategies';
       
       case 'seriesIBond':
-          return 'Series I Bond Form'
+          return 'Series I Bond';
       case 'shortTermRental':
-          return 'Short-Term Rental Form'
+          return 'Short-Term Rental';
       case 'bonusDepreciation':
-          return 'Bonus Depreciation Form'
+          return 'Bonus Depreciation';
       case 'solarPassiveInvestment':
-          return 'Solar Passive Investment Form'
+          return 'Solar Passive Investment';
       case 'taxFreeIncome':
-          return 'Tax-Free Income Form'
+          return 'Tax-Free Income';
       case 'workOpportunityTaxCredit':
-          return 'Work Opportunity Tax Credit Form'
+          return 'Work Opportunity Tax Credit';
       case '1031Exchange':
-          return '1031 Exchange Form'
+          return '1031 Exchange';
       case 'definedBenefitPlan':
-          return 'Defined Benefit Plan Form'
+          return 'Defined Benefit Plan';
       case 'structuredInvestmentProgram':
-          return 'Structured Investment Program Form'
+          return 'Structured Investment Program';
       case 'selfDirectedIRA401K':
-          return 'Self-Directed IRA & 401K Form';
+          return 'Self-Directed IRA & 401K';
       case 'dayTraderTaxStatus':
-          return 'Day Trader Tax Status Form';
+          return 'Day Trader Tax Status';
       case 'collegeStudentStrategies':
-          return 'College Student Strategies Form';
+          return 'College Student Strategies';
       case 'sellHomeToSCorp':
-          return 'Sell Home to S-Corp Form';
+          return 'Sell Home to S-Corp';
       case 'giftingStockStrategy':
-          return 'Gifting Stock Strategy Form';
+          return 'Gifting Stock Strategy';
       case 'realEstateOptions':
-          return 'Real Estate Options Form';
+          return 'Real Estate Options';
       case 'marriedFilingSeparate':
-          return 'Married Filing Separate Form';
+          return 'Married Filing Separate';
       case 'individualPlanningIdeas':
-          return 'Individual Planning Ideas Form';
+          return 'Individual Planning Ideas';
       case 'netInvestmentIncomeTax':
-          return 'Net Investment Income Tax Form';
+          return 'Net Investment Income Tax';
       case 'miscTaxCredits':
-          return 'Miscellaneous Tax Credits Form';
+          return 'Miscellaneous Tax Credits';
       case 'rentalStrategies754Election':
-          return 'Rental Strategies & 754 Election Form';
+          return 'Rental Strategies & 754 Election';
 
           
           

@@ -35,7 +35,7 @@ const SelfDirectedIRA401KForm = ({ onCalculate }) => {
     const amountToOverride = parseFloat(ATO) || 0;
     const estimatedRevenue = parseFloat(EIR) || 0;
 
-    const annualGrowth = amountToOverride * estimatedRevenue;
+    const annualGrowth = amountToOverride * estimatedRevenue / 100;
     setAG(annualGrowth);
   }, [ATO, EIR]);
 
@@ -44,7 +44,7 @@ const SelfDirectedIRA401KForm = ({ onCalculate }) => {
     const annualGrowth = parseFloat(AG) || 0;
     const marginalTaxRate = parseFloat(MTR) || 0;
 
-    const taxDeferred = annualGrowth * marginalTaxRate;
+    const taxDeferred = annualGrowth * marginalTaxRate / 100;
     setTD(taxDeferred);
   }, [AG, MTR]);
 
@@ -143,7 +143,7 @@ const SelfDirectedIRA401KForm = ({ onCalculate }) => {
                 value={grossIncome}
                 onChange={(e) => setGrossIncome(e.target.value)}
                 margin="normal"
-                disabled
+              
               />
               <TextField
                 select
@@ -157,7 +157,7 @@ const SelfDirectedIRA401KForm = ({ onCalculate }) => {
                 <MenuItem value="Passive">Passive</MenuItem>
               </TextField>
               <TextField
-                label="Current Balance Traditional IRA Account (CBTI)"
+                label="Current Balance Traditional IRA Account"
                 fullWidth
                 type="number"
                 value={CBTI}
@@ -172,19 +172,20 @@ const SelfDirectedIRA401KForm = ({ onCalculate }) => {
                 onChange={(e) => setATO(e.target.value)}
                 margin="normal"
               />
-              <TextField
-                label="Estimated IRA Revenue (EIR)"
+              
+            </Grid>
+
+            <Grid item xs={12} md={6}>
+            <TextField
+                label="Estimated IRA Revenue (EIR) %"
                 fullWidth
                 type="number"
                 value={EIR}
                 onChange={(e) => setEIR(e.target.value)}
                 margin="normal"
               />
-            </Grid>
-
-            <Grid item xs={12} md={6}>
               <TextField
-                label="Marginal Tax Rate (MTR)"
+                label="Marginal Tax Rate (MTR) %"
                 fullWidth
                 type="number"
                 value={MTR}
