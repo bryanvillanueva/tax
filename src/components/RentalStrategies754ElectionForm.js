@@ -69,7 +69,7 @@ const RentalStrategies754ElectionForm = ({ onCalculate }) => {
       PO: parseFloat(PO),
       NPBP: parseFloat(NPBP),
       FITD,
-      calculationType: "RentalStrategies754Election",
+      calculationType: "rentalStrategies754Election",
     });
 
     onCalculate(results);
@@ -125,7 +125,7 @@ const RentalStrategies754ElectionForm = ({ onCalculate }) => {
                 value={grossIncome}
                 onChange={(e) => setGrossIncome(e.target.value)}
                 margin="normal"
-                disabled
+                
               />
               <TextField
                 select
@@ -146,7 +146,11 @@ const RentalStrategies754ElectionForm = ({ onCalculate }) => {
                 onChange={(e) => setCPBP(e.target.value)}
                 margin="normal"
               />
-              <TextField
+             
+            </Grid>
+
+            <Grid item xs={12} md={6}>
+            <TextField
                 label="Percentage Owned (PO)"
                 fullWidth
                 type="number"
@@ -154,9 +158,6 @@ const RentalStrategies754ElectionForm = ({ onCalculate }) => {
                 onChange={(e) => setPO(e.target.value)}
                 margin="normal"
               />
-            </Grid>
-
-            <Grid item xs={12} md={6}>
               <TextField
                 label="New Partner Basis in Partnership (NPBP)"
                 fullWidth

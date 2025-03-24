@@ -16,7 +16,7 @@ const SellHomeToSCorpForm = ({ onCalculate }) => {
   const [filingStatus, setFilingStatus] = useState("Single");
   const [partnerType, setPartnerType] = useState("Active");
   const [formType, setFormType] = useState("1120S");
-  const [grossIncome, setGrossIncome] = useState("");
+  const [grossIncome, setGrossIncome] = useState(""); 
   const [QBID, setQbid] = useState("");
   const [error, setError] = useState(null);
 
@@ -165,7 +165,7 @@ const SellHomeToSCorpForm = ({ onCalculate }) => {
                 value={grossIncome}
                 onChange={(e) => setGrossIncome(e.target.value)}
                 margin="normal"
-                disabled
+                
               />
               <TextField
                 select

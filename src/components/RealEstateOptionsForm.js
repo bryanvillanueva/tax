@@ -138,7 +138,7 @@ const RealEstateOptionsForm = ({ onCalculate }) => {
                 value={grossIncome}
                 onChange={(e) => setGrossIncome(e.target.value)}
                 margin="normal"
-                disabled
+          
               />
               <TextField
                 select
@@ -182,15 +182,15 @@ const RealEstateOptionsForm = ({ onCalculate }) => {
                 margin="normal"
               />
               <TextField
-                label="Option's Percentage (OP)"
+                label="Option's Percentage (OP) %"
                 fullWidth
-                type="number"
-                value={OP.toFixed(2)}
+                type="text"
+                value={`${OP.toFixed(0)}%`}
                 margin="normal"
                 disabled
               />
               <TextField
-                label="Taxpayer's Marginal Tax Rate (TMTR)"
+                label="Taxpayer's Marginal Tax Rate (TMTR) %"
                 fullWidth
                 type="number"
                 value={TMTR}

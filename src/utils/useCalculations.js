@@ -446,7 +446,7 @@ const useCalculations = () => {
       case 'MiscTaxCredits':
          netIncome = calculateNetIncomeMiscTaxCredits(grossIncome);
         break;
-      case 'RentalStrategies754Election':
+      case 'rentalStrategies754Election':
          netIncome = calculateNetIncomeRentalStrategies754Election(grossIncome);
         break;
 
