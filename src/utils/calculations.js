@@ -463,6 +463,50 @@ export function calculateNetIncomeMiscTaxCredits(grossIncome) {
 export function calculateNetIncomeRentalStrategies754Election(grossIncome) {
   return Math.max(0, grossIncome);
 }
+// Calcular net income para Reasonable Compensation Analysis
+export function calculateNetIncomeReasonableCompAnalysis(grossIncome) {
+  return Math.max(0, grossIncome);
+}
+
+// Calcular net income para Real Estate Professional
+export function calculateNetIncomeRealEstateProfessional(grossIncome) {
+  return Math.max(0, grossIncome);
+}
+
+// Calcular net income para Captive Insurance
+export function calculateNetIncomeCaptiveInsurance(grossIncome) {
+  return Math.max(0, grossIncome);
+}
+
+// Calcular net income para Charitable LLC
+export function calculateNetIncomeCharitableLLC(grossIncome) {
+  return Math.max(0, grossIncome);
+}
+
+// Calcular net income para Sole Proprietor
+export function calculateNetIncomeSoleProprietor(grossIncome) {
+  return Math.max(0, grossIncome);
+}
+
+// Calcular net income para Choice of Entity
+export function calculateNetIncomeChoiceOfEntity(grossIncome) {
+  return Math.max(0, grossIncome);
+}
+
+// Calcular net income para Choice of Entity - C Corporation
+export function calculateNetIncomeChoiceOfEntityCCorp(grossIncome) {
+  return Math.max(0, grossIncome);
+}
+
+// Calcular net income para Choice of Entity - Partnership
+export function calculateNetIncomeChoiceOfEntityPartnership(grossIncome) {
+  return Math.max(0, grossIncome);
+}
+
+// Calcular net income para Choice of Entity - S Corporation
+export function calculateNetIncomeChoiceOfEntitySCorp(grossIncome) {
+  return Math.max(0, grossIncome);
+}
 
 
 

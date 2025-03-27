@@ -112,6 +112,15 @@ import {
   calculateNetIncomeNetInvestmentIncomeTax,
   calculateNetIncomeMiscTaxCredits,
   calculateNetIncomeRentalStrategies754Election,
+  calculateNetIncomeReasonableCompAnalysis,
+  calculateNetIncomeRealEstateProfessional,
+  calculateNetIncomeCaptiveInsurance,
+  calculateNetIncomeCharitableLLC,
+  calculateNetIncomeSoleProprietor,
+  calculateNetIncomeChoiceOfEntity,
+  calculateNetIncomeChoiceOfEntityCCorp,
+  calculateNetIncomeChoiceOfEntityPartnership,
+  calculateNetIncomeChoiceOfEntitySCorp,
 
 
 
@@ -449,6 +458,34 @@ const useCalculations = () => {
       case 'rentalStrategies754Election':
          netIncome = calculateNetIncomeRentalStrategies754Election(grossIncome);
         break;
+     case 'ReasonableCompAnalysis':
+         netIncome = calculateNetIncomeReasonableCompAnalysis(grossIncome);
+        break;
+     case 'RealEstateProfessional':
+         netIncome = calculateNetIncomeRealEstateProfessional(grossIncome);
+        break;
+    case 'CaptiveInsurance':
+         netIncome = calculateNetIncomeCaptiveInsurance(grossIncome);
+        break;
+    case 'CharitableLLC':
+          netIncome = calculateNetIncomeCharitableLLC(grossIncome);
+        break;
+    case 'SoleProprietor':
+           netIncome = calculateNetIncomeSoleProprietor(grossIncome);
+         break;
+    case 'ChoiceOfEntity':
+           netIncome = calculateNetIncomeChoiceOfEntity(grossIncome);
+         break;
+    case 'ChoiceOfEntityCCorp':
+           netIncome = calculateNetIncomeChoiceOfEntityCCorp(grossIncome);
+         break;
+    case 'ChoiceOfEntityPartnership':
+           netIncome = calculateNetIncomeChoiceOfEntityPartnership(grossIncome);
+         break;
+    case 'ChoiceOfEntitySCorp':
+           netIncome = calculateNetIncomeChoiceOfEntitySCorp(grossIncome);
+         break;
+
 
       case 'standard':
           netIncome = calculateNetIncome(grossIncome, deduction179);

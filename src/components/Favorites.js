@@ -103,7 +103,17 @@ const forms = [
   { code: '4', id: 'netInvestmentIncomeTax', title: 'Net Investment Income Tax', description: 'Analyze the Net Investment Income Tax (NIIT), including thresholds, affected income types, and mitigation strategies.', fixedIndex: 88 },
   { code: '4', id: 'miscTaxCredits', title: 'Miscellaneous Tax Credits', description: 'Review various tax credits available to individuals and businesses, including eligibility requirements and optimization techniques.', fixedIndex: 89 },
   { code: '4', id: 'rentalStrategies754Election', title: 'Rental Strategies & 754 Election', description: 'Explore rental property tax strategies and the Section 754 election for partnerships, including depreciation adjustments and basis step-ups.', fixedIndex: 90 },
-
+  { code: '4', id: 'ReasonableCompAnalysis', title: 'Reasonable Comp Analysis for Owners of Corporations', description: 'Analyze reasonable compensation for business owners to ensure compliance with tax regulations and avoid IRS scrutiny.', fixedIndex: 91 },
+  { code: '4', id: 'RealEstateProfessional', title: 'Real Estate Professional', description: 'Understand the tax benefits and qualifications for real estate professionals, including passive loss limitations and material participation rules.', fixedIndex: 92 },
+  { code: '4', id: 'CaptiveInsurance', title: 'Captive Insurance', description: 'Explore the advantages and compliance considerations of captive insurance for businesses, including risk management and tax benefits.', fixedIndex: 93 },
+  { code: '4', id: 'CharitableLLC', title: 'Charitable LLC', description: 'Discover how a Charitable LLC can be structured to align with philanthropic goals while maintaining flexibility and tax benefits.', fixedIndex: 94 },
+  { code: '4', id: 'SoleProprietor', title: 'Choice of Entity - Sole Proprietor Sch C', description: 'Examine the tax implications and strategic considerations of operating as a sole proprietor, including self-employment taxes and deductions.', fixedIndex: 95 },
+  { code: '4', id: 'ChoiceOfEntity', title: 'Choice of Entity - Overview & Analysis', description: 'Compare business entity structures to determine the most tax-efficient and legally protective option for your business.', fixedIndex: 96 },
+  { code: '4', id: 'ChoiceOfEntityCCorp', title: 'Choice of Entity - C Corporation', description: 'Assess the benefits and drawbacks of operating as a C Corporation, including double taxation and tax planning opportunities.', fixedIndex: 97 },
+  { code: '4', id: 'ChoiceOfEntityPartnership', title: 'Choice of Entity - Partnership', description: 'Understand the tax and operational considerations of forming a partnership, including pass-through taxation and liability concerns.', fixedIndex: 98 },
+  { code: '4', id: 'ChoiceOfEntitySCorp', title: 'Choice of Entity - S Corporation', description: 'Explore the tax advantages and eligibility requirements of an S Corporation, including pass-through taxation and self-employment tax savings.', fixedIndex: 99 },
+        
+        
 
 ];
 

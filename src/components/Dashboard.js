@@ -98,6 +98,16 @@ import MiscTaxCreditsForm from './MiscTaxCreditsForm';
 import RentalStrategies754ElectionForm from './RentalStrategies754ElectionForm';
 import SelfDirectedIRA401KForm from './SelfDirectedIRA401KForm';
 import DayTraderTaxStatusForm from './DayTraderTaxStatusForm';
+import ChoiceOfEntityForm from './ChoiceOfEntityForm';
+import ChoiceOfEntityCCorpForm from './ChoiceOfEntityCCorpForm';
+import ChoiceOfEntityPartnershipForm from './ChoiceOfEntityPartnershipForm';
+import ChoiceOfEntitySCorpForm from './ChoiceOfEntitySCorpForm';
+import ReasonableCompAnalysisForm from './ReasonableCompAnalysisForm';
+import RealEstateProfessionalForm from './RealEstateProfessionalForm';
+import CaptiveInsuranceForm from './CaptiveInsuranceForm';
+import CharitableLLCForm from './CharitableLLCForm';
+import SoleProprietorForm from './SoleProprietorForm';
+
 
 
 const Dashboard = () => {
@@ -329,6 +339,24 @@ const Dashboard = () => {
           return <MiscTaxCreditsForm onCalculate={setResults} />;
       case 'rentalStrategies754Election':
          return <RentalStrategies754ElectionForm onCalculate={setResults} />;
+        case 'ReasonableCompAnalysis':
+            return <ReasonableCompAnalysisForm onCalculate={setResults} />;
+        case 'RealEstateProfessional':
+            return <RealEstateProfessionalForm onCalculate={setResults} />;
+        case 'CaptiveInsurance':
+            return <CaptiveInsuranceForm onCalculate={setResults} />;
+        case 'CharitableLLC':
+            return <CharitableLLCForm onCalculate={setResults} />;
+        case 'SoleProprietor':
+            return <SoleProprietorForm onCalculate={setResults} />;
+        case 'ChoiceOfEntity':
+            return <ChoiceOfEntityForm onCalculate={setResults} />;
+        case 'ChoiceOfEntityCCorp':
+            return <ChoiceOfEntityCCorpForm onCalculate={setResults} />;
+        case 'ChoiceOfEntityPartnership':
+            return <ChoiceOfEntityPartnershipForm onCalculate={setResults} />;
+        case 'ChoiceOfEntitySCorp':
+            return <ChoiceOfEntitySCorpForm onCalculate={setResults} />;
             
       default:
         return <FormSelector onSelectForm={handleSelectForm} />;
@@ -518,7 +546,26 @@ const Dashboard = () => {
           return 'Miscellaneous Tax Credits';
       case 'rentalStrategies754Election':
           return 'Rental Strategies & 754 Election';
-
+     
+          case 'ReasonableCompAnalysis':
+            return 'Reasonable Comp Analysis for Owners of Corporations';
+        case 'RealEstateProfessional':
+            return 'Real Estate Professional';
+        case 'CaptiveInsurance':
+            return 'Captive Insurance';
+        case 'CharitableLLC':
+            return 'Charitable LLC';
+        case 'SoleProprietor':
+            return 'Choice of Entity - Sole Proprietor Sch C';
+        case 'ChoiceOfEntity':
+            return 'Choice of Entity - Overview & Analysis';
+        case 'ChoiceOfEntityCCorp':
+            return 'Choice of Entity - C Corporation';
+        case 'ChoiceOfEntityPartnership':
+            return 'Choice of Entity - Partnership';
+        case 'ChoiceOfEntitySCorp':
+            return 'Choice of Entity - S Corporation';
+        
           
           
       default:
