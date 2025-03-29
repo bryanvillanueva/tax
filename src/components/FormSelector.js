@@ -119,17 +119,30 @@ const forms = [
 
  
 
+// Clave usada para guardar los datos en sessionStorage
+const CACHE_KEY_FORMS = 'cached_tax_forms';
+const CACHE_KEY_USER = 'cached_user_data';
+
 const FormSelector = ({ onSelectForm, searchTerm, setSearchTerm }) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [userData, setUserData] = useState(null); // Para almacenar los datos del usuario
-  const [filteredForms, setFilteredForms] = useState([]); // Formularios filtrados según user_level
+  const [userData, setUserData] = useState(() => {
+    // Intentar cargar los datos del usuario desde sessionStorage
+    const cachedUserData = sessionStorage.getItem(CACHE_KEY_USER);
+    return cachedUserData ? JSON.parse(cachedUserData) : null;
+  });
+  
+  const [filteredForms, setFilteredForms] = useState(() => {
+    // Intentar cargar los formularios desde sessionStorage
+    const cachedForms = sessionStorage.getItem(CACHE_KEY_FORMS);
+    return cachedForms ? JSON.parse(cachedForms) : [];
+  });
+  
   const [favorites, setFavorites] = useState(() => {
     const savedFavorites = localStorage.getItem('formFavorites');
     return savedFavorites ? JSON.parse(savedFavorites) : {};
   });
 
-  const [loading, setLoading] = useState(true);
-  // Eliminado el estado isFixed que ya no se necesita
+  const [loading, setLoading] = useState(!sessionStorage.getItem(CACHE_KEY_FORMS));
   const navigate = useNavigate();
 
     // Función para ordenar los formularios con favoritos primero
@@ -154,32 +167,54 @@ const FormSelector = ({ onSelectForm, searchTerm, setSearchTerm }) => {
   useEffect(() => {
     const validateToken = async () => {
       try {
-        setLoading(true); // Activa el loader al iniciar la carga
+        // Solo activamos el loader si realmente necesitamos cargar datos
+        if (!sessionStorage.getItem(CACHE_KEY_FORMS)) {
+          setLoading(true);
+        }
+        
         const token = localStorage.getItem('authToken');
   
         if (!token) {
           navigate('/'); // Redirige al login si no hay token
           return;
         }
+
+        // Si ya tenemos datos en caché, no necesitamos hacer las peticiones
+        if (sessionStorage.getItem(CACHE_KEY_FORMS) && sessionStorage.getItem(CACHE_KEY_USER)) {
+          setLoading(false);
+          return;
+        }
   
+        // Obtener datos del usuario
         const response = await axios.get('https://taxbackend-production.up.railway.app/user', {
           headers: { Authorization: `Bearer ${token}` },
         });
-        const userData = response.data;
-        setUserData(userData);
+        const userDataResponse = response.data;
+        setUserData(userDataResponse);
+        
+        // Guardar en sessionStorage
+        sessionStorage.setItem(CACHE_KEY_USER, JSON.stringify(userDataResponse));
   
         // Obtener formularios filtrados
         const formsResponse = await axios.get(
-          `https://taxbackend-production.up.railway.app/forms/${userData.user_level}`,
+          `https://taxbackend-production.up.railway.app/forms/${userDataResponse.user_level}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
+        
         setFilteredForms(formsResponse.data);
+        
+        // Guardar en sessionStorage
+        sessionStorage.setItem(CACHE_KEY_FORMS, JSON.stringify(formsResponse.data));
+        
       } catch (error) {
         console.error('Error al validar el token:', error.message);
+        // Limpiar caché y token en caso de error
+        sessionStorage.removeItem(CACHE_KEY_FORMS);
+        sessionStorage.removeItem(CACHE_KEY_USER);
         localStorage.removeItem('authToken');
         navigate('/');
       } finally {
-        setLoading(false); // Desactiva el loader al terminar
+        setLoading(false);
       }
     };
   
@@ -189,7 +224,10 @@ const FormSelector = ({ onSelectForm, searchTerm, setSearchTerm }) => {
 // Ya no necesitamos fijar la barra de búsqueda, ya que existe una en CustomAppBar
 
   const handleLogout = () => {
-    localStorage.removeItem('authToken'); // Elimina el token
+    // Limpiar tanto localStorage como sessionStorage
+    localStorage.removeItem('authToken');
+    sessionStorage.removeItem(CACHE_KEY_FORMS);
+    sessionStorage.removeItem(CACHE_KEY_USER);
     navigate('/'); // Redirige al login
   };
 

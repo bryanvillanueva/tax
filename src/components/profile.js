@@ -26,23 +26,30 @@ import CustomSpeedDial from './CustomSpeedDial';
 import MenuIcon from '@mui/icons-material/Menu';
 import axios from 'axios';
 
+// Clave usada para guardar los datos en sessionStorage
+const CACHE_KEY_PROFILE = 'cached_user_profile';
+
 const Profile = () => {
   const [tabValue, setTabValue] = useState(0);
-  const [userData, setUserData] = useState({
-    first_name: '',
-    last_name: '',
-    email: '',
-    phone: '',
-    company_name: '',
-    product: '',
-    avatar: '',
+  const [userData, setUserData] = useState(() => {
+    // Intentar cargar los datos del usuario desde sessionStorage
+    const cachedUserData = sessionStorage.getItem(CACHE_KEY_PROFILE);
+    return cachedUserData ? JSON.parse(cachedUserData) : {
+      first_name: '',
+      last_name: '',
+      email: '',
+      phone: '',
+      company_name: '',
+      product: '',
+      avatar: '',
+    };
   });
   const [newPassword, setNewPassword] = useState('');
   const [currentPassword, setCurrentPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(!sessionStorage.getItem(CACHE_KEY_PROFILE));
   const [showPassword, setShowPassword] = useState(false);
   const [capsLock, setCapsLock] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -59,16 +66,27 @@ const Profile = () => {
 
   useEffect(() => {
     const fetchUserData = async () => {
+      // Si ya tenemos datos en caché, no necesitamos hacer la petición
+      if (sessionStorage.getItem(CACHE_KEY_PROFILE)) {
+        setEditedData(JSON.parse(sessionStorage.getItem(CACHE_KEY_PROFILE)));
+        setIsLoading(false);
+        return;
+      }
+
       setIsLoading(true);
       try {
         const token = localStorage.getItem('authToken');
         const response = await axios.get('https://taxbackend-production.up.railway.app/user', {
           headers: { Authorization: `Bearer ${token}` },
         });
+        
+        // Guardar los datos en el estado y en sessionStorage
         setUserData(response.data);
         setEditedData(response.data);
+        sessionStorage.setItem(CACHE_KEY_PROFILE, JSON.stringify(response.data));
       } catch (err) {
         console.error('Error fetching user data:', err);
+        sessionStorage.removeItem(CACHE_KEY_PROFILE);
         navigate('/');
       } finally {
         setIsLoading(false);
@@ -94,7 +112,11 @@ const Profile = () => {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
+      
+      // Actualizar los datos en el estado y en sessionStorage
       setUserData(response.data);
+      sessionStorage.setItem(CACHE_KEY_PROFILE, JSON.stringify(response.data));
+      
       setSuccess('Profile updated successfully.');
       setEditMode(false);
     } catch (err) {
@@ -163,6 +185,7 @@ const Profile = () => {
 
   const handleLogout = () => {
     localStorage.removeItem('authToken');
+    sessionStorage.removeItem(CACHE_KEY_PROFILE);
     navigate('/');
   };
 
