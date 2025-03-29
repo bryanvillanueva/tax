@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import { SpeedDial, SpeedDialAction, SpeedDialIcon } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 import FavoriteIcon from '@mui/icons-material/Favorite';
@@ -8,29 +8,40 @@ import { useNavigate } from 'react-router-dom';
 
 const CustomSpeedDial = () => {
   const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
 
-  const actions = [
+  const toggleSpeedDial = () => {
+    setOpen(!open);
+  };
+
+  const handleActionClick = (action) => {
+    action();
+    setOpen(false);
+  };
+
+  // Memoize the actions array to avoid recreating it on each render
+  const actions = useMemo(() => [
     {
-      icon: <HomeIcon sx={{ color: '#0954de' }} />, // Ícono Home con azul del botón principal
+      icon: <HomeIcon sx={{ color: '#0858e6' }} />,
       name: 'Home',
       action: () => navigate('/form-selector'),
     },
     {
-      icon: <FavoriteIcon sx={{ color: '#ff0000' }} />, // Ícono Favorites en rojo
+      icon: <FavoriteIcon sx={{ color: '#ef4444' }} />,
       name: 'Favorites',
       action: () => navigate('/favorites'),
     },
     {
-      icon: <ProfileIcon sx={{ color: '#0954de' }} />, // Ícono Profile
+      icon: <ProfileIcon sx={{ color: '#0858e6' }} />,
       name: 'Profile',
       action: () => navigate('/profile'),
     },
     {
-      icon: <WhatsappIcon sx={{ color: '#93f5b0' }} />, // Wp icon Green
+      icon: <WhatsappIcon sx={{ color: '#10b981' }} />,
       name: 'Support',
       action: () => window.open('https://w.app/nVaYD9', '_blank'),
     },
-  ];
+  ], [navigate]);
 
   return (
     <SpeedDial
@@ -39,22 +50,50 @@ const CustomSpeedDial = () => {
         position: 'fixed',
         bottom: 32,
         right: 32,
+        zIndex: 1250,
         '& .MuiFab-primary': {
-          backgroundColor: '#0954de', // Color de fondo del SpeedDial principal
+          backgroundColor: '#0858e6',
+          boxShadow: '0 4px 12px rgba(8, 88, 230, 0.25)',
+          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
           '&:hover': {
-            backgroundColor: '#0746b0', // Color de hover
+            backgroundColor: '#0746b0',
+            boxShadow: '0 6px 16px rgba(8, 88, 230, 0.35)',
+            '& .MuiSpeedDialIcon-root': {
+              transform: 'rotate(45deg)',
+            }
           },
+        },
+        // Animación del icono
+        '& .MuiSpeedDialIcon-root': {
+          transition: 'transform 0.3s ease-in-out',
+          transform: open ? 'rotate(45deg)' : 'rotate(0deg)',
         },
       }}
       icon={<SpeedDialIcon />}
+      open={open}
+      onClick={toggleSpeedDial}
+      onClose={() => {}}
+      FabProps={{
+        onClick: toggleSpeedDial,
+        disableRipple: false,
+      }}
+      direction="up"
     >
       {actions.map((action) => (
         <SpeedDialAction
           key={action.name}
-          icon={action.icon} // Colores definidos en cada acción
+          icon={action.icon}
           tooltipTitle={action.name}
-          tooltipOpen
-          onClick={action.action}
+          tooltipOpen={open}
+          FabProps={{
+            sx: {
+              bgcolor: 'white',
+              '&:hover': {
+                bgcolor: '#f0f9ff',
+              },
+            }
+          }}
+          onClick={() => handleActionClick(action.action)}
         />
       ))}
     </SpeedDial>
