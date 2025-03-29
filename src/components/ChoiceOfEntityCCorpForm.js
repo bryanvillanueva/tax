@@ -15,7 +15,7 @@ const ChoiceOfEntityCCorpForm = ({ onCalculate }) => {
   // Fixed fields
   const [filingStatus, setFilingStatus] = useState("Single");
   const [partnerType, setPartnerType] = useState("Active");
-  const [formType, setFormType] = useState("1120C");
+  const [formType, setFormType] = useState("1120");
   const [grossIncome, setGrossIncome] = useState("");
   const [QBID, setQbid] = useState("");
   const [error, setError] = useState(null);
@@ -39,9 +39,9 @@ const ChoiceOfEntityCCorpForm = ({ onCalculate }) => {
 
     let estimatedTaxDue;
     if (IPI === "Yes" && netIncome >= 200000) {
-      estimatedTaxDue = netIncome * (currentMarginalTaxRate + 0.038);
+      estimatedTaxDue = netIncome * (currentMarginalTaxRate / 100+ 0.038);
     } else {
-      estimatedTaxDue = netIncome * currentMarginalTaxRate;
+      estimatedTaxDue = netIncome * (currentMarginalTaxRate / 100);
     }
     setETD(estimatedTaxDue);
   }, [NI, CMTR, IPI]);
@@ -53,10 +53,10 @@ const ChoiceOfEntityCCorpForm = ({ onCalculate }) => {
     const expensesNotPreviouslyAllowed = parseFloat(ENPA) || 0;
 
     const ccEstimatedTaxDue = netIncome * cCorpTaxRate;
-    setCCETD(ccEstimatedTaxDue);
+    setCCETD(ccEstimatedTaxDue / 100);
 
     const ccNewEstimatedTax = (netIncome - expensesNotPreviouslyAllowed) * cCorpTaxRate;
-    setCCNET(ccNewEstimatedTax);
+    setCCNET(ccNewEstimatedTax / 100);
   }, [NI, CCTR, ENPA]);
 
   const handleSubmit = (e) => {
@@ -144,7 +144,26 @@ const ChoiceOfEntityCCorpForm = ({ onCalculate }) => {
                 <MenuItem value="HH">Head of Household</MenuItem>
                 <MenuItem value="QSS">Qualified Surviving Spouse</MenuItem>
               </TextField>
+              <TextField
+                label="Gross Income"
+                fullWidth
+                type="number"
+                value={grossIncome}
+                onChange={(e) => setGrossIncome(e.target.value)}
+                margin="normal"
+              />
 
+              <TextField
+                select
+                label="Type of Partner"
+                fullWidth
+                value={partnerType}
+                onChange={(e) => setPartnerType(e.target.value)}
+                margin="normal"
+              >
+                <MenuItem value="Active">Active</MenuItem>
+                <MenuItem value="Passive">Passive</MenuItem>
+              </TextField>
               <TextField
                 label="Net Income (NI)"
                 fullWidth
@@ -175,7 +194,12 @@ const ChoiceOfEntityCCorpForm = ({ onCalculate }) => {
                 <MenuItem value="Yes">Yes</MenuItem>
               </TextField>
 
-              <TextField
+            
+              
+            </Grid>
+
+            <Grid item xs={12} md={6}>
+            <TextField
                 label="Estimated Tax Due (ETD)"
                 fullWidth
                 type="number"
@@ -183,10 +207,7 @@ const ChoiceOfEntityCCorpForm = ({ onCalculate }) => {
                 margin="normal"
                 disabled
               />
-            </Grid>
-
-            <Grid item xs={12} md={6}>
-              <TextField
+            <TextField
                 label="C Corp Tax Rate (CCTR) %"
                 fullWidth
                 type="number"
@@ -222,16 +243,16 @@ const ChoiceOfEntityCCorpForm = ({ onCalculate }) => {
                 disabled
               />
 
-              <TextField
+               <TextField
                 select
-                label="Type of Partner"
+                label="Form Type"
                 fullWidth
-                value={partnerType}
-                onChange={(e) => setPartnerType(e.target.value)}
+                value={formType}
+                onChange={(e) => setFormType(e.target.value)}
                 margin="normal"
               >
-                <MenuItem value="Active">Active</MenuItem>
-                <MenuItem value="Passive">Passive</MenuItem>
+            
+                <MenuItem value="1120">1120</MenuItem>
               </TextField>
 
               <TextField

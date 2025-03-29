@@ -45,7 +45,7 @@ const ChoiceOfEntityPartnershipForm = ({ onCalculate }) => {
     } else {
       estimatedSocialSecurityMedicareTaxes = netIncome * percentageOwned * 0.153;
     }
-    setESMT(estimatedSocialSecurityMedicareTaxes);
+    setESMT(estimatedSocialSecurityMedicareTaxes / 100);
   }, [NI, REB, RP, PO]);
 
   // Calculate Estimated Tax Due and Tax Savings
@@ -54,11 +54,11 @@ const ChoiceOfEntityPartnershipForm = ({ onCalculate }) => {
     const percentageOwned = parseFloat(PO) || 0;
     const marginalTaxRate = parseFloat(MTR) || 0;
 
-    const estimatedTaxDue = netIncome * percentageOwned * marginalTaxRate;
-    setETD(estimatedTaxDue);
+    const estimatedTaxDue = netIncome * percentageOwned * marginalTaxRate / 100;
+    setETD(estimatedTaxDue / 100);
 
     const estimatedTaxSavingsNoDividends = netIncome * percentageOwned * 0.2;
-    setTSND(estimatedTaxSavingsNoDividends);
+    setTSND(estimatedTaxSavingsNoDividends / 100);
   }, [NI, PO, MTR]);
 
   const handleSubmit = (e) => {
@@ -146,7 +146,26 @@ const ChoiceOfEntityPartnershipForm = ({ onCalculate }) => {
                 <MenuItem value="HH">Head of Household</MenuItem>
                 <MenuItem value="QSS">Qualified Surviving Spouse</MenuItem>
               </TextField>
+              <TextField
+                label="Gross Income"
+                fullWidth
+                type="number"
+                value={grossIncome}
+                onChange={(e) => setGrossIncome(e.target.value)}
+                margin="normal"
+              />
 
+              <TextField
+                select
+                label="Type of Partner"
+                fullWidth
+                value={partnerType}
+                onChange={(e) => setPartnerType(e.target.value)}
+                margin="normal"
+              >
+                <MenuItem value="Active">Active</MenuItem>
+                <MenuItem value="Passive">Passive</MenuItem>
+              </TextField>
               <TextField
                 label="Net Income (NI)"
                 fullWidth
@@ -180,7 +199,11 @@ const ChoiceOfEntityPartnershipForm = ({ onCalculate }) => {
                 <MenuItem value="Yes">Yes</MenuItem>
               </TextField>
 
-              <TextField
+              
+            </Grid>
+
+            <Grid item xs={12} md={6}>
+            <TextField
                 label="Percentage Owned (PO) %"
                 fullWidth
                 type="number"
@@ -188,9 +211,6 @@ const ChoiceOfEntityPartnershipForm = ({ onCalculate }) => {
                 onChange={(e) => setPO(e.target.value)}
                 margin="normal"
               />
-            </Grid>
-
-            <Grid item xs={12} md={6}>
               <TextField
                 label="Estimated Social Security and Medicare Taxes (ESMT)"
                 fullWidth
@@ -227,16 +247,17 @@ const ChoiceOfEntityPartnershipForm = ({ onCalculate }) => {
                 disabled
               />
 
-              <TextField
+               <TextField
                 select
-                label="Type of Partner"
+                label="Form Type"
                 fullWidth
-                value={partnerType}
-                onChange={(e) => setPartnerType(e.target.value)}
+                value={formType}
+                onChange={(e) => setFormType(e.target.value)}
                 margin="normal"
               >
-                <MenuItem value="Active">Active</MenuItem>
-                <MenuItem value="Passive">Passive</MenuItem>
+              
+                <MenuItem value="1065">1065</MenuItem>
+                
               </TextField>
 
               <TextField

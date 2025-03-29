@@ -15,7 +15,7 @@ const SoleProprietorForm = ({ onCalculate }) => {
   // Fixed fields
   const [filingStatus, setFilingStatus] = useState("Single");
   const [partnerType, setPartnerType] = useState("Active");
-  const [formType, setFormType] = useState("1040NR - Schedule E");
+  const [formType, setFormType] = useState("1040 - Schedule C/F");
   const [grossIncome, setGrossIncome] = useState("");
   const [QBID, setQbid] = useState("");
   const [error, setError] = useState(null);
@@ -40,14 +40,14 @@ const SoleProprietorForm = ({ onCalculate }) => {
     switch (filingStatus) {
       case "Single":
       case "MFS":
-        standardDeduction = 12950;
+        standardDeduction = 14600;
         break;
       case "MFJ":
       case "QSS":
-        standardDeduction = 25900;
+        standardDeduction = 29200;
         break;
       case "HH":
-        standardDeduction = 19400;
+        standardDeduction = 21900;
         break;
       default:
         standardDeduction = 0;
@@ -175,7 +175,7 @@ const SoleProprietorForm = ({ onCalculate }) => {
                 value={grossIncome}
                 onChange={(e) => setGrossIncome(e.target.value)}
                 margin="normal"
-                disabled
+                
               />
               <TextField
                 select
@@ -204,10 +204,7 @@ const SoleProprietorForm = ({ onCalculate }) => {
                 onChange={(e) => setBE(e.target.value)}
                 margin="normal"
               />
-            </Grid>
-
-            <Grid item xs={12} md={6}>
-              <TextField
+               <TextField
                 label="Deduction from other strategies (DFOS)"
                 fullWidth
                 type="number"
@@ -223,6 +220,10 @@ const SoleProprietorForm = ({ onCalculate }) => {
                 margin="normal"
                 disabled
               />
+            </Grid>
+
+            <Grid item xs={12} md={6}>
+             
               <TextField
                 label="Estimated Self-employment tax (ESET)"
                 fullWidth
@@ -279,7 +280,7 @@ const SoleProprietorForm = ({ onCalculate }) => {
                 onChange={(e) => setFormType(e.target.value)}
                 margin="normal"
               >
-                <MenuItem value="1040NR - Schedule E">1040NR - Schedule E</MenuItem>
+                <MenuItem value="1040 - Schedule C/F">1040 - Schedule C/F</MenuItem>
               </TextField>
               <TextField
                 label="QBID (Qualified Business Income Deduction)"

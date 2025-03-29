@@ -15,7 +15,7 @@ const ChoiceOfEntityForm = ({ onCalculate }) => {
   // Fixed fields
   const [filingStatus, setFilingStatus] = useState("Single");
   const [partnerType, setPartnerType] = useState("Active");
-  const [formType, setFormType] = useState("1040NR - Schedule E");
+  const [formType, setFormType] = useState("1040 - Schedule C/F");
   const [grossIncome, setGrossIncome] = useState("");
   const [QBID, setQbid] = useState("");
   const [error, setError] = useState(null);
@@ -137,7 +137,28 @@ const ChoiceOfEntityForm = ({ onCalculate }) => {
                 <MenuItem value="HH">Head of Household</MenuItem>
                 <MenuItem value="QSS">Qualified Surviving Spouse</MenuItem>
               </TextField>
+
+              <TextField
+                label="Gross Income"
+                fullWidth
+                type="number"
+                value={grossIncome}
+                onChange={(e) => setGrossIncome(e.target.value)}
+                margin="normal"
               
+              />
+
+              <TextField
+                select
+                label="Type of Partner"
+                fullWidth
+                value={partnerType}
+                onChange={(e) => setPartnerType(e.target.value)}
+                margin="normal"
+              >
+                <MenuItem value="Active">Active</MenuItem>
+                <MenuItem value="Passive">Passive</MenuItem>
+              </TextField>
               <TextField
                 select
                 label="Does Taxpayer's Activity Require Business Analysis? (DTABA)"
@@ -167,27 +188,6 @@ const ChoiceOfEntityForm = ({ onCalculate }) => {
                 </TextField>
               )}
 
-              <TextField
-                label="Gross Income"
-                fullWidth
-                type="number"
-                value={grossIncome}
-                onChange={(e) => setGrossIncome(e.target.value)}
-                margin="normal"
-                disabled
-              />
-
-              <TextField
-                select
-                label="Type of Partner"
-                fullWidth
-                value={partnerType}
-                onChange={(e) => setPartnerType(e.target.value)}
-                margin="normal"
-              >
-                <MenuItem value="Active">Active</MenuItem>
-                <MenuItem value="Passive">Passive</MenuItem>
-              </TextField>
             </Grid>
 
             <Grid item xs={12} md={6}>
@@ -223,7 +223,11 @@ const ChoiceOfEntityForm = ({ onCalculate }) => {
                 onChange={(e) => setFormType(e.target.value)}
                 margin="normal"
               >
+               <MenuItem value="1040 - Schedule C/F">1040 - Schedule C/F</MenuItem>
                 <MenuItem value="1040NR - Schedule E">1040NR - Schedule E</MenuItem>
+                <MenuItem value="1065">1065</MenuItem>
+                <MenuItem value="1120S">1120S</MenuItem>
+                <MenuItem value="1120">1120</MenuItem>
               </TextField>
 
               <TextField

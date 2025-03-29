@@ -15,7 +15,7 @@ const ReasonableCompAnalysisForm = ({ onCalculate }) => {
   // Fixed fields
   const [filingStatus, setFilingStatus] = useState("Single");
   const [partnerType, setPartnerType] = useState("Active");
-  const [formType, setFormType] = useState("1040NR - Schedule E");
+  const [formType, setFormType] = useState("1120S");
   const [grossIncome, setGrossIncome] = useState("");
   const [QBID, setQbid] = useState("");
   const [error, setError] = useState(null);
@@ -60,7 +60,7 @@ const ReasonableCompAnalysisForm = ({ onCalculate }) => {
   // Calculate Total Tax Savings (TTS)
   useEffect(() => {
     const marginalRate = parseFloat(MTR) || 0;
-    setTTS(S15 + (EQBI * marginalRate));
+    setTTS(S15 + (EQBI * marginalRate / 100));
   }, [S15, EQBI, MTR]);
 
   const handleSubmit = (e) => {
@@ -161,7 +161,7 @@ const ReasonableCompAnalysisForm = ({ onCalculate }) => {
                 value={grossIncome}
                 onChange={(e) => setGrossIncome(e.target.value)}
                 margin="normal"
-                disabled
+               
               />
               <TextField
                 select
@@ -190,9 +190,6 @@ const ReasonableCompAnalysisForm = ({ onCalculate }) => {
                 onChange={(e) => setCHIB(e.target.value)}
                 margin="normal"
               />
-            </Grid>
-
-            <Grid item xs={12} md={6}>
               <TextField
                 label="Reasonable Comp Plus Health Insurance (RCPH)"
                 fullWidth
@@ -209,6 +206,10 @@ const ReasonableCompAnalysisForm = ({ onCalculate }) => {
                 onChange={(e) => setMTR(e.target.value)}
                 margin="normal"
               />
+            </Grid>
+
+            <Grid item xs={12} md={6}>
+              
               <TextField
                 label="Total Current Compensation (TCC)"
                 fullWidth
@@ -257,7 +258,7 @@ const ReasonableCompAnalysisForm = ({ onCalculate }) => {
                 onChange={(e) => setFormType(e.target.value)}
                 margin="normal"
               >
-                <MenuItem value="1040NR - Schedule E">1040NR - Schedule E</MenuItem>
+              <MenuItem value="1120S">1120S</MenuItem>
               </TextField>
               <TextField
                 label="QBID (Qualified Business Income Deduction)"
