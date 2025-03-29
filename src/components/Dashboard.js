@@ -1,5 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Box, AppBar, Toolbar, Typography, Container, CssBaseline, IconButton } from '@mui/material';
+import { 
+  Box, 
+  AppBar, 
+  Toolbar, 
+  Typography, 
+  Container, 
+  CssBaseline, 
+  IconButton, 
+  Paper,
+  useTheme,
+  useMediaQuery
+} from '@mui/material';
 import { useParams, useNavigate } from 'react-router-dom';
 import DepreciationForm from './DepreciationForm';
 import AugustaRuleForm from './AugustaRuleForm';
@@ -80,7 +91,7 @@ import StructuredInvestmentProgramForm from './StructuredInvestmentProgramForm';
 import CustomSpeedDial from './CustomSpeedDial';
 import CustomAppBar from './CustomAppBar';
 import CustomDrawer from './CustomDrawer';
-import MenuIcon from '@mui/icons-material/Menu';
+
 import axios from 'axios';
 import PassThroughEntity from './PassThroughEntity';
 import PassiveLossAndPigs from './PassiveLossAndPigs';
@@ -108,16 +119,17 @@ import CaptiveInsuranceForm from './CaptiveInsuranceForm';
 import CharitableLLCForm from './CharitableLLCForm';
 import SoleProprietorForm from './SoleProprietorForm';
 
-
-
 const Dashboard = () => {
   const { formId } = useParams(); // Obtiene el formId de la URL
   const navigate = useNavigate();
   const [results, setResults] = useState(null);
-  //const [open, setOpen] = useState(false);
-   const [userData, setUserData] = useState(null); 
-   const [drawerOpen, setDrawerOpen] = useState(false);
-
+  const [userData, setUserData] = useState(null); 
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [showSearch, setShowSearch] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+   
   // Verificar si hay un token activo al cargar el componente
   useEffect(() => {
     const token = localStorage.getItem('authToken');
@@ -132,29 +144,77 @@ const Dashboard = () => {
       try {
         const response = await axios.get('https://taxbackend-production.up.railway.app/user', {
           headers: {
-            Authorization: `Bearer ${token}`, // Envía el token al backend
+            Authorization: `Bearer ${token}`,
           },
         });
-        setUserData(response.data); // Almacena los datos del usuario
+        setUserData(response.data);
       } catch (error) {
         console.error('Error al validar el token:', error.message);
-        localStorage.removeItem('authToken'); // Elimina el token si no es válido
-        navigate('/'); // Redirige al login
+        localStorage.removeItem('authToken');
+        navigate('/');
       }
     };
 
     validateToken();
   }, [navigate]);
 
+  // Reiniciar resultados cuando cambia el formulario
   useEffect(() => {
-    setResults(null); // Reinicia los resultados cuando cambia el formulario
+    setResults(null);
   }, [formId]);
 
+  // Detectar scroll para mostrar la barra de búsqueda en el AppBar en FormSelector
+  useEffect(() => {
+    // Solo activar este efecto si estamos en la página de FormSelector
+    if (!formId) {
+      const handleScroll = () => {
+        const scrollPosition = window.scrollY || document.documentElement.scrollTop;
+        const shouldShowSearch = scrollPosition > 200; // Mostrar después de 200px de scroll
+        
+        if (shouldShowSearch !== showSearch) {
+          setShowSearch(shouldShowSearch);
+        }
+      };
+      
+      // Uso de requestAnimationFrame para optimizar el rendimiento
+      let ticking = false;
+      const scrollListener = () => {
+        if (!ticking) {
+          window.requestAnimationFrame(() => {
+            handleScroll();
+            ticking = false;
+          });
+          ticking = true;
+        }
+      };
+      
+      window.addEventListener('scroll', scrollListener, { passive: true });
+      return () => {
+        window.removeEventListener('scroll', scrollListener);
+      };
+    } else {
+      // Si no estamos en FormSelector, asegurarse de que showSearch es false
+      setShowSearch(false);
+    }
+  }, [formId, showSearch]);
+
+  // Pasar el searchTerm al FormSelector cuando se renderiza
+  useEffect(() => {
+    if (!formId && document.getElementById('form-selector-search-input')) {
+      const inputElement = document.getElementById('form-selector-search-input');
+      if (inputElement.value !== searchTerm) {
+        inputElement.value = searchTerm;
+        // Disparar un evento de cambio para que React actualice el estado interno del FormSelector
+        const event = new Event('input', { bubbles: true });
+        inputElement.dispatchEvent(event);
+      }
+    }
+  }, [formId, searchTerm]);
+
   const handleSelectForm = (form) => {
-    navigate(`/form-selector/${form}`); // Navega a la ruta con el ID del formulario
+    navigate(`/form-selector/${form}`);
     setResults(null);
   };
-
 
   const renderForm = () => {
     switch (formId) {
@@ -288,7 +348,6 @@ const Dashboard = () => {
           return <PrivateFamilyFoundation onCalculate={setResults} />;
       case 'qualifiedCharitableDistributions':
           return <QualifiedCharitableDistributions onCalculate={setResults} />;
-
       case 'RealEstateDevelopmentCharitable':
           return <RealEstateDevelopmentCharitableOptionForm onCalculate={setResults} />;
       case 'RestrictedStockUnits':
@@ -339,27 +398,26 @@ const Dashboard = () => {
           return <MiscTaxCreditsForm onCalculate={setResults} />;
       case 'rentalStrategies754Election':
          return <RentalStrategies754ElectionForm onCalculate={setResults} />;
-        case 'ReasonableCompAnalysis':
-            return <ReasonableCompAnalysisForm onCalculate={setResults} />;
-        case 'RealEstateProfessional':
-            return <RealEstateProfessionalForm onCalculate={setResults} />;
-        case 'CaptiveInsurance':
-            return <CaptiveInsuranceForm onCalculate={setResults} />;
-        case 'CharitableLLC':
-            return <CharitableLLCForm onCalculate={setResults} />;
-        case 'SoleProprietor':
-            return <SoleProprietorForm onCalculate={setResults} />;
-        case 'ChoiceOfEntity':
-            return <ChoiceOfEntityForm onCalculate={setResults} />;
-        case 'ChoiceOfEntityCCorp':
-            return <ChoiceOfEntityCCorpForm onCalculate={setResults} />;
-        case 'ChoiceOfEntityPartnership':
-            return <ChoiceOfEntityPartnershipForm onCalculate={setResults} />;
-        case 'ChoiceOfEntitySCorp':
-            return <ChoiceOfEntitySCorpForm onCalculate={setResults} />;
-            
+      case 'ReasonableCompAnalysis':
+          return <ReasonableCompAnalysisForm onCalculate={setResults} />;
+      case 'RealEstateProfessional':
+          return <RealEstateProfessionalForm onCalculate={setResults} />;
+      case 'CaptiveInsurance':
+          return <CaptiveInsuranceForm onCalculate={setResults} />;
+      case 'CharitableLLC':
+          return <CharitableLLCForm onCalculate={setResults} />;
+      case 'SoleProprietor':
+          return <SoleProprietorForm onCalculate={setResults} />;
+      case 'ChoiceOfEntity':
+          return <ChoiceOfEntityForm onCalculate={setResults} />;
+      case 'ChoiceOfEntityCCorp':
+          return <ChoiceOfEntityCCorpForm onCalculate={setResults} />;
+      case 'ChoiceOfEntityPartnership':
+          return <ChoiceOfEntityPartnershipForm onCalculate={setResults} />;
+      case 'ChoiceOfEntitySCorp':
+          return <ChoiceOfEntitySCorpForm onCalculate={setResults} />;
       default:
-        return <FormSelector onSelectForm={handleSelectForm} />;
+        return <FormSelector onSelectForm={handleSelectForm} searchTerm={searchTerm} setSearchTerm={setSearchTerm} />;
     }
   };
 
@@ -374,7 +432,7 @@ const Dashboard = () => {
       case 'hireKids':
         return 'Hire Your Kids';
       case 'charitableRemainderTrust':
-        return 'Charitable Remainder Trus';
+        return 'Charitable Remainder Trust';
       case 'reimbursment':
         return 'Reimbursment Of Personal Vehicle';
       case 'hireFamily':
@@ -464,7 +522,7 @@ const Dashboard = () => {
       case 'FinancedSoftwareLeaseback':
           return 'Financed Software Leaseback';
       case 'ForeignEarnedIncomeExclusion':
-          return 'Foreign Earned Income Exlusion';
+          return 'Foreign Earned Income Exclusion';
       case 'GroupHealthInsurance':
           return 'Group Health Insurance';
       case 'GroupingRelatedActivities':
@@ -505,7 +563,6 @@ const Dashboard = () => {
           return 'S-Corp Revocation';
       case 'SecureAct20Strategies':
           return 'Secure Act 20 Strategies';
-      
       case 'seriesIBond':
           return 'Series I Bond';
       case 'shortTermRental':
@@ -546,118 +603,180 @@ const Dashboard = () => {
           return 'Miscellaneous Tax Credits';
       case 'rentalStrategies754Election':
           return 'Rental Strategies & 754 Election';
-     
-          case 'ReasonableCompAnalysis':
-            return 'Reasonable Comp Analysis for Owners of Corporations';
-        case 'RealEstateProfessional':
-            return 'Real Estate Professional';
-        case 'CaptiveInsurance':
-            return 'Captive Insurance';
-        case 'CharitableLLC':
-            return 'Charitable LLC';
-        case 'SoleProprietor':
-            return 'Choice of Entity - Sole Proprietor Sch C';
-        case 'ChoiceOfEntity':
-            return 'Choice of Entity - Overview & Analysis';
-        case 'ChoiceOfEntityCCorp':
-            return 'Choice of Entity - C Corporation';
-        case 'ChoiceOfEntityPartnership':
-            return 'Choice of Entity - Partnership';
-        case 'ChoiceOfEntitySCorp':
-            return 'Choice of Entity - S Corporation';
-        
-          
-          
+      case 'ReasonableCompAnalysis':
+          return 'Reasonable Comp Analysis for Owners of Corporations';
+      case 'RealEstateProfessional':
+          return 'Real Estate Professional';
+      case 'CaptiveInsurance':
+          return 'Captive Insurance';
+      case 'CharitableLLC':
+          return 'Charitable LLC';
+      case 'SoleProprietor':
+          return 'Choice of Entity - Sole Proprietor Sch C';
+      case 'ChoiceOfEntity':
+          return 'Choice of Entity - Overview & Analysis';
+      case 'ChoiceOfEntityCCorp':
+          return 'Choice of Entity - C Corporation';
+      case 'ChoiceOfEntityPartnership':
+          return 'Choice of Entity - Partnership';
+      case 'ChoiceOfEntitySCorp':
+          return 'Choice of Entity - S Corporation';
       default:
         return '';
     }
   };
 
   return (
-    <Container>
+    <>
       <CssBaseline />
       
+      {/* AppBar mejorado con borde inferior suave */}
       <AppBar
-        position="fixed" // Fija el AppBar en la parte superior
+        position="fixed"
+        elevation={0}
         sx={{
-          backgroundColor: '#fff', // Color de fondo rojo
-          boxShadow: 'none', // Elimina la sombra si lo prefieres
-          zIndex: 3,
-          height: '85px',
-          }}
-         >
+          backgroundColor: '#fff',
+          borderBottom: '1px solid rgba(0, 0, 0, 0.08)',
+          zIndex: 1300,
+          height: '70px',
+        }}
+      >
         <Toolbar>
-        <CustomAppBar userData={userData} onMenuClick={() => setDrawerOpen(true)} />
-        {/* Botón para abrir el Drawer */} 
-        <IconButton
-        size="large"
-        onClick={() => setDrawerOpen(true)}
-         sx={{
-         position: 'fixed',
-         top: 16,
-         left: 16,
-         color: '#fff',
-         backgroundColor: '#0858e6',
-         zIndex: 1,
-         boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.2)',
-         transition: 'transform 0.2s, background-color 0.2s', // Transición suave para hover y pulse
-         '&:hover': {
-         backgroundColor: '#0746b0', // Azul oscuro al hacer hover
-         transform: 'scale(1.1)', // Efecto de pulse al hover
-          },
-        '&:active': {
-         transform: 'scale(0.95)', // Pequeño efecto de clic
-         },
-         }}
-        >
-        <MenuIcon />
-        </IconButton>
+          <CustomAppBar 
+            userData={userData} 
+            drawerOpen={drawerOpen}
+            setDrawerOpen={setDrawerOpen}
+            showSearch={showSearch}
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+          />
         </Toolbar>
-        </AppBar>
-      {/* Reutiliza el Drawer */}
+      </AppBar>
+      
+      {/* Drawer component */}
       <CustomDrawer
         drawerOpen={drawerOpen}
         setDrawerOpen={setDrawerOpen}
         userData={userData}
       />
 
-      {/* Logo */}
-      <Box sx={{ textAlign: 'center',
-                 my: 4, 
-                 marginTop: 10,
-                 position: 'relative',
-                 zIndex: 4,
-              }}>
-        <img
-          src="https://tax.bryanglen.com/logo.png"
-          alt="Logo"
-          style={{ maxWidth: '350px' }}
+      {/* Contenido principal con fondo degradado */}
+      <Box 
+        sx={{ 
+          backgroundImage: 'linear-gradient(135deg, #f5f7fa 0%, #eef1f5 100%)',
+          minHeight: '100vh',
+          pt: { xs: 10, sm: 12 },
+          pb: 8,
+          px: { xs: 2, sm: 3, md: 4 }
+        }}
+      >
+        <Container maxWidth="lg">
+          {/* Logo con animación suave */}
+          <Box 
+            sx={{ 
+              textAlign: 'center',
+              my: 4, 
+              position: 'relative',
+              zIndex: 4,
+              transition: 'all 0.3s ease',
+              '&:hover': {
+                transform: 'translateY(-5px)'
+              }
+            }}
+          >
+            <img
+              src="https://tax.bryanglen.com/logo.png"
+              alt="Logo"
+              style={{ 
+                maxWidth: isMobile ? '250px' : '300px',
+                filter: 'drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.1))'
+              }}
+            />
+          </Box>
           
-        />
+          {/* Contenedor principal con tarjeta */}
+          {!formId && (
+            <Box sx={{ mt: 4, textAlign: 'center' }}>
+              {renderForm()}
+            </Box>
+          )}
+          
+          {formId && (
+            <Paper
+              elevation={0}
+              sx={{
+                borderRadius: '20px',
+                overflow: 'hidden',
+                boxShadow: '0 10px 40px rgba(0, 0, 0, 0.08)',
+                backgroundColor: '#fff',
+                mt: 4
+              }}
+            >
+              <Box 
+                sx={{
+                  backgroundColor: '#0858e6',
+                  backgroundImage: 'linear-gradient(135deg, #0858e6 0%, #4481eb 100%)',
+                  padding: { xs: '24px', sm: '32px' },
+                  position: 'relative',
+                  color: 'white',
+                  overflow: 'hidden',
+                  textAlign: 'center',
+                  '&::before': {
+                    content: '""',
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    background: 'url("data:image/svg+xml,%3Csvg width=\'100%\' height=\'100%\' viewBox=\'0 0 800 800\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' stroke=\'%23ffffff\' stroke-opacity=\'0.1\' stroke-width=\'1\'%3E%3Cpath d=\'M769 229L1037 260.9M927 880L731 737 520 660 309 538 40 599 295 764 126.5 879.5 40 599-197 493 102 382-31 229 126.5 79.5-69-63\'/%3E%3Cpath d=\'M-31 229L237 261 390 382 603 493 308.5 537.5 101.5 381.5M370 905L295 764\'/%3E%3Cpath d=\'M520 660L578 842 731 737 840 599 603 493 520 660 295 764 309 538 390 382 539 269 769 229 577.5 41.5 370 105 295 -36 126.5 79.5 237 261 102 382 40 599 -69 737 127 880\'/%3E%3C/g%3E%3C/svg%3E")',
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    opacity: 0.2,
+                  }
+                }}
+              >
+                <Typography 
+                  variant="h4" 
+                  sx={{ 
+                    fontWeight: 700, 
+                    letterSpacing: '0.5px', 
+                    position: 'relative', 
+                    zIndex: 1,
+                    fontSize: { xs: '1.75rem', sm: '2.125rem' },
+                    textShadow: '0 2px 10px rgba(0, 0, 0, 0.15)'
+                  }}
+                >
+                  {getFormTitle()}
+                </Typography>
+              </Box>
+              
+              <Box 
+                sx={{ 
+                  p: { xs: 2, sm: 3, md: 4 },
+                  backgroundColor: '#fff'
+                }}
+              >
+                {renderForm()}
+              </Box>
+              
+              {results && (
+                <Box 
+                  sx={{ 
+                    borderTop: '1px solid rgba(0, 0, 0, 0.08)',
+                    p: { xs: 2, sm: 3, md: 4 },
+                    backgroundColor: '#f8f9fa'
+                  }}
+                >
+                  <ResultsDisplay results={results} formTitle={getFormTitle()} />
+                </Box>
+              )}
+            </Paper>
+          )}
+          
+          {formId && <CustomSpeedDial />}
+        </Container>
       </Box>
-       
-      {/* Contenedor principal */}
-      <Box sx={{ my: 4, textAlign: 'center' }}>
-        {formId && (
-          <Typography variant="h4" gutterBottom sx={{ mt:4 , margin: '0px 0px 0.35em', fontFamily: 'Montserrat, sans-serif',  }}>
-            {getFormTitle()}
-          </Typography>
-        )}
-
-        {renderForm()}
-
-        {formId && (
-
-          <CustomSpeedDial />
-        )}
-
-{results && formId !== ''  && (
-  <ResultsDisplay results={results} formTitle={getFormTitle()} />
-)}
-
-
-      </Box>
-    </Container>
+    </>
   );
 };
 

@@ -119,8 +119,7 @@ const forms = [
 
  
 
-const FormSelector = ({ onSelectForm }) => {
-  const [searchTerm, setSearchTerm] = useState('');
+const FormSelector = ({ onSelectForm, searchTerm, setSearchTerm }) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [userData, setUserData] = useState(null); // Para almacenar los datos del usuario
   const [filteredForms, setFilteredForms] = useState([]); // Formularios filtrados según user_level
@@ -130,7 +129,7 @@ const FormSelector = ({ onSelectForm }) => {
   });
 
   const [loading, setLoading] = useState(true);
-  const [isFixed, setIsFixed] = useState(false);
+  // Eliminado el estado isFixed que ya no se necesita
   const navigate = useNavigate();
 
     // Función para ordenar los formularios con favoritos primero
@@ -187,24 +186,7 @@ const FormSelector = ({ onSelectForm }) => {
     validateToken();
   }, [navigate]);
 
- // Efecto para manejar el scroll y fijar el buscador
- useEffect(() => {
-  const handleScroll = () => {
-    const scrollTop = window.scrollY || document.documentElement.scrollTop;
-    const referencePoint = 200; // Ajusta este valor según la posición inicial del contenedor
-
-    if (scrollTop > referencePoint) {
-      setIsFixed(true);
-    } else {
-      setIsFixed(false);
-    }
-  };
-
-  window.addEventListener('scroll', handleScroll);
-  return () => {
-    window.removeEventListener('scroll', handleScroll);
-  };
-}, []);
+// Ya no necesitamos fijar la barra de búsqueda, ya que existe una en CustomAppBar
 
   const handleLogout = () => {
     localStorage.removeItem('authToken'); // Elimina el token
@@ -245,39 +227,29 @@ const FormSelector = ({ onSelectForm }) => {
         <Box sx={{ mt: 5 }}>
           {/* Contenedor del buscador */}
           <Container
-  sx={{
-    backgroundImage: isFixed
-      ? 'none' // Fondo blanco cuando está fijo
-      : 'url(https://wac-cdn.atlassian.com/misc-assets/webp-images/bg_atl_cloud_hero_small.svg)', // Imagen de fondo cuando no está fijo
-    backgroundColor: isFixed ? '#fff' : 'transparent', // Fondo blanco cuando está fijo
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    borderRadius: '12px',
-    padding: isFixed ? { xs: '8px', sm: '16px' } : { xs: '16px', sm: '32px' }, // Padding reducido en móviles
-    mb: 4,
-    textAlign: 'center',
-    maxWidth: { xs: '90%', sm: '1250px' }, // Ancho reducido en móviles
-    width: isFixed ? { xs: '60%', sm: '50%' } : 'auto', // Ancho del 60% en móviles cuando está fijo
-    position: isFixed ? 'fixed' : 'static', // Cambia la posición según el estado
-    top: isFixed ? 0 : 'auto', // Fija en el top si está fijo
-    left: isFixed ? '50%' : 'auto', // Centra horizontalmente si está fijo
-    transform: isFixed ? 'translateX(-50%)' : 'none', // Ajusta el centrado si está fijo
-    zIndex: 4, // Asegura que esté por encima de otros elementos si está fijo
-    boxShadow: isFixed ? 'none': '0 4px 6px rgba(0, 0, 0, 0.2)', // Sombra opcional
-    
-  }}
+    sx={{
+      backgroundImage: 'url(https://wac-cdn.atlassian.com/misc-assets/webp-images/bg_atl_cloud_hero_small.svg)',
+      backgroundColor: 'transparent',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      borderRadius: '12px',
+      padding: { xs: '16px', sm: '32px' },
+      mb: 4,
+      textAlign: 'center',
+      maxWidth: { xs: '90%', sm: '1250px' },
+      boxShadow: '0 4px 6px rgba(0, 0, 0, 0.2)',
+    }}
 >
   {/* Título (oculto cuando está fijo) */}
   <Typography
     variant="h5"
     gutterBottom
     sx={{
-      color: isFixed ? 'transparent' : '#fff', // Oculta el texto cuando está fijo
+      color: '#fff',
       fontWeight: 'bold',
       fontFamily: 'Montserrat, sans-serif',
-      fontSize: { xs: '1.5rem', sm: '2.125rem' }, // Tamaño de fuente reducido en móviles
-      display: isFixed ? 'none' : 'block', // Oculta el título cuando está fijo
-
+      fontSize: { xs: '1.5rem', sm: '2.125rem' },
+      mb: 3
     }}
   >
     Search or Select a Form to Continue
@@ -295,21 +267,20 @@ const FormSelector = ({ onSelectForm }) => {
       fontFamily: 'Montserrat, sans-serif',
       borderRadius: '8px',
       '& fieldset': {
-        border: isFixed ? '1px solid #0858e6' : 'none', // Borde azul cuando está fijo
+        border: 'none',
       },
       '& .MuiOutlinedInput-root': {
+        borderRadius: '8px',
         '&:hover fieldset': { borderColor: '#0055A4' },
         '&.Mui-focused fieldset': { borderColor: '#0055A4', fontFamily: 'Montserrat, sans-serif' },
       },
-      transition: 'all 0.3s ease', // Transición suave para el borde
-      fontSize: { xs: '14px', sm: '16px' }, // Tamaño de fuente reducido en móviles
-      
+      transition: 'all 0.3s ease',
+      fontSize: { xs: '14px', sm: '16px' },
     }}
   />
 </Container>
 
-          {/* Espacio adicional para evitar solapamiento con el buscador fijo */}
-          {isFixed && <Box sx={{ height: '200px' }} />}
+          {/* Ya no necesitamos espacio adicional porque la barra no se fija */}
 
       {loading ? (
             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>

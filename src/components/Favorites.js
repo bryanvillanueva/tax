@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Grid, Card, CardActionArea, CardContent, IconButton, TextField, Container, AppBar, Toolbar} from '@mui/material';
-import MenuIcon from '@mui/icons-material/Menu';
+import { Box, Typography, Grid, Card, CardActionArea, CardContent, IconButton, TextField, Container, useTheme, useMediaQuery, AppBar, Toolbar, Avatar, InputAdornment } from '@mui/material';
 import CustomDrawer from './CustomDrawer';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import CustomAppBar from './CustomAppBar';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import CustomSpeedDial from './CustomSpeedDial';
 import axios from 'axios';
+import MenuIcon from '@mui/icons-material/Menu';
+import SearchIcon from '@mui/icons-material/Search';
 
 
 const forms = [
@@ -118,12 +118,16 @@ const forms = [
 ];
 
 const Favorites = ({ onSelectForm }) => {
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const location = useLocation();
     const [favorites, setFavorites] = useState(() => {
        const savedFavorites = localStorage.getItem('formFavorites');
        return savedFavorites ? JSON.parse(savedFavorites) : {};
      });
      const [searchTerm, setSearchTerm] = useState('');
      const [isFixed, setIsFixed] = useState(false);
+     const [showSearch, setShowSearch] = useState(false);
      
     const [drawerOpen, setDrawerOpen] = useState(false);
     const navigate = useNavigate();
@@ -138,22 +142,31 @@ const Favorites = ({ onSelectForm }) => {
       localStorage.setItem('formFavorites', JSON.stringify(newFavorites));
   };
 
-//navegador fijo
+  // Detectar scroll para mostrar la barra de búsqueda en el AppBar
   useEffect(() => {
     const handleScroll = () => {
-      const scrollTop = window.scrollY || document.documentElement.scrollTop;
-      const referencePoint = 200; // Ajusta este valor según la posición inicial del contenedor
-  
-      if (scrollTop > referencePoint) {
-        setIsFixed(true);
-      } else {
-        setIsFixed(false);
+      const scrollPosition = window.scrollY || document.documentElement.scrollTop;
+      // Mostrar después de 200px de scroll
+      const shouldShowSearch = scrollPosition > 200; 
+      setShowSearch(shouldShowSearch);
+      setIsFixed(shouldShowSearch);
+    };
+    
+    // Uso de requestAnimationFrame para optimizar el rendimiento
+    let ticking = false;
+    const scrollListener = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          handleScroll();
+          ticking = false;
+        });
+        ticking = true;
       }
     };
-  
-    window.addEventListener('scroll', handleScroll);
+    
+    window.addEventListener('scroll', scrollListener, { passive: true });
     return () => {
-      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('scroll', scrollListener);
     };
   }, []);
 
@@ -233,44 +246,141 @@ const getSortedForms = (formsList, favoritesObj, searchTerm) => {
 const sortedAndFilteredForms = getSortedForms(forms, favorites, searchTerm);
 
 return (
-    <Box sx={{ mt: 5, textAlign: 'center' }}>
-    <AppBar
-        position="fixed" // Fija el AppBar en la parte superior
+    <Box sx={{ mt: 0, textAlign: 'center', paddingTop: '70px' }}>
+      {/* Implementación personalizada del AppBar similar al Dashboard */}
+      <AppBar
+        position="fixed"
+        elevation={0}
         sx={{
-          backgroundColor: '#fff', // Color de fondo rojo
-          boxShadow: 'none', // Elimina la sombra si lo prefieres
-          zIndex: 3,
-          height: '85px',
-          }}
-         >
+          backgroundColor: '#fff',
+          borderBottom: '1px solid rgba(0, 0, 0, 0.08)',
+          zIndex: 1300,
+          height: '70px',
+        }}
+      >
         <Toolbar>
-        <CustomAppBar userData={userData} onMenuClick={() => setDrawerOpen(true)} />
-        {/* Botón para abrir el Drawer */} 
-        <IconButton
-        size="large"
-        onClick={() => setDrawerOpen(true)}
-         sx={{
-         position: 'fixed',
-         top: 16,
-         left: 16,
-         color: '#fff',
-         backgroundColor: '#0858e6',
-         zIndex: 1,
-         boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.2)',
-         transition: 'transform 0.2s, background-color 0.2s', // Transición suave para hover y pulse
-         '&:hover': {
-         backgroundColor: '#0746b0', // Azul oscuro al hacer hover
-         transform: 'scale(1.1)', // Efecto de pulse al hover
-          },
-        '&:active': {
-         transform: 'scale(0.95)', // Pequeño efecto de clic
-         },
-         }}
-        >
-        <MenuIcon />
-        </IconButton>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+            {/* Left section - Menu button */}
+            <IconButton
+              onClick={() => setDrawerOpen(!drawerOpen)}
+              edge="start"
+              aria-label="menu"
+              sx={{ 
+                color: '#0858e6',
+                transition: 'color 0.2s',
+                '&:hover': {
+                  color: '#0746b0',
+                  backgroundColor: 'rgba(8, 88, 230, 0.08)'
+                }
+              }}
+            >
+              <MenuIcon sx={{ fontSize: '24px' }} />
+            </IconButton>
+            
+            {/* Center section - Search functionality */}
+            <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center', maxWidth: '600px', mx: 'auto' }}>
+              {showSearch && (
+                <TextField
+                  placeholder="Search for a form..."
+                  variant="outlined"
+                  size="small"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <SearchIcon sx={{ color: '#0858e6' }} />
+                      </InputAdornment>
+                    ),
+                    sx: {
+                      height: '40px',
+                      borderRadius: '20px',
+                      backgroundColor: '#fff',
+                    }
+                  }}
+                  sx={{
+                    width: '100%',
+                    '& .MuiOutlinedInput-root': {
+                      borderRadius: '20px',
+                      '& fieldset': {
+                        borderColor: 'rgba(0, 0, 0, 0.1)',
+                      },
+                      '&:hover fieldset': {
+                        borderColor: '#0858e6',
+                      },
+                      '&.Mui-focused fieldset': {
+                        borderColor: '#0858e6',
+                      },
+                    },
+                  }}
+                />
+              )}
+            </Box>
+            
+            {/* Right section - User profile */}
+            <Box
+              onClick={(event) => {
+                const userMenu = document.getElementById('user-menu');
+                if (userMenu) {
+                  userMenu.style.display = userMenu.style.display === 'block' ? 'none' : 'block';
+                }
+              }}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                padding: "8px 12px",
+                borderRadius: "4px",
+                cursor: "pointer",
+                transition: "background-color 0.2s",
+                "&:hover": {
+                  backgroundColor: "rgba(0, 0, 0, 0.04)",
+                }
+              }}
+            >
+              <Avatar
+                sx={{
+                  width: 36,
+                  height: 36,
+                  bgcolor: "rgba(8, 88, 230, 0.1)",
+                  color: "#0858e6",
+                  fontWeight: "bold",
+                  fontSize: "1rem"
+                }}
+              >
+                {userData && userData.first_name && userData.last_name ? 
+                  `${userData.first_name.charAt(0)}${userData.last_name.charAt(0)}` : 'U'}
+              </Avatar>
+              
+              {!isMobile && userData && (
+                <Box sx={{ ml: 1.5, display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      fontWeight: 600,
+                      fontSize: "0.9rem",
+                      color: "#333",
+                      lineHeight: 1.2
+                    }}
+                  >
+                    {`${userData.first_name} ${userData.last_name}`}
+                  </Typography>
+                  
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      color: "rgba(0, 0, 0, 0.6)",
+                      fontSize: "0.75rem",
+                      mt: 0.2
+                    }}
+                  >
+                    {userData.product || "Usuario"}
+                  </Typography>
+                </Box>
+              )}
+            </Box>
+          </Box>
         </Toolbar>
-        </AppBar>
+      </AppBar>
       {/* Reutiliza el Drawer */}
       <CustomDrawer
         drawerOpen={drawerOpen}
@@ -279,11 +389,12 @@ return (
       />
 
       {/* Logo */}
-      <Box sx={{ textAlign: 'center',
+      <Box sx={{ 
+                 textAlign: 'center',
                  my: 4, 
-                 marginTop: 10,
+                 marginTop: isMobile ? 15 : 10, // Mayor margen superior en móviles
                  position: 'relative',
-                 zIndex: 4,
+                 zIndex: 1,
               }}>
         <Typography variant="h4" gutterBottom sx={{ fontFamily: 'Montserrat, sans-serif', fontWeight: 'bold', marginBottom: '40px', color: '#0858e6' }}>  
         Favorites
@@ -312,11 +423,12 @@ return (
     maxWidth: { xs: '90%', sm: '1250px' }, // Ancho reducido en móviles
     width: isFixed ? { xs: '60%', sm: '50%' } : 'auto', // Ancho del 60% en móviles cuando está fijo
     position: isFixed ? 'fixed' : 'static', // Cambia la posición según el estado
-    top: isFixed ? 0 : 'auto', // Fija en el top si está fijo
+    top: isFixed ? (isMobile ? 70 : 75) : 'auto', // Fija debajo del AppBar si está fijo
     left: isFixed ? '50%' : 'auto', // Centra horizontalmente si está fijo
     transform: isFixed ? 'translateX(-50%)' : 'none', // Ajusta el centrado si está fijo
-    zIndex: 4, // Asegura que esté por encima de otros elementos si está fijo
+    zIndex: 2, // Un valor menor que AppBar pero mayor que el contenido
     boxShadow: isFixed ? 'none' : '0 4px 6px rgba(0, 0, 0, 0.2)', // Sombra opcional
+    display: showSearch ? 'none' : 'block', // Oculta cuando el search está en el AppBar
   }}
 >
   {/* Título (oculto cuando está fijo) */}
@@ -357,7 +469,7 @@ return (
     }}
   />
 </Container>
-{isFixed && <Box sx={{ height: '200px' }} />}
+{(isFixed || showSearch) && <Box sx={{ height: '220px' }} />}
 
 
 {sortedAndFilteredForms.length === 0 ? (

@@ -1,0 +1,52 @@
+// Después de la línea que dice:
+// const ultimateCount = productStats.find(item => item.name === 'Ultimate')?.value || 0;
+// const bronzeCount = productStats.find(item => item.name === 'Bronze')?.value || 0;
+// const softwareCreatorCount = productStats.find(item => item.name === 'Software Creator')?.value || 0;
+
+// Agrega esto:
+
+// Calcular totales de ingresos basados en todos los usuarios (no solo datos mensuales)
+const calculateUserBasedRevenue = () => {
+  // Calcular ingresos basados en precios fijos
+  const ultimateRevenue = ultimateCount * PRODUCT_PRICES['Ultimate'];
+  const bronzeRevenue = bronzeCount * PRODUCT_PRICES['Bronze'];
+  const totalRevenue = ultimateRevenue + bronzeRevenue;
+  
+  return {
+    totalRevenue,
+    ultimateRevenue,
+    bronzeRevenue,
+    ultimatePercentage: totalRevenue > 0 ? (ultimateRevenue / totalRevenue) * 100 : 0,
+    bronzePercentage: totalRevenue > 0 ? (bronzeRevenue / totalRevenue) * 100 : 0
+  };
+};
+
+// Ingresos basados en usuarios actuales
+const userBasedRevenue = calculateUserBasedRevenue();
+
+
+// También cambia la tabla de usuarios para que muestre la fecha de creación
+// En el TableHead, después de la celda de Phone, agrega:
+
+<TableCell sx={{ fontWeight: 'bold', backgroundColor: '#f9f9f9' }}>Registration Date</TableCell>
+
+
+// Y en el TableBody, después de la celda de Phone, agrega:
+
+<TableCell>
+  {user.created_at ? 
+    new Date(user.created_at).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    }) 
+    : '-'}
+</TableCell>
+
+
+// Finalmente, para mostrar correctamente los ingresos en las tarjetas, cambia:
+// {formatCurrency(revenueTotals.bronzeRevenue)}
+// a:
+// {formatCurrency(userBasedRevenue.bronzeRevenue)}
+
+// Y similarmente para Ultimate.
