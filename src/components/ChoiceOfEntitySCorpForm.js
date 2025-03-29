@@ -55,7 +55,7 @@ const ChoiceOfEntitySCorpForm = ({ onCalculate }) => {
     const percentageOwned = parseFloat(PO) || 0;
 
     const estimatedSavingsSocialSecurityMedicare = newNetIncome * percentageOwned * 0.153;
-    setESSM(estimatedSavingsSocialSecurityMedicare);
+    setESSM(estimatedSavingsSocialSecurityMedicare / 100);
   }, [NNI, PO]);
 
   // Calculate Estimated Tax Due and Tax Savings
@@ -64,11 +64,11 @@ const ChoiceOfEntitySCorpForm = ({ onCalculate }) => {
     const percentageOwned = parseFloat(PO) || 0;
     const marginalTaxRate = parseFloat(MTR) || 0;
 
-    const estimatedTaxDue = newNetIncome * percentageOwned * marginalTaxRate;
-    setETD(estimatedTaxDue);
+    const estimatedTaxDue = newNetIncome * percentageOwned * marginalTaxRate / 100;
+    setETD(estimatedTaxDue / 100);
 
     const estimatedTaxSavingsNoDividends = newNetIncome * percentageOwned * 0.2;
-    setTSND(estimatedTaxSavingsNoDividends);
+    setTSND(estimatedTaxSavingsNoDividends / 100);
   }, [NNI, PO, MTR]);
 
   const handleSubmit = (e) => {
@@ -164,6 +164,25 @@ const ChoiceOfEntitySCorpForm = ({ onCalculate }) => {
               </TextField>
 
               <TextField
+                label="Gross Income"
+                fullWidth
+                type="number"
+                value={grossIncome}
+                onChange={(e) => setGrossIncome(e.target.value)}
+                margin="normal"
+              />
+                <TextField
+                select
+                label="Type of Partner"
+                fullWidth
+                value={partnerType}
+                onChange={(e) => setPartnerType(e.target.value)}
+                margin="normal"
+              >
+                <MenuItem value="Active">Active</MenuItem>
+                <MenuItem value="Passive">Passive</MenuItem>
+              </TextField>
+              <TextField
                 label="Net Income (NI)"
                 fullWidth
                 type="number"
@@ -246,16 +265,17 @@ const ChoiceOfEntitySCorpForm = ({ onCalculate }) => {
                 disabled
               />
 
-              <TextField
+               <TextField
                 select
-                label="Type of Partner"
+                label="Form Type"
                 fullWidth
-                value={partnerType}
-                onChange={(e) => setPartnerType(e.target.value)}
+                value={formType}
+                onChange={(e) => setFormType(e.target.value)}
                 margin="normal"
               >
-                <MenuItem value="Active">Active</MenuItem>
-                <MenuItem value="Passive">Passive</MenuItem>
+               
+                <MenuItem value="1120S">1120S</MenuItem>
+    
               </TextField>
 
               <TextField

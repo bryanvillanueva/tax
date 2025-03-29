@@ -15,7 +15,7 @@ const CharitableLLCForm = ({ onCalculate }) => {
   // Fixed fields
   const [filingStatus, setFilingStatus] = useState("Single");
   const [partnerType, setPartnerType] = useState("Active");
-  const [formType, setFormType] = useState("1040NR - Schedule E");
+  const [formType, setFormType] = useState("1040 - Schedule C/F");
   const [grossIncome, setGrossIncome] = useState("");
   const [QBID, setQbid] = useState("");
   const [error, setError] = useState(null);
@@ -161,7 +161,7 @@ const CharitableLLCForm = ({ onCalculate }) => {
                 value={grossIncome}
                 onChange={(e) => setGrossIncome(e.target.value)}
                 margin="normal"
-                disabled
+               
               />
               <TextField
                 select
@@ -190,10 +190,7 @@ const CharitableLLCForm = ({ onCalculate }) => {
                 onChange={(e) => setCB(e.target.value)}
                 margin="normal"
               />
-            </Grid>
-
-            <Grid item xs={12} md={6}>
-              <TextField
+               <TextField
                 label="Capital Gain (CG)"
                 fullWidth
                 type="number"
@@ -209,6 +206,10 @@ const CharitableLLCForm = ({ onCalculate }) => {
                 margin="normal"
                 disabled
               />
+            </Grid>
+
+            <Grid item xs={12} md={6}>
+             
               <TextField
                 label="Charitable LLC - Amount (CLLC)"
                 fullWidth
@@ -257,7 +258,11 @@ const CharitableLLCForm = ({ onCalculate }) => {
                 onChange={(e) => setFormType(e.target.value)}
                 margin="normal"
               >
+                  <MenuItem value="1040 - Schedule C/F">1040 - Schedule C/F</MenuItem>
                 <MenuItem value="1040NR - Schedule E">1040NR - Schedule E</MenuItem>
+                <MenuItem value="1065">1065</MenuItem>
+                <MenuItem value="1120S">1120S</MenuItem>
+                <MenuItem value="1120">1120</MenuItem>
               </TextField>
               <TextField
                 label="QBID (Qualified Business Income Deduction)"
