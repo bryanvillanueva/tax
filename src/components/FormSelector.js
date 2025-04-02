@@ -12,7 +12,7 @@ import { CircularProgress } from '@mui/material';
 // Lista de formularios disponibles
 const forms = [
   { code: '1', id: 'depreciation', title: 'Accelerated Depreciation - Sec 179', description: 'Calculate accelerated depreciation (Section 179).', fixedIndex: 1 },
-  { code: '1', id: 'hireKids', title: 'Hire Your Kids', description: 'Hire Your Kids', fixedIndex: 2 },
+  { code: '5', id: 'hireKids', title: 'Hire Your Kids', description: 'Hire Your Kids', fixedIndex: 2 },
   { code: '1', id: 'prepaid', title: 'Pre-pay Expenses', description: 'Manage and calculate prepaid expenses deductions.', fixedIndex: 3 },
   { code: '1', id: 'augusta', title: 'Augusta Rule', description: 'Calculate deductions under the Augusta Rule.', fixedIndex: 4 },
   { code: '1', id: 'reimbursment', title: 'Reimbursment Of Personal Vehicle', description: 'Calculate reimbursment for personal vehicle.', fixedIndex: 5 },
@@ -119,8 +119,7 @@ const forms = [
 
  
 
-// Clave usada para guardar los datos en sessionStorage
-const CACHE_KEY_FORMS = 'cached_tax_forms';
+// Clave usada para guardar los datos de usuario en sessionStorage
 const CACHE_KEY_USER = 'cached_user_data';
 
 const FormSelector = ({ onSelectForm, searchTerm, setSearchTerm }) => {
@@ -131,18 +130,15 @@ const FormSelector = ({ onSelectForm, searchTerm, setSearchTerm }) => {
     return cachedUserData ? JSON.parse(cachedUserData) : null;
   });
   
-  const [filteredForms, setFilteredForms] = useState(() => {
-    // Intentar cargar los formularios desde sessionStorage
-    const cachedForms = sessionStorage.getItem(CACHE_KEY_FORMS);
-    return cachedForms ? JSON.parse(cachedForms) : [];
-  });
+  // Ya no cargamos formularios desde sessionStorage
+  const [filteredForms, setFilteredForms] = useState([]);
   
   const [favorites, setFavorites] = useState(() => {
     const savedFavorites = localStorage.getItem('formFavorites');
     return savedFavorites ? JSON.parse(savedFavorites) : {};
   });
 
-  const [loading, setLoading] = useState(!sessionStorage.getItem(CACHE_KEY_FORMS));
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
     // Función para ordenar los formularios con favoritos primero
@@ -167,10 +163,7 @@ const FormSelector = ({ onSelectForm, searchTerm, setSearchTerm }) => {
   useEffect(() => {
     const validateToken = async () => {
       try {
-        // Solo activamos el loader si realmente necesitamos cargar datos
-        if (!sessionStorage.getItem(CACHE_KEY_FORMS)) {
-          setLoading(true);
-        }
+        // Siempre activamos el loader porque ahora siempre cargaremos los formularios
         
         const token = localStorage.getItem('authToken');
   
@@ -179,10 +172,9 @@ const FormSelector = ({ onSelectForm, searchTerm, setSearchTerm }) => {
           return;
         }
 
-        // Si ya tenemos datos en caché, no necesitamos hacer las peticiones
-        if (sessionStorage.getItem(CACHE_KEY_FORMS) && sessionStorage.getItem(CACHE_KEY_USER)) {
-          setLoading(false);
-          return;
+        // Si ya tenemos datos de usuario en caché, los usamos
+        if (sessionStorage.getItem(CACHE_KEY_USER)) {
+          setUserData(JSON.parse(sessionStorage.getItem(CACHE_KEY_USER)));
         }
   
         // Obtener datos del usuario
@@ -203,13 +195,11 @@ const FormSelector = ({ onSelectForm, searchTerm, setSearchTerm }) => {
         
         setFilteredForms(formsResponse.data);
         
-        // Guardar en sessionStorage
-        sessionStorage.setItem(CACHE_KEY_FORMS, JSON.stringify(formsResponse.data));
+        // Ya no guardamos los formularios en sessionStorage
         
       } catch (error) {
         console.error('Error al validar el token:', error.message);
-        // Limpiar caché y token en caso de error
-        sessionStorage.removeItem(CACHE_KEY_FORMS);
+        // Limpiar caché de usuario y token en caso de error
         sessionStorage.removeItem(CACHE_KEY_USER);
         localStorage.removeItem('authToken');
         navigate('/');
@@ -224,9 +214,8 @@ const FormSelector = ({ onSelectForm, searchTerm, setSearchTerm }) => {
 // Ya no necesitamos fijar la barra de búsqueda, ya que existe una en CustomAppBar
 
   const handleLogout = () => {
-    // Limpiar tanto localStorage como sessionStorage
+    // Limpiar token y caché de usuario
     localStorage.removeItem('authToken');
-    sessionStorage.removeItem(CACHE_KEY_FORMS);
     sessionStorage.removeItem(CACHE_KEY_USER);
     navigate('/'); // Redirige al login
   };
