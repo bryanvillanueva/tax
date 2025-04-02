@@ -26,30 +26,26 @@ import CustomSpeedDial from './CustomSpeedDial';
 import MenuIcon from '@mui/icons-material/Menu';
 import axios from 'axios';
 
-// Clave usada para guardar los datos en sessionStorage
-const CACHE_KEY_PROFILE = 'cached_user_profile';
+// Eliminamos la clave de caché para el perfil
 
 const Profile = () => {
   const [tabValue, setTabValue] = useState(0);
-  const [userData, setUserData] = useState(() => {
-    // Intentar cargar los datos del usuario desde sessionStorage
-    const cachedUserData = sessionStorage.getItem(CACHE_KEY_PROFILE);
-    return cachedUserData ? JSON.parse(cachedUserData) : {
-      first_name: '',
-      last_name: '',
-      email: '',
-      phone: '',
-      company_name: '',
-      product: '',
-      avatar: '',
-    };
+  // Inicializar datos de usuario sin usar cache
+  const [userData, setUserData] = useState({
+    first_name: '',
+    last_name: '',
+    email: '',
+    phone: '',
+    company_name: '',
+    product: '',
+    avatar: '',
   });
   const [newPassword, setNewPassword] = useState('');
   const [currentPassword, setCurrentPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const [isLoading, setIsLoading] = useState(!sessionStorage.getItem(CACHE_KEY_PROFILE));
+  const [isLoading, setIsLoading] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [capsLock, setCapsLock] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -66,13 +62,6 @@ const Profile = () => {
 
   useEffect(() => {
     const fetchUserData = async () => {
-      // Si ya tenemos datos en caché, no necesitamos hacer la petición
-      if (sessionStorage.getItem(CACHE_KEY_PROFILE)) {
-        setEditedData(JSON.parse(sessionStorage.getItem(CACHE_KEY_PROFILE)));
-        setIsLoading(false);
-        return;
-      }
-
       setIsLoading(true);
       try {
         const token = localStorage.getItem('authToken');
@@ -80,13 +69,11 @@ const Profile = () => {
           headers: { Authorization: `Bearer ${token}` },
         });
         
-        // Guardar los datos en el estado y en sessionStorage
+        // Guardar los datos en el estado
         setUserData(response.data);
         setEditedData(response.data);
-        sessionStorage.setItem(CACHE_KEY_PROFILE, JSON.stringify(response.data));
       } catch (err) {
         console.error('Error fetching user data:', err);
-        sessionStorage.removeItem(CACHE_KEY_PROFILE);
         navigate('/');
       } finally {
         setIsLoading(false);
@@ -113,9 +100,8 @@ const Profile = () => {
         }
       );
       
-      // Actualizar los datos en el estado y en sessionStorage
+      // Solo actualizamos el estado, no usamos cache
       setUserData(response.data);
-      sessionStorage.setItem(CACHE_KEY_PROFILE, JSON.stringify(response.data));
       
       setSuccess('Profile updated successfully.');
       setEditMode(false);
@@ -185,14 +171,50 @@ const Profile = () => {
 
   const handleLogout = () => {
     localStorage.removeItem('authToken');
-    sessionStorage.removeItem(CACHE_KEY_PROFILE);
     navigate('/');
   };
 
-  if (isLoading && !userData) {
+  // Mostrar un loader durante la carga inicial
+  if (isLoading && !userData.first_name) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-        <CircularProgress />
+      <Box sx={{ 
+        display: 'flex', 
+        flexDirection: 'column',
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        height: '100vh',
+        backgroundImage: 'linear-gradient(135deg, #f5f7fa 0%, #eef1f5 100%)'
+      }}>
+        <img
+          src="https://tax.bryanglen.com/logo.png"
+          alt="Logo"
+          style={{ 
+            maxWidth: '220px',
+            marginBottom: '30px',
+            opacity: 0.8
+          }}
+        />
+        <CircularProgress 
+          size={60}
+          thickness={4}
+          sx={{ 
+            color: '#0858e6',
+            '& .MuiCircularProgress-circle': {
+              strokeLinecap: 'round',
+            }
+          }} 
+        />
+        <Typography 
+          variant="h6" 
+          sx={{ 
+            mt: 3, 
+            color: '#0858e6',
+            fontWeight: 500,
+            opacity: 0.9
+          }}
+        >
+          Loading your profile...
+        </Typography>
       </Box>
     );
   }
@@ -413,8 +435,29 @@ const Profile = () => {
                     backgroundColor: '#f8f9fa',
                     p: { xs: 3, md: 4 }, 
                     borderRadius: '16px',
-                    boxShadow: 'inset 0 2px 8px rgba(0, 0, 0, 0.04)'
+                    boxShadow: 'inset 0 2px 8px rgba(0, 0, 0, 0.04)',
+                    position: 'relative'
                   }}>
+                    {isLoading && (
+                      <Box sx={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        backgroundColor: 'rgba(255, 255, 255, 0.7)',
+                        borderRadius: '16px',
+                        zIndex: 1
+                      }}>
+                        <CircularProgress 
+                          size={40}
+                          sx={{ color: '#0858e6' }}
+                        />
+                      </Box>
+                    )}
                     {editMode ? (
                       <>
                         <Box sx={{ 
@@ -584,7 +627,11 @@ const Profile = () => {
                               }
                             }}
                           >
-                            {isLoading ? 'Saving...' : 'Save Changes'}
+                            {isLoading ? (
+                              <CircularProgress size={24} sx={{ color: '#fff' }} />
+                            ) : (
+                              'Save Changes'
+                            )}
                           </Button>
                         </Box>
                       </>
@@ -773,8 +820,29 @@ const Profile = () => {
                     borderRadius: '16px',
                     boxShadow: 'inset 0 2px 8px rgba(0, 0, 0, 0.04)',
                     maxWidth: '600px',
-                    mx: 'auto'
+                    mx: 'auto',
+                    position: 'relative'
                   }}>
+                    {isLoading && (
+                      <Box sx={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        backgroundColor: 'rgba(255, 255, 255, 0.7)',
+                        borderRadius: '16px',
+                        zIndex: 1
+                      }}>
+                        <CircularProgress 
+                          size={40}
+                          sx={{ color: '#0858e6' }}
+                        />
+                      </Box>
+                    )}
                     <TextField
                       label="Current Password"
                       type={showPassword ? 'text' : 'password'}
