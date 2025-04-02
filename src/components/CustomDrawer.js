@@ -27,7 +27,7 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import HelpIcon from "@mui/icons-material/Help";
-// Importación de SettingsIcon eliminada ya que no se usa
+import { ReactComponent as SharkLogo } from '../assets/icon.svg';
 
 import { useNavigate } from "react-router-dom";
 
@@ -294,6 +294,16 @@ const CustomDrawer = ({ drawerOpen, setDrawerOpen, userData }) => {
           >
             Logout
           </Button>
+        </Box>
+        
+        {/* Made with love section */}
+        <Box sx={{ p: 2, display: 'flex', justifyContent: 'center', alignItems: 'center', mt: 1 }}>
+          <Typography variant="caption" sx={{ color: 'text.secondary', fontSize: '1rem', display: 'flex', alignItems: 'center' }}>
+            Made with <span style={{ color: '#e25555', margin: '0 4px' }}>❤️</span> by
+          </Typography>
+          <Box component="a" href="https://sharkagency.co/" target="_blank" sx={{ display: 'flex', alignItems: 'center', ml: 1 }}>
+          <SharkLogo style={{ height: 30 }} />
+          </Box>
         </Box>
       </Box>
     </Drawer>

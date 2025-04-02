@@ -69,7 +69,7 @@ const CharitableRemainderForm = ({ onCalculate }) => {
         {/* Enlace en la esquina superior derecha */}
         <Box sx={{ position: 'absolute', top: -10, right: 0, }}>
           <Button
-            href="https://tax.bryanglen.com/data/Strategies-Structure.pdf"
+            href="https://cmltaxplanning.com/docs/S6.pdf"
             target="_blank"
             sx={{ textTransform: 'none', backgroundColor: '#ffffff', color: '#0858e6', fontSize: '0.875remc', marginBottom: '150px', }}
             startIcon={<InfoOutlinedIcon />}
@@ -210,3 +210,4 @@ const CharitableRemainderForm = ({ onCalculate }) => {
 };
 
 export default CharitableRemainderForm;
+
