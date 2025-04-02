@@ -86,7 +86,7 @@ const StateTaxSavingsForm = ({ onCalculate }) => {
         {/* Link in the top right corner */}
         <Box sx={{ position: 'absolute', top: -10, right: 0 }}>
           <Button
-            href="https://tax.bryanglen.com/data/State-Tax-Savings-Strategy.pdf"
+            href="https://cmltaxplanning.com/docs/S33.pdf"
             target="_blank"
             sx={{ textTransform: 'none', backgroundColor: '#ffffff', color: '#0858e6', fontSize: '0.875rem', marginBottom: '150px' }}
             startIcon={<InfoOutlinedIcon />}

@@ -17,6 +17,7 @@ import LockIcon from '@mui/icons-material/Lock';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import LoginIcon from '@mui/icons-material/Login';
+import { ReactComponent as SharkLogo } from '../assets/icon.svg';
 
 // Colores principales del sistema
 const colors = {
@@ -56,7 +57,7 @@ const Login = () => {
     e.preventDefault();
 
     if (!isFormValid) {
-      setError('Por favor, verifica los campos.');
+      setError('Please verify the fields.');
       return;
     }
 
@@ -78,13 +79,13 @@ const Login = () => {
         // Manejo especial para primer inicio de sesión
         navigate('/change-password', { state: { email } });
       } else {
-        setError(response.data.message || 'Error al iniciar sesión.');
+        setError(response.data.message || 'Login error.');
       }
     } catch (err) {
       console.error('Error de inicio de sesión:', err);
       setError(
         err.response?.data?.message || 
-        'Error del servidor. Por favor intenta más tarde.'
+        'Server error. Please try again later.'
       );
     } finally {
       setLoading(false); // Desactivar el loader
@@ -160,7 +161,7 @@ const Login = () => {
             color: colors.dark,
           }}
         >
-          Bienvenido de vuelta
+          Welcome back
         </Typography>
 
         <Typography
@@ -174,7 +175,7 @@ const Login = () => {
             color: colors.secondary,
           }}
         >
-          Inicia sesión para continuar
+          Sign in to continue
         </Typography>
 
         {error && (
@@ -203,7 +204,7 @@ const Login = () => {
               }} 
             />
             <Typography variant="body2" color={colors.secondary}>
-              Iniciando sesión...
+              Signing in...
             </Typography>
           </Box>
         ) : (
@@ -242,7 +243,7 @@ const Login = () => {
               }}
             />
             <TextField
-              label="Contraseña"
+              label="Password"
               type={showPassword ? 'text' : 'password'}
               fullWidth
               variant="outlined"
@@ -314,21 +315,18 @@ const Login = () => {
                 transition: 'all 0.3s ease',
               }}
             >
-              Iniciar Sesión
+              Login
             </Button>
             
-            <Typography 
-              variant="body2" 
-              align="center" 
-              sx={{ 
-                mt: 2, 
-                color: colors.secondary,
-                fontSize: '0.8rem',
-                fontFamily: 'Montserrat, sans-serif'
-              }}
-            >
-              Tu sesión estará activa hasta que cierres la aplicación
-            </Typography>
+            
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mt: 3 }}>
+              <Typography variant="caption" sx={{ color: 'text.secondary', fontSize: '1rem', display: 'flex', alignItems: 'center' }}>
+                Made with <span style={{ color: '#e25555', margin: '0 4px' }}>❤️</span> by
+              </Typography>
+              <Box component="a" href="https://sharkagency.co/" target="_blank" sx={{ display: 'flex', alignItems: 'center', ml: 1 }}>
+              <SharkLogo style={{ height: 30 }} />
+              </Box>
+            </Box>
           </form>
         )}
       </Paper>

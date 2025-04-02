@@ -57,12 +57,12 @@ const ChangePassword = () => {
     e.preventDefault();
 
     if (newPassword.length < 8) {
-      setError('La contraseña debe tener al menos 8 caracteres.');
+      setError('Password must be at least 8 characters long.');
       return;
     }
 
     if (newPassword !== confirmPassword) {
-      setError('Las contraseñas no coinciden.');
+      setError('Passwords don\'t match.');
       return;
     }
 
@@ -77,13 +77,13 @@ const ChangePassword = () => {
       setSuccess(true);
       setError('');
       setTimeout(() => {
-        navigate('/', { state: { message: 'Contraseña cambiada exitosamente. Por favor inicia sesión.' } });
+        navigate('/', { state: { message: 'Password changed successfully. Please login.' } });
       }, 2000);
     } catch (err) {
       console.error('Error al cambiar la contraseña:', err);
       setError(
         err.response?.data?.message || 
-        'Error al cambiar la contraseña. Por favor intenta más tarde.'
+        'Error changing password. Please try again later.'
       );
     } finally {
       setLoading(false);
@@ -159,7 +159,7 @@ const ChangePassword = () => {
             color: colors.dark,
           }}
         >
-          Cambio de Contraseña
+          Password Change
         </Typography>
 
         <Typography
@@ -173,7 +173,7 @@ const ChangePassword = () => {
             color: colors.secondary,
           }}
         >
-          Configura una nueva contraseña para tu cuenta
+          Set a new password for your account
         </Typography>
 
         {error && (
@@ -204,7 +204,7 @@ const ChangePassword = () => {
               }
             }}
           >
-            La tecla de mayúsculas está activada.
+            Caps Lock is on.
           </Alert>
         )}
 
@@ -220,7 +220,7 @@ const ChangePassword = () => {
               }
             }}
           >
-            Contraseña cambiada exitosamente. Redirigiendo...
+            Password changed successfully. Redirecting...
           </Alert>
         )}
 
@@ -234,13 +234,13 @@ const ChangePassword = () => {
               }} 
             />
             <Typography variant="body2" color={colors.secondary}>
-              Actualizando tu contraseña...
+              Updating your password...
             </Typography>
           </Box>
         ) : (
           <form onSubmit={handleSubmit} style={{ width: '100%' }}>
             <TextField
-              label="Nueva Contraseña"
+              label="New Password"
               type={showPassword ? 'text' : 'password'}
               fullWidth
               variant="outlined"
@@ -282,7 +282,7 @@ const ChangePassword = () => {
               }}
             />
             <TextField
-              label="Confirmar Contraseña"
+              label="Confirm Password"
               type={showPassword ? 'text' : 'password'}
               fullWidth
               variant="outlined"
@@ -353,7 +353,7 @@ const ChangePassword = () => {
                 transition: 'all 0.3s ease',
               }}
             >
-              Cambiar Contraseña
+              Change Password
             </Button>
             
             <Typography 
@@ -366,7 +366,7 @@ const ChangePassword = () => {
                 fontFamily: 'Montserrat, sans-serif'
               }}
             >
-              Tu contraseña debe tener al menos 8 caracteres
+              Your password must be at least 8 characters long
             </Typography>
           </form>
         )}
