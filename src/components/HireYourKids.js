@@ -33,16 +33,17 @@ const HireYourKidsForm = ({ onCalculate }) => {
       return;
     }
   
-    if (!totalIRAContribution || parseFloat(totalIRAContribution) <= 0) {
+ /*    if (!totalIRAContribution || parseFloat(totalIRAContribution) <= 0) {
       setError('Total IRA Contribution is required and must be greater than 0.');
       return;
-    }
+    } */
   
     setError(null);
   
     // Calcular Total Deduction (TD) según la condición de partnership
+    
     const cbs = parseFloat(childrenBaseSalary);
-    const ira = parseFloat(totalIRAContribution);
+    const ira = totalIRAContribution ? parseFloat(totalIRAContribution) : 0;
   
     let totalDeduction;
     if (partnershipStatus === 'Yes') {
