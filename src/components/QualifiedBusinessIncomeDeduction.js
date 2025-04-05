@@ -85,10 +85,12 @@ const QualifiedBusinessIncomeDeduction = ({ onCalculate }) => {
       return;
     }
 
+
+    
     setError(null);
 
     // Preparar resultados
-    const results  = performQBIDCalculationsSimple ({
+    const results = performQBIDCalculationsSimple ({
       calculationType: 'qbidCalculation',
       filingStatus,
       qualifiedBusinessIncome: parseFloat(qbi),
