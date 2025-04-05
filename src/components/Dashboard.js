@@ -120,6 +120,11 @@ import CharitableLLCForm from './CharitableLLCForm';
 import SoleProprietorForm from './SoleProprietorForm';
 import QbidStandardMethod from './QbidStandardMethod';
 import QbidResults from './QbidResults';
+import QualifiedBusinessIncomeDeduction from './QualifiedBusinessIncomeDeduction';
+import HarvestingCryptoForm from './HarvestingCryptoForm';
+import QBIDResultDisplay from './QBIDResultDisplay';
+
+
 
 const Dashboard = () => {
   const { formId } = useParams(); // Obtiene el formId de la URL
@@ -420,6 +425,10 @@ const Dashboard = () => {
           return <ChoiceOfEntitySCorpForm onCalculate={setResults} />;
       case 'QbidStandardMethod':
         return <QbidStandardMethod onCalculate={setResults} />;
+      case 'qualifiedBusinessIncomeDeduction':
+          return <QualifiedBusinessIncomeDeduction onCalculate={setResults} />;
+      case 'HarvestingCryptoInvestors':
+          return <HarvestingCryptoForm onCalculate={setResults} />;
       default:
         return <FormSelector onSelectForm={handleSelectForm} searchTerm={searchTerm} setSearchTerm={setSearchTerm} />;
     }
@@ -627,6 +636,10 @@ const Dashboard = () => {
           return 'Choice of Entity - S Corporation';
       case 'QbidStandardMethod':
           return 'QBID Standard Method';    
+      case 'qualifiedBusinessIncomeDeduction':
+          return 'QBID Simplified Method';
+      case 'HarvestingCryptoInvestors':
+        return 'Harvesting Crypto Investors';
       default:
         return '';
     }
@@ -765,30 +778,22 @@ const Dashboard = () => {
                 {renderForm()}
               </Box>
               
-              {results && (
-  <Box 
-    sx={{ 
+             {results && (
+  <Box
+    sx={{
       borderTop: '1px solid rgba(0, 0, 0, 0.08)',
       p: { xs: 2, sm: 3, md: 4 },
-      backgroundColor: '#f8f9fa'
+      backgroundColor: '#f8f9fa',
     }}
   >
-{formId === 'QbidStandardMethod' ? (
-  <QbidResults results={results} formTitle={getFormTitle()} />
- ) : (
-  <ResultsDisplay results={results} formTitle={getFormTitle()} />
- )}
+    {formId === 'QbidStandardMethod' ? (
+      <QbidResults results={results} formTitle={getFormTitle()} />
+    ) : formId === 'qbidCalculation' ? (
+      <QBIDResultDisplay results={results} formTitle={getFormTitle()} />
+    ) : (
+      <ResultsDisplay results={results} formTitle={getFormTitle()} />
+    )}
   </Box>
 )}
-
-            </Paper>
-          )}
-          
-          {formId && <CustomSpeedDial />}
-        </Container>
-      </Box>
-    </>
-  );
-};
 
 export default Dashboard;

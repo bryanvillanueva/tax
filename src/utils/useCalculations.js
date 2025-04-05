@@ -121,6 +121,7 @@ import {
   calculateNetIncomeChoiceOfEntityCCorp,
   calculateNetIncomeChoiceOfEntityPartnership,
   calculateNetIncomeChoiceOfEntitySCorp,
+  calculateNetIncomeHarvestingCryptoInvestors,
 
 
 
@@ -484,6 +485,11 @@ const useCalculations = () => {
          break;
     case 'ChoiceOfEntitySCorp':
            netIncome = calculateNetIncomeChoiceOfEntitySCorp(grossIncome);
+         break;
+    case 'HarvestingCryptoInvestors':
+            netIncome = calculateNetIncomeHarvestingCryptoInvestors(grossIncome);
+    case 'qbidCalculation':
+           netIncome = grossIncome; // En este caso, usaremos grossIncome directamente
          break;
 
 
