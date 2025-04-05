@@ -508,6 +508,10 @@ export function calculateNetIncomeChoiceOfEntitySCorp(grossIncome) {
   return Math.max(0, grossIncome);
 }
 
+export function calculateNetIncomeHarvestingCryptoInvestors(grossIncome) {
+  return Math.max(0, grossIncome); // Evita valores negativos 
+}
+
 
 
 
