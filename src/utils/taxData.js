@@ -120,3 +120,27 @@ export const niitThresholds = {
   HH: 200000,
   QSS: 250000,
 };
+
+export const QbiThresholdFirstLimit = {
+  Single: 191950,
+  MFJ: 383900,
+  MFS: 191950,
+  HH: 191950,
+  QSS: 191950,
+};
+
+export const QbiThresholdPhaseIn = {
+  Single: 50000,
+  MFJ: 10000,
+  MFS: 50000,
+  HH: 50000,
+  QSS: 50000,
+};
+
+export const QbiThresholdAbsoluteLimit = {
+  Single: 241950,
+  MFJ: 483900,
+  MFS: 241950,
+  HH: 241950,
+  QSS: 241950,
+};
