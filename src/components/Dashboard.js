@@ -118,8 +118,12 @@ import RealEstateProfessionalForm from './RealEstateProfessionalForm';
 import CaptiveInsuranceForm from './CaptiveInsuranceForm';
 import CharitableLLCForm from './CharitableLLCForm';
 import SoleProprietorForm from './SoleProprietorForm';
+import QbidStandardMethod from './QbidStandardMethod';
+import QbidResults from './QbidResults';
 import QualifiedBusinessIncomeDeduction from './QualifiedBusinessIncomeDeduction';
 import HarvestingCryptoForm from './HarvestingCryptoForm';
+import QBIDResultDisplay from './QBIDResultDisplay';
+
 
 
 const Dashboard = () => {
@@ -419,6 +423,8 @@ const Dashboard = () => {
           return <ChoiceOfEntityPartnershipForm onCalculate={setResults} />;
       case 'ChoiceOfEntitySCorp':
           return <ChoiceOfEntitySCorpForm onCalculate={setResults} />;
+      case 'QbidStandardMethod':
+        return <QbidStandardMethod onCalculate={setResults} />;
       case 'qualifiedBusinessIncomeDeduction':
           return <QualifiedBusinessIncomeDeduction onCalculate={setResults} />;
       case 'HarvestingCryptoInvestors':
@@ -628,6 +634,8 @@ const Dashboard = () => {
           return 'Choice of Entity - Partnership';
       case 'ChoiceOfEntitySCorp':
           return 'Choice of Entity - S Corporation';
+      case 'QbidStandardMethod':
+          return 'QBID Standard Method';    
       case 'qualifiedBusinessIncomeDeduction':
           return 'QBID Simplified Method';
       case 'HarvestingCryptoInvestors':
@@ -770,29 +778,22 @@ const Dashboard = () => {
                 {renderForm()}
               </Box>
               
-              {results && (
-              <Box 
-              sx={{ 
-              borderTop: '1px solid rgba(0, 0, 0, 0.08)',
-              p: { xs: 2, sm: 3, md: 4 },
-              backgroundColor: '#f8f9fa'
-              }}
-              >
-              {results.calculationType === 'qbidCalculation' ? (
-                  null // No mostrar ResultsDisplay para QBID, ya mostramos nuestros propios resultados
-                  ) : (
-              <ResultsDisplay results={results} formTitle={getFormTitle()} />
-            )}
-          </Box>
-        )}
-            </Paper>
-          )}
-          
-          {formId && <CustomSpeedDial />}
-        </Container>
-      </Box>
-    </>
-  );
-};
+             {results && (
+  <Box
+    sx={{
+      borderTop: '1px solid rgba(0, 0, 0, 0.08)',
+      p: { xs: 2, sm: 3, md: 4 },
+      backgroundColor: '#f8f9fa',
+    }}
+  >
+    {formId === 'QbidStandardMethod' ? (
+      <QbidResults results={results} formTitle={getFormTitle()} />
+    ) : formId === 'qbidCalculation' ? (
+      <QBIDResultDisplay results={results} formTitle={getFormTitle()} />
+    ) : (
+      <ResultsDisplay results={results} formTitle={getFormTitle()} />
+    )}
+  </Box>
+)}
 
 export default Dashboard;
