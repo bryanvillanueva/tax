@@ -30,7 +30,7 @@ const formatCurrency = (value) => {
   }).format(value);
 };
 
-const QBIDResultsDisplay = ({ results }) => {
+const QBIDResultsDisplay = ({ results, formTitle }) => {
   if (!results) return null;
 
   return (
@@ -241,7 +241,7 @@ const QBIDResultsDisplay = ({ results }) => {
 
       {/* Botón de Exportar PDF */}
       <Box sx={{ display: 'flex', justifyContent: 'center', mt: 5 }}>
-      <ExportQBIDPDF results={results} />
+      <ExportQBIDPDF results={results} formTitle={formTitle}  />
       </Box>
     </Box>
   );

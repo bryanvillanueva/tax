@@ -112,7 +112,7 @@ const forms = [
   { code: '4', id: 'ChoiceOfEntityCCorp', title: 'Choice of Entity - C Corporation', description: 'Assess the benefits and drawbacks of operating as a C Corporation, including double taxation and tax planning opportunities.', fixedIndex: 97 },
   { code: '4', id: 'ChoiceOfEntityPartnership', title: 'Choice of Entity - Partnership', description: 'Understand the tax and operational considerations of forming a partnership, including pass-through taxation and liability concerns.', fixedIndex: 98 },
   { code: '4', id: 'ChoiceOfEntitySCorp', title: 'Choice of Entity - S Corporation', description: 'Explore the tax advantages and eligibility requirements of an S Corporation, including pass-through taxation and self-employment tax savings.', fixedIndex: 99 },
-  { code: '4', id: 'qualifiedBusinessIncomeDeduction', title: 'QBID Simplified Method', description: 'Calculate the Section 199A Qualified Business Income Deduction based on business income, taxable income, and filing status.', fixedIndex: 100 },
+  { code: '4', id: 'qbidCalculation', title: 'QBID Simplified Method', description: 'Calculate the Section 199A Qualified Business Income Deduction based on business income, taxable income, and filing status.', fixedIndex: 100 },
   { code: '4', id: 'QbidStandardMethod', title: 'QBID Standard Method', description: 'Calculate Qualified Business Income Deduction (QBID) using the standard method, considering wage and capital limitations.', fixedIndex: 101},
   { code: '4', id: 'HarvestingCryptoInvestors', title: 'Harvesting for Crypto Investors', description: 'Optimize tax savings by strategically selling crypto assets to realize losses and offset gains, following the tax-loss harvesting strategy.', fixedIndex: 102 },
      

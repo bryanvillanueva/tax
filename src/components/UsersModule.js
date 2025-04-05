@@ -746,76 +746,106 @@ const UsersModule = () => {
           {tabValue === 0 ? (
             <Grid container spacing={4}>
               {/* Distribución de usuarios */}
-              <Grid item xs={12} md={6} lg={5}>
-                <Paper 
-                  elevation={0} 
-                  sx={{ 
-                    p: 3, 
-                    borderRadius: '16px', 
-                    boxShadow: '0 4px 20px rgba(0, 0, 0, 0.05)',
-                    height: '100%'
-                  }}
-                >
-                  <Typography variant="h6" fontWeight="600" gutterBottom>
-                    User Distribution
-                  </Typography>
-                  <Box sx={{ height: isMobile ? 250 : 300, mt: 2 }} ref={chartRef}>
-                    <ResponsiveContainer width="100%" height="100%">
-                      <PieChart>
-                        <Pie
-                          data={productStats}
-                          cx="50%"
-                          cy="50%"
-                          innerRadius={isMobile ? 60 : 80}
-                          outerRadius={isMobile ? 80 : 110}
-                          paddingAngle={2}
-                          dataKey="value"
-                          nameKey="name"
-                          onClick={(data) => handleFilterChange(data.name)}
-                        >
-                          {productStats.map((entry, index) => (
-                            <Cell 
-                              key={`cell-${index}`} 
-                              fill={COLORS[index % COLORS.length]}
-                              opacity={productFilter && productFilter !== entry.name ? 0.4 : 1}
-                              stroke="#fff"
-                              strokeWidth={2} 
-                            />
-                          ))}
-                        </Pie>
-                        <Tooltip 
-                          formatter={(value, name) => [formatNumber(value), name]}
-                          contentStyle={{
-                            borderRadius: '8px',
-                            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
-                            border: 'none',
-                            padding: '10px 14px'
-                          }}
-                        />
-                        <Legend 
-                          layout="vertical" 
-                          verticalAlign="middle" 
-                          align="right"
-                          wrapperStyle={{ paddingLeft: isMobile ? 0 : 20 }}
-                          formatter={(value, entry, index) => {
-                            const color = COLORS[index % COLORS.length];
-                            return (
-                              <span style={{ 
-                                color: productFilter && productFilter !== value ? '#999' : color,
-                                fontWeight: productFilter === value ? 'bold' : 'normal',
-                                cursor: 'pointer'
-                              }}>
-                                {value}
-                              </span>
-                            );
-                          }}
-                          onClick={(data) => handleFilterChange(data.value)}
-                        />
-                      </PieChart>
-                    </ResponsiveContainer>
-                  </Box>
-                </Paper>
-              </Grid>
+
+{/* Distribución de usuarios - Versión mejorada */}
+<Grid item xs={12} md={6} lg={5}>
+  <Paper 
+    elevation={0} 
+    sx={{ 
+      p: 3, 
+      borderRadius: '16px', 
+      boxShadow: '0 4px 20px rgba(0, 0, 0, 0.05)',
+      height: '100%'
+    }}
+  >
+    <Typography variant="h6" fontWeight="600" gutterBottom>
+      User Distribution
+    </Typography>
+    <Box sx={{ display: 'flex', flexDirection: 'column', height: isMobile ? 250 : 300, mt: 2 }}>
+      {/* Gráfico de pastel */}
+      <Box sx={{ flexGrow: 1, height: '70%' }} ref={chartRef}>
+        <ResponsiveContainer width="100%" height="100%">
+          <PieChart>
+            <Pie
+              data={productStats}
+              cx="50%"
+              cy="50%"
+              innerRadius={isMobile ? 40 : 60}
+              outerRadius={isMobile ? 70 : 90}
+              paddingAngle={2}
+              dataKey="value"
+              nameKey="name"
+              onClick={(data) => handleFilterChange(data.name)}
+            >
+              {productStats.map((entry, index) => (
+                <Cell 
+                  key={`cell-${index}`} 
+                  fill={COLORS[index % COLORS.length]}
+                  opacity={productFilter && productFilter !== entry.name ? 0.4 : 1}
+                  stroke="#fff"
+                  strokeWidth={2} 
+                />
+              ))}
+            </Pie>
+            <Tooltip 
+              formatter={(value, name) => [formatNumber(value), name]}
+              contentStyle={{
+                borderRadius: '8px',
+                boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
+                border: 'none',
+                padding: '10px 14px'
+              }}
+            />
+          </PieChart>
+        </ResponsiveContainer>
+      </Box>
+      
+      {/* Leyenda personalizada separada debajo del gráfico */}
+      <Box sx={{ mt: 2, display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 2 }}>
+        {productStats.map((item, index) => (
+          <Box
+            key={index}
+            onClick={() => handleFilterChange(item.name)}
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              padding: '4px 10px',
+              borderRadius: '16px',
+              cursor: 'pointer',
+              backgroundColor: productFilter === item.name ? `${COLORS[index % COLORS.length]}20` : 'transparent',
+              border: `1px solid ${COLORS[index % COLORS.length]}`,
+              opacity: productFilter && productFilter !== item.name ? 0.6 : 1,
+              transition: 'all 0.2s ease',
+              '&:hover': { 
+                backgroundColor: `${COLORS[index % COLORS.length]}20`,
+                transform: 'translateY(-2px)'
+              }
+            }}
+          >
+            <Box
+              sx={{
+                width: 12,
+                height: 12,
+                borderRadius: '50%',
+                backgroundColor: COLORS[index % COLORS.length],
+                mr: 1
+              }}
+            />
+            <Typography
+              variant="body2"
+              sx={{
+                color: productFilter === item.name ? COLORS[index % COLORS.length] : 'text.primary',
+                fontWeight: productFilter === item.name ? 600 : 400
+              }}
+            >
+              {item.name} ({formatNumber(item.value)})
+            </Typography>
+          </Box>
+        ))}
+      </Box>
+    </Box>
+  </Paper>
+</Grid>
 
               {/* Estadísticas de crecimiento */}
               <Grid item xs={12} md={6} lg={7}>

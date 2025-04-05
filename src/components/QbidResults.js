@@ -11,7 +11,7 @@ import {
   TableCell, 
   Grid 
 } from '@mui/material';
-import ExportQbidPDF from './ExportQbidPDF'; // Importar el componente de exportación a PDF
+import ExportQbidPDF2 from './ExportQbidPDF2'; // Importar el componente de exportación a PDF
 
 
 const formatCurrency = (value) => {
@@ -274,7 +274,7 @@ console.log('Form:', results.calculationType)
       
       {/* Botón de Exportar PDF */}
       <Box sx={{ display: 'flex', justifyContent: 'center', mt: 5 }}>
-        <ExportQbidPDF results={results} formTitle={formTitle} />
+        <ExportQbidPDF2 results={results} formTitle={formTitle} />
      </Box>
    </Box>
     
