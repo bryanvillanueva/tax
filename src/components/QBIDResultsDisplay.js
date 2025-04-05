@@ -20,6 +20,7 @@ import PercentIcon from '@mui/icons-material/Percent';
 import SavingsIcon from '@mui/icons-material/Savings';
 import ExportQBIDPDF from './ExportQBIDPDF';
 
+
 const formatCurrency = (value) => {
   if (value === undefined || value === null) return '$0.00';
   return new Intl.NumberFormat('en-US', {

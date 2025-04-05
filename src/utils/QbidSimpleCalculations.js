@@ -3,7 +3,7 @@ const performQBIDCalculationsSimple = (params) => {
     const {
         calculationType,
         filingStatus,
-        qualifiedBusinessIncome,  // Changed from qbi to match component call
+        qualifiedBusinessIncome,
         threshold,
         component,
         qbid,
@@ -18,7 +18,7 @@ const performQBIDCalculationsSimple = (params) => {
 
     // Return object structure matching what component expects
     return {
-        qbi: qualifiedBusinessIncome, // Map qualifiedBusinessIncome to qbi in result
+        qualifiedBusinessIncome, // Mantén el nombre original
         filingStatus,
         threshold,
         component,
