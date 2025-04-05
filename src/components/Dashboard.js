@@ -122,7 +122,7 @@ import QbidStandardMethod from './QbidStandardMethod';
 import QbidResults from './QbidResults';
 import QualifiedBusinessIncomeDeduction from './QualifiedBusinessIncomeDeduction';
 import HarvestingCryptoForm from './HarvestingCryptoForm';
-import QBIDResultDisplay from './QBIDResultDisplay';
+import QBIDResultsDisplay from './QBIDResultsDisplay';
 
 
 
@@ -425,7 +425,7 @@ const Dashboard = () => {
           return <ChoiceOfEntitySCorpForm onCalculate={setResults} />;
       case 'QbidStandardMethod':
         return <QbidStandardMethod onCalculate={setResults} />;
-      case 'qualifiedBusinessIncomeDeduction':
+      case 'qbidCalculation':
           return <QualifiedBusinessIncomeDeduction onCalculate={setResults} />;
       case 'HarvestingCryptoInvestors':
           return <HarvestingCryptoForm onCalculate={setResults} />;
@@ -636,7 +636,7 @@ const Dashboard = () => {
           return 'Choice of Entity - S Corporation';
       case 'QbidStandardMethod':
           return 'QBID Standard Method';    
-      case 'qualifiedBusinessIncomeDeduction':
+      case 'qbidCalculation':
           return 'QBID Simplified Method';
       case 'HarvestingCryptoInvestors':
         return 'Harvesting Crypto Investors';
@@ -789,11 +789,20 @@ const Dashboard = () => {
     {formId === 'QbidStandardMethod' ? (
       <QbidResults results={results} formTitle={getFormTitle()} />
     ) : formId === 'qbidCalculation' ? (
-      <QBIDResultDisplay results={results} formTitle={getFormTitle()} />
+      <QBIDResultsDisplay results={results} formTitle={getFormTitle()} />
     ) : (
       <ResultsDisplay results={results} formTitle={getFormTitle()} />
     )}
   </Box>
 )}
+            </Paper>
+          )}
+          
+          {formId && <CustomSpeedDial />}
+        </Container>
+      </Box>
+    </>
+  );
+};
 
 export default Dashboard;

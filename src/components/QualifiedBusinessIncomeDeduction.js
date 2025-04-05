@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { TextField, Button, Container, Box, MenuItem, Alert, Grid, Paper, Typography } from '@mui/material';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import performQBIDCalculationsSimple from '../utils/QbidSimpleCalculations';
 import { QbiThresholdFirstLimit } from '../utils/taxData';
 import QBIDResultsDisplay from './QBIDResultsDisplay';
-
 const QualifiedBusinessIncomeDeduction = ({ onCalculate }) => {
   // Estados del formulario
   const [qbi, setQbi] = useState('');
@@ -88,7 +88,7 @@ const QualifiedBusinessIncomeDeduction = ({ onCalculate }) => {
     setError(null);
 
     // Preparar resultados
-    const customResults = {
+    const results  = performQBIDCalculationsSimple ({
       calculationType: 'qbidCalculation',
       filingStatus,
       qualifiedBusinessIncome: parseFloat(qbi),
@@ -102,10 +102,12 @@ const QualifiedBusinessIncomeDeduction = ({ onCalculate }) => {
       qbidLimit: parseFloat(qbidLimit),
       smallerOfQbidAndLimit: parseFloat(smallerOfQbidAndLimit),
       finalTaxableIncome: parseFloat(taxableIncomeBeforeQbid) - parseFloat(smallerOfQbidAndLimit),
-    };
+    });
 
-    setCalculationResults(customResults);
-    onCalculate(customResults);
+    setCalculationResults(results);
+    if (onCalculate) {
+      onCalculate(results);
+    }
   };
 
   return (
@@ -198,8 +200,6 @@ const QualifiedBusinessIncomeDeduction = ({ onCalculate }) => {
             </Box>
           </form>
         </Paper>
-
-        {calculationResults && <QBIDResultsDisplay results={calculationResults} />}
       </Box>
     </Container>
   );
