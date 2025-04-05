@@ -118,6 +118,9 @@ import RealEstateProfessionalForm from './RealEstateProfessionalForm';
 import CaptiveInsuranceForm from './CaptiveInsuranceForm';
 import CharitableLLCForm from './CharitableLLCForm';
 import SoleProprietorForm from './SoleProprietorForm';
+import QualifiedBusinessIncomeDeduction from './QualifiedBusinessIncomeDeduction';
+import HarvestingCryptoForm from './HarvestingCryptoForm';
+
 
 const Dashboard = () => {
   const { formId } = useParams(); // Obtiene el formId de la URL
@@ -416,6 +419,10 @@ const Dashboard = () => {
           return <ChoiceOfEntityPartnershipForm onCalculate={setResults} />;
       case 'ChoiceOfEntitySCorp':
           return <ChoiceOfEntitySCorpForm onCalculate={setResults} />;
+      case 'qualifiedBusinessIncomeDeduction':
+          return <QualifiedBusinessIncomeDeduction onCalculate={setResults} />;
+      case 'HarvestingCryptoInvestors':
+          return <HarvestingCryptoForm onCalculate={setResults} />;
       default:
         return <FormSelector onSelectForm={handleSelectForm} searchTerm={searchTerm} setSearchTerm={setSearchTerm} />;
     }
@@ -621,6 +628,10 @@ const Dashboard = () => {
           return 'Choice of Entity - Partnership';
       case 'ChoiceOfEntitySCorp':
           return 'Choice of Entity - S Corporation';
+      case 'qualifiedBusinessIncomeDeduction':
+          return 'QBID Simplified Method';
+      case 'HarvestingCryptoInvestors':
+        return 'Harvesting Crypto Investors';
       default:
         return '';
     }
@@ -760,16 +771,20 @@ const Dashboard = () => {
               </Box>
               
               {results && (
-                <Box 
-                  sx={{ 
-                    borderTop: '1px solid rgba(0, 0, 0, 0.08)',
-                    p: { xs: 2, sm: 3, md: 4 },
-                    backgroundColor: '#f8f9fa'
-                  }}
-                >
-                  <ResultsDisplay results={results} formTitle={getFormTitle()} />
-                </Box>
-              )}
+              <Box 
+              sx={{ 
+              borderTop: '1px solid rgba(0, 0, 0, 0.08)',
+              p: { xs: 2, sm: 3, md: 4 },
+              backgroundColor: '#f8f9fa'
+              }}
+              >
+              {results.calculationType === 'qbidCalculation' ? (
+                  null // No mostrar ResultsDisplay para QBID, ya mostramos nuestros propios resultados
+                  ) : (
+              <ResultsDisplay results={results} formTitle={getFormTitle()} />
+            )}
+          </Box>
+        )}
             </Paper>
           )}
           
