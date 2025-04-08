@@ -1,9 +1,11 @@
 import React, { useState, useMemo } from 'react';
-import { SpeedDial, SpeedDialAction, SpeedDialIcon } from '@mui/material';
+import { SpeedDial, SpeedDialAction, SpeedDialIcon, Box, Typography } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import ProfileIcon from '@mui/icons-material/AccountCircle';
 import WhatsappIcon from '@mui/icons-material/WhatsApp';
+import GridViewIcon from '@mui/icons-material/GridView';
+import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import { useNavigate } from 'react-router-dom';
 
 const CustomSpeedDial = () => {
@@ -19,7 +21,57 @@ const CustomSpeedDial = () => {
     setOpen(false);
   };
 
-  // Memoize the actions array to avoid recreating it on each render
+  // Iconos personalizados solo con texto QBID
+  const QbidStandardIcon = () => (
+    <Box 
+      sx={{ 
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: 24, 
+        height: 24
+      }}
+    >
+      <Typography 
+        variant="caption" 
+        sx={{ 
+          fontSize: '12px', 
+          fontWeight: 'bold',
+          color: '#9333ea',
+          lineHeight: 1
+        }}
+      >
+        QBID
+      </Typography>
+    </Box>
+  );
+
+  const QbidSimplifiedIcon = () => (
+    <Box 
+      sx={{ 
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: 24, 
+        height: 24
+      }}
+    >
+      <Typography 
+        variant="caption" 
+        sx={{ 
+          fontSize: '12px', 
+          fontWeight: 'bold',
+          color: '#0d9488',
+          lineHeight: 1
+        }}
+      >
+        QBID
+      </Typography>
+    </Box>
+  );
+
+
+  // icnonos speedial
   const actions = useMemo(() => [
     {
       icon: <HomeIcon sx={{ color: '#0858e6' }} />,
@@ -36,10 +88,21 @@ const CustomSpeedDial = () => {
       name: 'Profile',
       action: () => navigate('/profile'),
     },
+  
     {
       icon: <WhatsappIcon sx={{ color: '#10b981' }} />,
       name: 'Support',
       action: () => window.open('https://w.app/nVaYD9', '_blank'),
+    },
+    {
+      icon: <QbidStandardIcon />,
+      name: 'Standard',
+      action: () => navigate('/form-selector/QbidStandardMethod'),
+    },
+    {
+      icon: <QbidSimplifiedIcon />,
+      name: 'Simplified',
+      action: () => navigate('/form-selector/qbidCalculation'),
     },
   ], [navigate]);
 

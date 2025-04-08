@@ -9,7 +9,7 @@ const EducationTaxCreditForm = ({ onCalculate }) => {
   const [taxpayerMAGI, setTaxpayerMAGI] = useState('');
   const [qualifiedEducationExpenses, setQualifiedEducationExpenses] = useState('');
   const [MFJ, setMFJ] = useState('No');
-  const [MTAR, setMTAR] = useState('yes');
+  const [MTAR, setMTAR] = useState('Yes');
   const [partnerType, setPartnerType] = useState('Active'); 
   const [filingStatus, setFilingStatus] = useState('MFJ'); 
   const [limit, setLimit] = useState(''); 
