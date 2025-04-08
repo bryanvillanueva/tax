@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Grid, Card, CardActionArea, CardContent, IconButton, TextField, Container, useTheme, useMediaQuery, AppBar, Toolbar, Avatar, InputAdornment } from '@mui/material';
+import { Box, Typography, Grid, Card, CardActionArea, CardContent, IconButton, TextField, Container, useTheme, useMediaQuery, AppBar, Toolbar, Avatar, InputAdornment, Menu, MenuItem, ListItemIcon, Divider } from '@mui/material';
 import CustomDrawer from './CustomDrawer';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { useNavigate, useLocation } from 'react-router-dom';
 import CustomSpeedDial from './CustomSpeedDial';
 import axios from 'axios';
-import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
+import MenuIcon from '@mui/icons-material/Menu';
+import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 
 const forms = [
@@ -135,6 +137,21 @@ const Favorites = ({ onSelectForm }) => {
     const [drawerOpen, setDrawerOpen] = useState(false);
     const navigate = useNavigate();
     const [userData ,setUserData] = useState(null); // Para almacenar los datos del usuario
+    const [anchorEl, setAnchorEl] = useState(null);
+    const open = Boolean(anchorEl);
+
+    const handleClick = (event) => {
+      setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+      setAnchorEl(null);
+    };
+
+    const handleProfile = () => {
+      navigate("/profile");
+      handleClose();
+    };
   
 
     const handleRemoveFavorite = (formId, event) => {
@@ -205,6 +222,7 @@ const Favorites = ({ onSelectForm }) => {
   const handleLogout = () => {
     localStorage.removeItem('authToken'); // Elimina el token
     navigate('/'); // Redirige al login
+    handleClose();
   };
 
     // Cargar favoritos desde localStorage al montar el componente
@@ -261,9 +279,9 @@ return (
           height: '70px',
         }}
       >
-        <Toolbar>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
-            {/* Left section - Menu button */}
+        <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', width: '100%', px: { xs: 1, sm: 3 } }}>
+          {/* Left section - Menu button */}
+          <Box sx={{ width: '33%', display: 'flex', justifyContent: 'center' }}>
             <IconButton
               onClick={() => setDrawerOpen(!drawerOpen)}
               edge="start"
@@ -279,9 +297,9 @@ return (
             >
               <MenuIcon sx={{ fontSize: '24px' }} />
             </IconButton>
-            
+          </Box>
             {/* Center section - Search functionality */}
-            <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center', maxWidth: '600px', mx: 'auto' }}>
+            <Box sx={{ width: '33%', display: 'flex', justifyContent: 'center' }}>
               {showSearch && (
                 <TextField
                   placeholder="Search for a form..."
@@ -319,70 +337,135 @@ return (
                 />
               )}
             </Box>
-            
             {/* Right section - User profile */}
-            <Box
-              onClick={(event) => {
-                const userMenu = document.getElementById('user-menu');
-                if (userMenu) {
-                  userMenu.style.display = userMenu.style.display === 'block' ? 'none' : 'block';
-                }
-              }}
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                padding: "8px 12px",
-                borderRadius: "4px",
-                cursor: "pointer",
-                transition: "background-color 0.2s",
-                "&:hover": {
-                  backgroundColor: "rgba(0, 0, 0, 0.04)",
-                }
-              }}
-            >
-              <Avatar
+            <Box sx={{ width: '33%', display: 'flex', justifyContent: 'flex-end', pr: 10 }}>
+              <Box
+                onClick={handleClick}
+                aria-controls={open ? 'account-menu' : undefined}
+                aria-haspopup="true"
+                aria-expanded={open ? 'true' : undefined}
                 sx={{
-                  width: 36,
-                  height: 36,
-                  bgcolor: "rgba(8, 88, 230, 0.1)",
-                  color: "#0858e6",
-                  fontWeight: "bold",
-                  fontSize: "1rem"
+                  display: "flex",
+                  alignItems: "center",
+                  padding: "8px 12px",
+                  borderRadius: "4px",
+                  cursor: "pointer",
+                  transition: "background-color 0.2s",
+                  "&:hover": {
+                    backgroundColor: "rgba(0, 0, 0, 0.04)",
+                  }
                 }}
               >
-                {userData && userData.first_name && userData.last_name ? 
-                  `${userData.first_name.charAt(0)}${userData.last_name.charAt(0)}` : 'U'}
-              </Avatar>
-              
-              {!isMobile && userData && (
-                <Box sx={{ ml: 1.5, display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
-                  <Typography
-                    variant="body1"
-                    sx={{
-                      fontWeight: 600,
-                      fontSize: "0.9rem",
-                      color: "#333",
-                      lineHeight: 1.2
-                    }}
-                  >
-                    {`${userData.first_name} ${userData.last_name}`}
-                  </Typography>
-                  
-                  <Typography
-                    variant="caption"
-                    sx={{
-                      color: "rgba(0, 0, 0, 0.6)",
-                      fontSize: "0.75rem",
-                      mt: 0.2
-                    }}
-                  >
-                    {userData.product || "Usuario"}
-                  </Typography>
-                </Box>
-              )}
+                <Avatar
+                  sx={{
+                    width: 36,
+                    height: 36,
+                    bgcolor: "rgba(8, 88, 230, 0.1)",
+                    color: "#0858e6",
+                    fontWeight: "bold",
+                    fontSize: "1rem"
+                  }}
+                >
+                  {userData && userData.first_name && userData.last_name ? 
+                    `${userData.first_name.charAt(0)}${userData.last_name.charAt(0)}` : 'U'}
+                </Avatar>
+                
+                {!isMobile && userData && (
+                  <Box sx={{ ml: 1.5, display: "flex", flexDirection: "column", alignItems: "flex-start", maxWidth: "150px", overflow: "hidden" }}>
+                    <Typography
+                      variant="body1"
+                      sx={{
+                        fontWeight: 600,
+                        fontSize: "0.9rem",
+                        color: "#333",
+                        lineHeight: 1.2,
+                        textOverflow: "ellipsis",
+                        overflow: "hidden",
+                        whiteSpace: "nowrap",
+                        width: "100%"
+                      }}
+                    >
+                      {`${userData.first_name} ${userData.last_name}`}
+                    </Typography>
+                    
+                    <Typography
+                      variant="caption"
+                      sx={{
+                        color: "rgba(0, 0, 0, 0.6)",
+                        fontSize: "0.75rem",
+                        mt: 0.2,
+                        textOverflow: "ellipsis",
+                        overflow: "hidden",
+                        whiteSpace: "nowrap",
+                        width: "100%"
+                      }}
+                    >
+                      {userData.product || "Usuario"}
+                    </Typography>
+                  </Box>
+                )}
+              </Box>
             </Box>
-          </Box>
-        </Toolbar>
+          </Toolbar>
+          
+          <Menu
+        anchorEl={anchorEl}
+        id="account-menu"
+        open={open}
+        onClose={handleClose}
+        onClick={handleClose}
+        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+        sx={{
+          '& .MuiPaper-root': {
+            borderRadius: '12px',
+            minWidth: 180,
+            boxShadow: '0 8px 30px rgba(0, 0, 0, 0.12)',
+            mt: 1.5,
+            '& .MuiMenuItem-root': {
+              fontSize: '0.95rem',
+              py: 1.5,
+              px: 2.5,
+              borderRadius: '8px',
+              mx: 1,
+              my: 0.5,
+              transition: 'all 0.2s ease',
+              '&:hover': {
+                backgroundColor: 'rgba(8, 88, 230, 0.05)',
+              }
+            },
+            '& .MuiListItemIcon-root': {
+              minWidth: 36,
+              color: '#0858e6',
+            },
+          }
+        }}
+      >
+        <Box sx={{ px: 3, py: 1.5, textAlign: 'center' }}>
+          <Typography variant="subtitle1" sx={{ fontWeight: 600, color: '#333' }}>
+            {userData ? `${userData.first_name} ${userData.last_name}` : 'Usuario'}
+          </Typography>
+          <Typography variant="body2" sx={{ color: 'rgba(0, 0, 0, 0.6)', fontSize: '0.85rem' }}>
+            {userData ? userData.email : 'usuario@ejemplo.com'}
+          </Typography>
+        </Box>
+        
+        <Divider sx={{ my: 1 }} />
+        
+        <MenuItem onClick={handleProfile}>
+          <ListItemIcon>
+            <PersonOutlineIcon fontSize="small" />
+          </ListItemIcon>
+          Profile
+        </MenuItem>
+        
+        <MenuItem onClick={handleLogout}>
+          <ListItemIcon>
+            <LogoutIcon fontSize="small" />
+          </ListItemIcon>
+          Logout
+        </MenuItem>
+      </Menu>
       </AppBar>
       {/* Reutiliza el Drawer */}
       <CustomDrawer
