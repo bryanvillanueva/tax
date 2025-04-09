@@ -1,9 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { TextField, Button, Container, Box, MenuItem, Alert, Grid } from '@mui/material';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import useCalculations from '../utils/useCalculations';
+import QbidFieldWithOptions from './QbidFieldWithOptions';
+import { useStrategy } from '../context/StrategyContext';
 
 const DepreciationForm = ({ onCalculate }) => {
+  // Usar el hook de estrategia para acceder a los valores previos
+  const { previousStrategy } = useStrategy();
+  
   const [filingStatus, setFilingStatus] = useState('Single');
   const [grossIncome, setGrossIncome] = useState('');
   const [investType, setInvestType] = useState('Section 179');
@@ -15,6 +20,55 @@ const DepreciationForm = ({ onCalculate }) => {
   const [limitDepreciation, setLimitDepreciation] = useState(0); // Variable interna
   const [QBID, setQbid] = useState('');
   const [error, setError] = useState(null);
+
+  // Efecto para restaurar valores cuando regresamos de QBID
+  useEffect(() => {
+    // Solo restaurar valores si hay previousStrategy y una sola vez
+    if (previousStrategy && previousStrategy.formValues) {
+      const values = previousStrategy.formValues;
+      
+      // Usamos una bandera para evitar bucles de actualización
+      let needsUpdate = false;
+      
+      // Solo actualizar si los valores son diferentes
+      if (values.filingStatus && values.filingStatus !== filingStatus) {
+        setFilingStatus(values.filingStatus);
+        needsUpdate = true;
+      }
+      if (values.grossIncome && values.grossIncome !== grossIncome) {
+        setGrossIncome(values.grossIncome);
+        needsUpdate = true;
+      }
+      if (values.investType && values.investType !== investType) {
+        setInvestType(values.investType);
+        needsUpdate = true;
+      }
+      if (values.cost && values.cost !== cost) {
+        setCost(values.cost);
+        needsUpdate = true;
+      }
+      if (values.partnerType && values.partnerType !== partnerType) {
+        setPartnerType(values.partnerType);
+        needsUpdate = true;
+      }
+      if (values.formType && values.formType !== formType) {
+        setFormType(values.formType);
+        needsUpdate = true;
+      }
+      if (values.isListedProperty && values.isListedProperty !== isListedProperty) {
+        setIsListedProperty(values.isListedProperty);
+        needsUpdate = true;
+      }
+      if (values.listedPropertyType && values.listedPropertyType !== listedPropertyType) {
+        setListedPropertyType(values.listedPropertyType);
+        needsUpdate = true;
+      }
+      if (values.limitDepreciation !== undefined && values.limitDepreciation !== limitDepreciation) {
+        setLimitDepreciation(values.limitDepreciation);
+        needsUpdate = true;
+      }
+    }
+  }, [previousStrategy]); // No incluir estados como dependencias para evitar bucles
 
   const { performCalculations } = useCalculations();
 
@@ -201,15 +255,22 @@ const DepreciationForm = ({ onCalculate }) => {
                 <MenuItem value="1120S">1120S</MenuItem>
                 <MenuItem value="1120">1120</MenuItem>
               </TextField>
-
-              <TextField
-                label="QBID (Qualified Business Income Deduction)"
-                fullWidth
-                type="number"
-                value={QBID}
-                onChange={(e) => setQbid(e.target.value)}
-                margin="normal"
-              />
+              <QbidFieldWithOptions 
+  value={QBID}
+  onChange={setQbid}
+  formValues={{
+    filingStatus,
+    grossIncome,
+    cost,
+    investType,
+    partnerType,
+    formType,
+    isListedProperty,
+    listedPropertyType,
+    limitDepreciation,
+    QBID
+  }}
+/>
             </Grid>
           </Grid>
 

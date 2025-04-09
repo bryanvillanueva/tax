@@ -1,11 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { TextField, Button, Container, Typography, Box, MenuItem, Alert, Grid } from '@mui/material';
 import useCalculations from '../utils/useCalculations';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import QbidFieldWithOptions from './QbidFieldWithOptions';
+import { useStrategy } from '../context/StrategyContext';
 
 
 
 const AugustaRuleForm = ({ onCalculate }) => {
+  // Usar el hook de estrategia para acceder a los valores previos
+  const { previousStrategy } = useStrategy();
+  
   const [filingStatus, setFilingStatus] = useState('Single');
   const [grossIncome, setGrossIncome] = useState('');
   const [averageMonthlyRent, setAverageMonthlyRent] = useState('');
@@ -14,6 +19,43 @@ const AugustaRuleForm = ({ onCalculate }) => {
   const [formType, setFormType] = useState('1040 - Schedule C/F');
   const [QBID, setQbid] = useState('');
   const [error, setError] = useState(null);
+
+  // Efecto para restaurar valores cuando regresamos de QBID
+  useEffect(() => {
+    // Solo restaurar si hay valores previos y solo una vez
+    if (previousStrategy && previousStrategy.formValues) {
+      const values = previousStrategy.formValues;
+      
+      // Usamos una bandera para evitar bucles de actualización
+      let needsUpdate = false;
+      
+      // Solo actualizar si los valores son diferentes
+      if (values.filingStatus && values.filingStatus !== filingStatus) {
+        setFilingStatus(values.filingStatus);
+        needsUpdate = true;
+      }
+      if (values.grossIncome && values.grossIncome !== grossIncome) {
+        setGrossIncome(values.grossIncome);
+        needsUpdate = true;
+      }
+      if (values.averageMonthlyRent && values.averageMonthlyRent !== averageMonthlyRent) {
+        setAverageMonthlyRent(values.averageMonthlyRent);
+        needsUpdate = true;
+      }
+      if (values.daysOfRent && values.daysOfRent !== daysOfRent) {
+        setDaysOfRent(values.daysOfRent);
+        needsUpdate = true;
+      }
+      if (values.partnerType && values.partnerType !== partnerType) {
+        setPartnerType(values.partnerType);
+        needsUpdate = true;
+      }
+      if (values.formType && values.formType !== formType) {
+        setFormType(values.formType);
+        needsUpdate = true;
+      }
+    }
+  }, [previousStrategy]); // Importante: NO incluir los estados como dependencias para evitar bucles
 
   const { performCalculations } = useCalculations();
 
@@ -146,13 +188,19 @@ const AugustaRuleForm = ({ onCalculate }) => {
                 <MenuItem value="1120S">1120S</MenuItem>
                 <MenuItem value="1120">1120</MenuItem>
               </TextField>
-               <TextField
-                label="QBID (Qualified Business Income Deduction)"
-                fullWidth
-                type="number"
+              {/* Campo QBID con opciones para navegar a estrategias QBID */}
+              <QbidFieldWithOptions 
                 value={QBID}
-                onChange={(e) => setQbid(e.target.value)}
-                margin="normal"
+                onChange={setQbid}
+                formValues={{
+                  filingStatus,
+                  grossIncome,
+                  averageMonthlyRent,
+                  daysOfRent,
+                  partnerType,
+                  formType,
+                  QBID
+                }}
               />
             </Grid>
           </Grid>

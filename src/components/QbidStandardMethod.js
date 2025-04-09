@@ -14,8 +14,11 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { QbiThresholdFirstLimit, QbiThresholdPhaseIn } from '../utils/taxData';
 import performQBIDCalculations from '../utils/QbidStandarCalculations';
 import QbidResults from './QbidResults';
+import QbidReturnButton from './QbidReturnButton';
+import { useStrategy } from '../context/StrategyContext';
 
 const QbidStandardMethod = ({ onCalculate }) => {
+  const { previousStrategy } = useStrategy();
   // Estados para los campos de entrada
   const [filingStatus, setFilingStatus] = useState('Single');
   const [threshold, setThreshold] = useState(QbiThresholdFirstLimit.Single);
@@ -180,10 +183,15 @@ const QbidStandardMethod = ({ onCalculate }) => {
             </Grid>
           </Grid>
 
-          <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
+          <Box sx={{ display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center', mt: 3 }}>
             <Button type="submit" variant="contained" sx={{ backgroundColor: '#0858e6', color: '#fff' }}>
               Calculate
             </Button>
+
+            {/* Botón para aplicar QBID y volver, solo visible si vinimos de otra estrategia */}
+            {calculationResults && previousStrategy && (
+              <QbidReturnButton qbidValue={calculationResults.totalQbid} />
+            )}
           </Box>
         </form>
       </Box>

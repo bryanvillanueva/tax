@@ -4,7 +4,10 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import performQBIDCalculationsSimple from '../utils/QbidSimpleCalculations';
 import { QbiThresholdFirstLimit } from '../utils/taxData';
 import QBIDResultsDisplay from './QBIDResultsDisplay';
+import QbidReturnButton from './QbidReturnButton';
+import { useStrategy } from '../context/StrategyContext';
 const QualifiedBusinessIncomeDeduction = ({ onCalculate }) => {
+  const { previousStrategy } = useStrategy();
   // Estados del formulario
   const [qbi, setQbi] = useState('');
   const [filingStatus, setFilingStatus] = useState('Single');
@@ -191,7 +194,7 @@ const QualifiedBusinessIncomeDeduction = ({ onCalculate }) => {
               </Grid>
             </Grid>
 
-            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center', mt: 4 }}>
               <Button 
                 type="submit" 
                 variant="contained" 
@@ -199,6 +202,11 @@ const QualifiedBusinessIncomeDeduction = ({ onCalculate }) => {
               >
                 Calcular
               </Button>
+              
+              {/* Botón para aplicar QBID y volver, solo visible si vinimos de otra estrategia */}
+              {calculationResults && previousStrategy && (
+                <QbidReturnButton qbidValue={calculationResults.smallerOfQbidAndLimit} />
+              )}
             </Box>
           </form>
         </Paper>
