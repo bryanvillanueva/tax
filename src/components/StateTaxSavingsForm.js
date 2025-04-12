@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { TextField, Button, Container, Box, MenuItem, Alert, Grid } from '@mui/material';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import CalculateIcon from '@mui/icons-material/Calculate';
+import QbidModal from './QbidModal';
 import useCalculations from '../utils/useCalculations';
 
 const StateTaxSavingsForm = ({ onCalculate }) => {
@@ -8,23 +10,43 @@ const StateTaxSavingsForm = ({ onCalculate }) => {
   const [grossIncome, setGrossIncome] = useState('');
   const [partnerType, setPartnerType] = useState('Active');
   const [formType, setFormType] = useState('1040 - Schedule C/F');
-   const [QBID, setQbid] = useState('');
-  
+  const [QBID, setQbid] = useState('');
+  const [partnershipShare, setPartnershipShare] = useState('');
+  const [qbidModalOpen, setQbidModalOpen] = useState(false);
+
   const [federalTaxableIncome, setFederalTaxableIncome] = useState('');
   const [currentStateRate, setCurrentStateRate] = useState('');
   const [newStateRate, setNewStateRate] = useState('');
   const [currentStateTax, setCurrentStateTax] = useState('');
   const [newStateTax, setNewStateTax] = useState('');
-  
   const [taxSavings, setTaxSavings] = useState('');
   const [error, setError] = useState(null);
 
   const { performCalculations } = useCalculations();
 
+  const handleQbidCalculateClick = () => {
+    setQbidModalOpen(true);
+  };
+
+  const handleCloseQbidModal = () => {
+    setQbidModalOpen(false);
+  };
+
+  const handleQbidSelection = (results, shouldClose = false) => {
+    if (results && results.qbidAmount !== undefined) {
+      const qbidValue = parseFloat(results.qbidAmount);
+      if (!isNaN(qbidValue)) {
+        setQbid(qbidValue.toString());
+      }
+    }
+    if (shouldClose) {
+      setQbidModalOpen(false);
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Validations
     if (!grossIncome || parseFloat(grossIncome) <= 0) {
       setError('Gross Income is required and must be greater than 0.');
       return;
@@ -45,24 +67,20 @@ const StateTaxSavingsForm = ({ onCalculate }) => {
       return;
     }
 
-    
     const currentTax = (parseFloat(federalTaxableIncome) * parseFloat(currentStateRate)) / 100;
     const newTax = (parseFloat(federalTaxableIncome) * parseFloat(newStateRate)) / 100;
     const savings = currentTax - newTax;
 
-    
     const currentTaxRounded = currentTax.toFixed(2);
     const newTaxRounded = newTax.toFixed(2);
     const savingsRounded = savings.toFixed(2);
 
-    
     setCurrentStateTax(currentTaxRounded);
     setNewStateTax(newTaxRounded);
     setTaxSavings(savingsRounded);
 
     setError(null);
 
-    
     const results = performCalculations({
       filingStatus,
       grossIncome: parseFloat(grossIncome),
@@ -75,6 +93,7 @@ const StateTaxSavingsForm = ({ onCalculate }) => {
       newStateTax: parseFloat(newTaxRounded),
       taxSavings: parseFloat(savingsRounded),
       QBID: parseFloat(QBID),
+      partnershipShare: partnershipShare ? parseFloat(partnershipShare) : 0,
       calculationType: 'stateTaxSavings',
     });
     onCalculate(results);
@@ -83,12 +102,17 @@ const StateTaxSavingsForm = ({ onCalculate }) => {
   return (
     <Container>
       <Box sx={{ position: 'relative', mt: 5 }}>
-        {/* Link in the top right corner */}
         <Box sx={{ position: 'absolute', top: -10, right: 0 }}>
           <Button
             href="https://cmltaxplanning.com/docs/S33.pdf"
             target="_blank"
-            sx={{ textTransform: 'none', backgroundColor: '#ffffff', color: '#0858e6', fontSize: '0.875rem', marginBottom: '150px' }}
+            sx={{
+              textTransform: 'none',
+              backgroundColor: '#ffffff',
+              color: '#0858e6',
+              fontSize: '0.875rem',
+              marginBottom: '150px',
+            }}
             startIcon={<InfoOutlinedIcon />}
           >
             View Strategy Details
@@ -103,7 +127,6 @@ const StateTaxSavingsForm = ({ onCalculate }) => {
 
         <form onSubmit={handleSubmit}>
           <Grid container spacing={2}>
-            {/* Left Side */}
             <Grid item xs={12} md={6}>
               <TextField
                 select
@@ -128,7 +151,7 @@ const StateTaxSavingsForm = ({ onCalculate }) => {
                 onChange={(e) => setGrossIncome(e.target.value)}
                 margin="normal"
               />
-              
+
               <TextField
                 select
                 label="Partner Type"
@@ -158,10 +181,8 @@ const StateTaxSavingsForm = ({ onCalculate }) => {
                 onChange={(e) => setCurrentStateRate(e.target.value)}
                 margin="normal"
               />
-               
             </Grid>
 
-            {/* Right Side */}
             <Grid item xs={12} md={6}>
               <TextField
                 label="New State Rate (%)"
@@ -192,24 +213,22 @@ const StateTaxSavingsForm = ({ onCalculate }) => {
                 disabled
               />
 
-               <TextField
+              <TextField
                 label="Tax Savings"
                 fullWidth
                 type="number"
                 value={taxSavings}
                 margin="normal"
-
                 disabled
               />
 
-               <TextField
+              <TextField
                 select
                 label="Form Type"
                 fullWidth
                 value={formType}
                 onChange={(e) => setFormType(e.target.value)}
                 margin="normal"
-                
               >
                 <MenuItem value="1040 - Schedule C/F">1040 - Schedule C/F</MenuItem>
                 <MenuItem value="1040NR - Schedule E">1040NR - Schedule E</MenuItem>
@@ -217,14 +236,66 @@ const StateTaxSavingsForm = ({ onCalculate }) => {
                 <MenuItem value="1120S">1120S</MenuItem>
                 <MenuItem value="1120">1120</MenuItem>
               </TextField>
-              <TextField
-                label="QBID (Qualified Business Income Deduction)"
-                fullWidth
-                type="number"
-                value={QBID}
-                onChange={(e) => setQbid(e.target.value)}
-                margin="normal"
-              />
+
+              {formType === '1065' && (
+                <TextField
+                  label="% Share if partnership"
+                  fullWidth
+                  type="number"
+                  value={partnershipShare}
+                  onChange={(e) => {
+                    const value = Math.min(100, Math.max(0, parseFloat(e.target.value) || 0));
+                    setPartnershipShare(value.toString());
+                  }}
+                  margin="normal"
+                  InputProps={{
+                    inputProps: { min: 0, max: 100 },
+                    endAdornment: (
+                      <span style={{ marginRight: '8px' }}>%</span>
+                    ),
+                  }}
+                  helperText="Enter your partnership share percentage (0-100%)"
+                />
+              )}
+
+              <Box sx={{ position: 'relative' }}>
+                <TextField
+                  label="QBID (Qualified Business Income Deduction)"
+                  fullWidth
+                  type="number"
+                  value={QBID}
+                  onChange={(e) => setQbid(e.target.value)}
+                  margin="normal"
+                  InputProps={{
+                    endAdornment: (
+                      <Button
+                        onClick={handleQbidCalculateClick}
+                        size="small"
+                        aria-label="calculate QBID"
+                        sx={{
+                          color: '#0858e6',
+                          textTransform: 'none',
+                          fontSize: '0.8rem',
+                          fontWeight: 'normal',
+                          minWidth: 'auto',
+                          ml: 1,
+                          p: '4px 8px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '4px',
+                          backgroundColor: 'transparent',
+                          '&:hover': {
+                            backgroundColor: 'rgba(8, 88, 230, 0.08)',
+                          }
+                        }}
+                      >
+                        <CalculateIcon fontSize="small" />
+                        Calculate
+                      </Button>
+                    ),
+                  }}
+                />
+              </Box>
             </Grid>
           </Grid>
 
@@ -235,6 +306,12 @@ const StateTaxSavingsForm = ({ onCalculate }) => {
           </Box>
         </form>
       </Box>
+
+      <QbidModal 
+        open={qbidModalOpen} 
+        onClose={handleCloseQbidModal} 
+        onSelect={handleQbidSelection}
+      />
     </Container>
   );
 };

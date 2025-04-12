@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { TextField, Button, Container, Box, MenuItem, Alert, Grid } from '@mui/material';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import CalculateIcon from '@mui/icons-material/Calculate';
+import QbidModal from './QbidModal';
 import useCalculations from '../utils/useCalculations';
 
 const StartupCostOptimizationForm = ({ onCalculate }) => {
@@ -11,31 +13,50 @@ const StartupCostOptimizationForm = ({ onCalculate }) => {
   const [totalStartupCosts, setTotalStartupCosts] = useState('');
   const [optimizationAmount, setOptimizationAmount] = useState('');
   const [QBID, setQbid] = useState('');
+  const [partnershipShare, setPartnershipShare] = useState('');
+  const [qbidModalOpen, setQbidModalOpen] = useState(false);
   const [error, setError] = useState(null);
 
   const { performCalculations } = useCalculations();
 
+  const handleQbidCalculateClick = () => {
+    setQbidModalOpen(true);
+  };
+
+  const handleCloseQbidModal = () => {
+    setQbidModalOpen(false);
+  };
+
+  const handleQbidSelection = (results, shouldClose = false) => {
+    if (results && results.qbidAmount !== undefined) {
+      const qbidValue = parseFloat(results.qbidAmount);
+      if (!isNaN(qbidValue)) {
+        setQbid(qbidValue.toString());
+      }
+    }
+    if (shouldClose) {
+      setQbidModalOpen(false);
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-  
-    // Validaciones de los campos
+
     if (!grossIncome || parseFloat(grossIncome) <= 0) {
       setError('Gross Income is required and must be greater than 0.');
       return;
     }
-  
+
     if (!totalStartupCosts || parseFloat(totalStartupCosts) <= 0) {
       setError('Total Startup Costs is required and must be greater than 0.');
       return;
     }
-  
+
     const parsedOptimizationAmount = optimizationAmount ? parseFloat(optimizationAmount) : 0;
-      
-  
+
     const limit1 = 5000;
     const phaseOut = 50000;
-  
-    // Función para calcular la reducción según la fórmula
+
     const calculateReduction = (limit1, totalStartupCosts, phaseOut) => {
       if (parseFloat(limit1) > parseFloat(totalStartupCosts)) {
         return 0;
@@ -46,30 +67,24 @@ const StartupCostOptimizationForm = ({ onCalculate }) => {
       }
       return 0;
     };
-  
+
     const reduction = calculateReduction(limit1, totalStartupCosts, phaseOut);
-  
-    // Cálculo de la primera deducción
+
     const calculateFirstDeduction = (totalStartupCosts, limit1, reduction) => {
-       return totalStartupCosts >= limit1 ? limit1 - reduction : totalStartupCosts;
+      return totalStartupCosts >= limit1 ? limit1 - reduction : totalStartupCosts;
     };
-   
+
     const firstDeduction = calculateFirstDeduction(totalStartupCosts, limit1, reduction);
 
-    // Cálculo del monto diferido y mensual
     const deferredAmount = totalStartupCosts - firstDeduction;
-    const monthlyAmount = (deferredAmount / 180).toFixed(2); 
-  
-    // Cálculo del reconocimiento del primer año
+    const monthlyAmount = (deferredAmount / 180).toFixed(2);
+
     const firstYearRecognition = (parseFloat(monthlyAmount) * 12) + parsedOptimizationAmount;
-  
-    // Cálculo de la deducción de inicio
+
     const deductionStartup = parseFloat(firstYearRecognition) + parseFloat(firstDeduction);
-  
-    
-  
+
     setError(null);
-  
+
     const results = performCalculations({
       filingStatus,
       grossIncome: parseFloat(grossIncome),
@@ -80,27 +95,32 @@ const StartupCostOptimizationForm = ({ onCalculate }) => {
       reduction,
       firstDeduction,
       deferredAmount,
-      monthlyAmount: parseFloat(monthlyAmount), 
-      firstYearRecognition: parseFloat(firstYearRecognition), 
-      deductionStartup: parseFloat(deductionStartup), 
+      monthlyAmount: parseFloat(monthlyAmount),
+      firstYearRecognition: parseFloat(firstYearRecognition),
+      deductionStartup: parseFloat(deductionStartup),
       optimizationAmount: parsedOptimizationAmount,
       calculationType: 'startupCostOptimization',
       QBID: parseFloat(QBID),
+      partnershipShare: partnershipShare ? parseFloat(partnershipShare) : 0,
     });
-  
+
     onCalculate(results);
   };
-  
 
   return (
     <Container>
       <Box sx={{ position: 'relative', mt: 5 }}>
-        {/* Enlace en la esquina superior derecha */}
         <Box sx={{ position: 'absolute', top: -10, right: 0 }}>
           <Button
             href="https://cmltaxplanning.com/docs/S32.pdf"
             target="_blank"
-            sx={{ textTransform: 'none', backgroundColor: '#ffffff', color: '#0858e6', fontSize: '0.875rem', marginBottom: '150px' }}
+            sx={{
+              textTransform: 'none',
+              backgroundColor: '#ffffff',
+              color: '#0858e6',
+              fontSize: '0.875rem',
+              marginBottom: '150px',
+            }}
             startIcon={<InfoOutlinedIcon />}
           >
             View Strategy Details
@@ -115,7 +135,6 @@ const StartupCostOptimizationForm = ({ onCalculate }) => {
 
         <form onSubmit={handleSubmit}>
           <Grid container spacing={2}>
-            {/* Lado Izquierdo */}
             <Grid item xs={12} md={6}>
               <TextField
                 select
@@ -154,9 +173,7 @@ const StartupCostOptimizationForm = ({ onCalculate }) => {
               </TextField>
             </Grid>
 
-            {/* Lado Derecho */}
             <Grid item xs={12} md={6}>
-              {/* Nuevos campos */}
               <TextField
                 label="Total Startup Costs"
                 fullWidth
@@ -190,14 +207,65 @@ const StartupCostOptimizationForm = ({ onCalculate }) => {
                 <MenuItem value="1120">1120</MenuItem>
               </TextField>
 
-              <TextField
-                label="QBID (Qualified Business Income Deduction)"
-                fullWidth
-                type="number"
-                value={QBID}
-                onChange={(e) => setQbid(e.target.value)}
-                margin="normal"
-              />
+              {formType === '1065' && (
+                <TextField
+                  label="% Share if partnership"
+                  fullWidth
+                  type="number"
+                  value={partnershipShare}
+                  onChange={(e) => {
+                    const value = Math.min(100, Math.max(0, parseFloat(e.target.value) || 0));
+                    setPartnershipShare(value.toString());
+                  }}
+                  margin="normal"
+                  InputProps={{
+                    inputProps: { min: 0, max: 100 },
+                    endAdornment: (
+                      <span style={{ marginRight: '8px' }}>%</span>
+                    ),
+                  }}
+                  helperText="Enter your partnership share percentage (0-100%)"
+                />
+              )}
+
+              <Box sx={{ position: 'relative' }}>
+                <TextField
+                  label="QBID (Qualified Business Income Deduction)"
+                  fullWidth
+                  type="number"
+                  value={QBID}
+                  onChange={(e) => setQbid(e.target.value)}
+                  margin="normal"
+                  InputProps={{
+                    endAdornment: (
+                      <Button
+                        onClick={handleQbidCalculateClick}
+                        size="small"
+                        aria-label="calculate QBID"
+                        sx={{
+                          color: '#0858e6',
+                          textTransform: 'none',
+                          fontSize: '0.8rem',
+                          fontWeight: 'normal',
+                          minWidth: 'auto',
+                          ml: 1,
+                          p: '4px 8px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '4px',
+                          backgroundColor: 'transparent',
+                          '&:hover': {
+                            backgroundColor: 'rgba(8, 88, 230, 0.08)',
+                          }
+                        }}
+                      >
+                        <CalculateIcon fontSize="small" />
+                        Calculate
+                      </Button>
+                    ),
+                  }}
+                />
+              </Box>
             </Grid>
           </Grid>
 
@@ -208,6 +276,12 @@ const StartupCostOptimizationForm = ({ onCalculate }) => {
           </Box>
         </form>
       </Box>
+
+      <QbidModal 
+        open={qbidModalOpen} 
+        onClose={handleCloseQbidModal} 
+        onSelect={handleQbidSelection}
+      />
     </Container>
   );
 };

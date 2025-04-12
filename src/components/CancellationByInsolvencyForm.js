@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { TextField, Button, Container, Typography, Box, MenuItem, Alert, Grid } from '@mui/material';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import CalculateIcon from '@mui/icons-material/Calculate';
+import QbidModal from './QbidModal';
 import useCalculations from '../utils/useCalculations';
 
 const formatCurrency = (value) => {
@@ -22,16 +24,37 @@ const CancellationByInsolvencyForm = ({ onCalculate }) => {
   const [debtForgiven, setDebtForgiven] = useState('');
   const [formType, setFormType] = useState('1040 - Schedule C/F');
   const [QBID, setQbid] = useState('');
+  const [partnershipShare, setPartnershipShare] = useState('');
   const [error, setError] = useState(null);
-  const [insolvencyAmount, setInsolvencyAmount] = useState(0); // Nuevo estado para Insolvency Amount
-  const [taxableIncomeInsolvency, setTaxableIncomeInsolvency] = useState(0); // Nuevo estado para Taxable Income (Insolvency)
+  const [insolvencyAmount, setInsolvencyAmount] = useState(0);
+  const [taxableIncomeInsolvency, setTaxableIncomeInsolvency] = useState(0);
+  const [qbidModalOpen, setQbidModalOpen] = useState(false);
 
   const { performCalculations } = useCalculations();
+
+  const handleQbidCalculateClick = () => {
+    setQbidModalOpen(true);
+  };
+
+  const handleCloseQbidModal = () => {
+    setQbidModalOpen(false);
+  };
+
+  const handleQbidSelection = (results, shouldClose = false) => {
+    if (results && results.qbidAmount !== undefined) {
+      const qbidValue = parseFloat(results.qbidAmount);
+      if (!isNaN(qbidValue)) {
+        setQbid(qbidValue.toString());
+      }
+    }
+    if (shouldClose) {
+      setQbidModalOpen(false);
+    }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Validaciones
     if (!grossIncome || parseFloat(grossIncome) <= 0) {
       setError('Gross Income is required and must be greater than 0.');
       return;
@@ -54,7 +77,6 @@ const CancellationByInsolvencyForm = ({ onCalculate }) => {
 
     setError(null);
 
-    // Cálculos internos
     const insolvencyAmountCalc =
       totalLiabilities - totalAssets <= 0 ? 0 : totalLiabilities - totalAssets;
 
@@ -63,12 +85,9 @@ const CancellationByInsolvencyForm = ({ onCalculate }) => {
         ? 0
         : debtForgiven - insolvencyAmountCalc;
 
-    // Actualizamos los estados de los campos
     setInsolvencyAmount(insolvencyAmountCalc);
     setTaxableIncomeInsolvency(taxableIncomeInsolvencyCalc);
-    console.log(taxableIncomeInsolvencyCalc);
 
-    // Resultados procesados con performCalculations
     const results = performCalculations({
       filingStatus,
       grossIncome: parseFloat(grossIncome),
@@ -77,21 +96,20 @@ const CancellationByInsolvencyForm = ({ onCalculate }) => {
       debtForgiven: parseFloat(debtForgiven),
       insolvencyAmount: insolvencyAmountCalc,
       taxableIncomeInsolvency: taxableIncomeInsolvencyCalc,
-      deductionCancellation: taxableIncomeInsolvencyCalc, 
+      deductionCancellation: taxableIncomeInsolvencyCalc,
       partnerType,
       formType,
+      partnershipShare: partnershipShare ? parseFloat(partnershipShare) : 0,
       calculationType: 'CancellationByInsolvency',
       QBID: parseFloat(QBID),
     });
-    
+
     onCalculate(results);
-    
   };
 
   return (
     <Container>
       <Box sx={{ position: 'relative', mt: 5 }}>
-        {/* Enlace en la esquina superior derecha */}
         <Box sx={{ position: 'absolute', top: -10, right: 0 }}>
           <Button
             href="https://cmltaxplanning.com/docs/S38.pdf"
@@ -153,6 +171,7 @@ const CancellationByInsolvencyForm = ({ onCalculate }) => {
                 <MenuItem value="Active">Active</MenuItem>
                 <MenuItem value="Passive">Passive</MenuItem>
               </TextField>
+
               <TextField
                 label="Total Assets"
                 fullWidth
@@ -173,8 +192,6 @@ const CancellationByInsolvencyForm = ({ onCalculate }) => {
             </Grid>
 
             <Grid item xs={12} md={6}>
-              
-
               <TextField
                 label="Debt Forgiven"
                 fullWidth
@@ -215,14 +232,65 @@ const CancellationByInsolvencyForm = ({ onCalculate }) => {
                 <MenuItem value="1120">1120</MenuItem>
               </TextField>
 
-              <TextField
-                label="QBID (Qualified Business Income Deduction)"
-                fullWidth
-                type="number"
-                value={QBID}
-                onChange={(e) => setQbid(e.target.value)}
-                margin="normal"
-              />
+              {formType === '1065' && (
+                <TextField
+                  label="% Share if partnership"
+                  fullWidth
+                  type="number"
+                  value={partnershipShare}
+                  onChange={(e) => {
+                    const value = Math.min(100, Math.max(0, parseFloat(e.target.value) || 0));
+                    setPartnershipShare(value.toString());
+                  }}
+                  margin="normal"
+                  InputProps={{
+                    inputProps: { min: 0, max: 100 },
+                    endAdornment: (
+                      <span style={{ marginRight: '8px' }}>%</span>
+                    ),
+                  }}
+                  helperText="Enter your partnership share percentage (0-100%)"
+                />
+              )}
+
+              <Box sx={{ position: 'relative' }}>
+                <TextField
+                  label="QBID (Qualified Business Income Deduction)"
+                  fullWidth
+                  type="number"
+                  value={QBID}
+                  onChange={(e) => setQbid(e.target.value)}
+                  margin="normal"
+                  InputProps={{
+                    endAdornment: (
+                      <Button
+                        onClick={handleQbidCalculateClick}
+                        size="small"
+                        aria-label="calculate QBID"
+                        sx={{
+                          color: '#0858e6',
+                          textTransform: 'none',
+                          fontSize: '0.8rem',
+                          fontWeight: 'normal',
+                          minWidth: 'auto',
+                          ml: 1,
+                          p: '4px 8px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '4px',
+                          backgroundColor: 'transparent',
+                          '&:hover': {
+                            backgroundColor: 'rgba(8, 88, 230, 0.08)',
+                          }
+                        }}
+                      >
+                        <CalculateIcon fontSize="small" />
+                        Calculate
+                      </Button>
+                    ),
+                  }}
+                />
+              </Box>
             </Grid>
           </Grid>
 
@@ -233,6 +301,12 @@ const CancellationByInsolvencyForm = ({ onCalculate }) => {
           </Box>
         </form>
       </Box>
+
+      <QbidModal 
+        open={qbidModalOpen} 
+        onClose={handleCloseQbidModal} 
+        onSelect={handleQbidSelection}
+      />
     </Container>
   );
 };

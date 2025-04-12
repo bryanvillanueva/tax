@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { TextField, Button, Container, Box, MenuItem, Alert, Grid } from '@mui/material';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import CalculateIcon from '@mui/icons-material/Calculate';
+import QbidModal from './QbidModal';
 import useCalculations from '../utils/useCalculations';
-
 
 const TraditionalIRAContributionsForm = ({ onCalculate }) => {
   const [filingStatus, setFilingStatus] = useState('Single');
@@ -17,25 +18,25 @@ const TraditionalIRAContributionsForm = ({ onCalculate }) => {
   const [standardContributionLimit, setStandardContributionLimit] = useState('');
   const [applicable, setApplicable] = useState('');
   const [limitContribution, setLimitContribution] = useState('');
-   const [QBID, setQbid] = useState('');
-    const [dagi2, setDagi2] = useState('');
+  const [QBID, setQbid] = useState('');
+  const [dagi2, setDagi2] = useState('');
+  const [qbidModalOpen, setQbidModalOpen] = useState(false);
   const [error, setError] = useState(null);
 
   const { performCalculations } = useCalculations();
 
-// useEffect para calcular incomeLimit y phaseOut basado en filingStatus
   useEffect(() => {
     const calculateValues = () => {
-      let calculatedIncomeLimit = 77000; 
-      let calculatedPhaseOut = 10000; 
+      let calculatedIncomeLimit = 77000;
+      let calculatedPhaseOut = 10000;
 
       switch (filingStatus) {
-        case 'MFJ': 
-        case 'QSS': 
+        case 'MFJ':
+        case 'QSS':
           calculatedIncomeLimit = 123000;
           calculatedPhaseOut = 20000;
           break;
-        default: 
+        default:
           calculatedIncomeLimit = 77000;
           calculatedPhaseOut = 10000;
           break;
@@ -47,12 +48,31 @@ const TraditionalIRAContributionsForm = ({ onCalculate }) => {
     const { calculatedIncomeLimit, calculatedPhaseOut } = calculateValues();
     setIncomeLimit(calculatedIncomeLimit);
     setPhaseOut(calculatedPhaseOut);
-  }, [filingStatus]); // Ejecutar cuando filingStatus cambie
+  }, [filingStatus]);
+
+  const handleQbidCalculateClick = () => {
+    setQbidModalOpen(true);
+  };
+
+  const handleCloseQbidModal = () => {
+    setQbidModalOpen(false);
+  };
+
+  const handleQbidSelection = (results, shouldClose = false) => {
+    if (results && results.qbidAmount !== undefined) {
+      const qbidValue = parseFloat(results.qbidAmount);
+      if (!isNaN(qbidValue)) {
+        setQbid(qbidValue.toString());
+      }
+    }
+    if (shouldClose) {
+      setQbidModalOpen(false);
+    }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Validaciones de los campos
     if (!grossIncome || parseFloat(grossIncome) <= 0) {
       setError('Gross Income is required and must be greater than 0.');
       return;
@@ -73,27 +93,29 @@ const TraditionalIRAContributionsForm = ({ onCalculate }) => {
       return;
     }
 
-    
-    const standardContributionLimit = taxpayerAge >= 50 ? 8000 : 7000; 
-    const applicable = parseFloat(agiBeforeStrategy) >= (parseFloat(incomeLimit) + parseFloat(phaseOut)) ? "No" : "Yes" ;
-    const calculatedContribution = agiBeforeStrategy >= incomeLimit 
-    ? (applicable === "No" 
-        ? 7000 
-        : standardContributionLimit - (standardContributionLimit * ((agiBeforeStrategy - incomeLimit) / phaseOut))
-      ) 
-    : annualContribution;
+    const standardContributionLimit = taxpayerAge >= 50 ? 8000 : 7000;
+    const applicable =
+      parseFloat(agiBeforeStrategy) >=
+      parseFloat(incomeLimit) + parseFloat(phaseOut)
+        ? 'No'
+        : 'Yes';
+    const calculatedContribution =
+      agiBeforeStrategy >= incomeLimit
+        ? applicable === 'No'
+          ? 7000
+          : standardContributionLimit -
+            standardContributionLimit *
+              ((agiBeforeStrategy - incomeLimit) / phaseOut)
+        : annualContribution;
 
+    const totalDeductionTraditionalIRA = 0;
 
-    const totalDeductionTraditionalIRA = 0 ;
-    
-
-     // Actualizar estados
-     setStandardContributionLimit(standardContributionLimit);
-     setApplicable(applicable);
-     setLimitContribution(calculatedContribution);
+    setStandardContributionLimit(standardContributionLimit);
+    setApplicable(applicable);
+    setLimitContribution(calculatedContribution);
 
     setError(null);
-    // Realizar cálculos
+
     const results = performCalculations({
       filingStatus,
       grossIncome: parseFloat(grossIncome),
@@ -114,18 +136,22 @@ const TraditionalIRAContributionsForm = ({ onCalculate }) => {
     });
 
     onCalculate(results);
-    
   };
 
   return (
     <Container>
       <Box sx={{ position: 'relative', mt: 5 }}>
-        {/* Enlace en la esquina superior derecha */}
         <Box sx={{ position: 'absolute', top: -10, right: 0 }}>
           <Button
             href="https://cmltaxplanning.com/docs/S34.pdf"
             target="_blank"
-            sx={{ textTransform: 'none', backgroundColor: '#ffffff', color: '#0858e6', fontSize: '0.875rem', marginBottom: '150px' }}
+            sx={{
+              textTransform: 'none',
+              backgroundColor: '#ffffff',
+              color: '#0858e6',
+              fontSize: '0.875rem',
+              marginBottom: '150px',
+            }}
             startIcon={<InfoOutlinedIcon />}
           >
             View Strategy Details
@@ -140,7 +166,6 @@ const TraditionalIRAContributionsForm = ({ onCalculate }) => {
 
         <form onSubmit={handleSubmit}>
           <Grid container spacing={2}>
-            {/* Lado Izquierdo */}
             <Grid item xs={12} md={6}>
               <TextField
                 select
@@ -177,6 +202,7 @@ const TraditionalIRAContributionsForm = ({ onCalculate }) => {
                 <MenuItem value="Active">Active</MenuItem>
                 <MenuItem value="Passive">Passive</MenuItem>
               </TextField>
+
               <TextField
                 label="Deduction To AGI"
                 fullWidth
@@ -185,14 +211,10 @@ const TraditionalIRAContributionsForm = ({ onCalculate }) => {
                 onChange={(e) => setDagi2(e.target.value)}
                 margin="normal"
               />
-              
-
-              
             </Grid>
 
-            {/* Lado Derecho */}
             <Grid item xs={12} md={6}>
-            <TextField
+              <TextField
                 label="Annual Contribution"
                 fullWidth
                 type="number"
@@ -200,7 +222,8 @@ const TraditionalIRAContributionsForm = ({ onCalculate }) => {
                 onChange={(e) => setAnnualContribution(e.target.value)}
                 margin="normal"
               />
-            <TextField
+
+              <TextField
                 label="AGI Before Applying the Strategy"
                 fullWidth
                 type="number"
@@ -208,6 +231,7 @@ const TraditionalIRAContributionsForm = ({ onCalculate }) => {
                 onChange={(e) => setAgiBeforeStrategy(e.target.value)}
                 margin="normal"
               />
+
               <TextField
                 label="Taxpayer Age"
                 fullWidth
@@ -215,59 +239,7 @@ const TraditionalIRAContributionsForm = ({ onCalculate }) => {
                 value={taxpayerAge}
                 onChange={(e) => setTaxpayerAge(e.target.value)}
                 margin="normal"
-                
               />
-
-            {/*Campos visibles en caso de ser requeridos borrar el comentario */}
-              {/*<TextField
-                label="Income Limit"
-                fullWidth
-                type="number"
-                value={incomeLimit}
-                onChange={(e) => setIncomeLimit(e.target.value)}
-                margin="normal"
-                disabled
-              />
-
-              <TextField
-                label="Phase Out"
-                fullWidth
-                type="number"
-                value={phaseOut}
-                onChange={(e) => setPhaseOut(e.target.value)}
-                margin="normal"
-                disabled
-              />
-
-              
-
-              <TextField
-                label="Standard Contribution Limit"
-                fullWidth
-                type="number"
-                value={standardContributionLimit}
-                onChange={(e) => setStandardContributionLimit(e.target.value)}
-                margin="normal"
-                disabled
-              />
-
-              <TextField
-                label="Applicable"
-                fullWidth
-                value={applicable}
-                onChange={(e) => setApplicable(e.target.value)}
-                margin="normal"
-                disabled
-              />
-              <TextField
-                label="Limit Contribution"
-                fullWidth
-                type="number"
-                value={limitContribution}
-                onChange={(e) => setLimitContribution(e.target.value)}
-                margin="normal"
-                disabled
-              />*/}
 
               <TextField
                 select
@@ -279,14 +251,45 @@ const TraditionalIRAContributionsForm = ({ onCalculate }) => {
               >
                 <MenuItem value="1040 - Schedule C/F">1040 - Schedule C/F</MenuItem>
               </TextField>
-              <TextField
-                label="QBID (Qualified Business Income Deduction)"
-                fullWidth
-                type="number"
-                value={QBID}
-                onChange={(e) => setQbid(e.target.value)}
-                margin="normal"
-              />
+
+              <Box sx={{ position: 'relative' }}>
+                <TextField
+                  label="QBID (Qualified Business Income Deduction)"
+                  fullWidth
+                  type="number"
+                  value={QBID}
+                  onChange={(e) => setQbid(e.target.value)}
+                  margin="normal"
+                  InputProps={{
+                    endAdornment: (
+                      <Button
+                        onClick={handleQbidCalculateClick}
+                        size="small"
+                        aria-label="calculate QBID"
+                        sx={{
+                          color: '#0858e6',
+                          textTransform: 'none',
+                          fontSize: '0.8rem',
+                          fontWeight: 'normal',
+                          minWidth: 'auto',
+                          ml: 1,
+                          p: '4px 8px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '4px',
+                          backgroundColor: 'transparent',
+                          '&:hover': {
+                            backgroundColor: 'rgba(8, 88, 230, 0.08)',
+                          }
+                        }}
+                      >
+                        <CalculateIcon fontSize="small" />
+                        Calculate
+                      </Button>
+                    ),
+                  }}
+                />
+              </Box>
             </Grid>
           </Grid>
 
@@ -297,6 +300,12 @@ const TraditionalIRAContributionsForm = ({ onCalculate }) => {
           </Box>
         </form>
       </Box>
+
+      <QbidModal 
+        open={qbidModalOpen} 
+        onClose={handleCloseQbidModal} 
+        onSelect={handleQbidSelection}
+      />
     </Container>
   );
 };

@@ -162,9 +162,6 @@ const EducationAssistanceForm = ({ onCalculate }) => {
                 <MenuItem value="Active">Active</MenuItem>
                 <MenuItem value="Passive">Passive</MenuItem>
               </TextField>
-            </Grid>
-
-            <Grid item xs={12} md={6}>
               <TextField
                 label="Amount of Assistance per Employee"
                 fullWidth
@@ -173,6 +170,10 @@ const EducationAssistanceForm = ({ onCalculate }) => {
                 onChange={(e) => setAssistanceAmount(e.target.value)}
                 margin="normal"
               />
+            </Grid>
+
+            <Grid item xs={12} md={6}>
+
 
               <TextField
                 label="Limit per Employee"

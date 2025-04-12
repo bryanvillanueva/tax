@@ -3,7 +3,8 @@ import { TextField, Button, Container, Box, MenuItem, Alert, Grid } from '@mui/m
 import useCalculations from '../utils/useCalculations';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { calculateAGI, calculateSEMedicare } from '../utils/calculations';
-
+import CalculateIcon from '@mui/icons-material/Calculate';
+import QbidModal from './QbidModal';
 
 const AdoptionIncentiveForm = ({ onCalculate }) => {
   const [filingStatus, setFilingStatus] = useState('Single');
@@ -21,6 +22,7 @@ const AdoptionIncentiveForm = ({ onCalculate }) => {
   const [QBID, setQbid] = useState('');
   const [formType, setFormType] = useState('1040 - Schedule C/F');
   const [error, setError] = useState(null);
+  const [qbidModalOpen, setQbidModalOpen] = useState(false);
 
   const { performCalculations } = useCalculations();
 
@@ -33,8 +35,26 @@ const AdoptionIncentiveForm = ({ onCalculate }) => {
   const AdoptionIncomeLimited = 252150; 
   const phaseOut = 40000; 
   console.log(agi);
-  
 
+  const handleQbidCalculateClick = () => {
+    setQbidModalOpen(true);
+  };
+
+  const handleCloseQbidModal = () => {
+    setQbidModalOpen(false);
+  };
+
+  const handleQbidSelection = (results, shouldClose = false) => {
+    if (results && results.qbidAmount !== undefined) {
+      const qbidValue = parseFloat(results.qbidAmount);
+      if (!isNaN(qbidValue)) {
+        setQbid(qbidValue.toString());
+      }
+    }
+    if (shouldClose) {
+      setQbidModalOpen(false);
+    }
+  };
 
   useEffect(() => {
     // Calcular TotalAdoptionExpenses dinámicamente cuando cambian adoptionExpenses o childrenAdopted
@@ -44,67 +64,52 @@ const AdoptionIncentiveForm = ({ onCalculate }) => {
     }
   }, [adoptionExpenses, childrenAdopted]);
 
- // Calcular IRAEarlyWithdrawalLimit dinámicamente cuando cambian adoptionExpenses o childrenAdopted
+  // Calcular IRAEarlyWithdrawalLimit dinámicamente cuando cambian adoptionExpenses o childrenAdopted
   useEffect(() => {
     const IRAEarlyWithdrawalLimit = filingStatus === 'MFJ' ? 20000 : 10000;
     setIraEarlyWithdrawalLimit(IRAEarlyWithdrawalLimit);
-  }, [filingStatus])
+  }, [filingStatus]);
 
- // Calcular IRAEarlyWithdrawal dinámicamente cuando cambian adoptionExpenses o childrenAdopted
+  // Calcular IRAEarlyWithdrawal dinámicamente cuando cambian adoptionExpenses o childrenAdopted
   useEffect(() => {
     if (iraEarlyWithdrawal) {
       const penaltyAvoided = parseFloat(iraEarlyWithdrawal) * 0.1;
       setEarlyWithdrawalPenaltyAvoided(penaltyAvoided);
     }
   }, [iraEarlyWithdrawal]);
+
   // CALCULAR ADPTED CREDIT LIMIT
   useEffect(() => {
     if (childrenAdopted && parseInt(childrenAdopted, 10) > 0) {
       const AdoptionCreditLimit = 16810 * parseInt(childrenAdopted, 10);
       setAdoptionCreditLimit(AdoptionCreditLimit);
-    } else {
-      setAdoptionCreditLimit(0);
     }
-  }, [childrenAdopted]); 
+  }, [childrenAdopted]);
 
   // Calcular reduction dinamicamente
   useEffect(() => {
     let calculatedReduction = 0;
-  
-    // Calcular la reducción siguiendo la lógica proporcionada
-    if (agi < AdoptionIncomeLimited) {
-      calculatedReduction = 0;
-    } else {
+    if (agi > AdoptionIncomeLimited) {
       const excess = (agi - AdoptionIncomeLimited) / phaseOut;
       calculatedReduction = excess <= 1 ? excess : 0;
     }
-  
-    // Formatear el resultado como porcentaje
     setReduction((calculatedReduction * 100).toFixed(2) + '%');
   }, [grossIncome, iraEarlyWithdrawal, selfEmploymentTax]);
 
-   // Función para calcular el total credit
-    const calculateTotalCredit = (TotalAdoptionExpenses, AdoptionCreditLimit, reduction) => {
-       const reductionValue = parseFloat(reduction) / 100;
-
-     // Aplicar la fórmula lógica de forma similar a la original
-     if (TotalAdoptionExpenses < AdoptionCreditLimit) {
+  // Función para calcular el total credit
+  const calculateTotalCredit = (TotalAdoptionExpenses, AdoptionCreditLimit, reduction) => {
+    const reductionValue = parseFloat(reduction) / 100;
+    if (TotalAdoptionExpenses < AdoptionCreditLimit) {
       return TotalAdoptionExpenses - (TotalAdoptionExpenses * reductionValue);
-     } else {
-     return AdoptionCreditLimit - (AdoptionCreditLimit * reductionValue);
-      }
-     };
+    } else {
+      return AdoptionCreditLimit - (AdoptionCreditLimit * reductionValue);
+    }
+  };
 
-     useEffect(() => {
-     // Calcular el total credit utilizando la función
-     const totalCredit = calculateTotalCredit(TotalAdoptionExpenses, AdoptionCreditLimit, reduction);
-  
-      // Actualizar el estado de totalCredit
-      setTotalCredit(totalCredit);
-    }, [TotalAdoptionExpenses, AdoptionCreditLimit, reduction]);
-
-  
-  
+  useEffect(() => {
+    const totalCredit = calculateTotalCredit(TotalAdoptionExpenses, AdoptionCreditLimit, reduction);
+    setTotalCredit(totalCredit);
+  }, [TotalAdoptionExpenses, AdoptionCreditLimit, reduction]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -129,12 +134,9 @@ const AdoptionIncentiveForm = ({ onCalculate }) => {
       return;
     }
 
-
-    
-
     setError(null);
-    const taxCreditsResults = calculateTotalCredit(TotalAdoptionExpenses, AdoptionCreditLimit, reduction);
 
+    const taxCreditsResults = calculateTotalCredit(TotalAdoptionExpenses, AdoptionCreditLimit, reduction);
 
     const results = performCalculations({
       grossIncome: parseFloat(grossIncome),
@@ -157,11 +159,11 @@ const AdoptionIncentiveForm = ({ onCalculate }) => {
     <Container>
       <Box sx={{ position: 'relative', mt: 5 }}>
         {/* Enlace en la esquina superior derecha */}
-        <Box sx={{ position: 'absolute', top: -10, right: 0, }}>
+        <Box sx={{ position: 'absolute', top: -10, right: 0 }}>
           <Button
             href="https://cmltaxplanning.com/docs/S13.pdf"
             target="_blank"
-            sx={{ textTransform: 'none', backgroundColor: '#ffffff', color: '#0858e6', fontSize: '0.875remc', marginBottom: '150px', }}
+            sx={{ textTransform: 'none', backgroundColor: '#ffffff', color: '#0858e6', fontSize: '0.875rem', marginBottom: '150px' }}
             startIcon={<InfoOutlinedIcon />}
           >
             View Strategy Details
@@ -172,7 +174,6 @@ const AdoptionIncentiveForm = ({ onCalculate }) => {
             {error}
           </Alert>
         )}
-
         <form onSubmit={handleSubmit}>
           <Grid container spacing={2}>
             {/* Left side: Filing Status, Gross Income, and Type of Partner */}
@@ -220,7 +221,6 @@ const AdoptionIncentiveForm = ({ onCalculate }) => {
                 onChange={(e) => setAdoptionExpenses(e.target.value)}
                 margin="normal"
               />
-
               <TextField
                 label="Number of Children Adopted"
                 fullWidth
@@ -229,14 +229,12 @@ const AdoptionIncentiveForm = ({ onCalculate }) => {
                 onChange={(e) => setChildrenAdopted(e.target.value)}
                 margin="normal"
               />
-
-
             </Grid>
 
             {/* Right side: Adoption Expenses, Children Adopted, and IRA Early Withdrawal */}
             <Grid item xs={12} md={6}>
-              
-            <TextField
+             
+              <TextField
                 label="IRA Early Withdrawal (both parents)"
                 fullWidth
                 type="number"
@@ -254,7 +252,6 @@ const AdoptionIncentiveForm = ({ onCalculate }) => {
                   sx: { fontWeight: 'bold', color: '#00000' }, // Texto en negrita y color oscuro
                 }}
               />
-
               <TextField
                 label="Adoption Credit Limit"
                 fullWidth
@@ -275,14 +272,44 @@ const AdoptionIncentiveForm = ({ onCalculate }) => {
               >
                 <MenuItem value="1040 - Schedule C/F">1040 - Schedule C/F</MenuItem>
               </TextField>
-              <TextField
-                label="QBID (Qualified Business Income Deduction)"
-                fullWidth
-                type="number"
-                value={QBID}
-                onChange={(e) => setQbid(e.target.value)}
-                margin="normal"
-              />
+              <Box sx={{ position: 'relative' }}>
+                <TextField
+                  label="QBID (Qualified Business Income Deduction)"
+                  fullWidth
+                  type="number"
+                  value={QBID}
+                  onChange={(e) => setQbid(e.target.value)}
+                  margin="normal"
+                  InputProps={{
+                    endAdornment: (
+                      <Button
+                        onClick={handleQbidCalculateClick}
+                        size="small"
+                        aria-label="calculate QBID"
+                        sx={{
+                          color: '#0858e6',
+                          textTransform: 'none',
+                          fontSize: '0.8rem',
+                          fontWeight: 'normal',
+                          minWidth: 'auto',
+                          ml: 1,
+                          p: '4px 8px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '4px',
+                          backgroundColor: 'rgba(8, 88, 230, 0.08)',
+                          '&:hover': {
+                            backgroundColor: 'transparent',
+                          },
+                        }}
+                      >
+                        Calculate
+                        <CalculateIcon fontSize="small" />
+                      </Button>
+                    ),
+                  }}
+                />
+              </Box>
             </Grid>
           </Grid>
 
@@ -293,6 +320,11 @@ const AdoptionIncentiveForm = ({ onCalculate }) => {
           </Box>
         </form>
       </Box>
+      <QbidModal 
+        open={qbidModalOpen} 
+        onClose={handleCloseQbidModal} 
+        onSelect={handleQbidSelection}
+      />
     </Container>
   );
 };
