@@ -77,7 +77,7 @@ const CustomAppBar = ({ userData, showSearch, searchTerm, setSearchTerm, drawerO
         height: '70px',
       }}
     >
-      <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', width: '100%', px: 3 }}>
+      <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', width: '100%', px: { xs: 1, sm: 3 } }}>
         {/* Left section - Menu button */}
         <Box sx={{ width: '33%', display: 'flex', justifyContent: 'center' }}>
           <IconButton
@@ -140,7 +140,7 @@ const CustomAppBar = ({ userData, showSearch, searchTerm, setSearchTerm, drawerO
         </Box>
         
         {/* Right section - User profile */}
-        <Box sx={{ width: '33%', display: 'flex', justifyContent: 'flex-end' }}>
+        <Box sx={{ width: '33%', display: 'flex', justifyContent: 'flex-end', pr: 2 }}>
           <Box
             onClick={handleClick}
             aria-controls={open ? 'account-menu' : undefined}
@@ -172,14 +172,18 @@ const CustomAppBar = ({ userData, showSearch, searchTerm, setSearchTerm, drawerO
             </Avatar>
             
             {!isMobile && (
-              <Box sx={{ ml: 1.5, display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
+              <Box sx={{ ml: 1.5, display: "flex", flexDirection: "column", alignItems: "flex-start", maxWidth: "150px", overflow: "hidden" }}>
                 <Typography
                   variant="body1"
                   sx={{
                     fontWeight: 600,
                     fontSize: "0.9rem",
                     color: "#333",
-                    lineHeight: 1.2
+                    lineHeight: 1.2,
+                    textOverflow: "ellipsis",
+                    overflow: "hidden",
+                    whiteSpace: "nowrap",
+                    width: "100%"
                   }}
                 >
                   {`${userData.first_name} ${userData.last_name}`}
@@ -190,7 +194,11 @@ const CustomAppBar = ({ userData, showSearch, searchTerm, setSearchTerm, drawerO
                   sx={{
                     color: "rgba(0, 0, 0, 0.6)",
                     fontSize: "0.75rem",
-                    mt: 0.2
+                    mt: 0.2,
+                    textOverflow: "ellipsis",
+                    overflow: "hidden",
+                    whiteSpace: "nowrap",
+                    width: "100%"
                   }}
                 >
                   {userData.product || "Usuario"}
