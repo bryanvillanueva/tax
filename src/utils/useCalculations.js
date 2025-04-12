@@ -156,6 +156,7 @@ const useCalculations = () => {
     totalNetDeductionMaxi,
     deductionMeals,
     formType,
+    partnershipShare,
     totalNOL,
     deductionSolo401k,
     totalContribution,
@@ -643,6 +644,7 @@ console.log(netIncome, standardDeduction, selfEmploymentTax);
         calculationType,
         totalSE: seSocialSecurity + seMedicare,
         totalSE2: seSocialSecurity2 + seMedicare2,
+        partnershipShare,
        
       };
     };

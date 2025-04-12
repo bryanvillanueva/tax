@@ -57,7 +57,6 @@ const ResultsDisplay = ({ results, formTitle, calculationType }) => {
   };
 
   console.log('Results:', results)
-  console.log('Form:', results.calculationType)
 
   return (
     <Box sx={{ mt: 4 }}>
@@ -370,6 +369,13 @@ const ResultsDisplay = ({ results, formTitle, calculationType }) => {
                       <TableCell sx={{ fontWeight: 500, color: '#334155' }}>Total Tax Due</TableCell>
                       <TableCell sx={{ fontWeight: 600, color: '#0858e6' }}>
                         {results.formType === '1120' ? formatCurrency(results.corpTaxDue) : results.formType === '1065' ? formatCurrency(results.totalTaxDue) : results.formType === '1120S' ? formatCurrency(results.taxDue1120S) : results.formType === '1040NR - Schedule E' ? formatCurrency(results.taxDue1120S) : formatCurrency(results.totalTaxDue)}
+                      </TableCell>
+                    </TableRow>
+                    
+                    <TableRow sx={{ backgroundColor: 'white' }}>
+                      <TableCell sx={{ fontWeight: 500, color: '#334155' }}>Your Share of Tax Due {results.formType === '1065' ? `(${parseFloat(results.partnershipShare || 0)}%)` : ''}</TableCell>
+                      <TableCell sx={{ fontWeight: 600, color: results.formType === '1065' ? '#0858e6' : '#334155' }}>
+                        {results.formType === '1065' ? formatCurrency((parseFloat(results.totalTaxDue || 0) * parseFloat(results.partnershipShare || 0)) / 100) : 'Not Applicable'}
                       </TableCell>
                     </TableRow>
                     
