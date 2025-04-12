@@ -318,15 +318,6 @@ const Login = () => {
               Login
             </Button>
             
-            
-            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mt: 3 }}>
-              <Typography variant="caption" sx={{ color: 'text.secondary', fontSize: '1rem', display: 'flex', alignItems: 'center' }}>
-                Made with <span style={{ color: '#e25555', margin: '0 4px' }}>❤️</span> by
-              </Typography>
-              <Box component="a" href="https://sharkagency.co/" target="_blank" sx={{ display: 'flex', alignItems: 'center', ml: 1 }}>
-              <SharkLogo style={{ height: 30 }} />
-              </Box>
-            </Box>
           </form>
         )}
       </Paper>

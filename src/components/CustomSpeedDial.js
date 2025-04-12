@@ -94,16 +94,6 @@ const CustomSpeedDial = () => {
       name: 'Support',
       action: () => window.open('https://w.app/nVaYD9', '_blank'),
     },
-    {
-      icon: <QbidStandardIcon />,
-      name: 'Standard',
-      action: () => navigate('/form-selector/QbidStandardMethod'),
-    },
-    {
-      icon: <QbidSimplifiedIcon />,
-      name: 'Simplified',
-      action: () => navigate('/form-selector/qbidCalculation'),
-    },
   ], [navigate]);
 
   return (
