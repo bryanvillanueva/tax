@@ -118,7 +118,8 @@ const QbidModal = ({ open, onClose, onSelect }) => {
           borderBottom: '1px solid #e0e0e0',
           position: 'sticky',
           top: 0,
-          backgroundColor: 'white',
+          backgroundColor: '#0858e6',
+          backgroundImage: 'linear-gradient(135deg, #0858e6 0%, #4481eb 100%)',
           zIndex: 10
         }}
       >
@@ -126,33 +127,33 @@ const QbidModal = ({ open, onClose, onSelect }) => {
           {activeForm && (
             <Button 
               size="small" 
-              sx={{ mr: 1 }}
+              sx={{ mr: 1, color: 'white' }}
               onClick={handleBackToOptions}
             >
               Back
             </Button>
           )}
-          <Typography variant="h6" sx={{ fontSize: '1rem', fontWeight: 'bold' }}>
+          <Typography variant="h6" sx={{ fontSize: '1.2rem', fontWeight: 'bold', color: 'white', textAlign: 'center' }}>
             {activeForm === 'simplified' ? 'QBID Simplified' : 
              activeForm === 'standard' ? 'QBID Standard' : 
              'Calculate QBID'}
           </Typography>
         </Box>
         <IconButton 
-          edge="end" 
-          color="inherit" 
-          onClick={handleClose} 
-          aria-label="close"
-          size="small"
-        >
-          <CloseIcon fontSize="small" />
-        </IconButton>
+  edge="end" 
+  color="inherit" 
+  onClick={handleClose} 
+  aria-label="close"
+  size="small"
+>
+  <CloseIcon fontSize="small" sx={{ color: 'white' }} />
+</IconButton>
       </DialogTitle>
       
       <DialogContent sx={{ p: 2, pt: 3 }}>
         {/* Opciones de selección */}
         <Collapse in={activeForm === null}>
-          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 2, marginTop: 1 }}>
             Select a method to calculate QBID
           </Typography>
           
@@ -264,7 +265,7 @@ const QbidModal = ({ open, onClose, onSelect }) => {
       {!activeForm && (
         <DialogActions sx={{ p: 2, borderTop: '1px solid #e0e0e0', justifyContent: 'center' }}>
           <Typography variant="caption" color="text.secondary">
-            The calculated value will be automatically applied to this field
+          The calculated value will be displayed below. You must press the APPLY button to insert the result into this field
           </Typography>
         </DialogActions>
       )}
