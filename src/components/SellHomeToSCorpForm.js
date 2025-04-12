@@ -120,7 +120,7 @@ const SellHomeToSCorpForm = ({ onCalculate }) => {
       <Box sx={{ position: "relative", mt: 5 }}>
         <Box sx={{ position: "absolute", top: -10, right: 0 }}>
           <Button
-            href="https://tax.bryanglen.com/data/Strategies-Structure.pdf"
+            href="https://cmltaxplanning.com/docs/S83.pdf"
             target="_blank"
             sx={{
               textTransform: "none",

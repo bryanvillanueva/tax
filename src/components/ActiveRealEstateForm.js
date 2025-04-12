@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { TextField, Button, Container, Box, MenuItem, Alert, Grid } from '@mui/material';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import CalculateIcon from '@mui/icons-material/Calculate';
+import QbidModal from './QbidModal';
 import useCalculations from '../utils/useCalculations';
-
 
 const formatCurrency = (value) => {
   if (value === undefined || value === null) return '$0.00';
@@ -24,15 +25,36 @@ const ActiveRealEstateForm = ({ onCalculate }) => {
   const [QBID, setQbid] = useState('');
   const [dagi2, setDagi2] = useState('');
   const [taxpayerStatus, setTaxpayerStatus] = useState('Living Apart');
+  const [partnershipShare, setPartnershipShare] = useState('');
   const [error, setError] = useState(null);
   const [calculatedValues, setCalculatedValues] = useState(null);
+  const [qbidModalOpen, setQbidModalOpen] = useState(false);
 
   const { performCalculations } = useCalculations();
+
+  const handleQbidCalculateClick = () => {
+    setQbidModalOpen(true);
+  };
+
+  const handleCloseQbidModal = () => {
+    setQbidModalOpen(false);
+  };
+
+  const handleQbidSelection = (results, shouldClose = false) => {
+    if (results && results.qbidAmount !== undefined) {
+      const qbidValue = parseFloat(results.qbidAmount);
+      if (!isNaN(qbidValue)) {
+        setQbid(qbidValue.toString());
+      }
+    }
+    if (shouldClose) {
+      setQbidModalOpen(false);
+    }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Validaciones
     if (!grossIncome || parseFloat(grossIncome) <= 0) {
       setError('Gross Income is required and must be greater than 0.');
       return;
@@ -50,7 +72,6 @@ const ActiveRealEstateForm = ({ onCalculate }) => {
 
     setError(null);
 
-    // Cálculos internos
     const incomeLimit =
       filingStatus === 'MFS'
         ? taxpayerStatus === 'Living Apart'
@@ -83,7 +104,6 @@ const ActiveRealEstateForm = ({ onCalculate }) => {
         ? 0
         : Math.min(netRentalLoss, benefitLimit);
 
-    // Actualizar valores calculados
     setCalculatedValues({
       incomeLimit,
       phaseOut,
@@ -91,13 +111,12 @@ const ActiveRealEstateForm = ({ onCalculate }) => {
       deductibleAmount,
     });
 
-    // Resultados procesados con performCalculations
     const results = performCalculations({
       filingStatus,
       grossIncome: parseFloat(grossIncome),
       netRentalLoss: parseFloat(netRentalLoss),
       adjustedGrossIncome: parseFloat(adjustedGrossIncome),
-      incomeLimit,  
+      incomeLimit,
       phaseOut,
       benefitLimit,
       deductibleAmount,
@@ -106,6 +125,7 @@ const ActiveRealEstateForm = ({ onCalculate }) => {
       calculationType: 'ActiveRealEstate',
       QBID: parseFloat(QBID),
       dagi2: parseFloat(dagi2),
+      partnershipShare: partnershipShare ? parseFloat(partnershipShare) : 0,
     });
 
     onCalculate(results);
@@ -175,7 +195,8 @@ const ActiveRealEstateForm = ({ onCalculate }) => {
                 <MenuItem value="Active">Active</MenuItem>
                 <MenuItem value="Passive">Passive</MenuItem>
               </TextField>
-               <TextField
+
+              <TextField
                 label="Deduction To AGI"
                 fullWidth
                 type="number"
@@ -201,12 +222,10 @@ const ActiveRealEstateForm = ({ onCalculate }) => {
                 onChange={(e) => setAdjustedGrossIncome(e.target.value)}
                 margin="normal"
               />
-
-             
             </Grid>
 
             <Grid item xs={12} md={6}>
-            <TextField
+              <TextField
                 select
                 label="Taxpayer Status (ITM)"
                 fullWidth
@@ -218,6 +237,7 @@ const ActiveRealEstateForm = ({ onCalculate }) => {
                 <MenuItem value="Living Together">Living Together</MenuItem>
                 <MenuItem value="Other Status">Other Status</MenuItem>
               </TextField>
+
               <TextField
                 label="Income Limit (ARE)"
                 fullWidth
@@ -265,14 +285,65 @@ const ActiveRealEstateForm = ({ onCalculate }) => {
                 <MenuItem value="1120">1120</MenuItem>
               </TextField>
 
-              <TextField
-                label="QBID (Qualified Business Income Deduction)"
-                fullWidth
-                type="number"
-                value={QBID}
-                onChange={(e) => setQbid(e.target.value)}
-                margin="normal"
-              />
+              {formType === '1065' && (
+                <TextField
+                  label="% Share if partnership"
+                  fullWidth
+                  type="number"
+                  value={partnershipShare}
+                  onChange={(e) => {
+                    const value = Math.min(100, Math.max(0, parseFloat(e.target.value) || 0));
+                    setPartnershipShare(value.toString());
+                  }}
+                  margin="normal"
+                  InputProps={{
+                    inputProps: { min: 0, max: 100 },
+                    endAdornment: (
+                      <span style={{ marginRight: '8px' }}>%</span>
+                    ),
+                  }}
+                  helperText="Enter your partnership share percentage (0-100%)"
+                />
+              )}
+
+              <Box sx={{ position: 'relative' }}>
+                <TextField
+                  label="QBID (Qualified Business Income Deduction)"
+                  fullWidth
+                  type="number"
+                  value={QBID}
+                  onChange={(e) => setQbid(e.target.value)}
+                  margin="normal"
+                  InputProps={{
+                    endAdornment: (
+                      <Button
+                        onClick={handleQbidCalculateClick}
+                        size="small"
+                        aria-label="calculate QBID"
+                        sx={{
+                          color: '#0858e6',
+                          textTransform: 'none',
+                          fontSize: '0.8rem',
+                          fontWeight: 'normal',
+                          minWidth: 'auto',
+                          ml: 1,
+                          p: '4px 8px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '4px',
+                          backgroundColor: 'transparent',
+                          '&:hover': {
+                            backgroundColor: 'rgba(8, 88, 230, 0.08)',
+                          }
+                        }}
+                      >
+                        <CalculateIcon fontSize="small" />
+                        Calculate
+                      </Button>
+                    ),
+                  }}
+                />
+              </Box>
             </Grid>
           </Grid>
 
@@ -283,6 +354,12 @@ const ActiveRealEstateForm = ({ onCalculate }) => {
           </Box>
         </form>
       </Box>
+
+      <QbidModal 
+        open={qbidModalOpen} 
+        onClose={handleCloseQbidModal} 
+        onSelect={handleQbidSelection}
+      />
     </Container>
   );
 };

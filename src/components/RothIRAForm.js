@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { TextField, Button, Container, Box, MenuItem, Alert, Grid } from '@mui/material';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import CalculateIcon from '@mui/icons-material/Calculate';
+import QbidModal from './QbidModal';
 import useCalculations from '../utils/useCalculations';
-
 
 const RothIRAForm = ({ onCalculate }) => {
   const [filingStatus, setFilingStatus] = useState('Single');
@@ -20,95 +21,111 @@ const RothIRAForm = ({ onCalculate }) => {
   const [totalExemptIncome, setTotalExemptIncome] = useState(0);
   const [isApplicable, setIsApplicable] = useState("Yes");
   const [QBID, setQbid] = useState('');
+  const [partnershipShare, setPartnershipShare] = useState('');
+  const [qbidModalOpen, setQbidModalOpen] = useState(false);
   const [error, setError] = useState(null);
 
   const { performCalculations } = useCalculations();
 
-    // Ajustar income limit y phaseOut según filingStatus
-    useEffect(() => {
-      const calculateThreshold = (filingStatus) => {
-        let incomeLimit, phaseOut;
-        if (filingStatus === 'MFJ' || filingStatus === 'QSS') {
-          incomeLimit = 230000;
-          phaseOut = 10000;
-        } else {
-          incomeLimit = 146000;
-          phaseOut = 15000;
-        }
-        setIncomeLimit(incomeLimit);
-        setPhaseOut(phaseOut);
-      };
-      calculateThreshold(filingStatus);
-    }, [filingStatus]);
-  
-    // Calcular el límite de contribución
-useEffect(() => {
-  let calculatedLimit = standardContributionLimit;
-
-  if (agiBeforeStrategy >= incomeLimit) {
-    calculatedLimit = Math.max(
-      0,
-      standardContributionLimit - 
-      (standardContributionLimit * ((agiBeforeStrategy - incomeLimit) / phaseOut))
-    );
-  }
-
-  setLimitContribution(calculatedLimit); // Asegura que el valor sea >= 0
-}, [agiBeforeStrategy, incomeLimit, phaseOut, standardContributionLimit]);
-
-// Calcular Total Exempt Income
-useEffect(() => {
-  if (limitContribution > 0 && annualContribution && average) {
-    const exemptIncome = Math.max(
-      0,
-      Math.min(parseFloat(annualContribution), parseFloat(limitContribution)) * 
-      (parseFloat(average) / 100)
-    );
-    setTotalExemptIncome(Math.floor(exemptIncome));
-  } else {
-    setTotalExemptIncome(0); // Si limitContribution es negativo, el total es 0
-  }
-}, [annualContribution, limitContribution, average]);
-
-  
-    // Determinar si es "Applicable"
-    useEffect(() => {
-      if (parseFloat(agiBeforeStrategy) >= parseFloat(incomeLimit) + parseFloat(phaseOut)) {
-        setIsApplicable("No");
+  useEffect(() => {
+    const calculateThreshold = (filingStatus) => {
+      let incomeLimit, phaseOut;
+      if (filingStatus === 'MFJ' || filingStatus === 'QSS') {
+        incomeLimit = 230000;
+        phaseOut = 10000;
       } else {
-        setIsApplicable("Yes");
+        incomeLimit = 146000;
+        phaseOut = 15000;
       }
-    }, [agiBeforeStrategy, incomeLimit, phaseOut]);
-  
-    const handleSubmit = (e) => {
-      e.preventDefault();
-  
-      // Validaciones
-      if (!grossIncome || parseFloat(grossIncome) <= 0) {
-        setError('Gross Income is required and must be greater than 0.');
-        return;
+      setIncomeLimit(incomeLimit);
+      setPhaseOut(phaseOut);
+    };
+    calculateThreshold(filingStatus);
+  }, [filingStatus]);
+
+  useEffect(() => {
+    let calculatedLimit = standardContributionLimit;
+
+    if (agiBeforeStrategy >= incomeLimit) {
+      calculatedLimit = Math.max(
+        0,
+        standardContributionLimit - 
+        (standardContributionLimit * ((agiBeforeStrategy - incomeLimit) / phaseOut))
+      );
+    }
+
+    setLimitContribution(calculatedLimit);
+  }, [agiBeforeStrategy, incomeLimit, phaseOut, standardContributionLimit]);
+
+  useEffect(() => {
+    if (limitContribution > 0 && annualContribution && average) {
+      const exemptIncome = Math.max(
+        0,
+        Math.min(parseFloat(annualContribution), parseFloat(limitContribution)) * 
+        (parseFloat(average) / 100)
+      );
+      setTotalExemptIncome(Math.floor(exemptIncome));
+    } else {
+      setTotalExemptIncome(0);
+    }
+  }, [annualContribution, limitContribution, average]);
+
+  useEffect(() => {
+    if (parseFloat(agiBeforeStrategy) >= parseFloat(incomeLimit) + parseFloat(phaseOut)) {
+      setIsApplicable("No");
+    } else {
+      setIsApplicable("Yes");
+    }
+  }, [agiBeforeStrategy, incomeLimit, phaseOut]);
+
+  const handleQbidCalculateClick = () => {
+    setQbidModalOpen(true);
+  };
+
+  const handleCloseQbidModal = () => {
+    setQbidModalOpen(false);
+  };
+
+  const handleQbidSelection = (results, shouldClose = false) => {
+    if (results && results.qbidAmount !== undefined) {
+      const qbidValue = parseFloat(results.qbidAmount);
+      if (!isNaN(qbidValue)) {
+        setQbid(qbidValue.toString());
       }
-  
-      if (!annualContribution || parseFloat(annualContribution) <= 0) {
-        setError('Annual Contribution is required and must be greater than 0.');
-        return;
-      }
-  
-      if (!agiBeforeStrategy || parseFloat(agiBeforeStrategy) <= 0) {
-        setError('AGI Before Applying the Strategy is required and must be greater than 0.');
-        return;
-      }
-  
-      if (!taxPayerAge || parseFloat(taxPayerAge) <= 0) {
-        setError('Tax Payer Age is required and must be greater than 0.');
-        return;
-      }
-  
-      const standardLimit = parseFloat(taxPayerAge) >= 50 ? 8000 : 7000;
-      setStandardContributionLimit(standardLimit);
-      setError(null);
-  
-      const averagePercentage = parseFloat(average) / 100;
+    }
+    if (shouldClose) {
+      setQbidModalOpen(false);
+    }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (!grossIncome || parseFloat(grossIncome) <= 0) {
+      setError('Gross Income is required and must be greater than 0.');
+      return;
+    }
+
+    if (!annualContribution || parseFloat(annualContribution) <= 0) {
+      setError('Annual Contribution is required and must be greater than 0.');
+      return;
+    }
+
+    if (!agiBeforeStrategy || parseFloat(agiBeforeStrategy) <= 0) {
+      setError('AGI Before Applying the Strategy is required and must be greater than 0.');
+      return;
+    }
+
+    if (!taxPayerAge || parseFloat(taxPayerAge) <= 0) {
+      setError('Tax Payer Age is required and must be greater than 0.');
+      return;
+    }
+
+    const standardLimit = parseFloat(taxPayerAge) >= 50 ? 8000 : 7000;
+    setStandardContributionLimit(standardLimit);
+    setError(null);
+
+    const averagePercentage = parseFloat(average) / 100;
 
     const results = performCalculations({
       filingStatus,
@@ -126,6 +143,7 @@ useEffect(() => {
       totalExemptIncome,
       calculationType: 'rothIRA',
       QBID: parseFloat(QBID),
+      partnershipShare: partnershipShare ? parseFloat(partnershipShare) : 0,
     });
 
     onCalculate(results);
@@ -159,7 +177,6 @@ useEffect(() => {
 
         <form onSubmit={handleSubmit}>
           <Grid container spacing={2}>
-            {/* Left Side */}
             <Grid item xs={12} md={6}>
               <TextField
                 select
@@ -184,6 +201,7 @@ useEffect(() => {
                 onChange={(e) => setGrossIncome(e.target.value)}
                 margin="normal"
               />
+
               <TextField
                 select
                 label="Type of Partner"
@@ -222,7 +240,8 @@ useEffect(() => {
                 onChange={(e) => setTaxPayerAge(e.target.value)}
                 margin="normal"
               />
-               <TextField
+
+              <TextField
                 label="Average % interest paid by the account"
                 fullWidth
                 type="number"
@@ -232,9 +251,7 @@ useEffect(() => {
               />
             </Grid>
 
-            {/* Right Side */}
             <Grid item xs={12} md={6}>
-             
               <TextField
                 label="Income Limit"
                 fullWidth
@@ -252,6 +269,7 @@ useEffect(() => {
                 margin="normal"
                 disabled
               />
+
               <TextField
                 label="Standard Contribution Limit"
                 fullWidth
@@ -260,15 +278,16 @@ useEffect(() => {
                 margin="normal"
                 disabled
               />
-                <TextField
-                label="Applicable "
+
+              <TextField
+                label="Applicable"
                 fullWidth
                 type="text"
                 value={isApplicable}
-
                 margin="normal"
                 disabled
               />
+
               <TextField
                 label="Limit contribution"
                 fullWidth
@@ -277,6 +296,7 @@ useEffect(() => {
                 margin="normal"
                 disabled
               />
+
               <TextField
                 label="Total Exempt Income per contribution"
                 fullWidth
@@ -300,14 +320,66 @@ useEffect(() => {
                 <MenuItem value="1120S">1120S</MenuItem>
                 <MenuItem value="1120">1120</MenuItem>
               </TextField>
+
+              {formType === '1065' && (
                 <TextField
-                label="QBID (Qualified Business Income Deduction)"
-                fullWidth
-                type="number"
-                value={QBID}
-                onChange={(e) => setQbid(e.target.value)}
-                margin="normal"
-              />
+                  label="% Share if partnership"
+                  fullWidth
+                  type="number"
+                  value={partnershipShare}
+                  onChange={(e) => {
+                    const value = Math.min(100, Math.max(0, parseFloat(e.target.value) || 0));
+                    setPartnershipShare(value.toString());
+                  }}
+                  margin="normal"
+                  InputProps={{
+                    inputProps: { min: 0, max: 100 },
+                    endAdornment: (
+                      <span style={{ marginRight: '8px' }}>%</span>
+                    ),
+                  }}
+                  helperText="Enter your partnership share percentage (0-100%)"
+                />
+              )}
+
+              <Box sx={{ position: 'relative' }}>
+                <TextField
+                  label="QBID (Qualified Business Income Deduction)"
+                  fullWidth
+                  type="number"
+                  value={QBID}
+                  onChange={(e) => setQbid(e.target.value)}
+                  margin="normal"
+                  InputProps={{
+                    endAdornment: (
+                      <Button
+                        onClick={handleQbidCalculateClick}
+                        size="small"
+                        aria-label="calculate QBID"
+                        sx={{
+                          color: '#0858e6',
+                          textTransform: 'none',
+                          fontSize: '0.8rem',
+                          fontWeight: 'normal',
+                          minWidth: 'auto',
+                          ml: 1,
+                          p: '4px 8px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '4px',
+                          backgroundColor: 'transparent',
+                          '&:hover': {
+                            backgroundColor: 'rgba(8, 88, 230, 0.08)',
+                          }
+                        }}
+                      >
+                        <CalculateIcon fontSize="small" />
+                        Calculate
+                      </Button>
+                    ),
+                  }}
+                />
+              </Box>
             </Grid>
           </Grid>
 
@@ -318,6 +390,12 @@ useEffect(() => {
           </Box>
         </form>
       </Box>
+
+      <QbidModal 
+        open={qbidModalOpen} 
+        onClose={handleCloseQbidModal} 
+        onSelect={handleQbidSelection}
+      />
     </Container>
   );
 };

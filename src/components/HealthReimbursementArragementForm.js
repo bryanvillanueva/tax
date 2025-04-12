@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { TextField, Button, Container, Box, MenuItem, Alert, Grid } from '@mui/material';
 import useCalculations from '../utils/useCalculations'; 
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-
+import CalculateIcon from '@mui/icons-material/Calculate';
+import QbidModal from './QbidModal';
 
 const HealthReimbursementArrangementForm = ({ onCalculate }) => {
   const [filingStatus, setFilingStatus] = useState('Single');
@@ -11,12 +12,37 @@ const HealthReimbursementArrangementForm = ({ onCalculate }) => {
   const [averageBenefitPerEmployee, setAverageBenefitPerEmployee] = useState('');
   const [numberOfEmployeesBenefited, setNumberOfEmployeesBenefited] = useState('');
   const [formType, setFormType] = useState('1040 - Schedule C/F');
+  const [partnershipShare, setPartnershipShare] = useState('');
+  const [QBID, setQbid] = useState('');
+  const [qbidModalOpen, setQbidModalOpen] = useState(false);
   const [error, setError] = useState(null);
-    const [QBID, setQbid] = useState('');
 
   const { performCalculations } = useCalculations(); 
 
-  // Función para calcular el total de beneficios
+  const handleQbidCalculateClick = () => {
+    setQbidModalOpen(true);
+  };
+
+  const handleCloseQbidModal = () => {
+    setQbidModalOpen(false);
+  };
+
+  const handleQbidSelection = (results, shouldClose = false) => {
+    if (results && results.qbidAmount !== undefined) {
+      const qbidValue = parseFloat(results.qbidAmount);
+      if (!isNaN(qbidValue)) {
+        setQbid(qbidValue.toString());
+      }
+    }
+    if (shouldClose) {
+      setQbidModalOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    console.log("QBID state value changed:", QBID);
+  }, [QBID]);
+
   const calculateTotalBenefits = (averageBenefitPerEmployee, numberOfEmployeesBenefited) => {
     return averageBenefitPerEmployee * numberOfEmployeesBenefited;
   };
@@ -24,7 +50,6 @@ const HealthReimbursementArrangementForm = ({ onCalculate }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Validaciones para los campos requeridos
     if (!grossIncome || parseFloat(grossIncome) <= 0) {
       setError('Gross Income is required and must be greater than 0.');
       return;
@@ -42,37 +67,33 @@ const HealthReimbursementArrangementForm = ({ onCalculate }) => {
 
     setError(null);
 
-    // Calcular el total de beneficios
     const totalBenefits = calculateTotalBenefits(
       parseFloat(averageBenefitPerEmployee),
       parseInt(numberOfEmployeesBenefited)
     );
-    
-    // Llamar a la función onCalculate con los resultados
-    const results = performCalculations ({
+
+    const results = performCalculations({
       filingStatus,
       grossIncome: parseFloat(grossIncome),
       partnerType,
       totalBenefits,
-      partnerType,
       formType,
+      partnershipShare: partnershipShare ? parseFloat(partnershipShare) : 0,
+      QBID: QBID ? parseFloat(QBID) : 0,
       calculationType: 'healthReimbursement',
-      QBID: parseFloat(QBID),
     });
 
-    
     onCalculate(results);
   };
 
   return (
     <Container>
       <Box sx={{ position: 'relative', mt: 5 }}>
-        {/* Enlace en la esquina superior derecha */}
-        <Box sx={{ position: 'absolute', top: -10, right: 0, }}>
+        <Box sx={{ position: 'absolute', top: -10, right: 0 }}>
           <Button
             href="https://cmltaxplanning.com/docs/S20.pdf"
             target="_blank"
-            sx={{ textTransform: 'none', backgroundColor: '#ffffff', color: '#0858e6', fontSize: '0.875remc', marginBottom: '150px', }}
+            sx={{ textTransform: 'none', backgroundColor: '#ffffff', color: '#0858e6', fontSize: '0.875remc', marginBottom: '150px' }}
             startIcon={<InfoOutlinedIcon />}
           >
             View Strategy Details
@@ -143,6 +164,7 @@ const HealthReimbursementArrangementForm = ({ onCalculate }) => {
                 onChange={(e) => setNumberOfEmployeesBenefited(e.target.value)}
                 margin="normal"
               />
+
               <TextField
                 select
                 label="Form Type"
@@ -157,14 +179,66 @@ const HealthReimbursementArrangementForm = ({ onCalculate }) => {
                 <MenuItem value="1120S">1120S</MenuItem>
                 <MenuItem value="1120">1120</MenuItem>
               </TextField>
-              <TextField
-                label="QBID (Qualified Business Income Deduction)"
-                fullWidth
-                type="number"
-                value={QBID}
-                onChange={(e) => setQbid(e.target.value)}
-                margin="normal"
-              />
+
+              {formType === '1065' && (
+                <TextField
+                  label="% Share if partnership"
+                  fullWidth
+                  type="number"
+                  value={partnershipShare}
+                  onChange={(e) => {
+                    const value = Math.min(100, Math.max(0, parseFloat(e.target.value) || 0));
+                    setPartnershipShare(value.toString());
+                  }}
+                  margin="normal"
+                  InputProps={{
+                    inputProps: { min: 0, max: 100 },
+                    endAdornment: (
+                      <span style={{ marginRight: '8px' }}>%</span>
+                    ),
+                  }}
+                  helperText="Enter your partnership share percentage (0-100%)"
+                />
+              )}
+
+              <Box sx={{ position: 'relative' }}>
+                <TextField
+                  label="QBID (Qualified Business Income Deduction)"
+                  fullWidth
+                  type="number"
+                  value={QBID}
+                  onChange={(e) => setQbid(e.target.value)}
+                  margin="normal"
+                  InputProps={{
+                    endAdornment: (
+                      <Button
+                        onClick={handleQbidCalculateClick}
+                        size="small"
+                        aria-label="calculate QBID"
+                        sx={{
+                          color: '#0858e6',
+                          textTransform: 'none',
+                          fontSize: '0.8rem',
+                          fontWeight: 'normal',
+                          minWidth: 'auto',
+                          ml: 1,
+                          p: '4px 8px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '4px',
+                          backgroundColor: 'transparent',
+                          '&:hover': {
+                            backgroundColor: 'rgba(8, 88, 230, 0.08)',
+                          }
+                        }}
+                      >
+                        <CalculateIcon fontSize="small" />
+                        Calculate
+                      </Button>
+                    ),
+                  }}
+                />
+              </Box>
             </Grid>
           </Grid>
 
@@ -175,6 +249,12 @@ const HealthReimbursementArrangementForm = ({ onCalculate }) => {
           </Box>
         </form>
       </Box>
+
+      <QbidModal 
+        open={qbidModalOpen} 
+        onClose={handleCloseQbidModal} 
+        onSelect={handleQbidSelection}
+      />
     </Container>
   );
 };
