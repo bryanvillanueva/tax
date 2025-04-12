@@ -102,7 +102,7 @@ const CustomAppBar = ({ userData, showSearch, searchTerm, setSearchTerm, drawerO
           {isFormSelector && showSearch && (
             <Slide direction="down" in={showSearch} mountOnEnter unmountOnExit>
               <TextField
-                placeholder="Search for a form..."
+                placeholder="Search by name or strategy number..."
                 variant="outlined"
                 size="small"
                 value={searchTerm}

@@ -174,11 +174,15 @@ const Dashboard = () => {
   useEffect(() => {
     // Solo activar este efecto si estamos en la página de FormSelector
     if (!formId) {
+      // Siempre mostrar la barra de búsqueda para facilitar la búsqueda por fixedIndex
+      setShowSearch(true);
+      
       const handleScroll = () => {
         const scrollPosition = window.scrollY || document.documentElement.scrollTop;
         const shouldShowSearch = scrollPosition > 200; // Mostrar después de 200px de scroll
         
-        if (shouldShowSearch !== showSearch) {
+        if (shouldShowSearch !== showSearch && !shouldShowSearch) {
+          // Solo ocultar la barra cuando se hace scroll hacia arriba
           setShowSearch(shouldShowSearch);
         }
       };
