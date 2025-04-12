@@ -9,7 +9,9 @@ import {
   Grid,
 } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import CalculateIcon from "@mui/icons-material/Calculate";
 import useCalculations from "../utils/useCalculations";
+import QbidModal from "./QbidModal";
 
 const OrdinaryLossOnWorthlessStockForm = ({ onCalculate }) => {
   // Campos fijos
@@ -18,7 +20,9 @@ const OrdinaryLossOnWorthlessStockForm = ({ onCalculate }) => {
   const [formType, setFormType] = useState("1040 - Schedule C/F");
   const [grossIncome, setGrossIncome] = useState("");
   const [QBID, setQbid] = useState("");
+  const [partnershipShare, setPartnershipShare] = useState("");
   const [error, setError] = useState(null);
+  const [qbidModalOpen, setQbidModalOpen] = useState(false);
 
   // Campos específicos para Ordinary Loss on Worthless Stock
   const [meetsRequirement, setMeetsRequirement] = useState("No");
@@ -27,6 +31,44 @@ const OrdinaryLossOnWorthlessStockForm = ({ onCalculate }) => {
   const [ordinaryLossDeduction, setOrdinaryLossDeduction] = useState(0);
 
   const { performCalculations } = useCalculations();
+
+  const handleQbidCalculateClick = () => {
+    setQbidModalOpen(true);
+  };
+
+  const handleCloseQbidModal = () => {
+    setQbidModalOpen(false);
+  };
+
+  const handleQbidSelection = (results, shouldClose = false) => {
+    console.log("handleQbidSelection received:", results);
+    
+    // Recibimos los resultados del cálculo de QBID desde el formulario en el modal
+    if (results && results.qbidAmount !== undefined) {
+      // Asegurar que el valor es un número
+      const qbidValue = parseFloat(results.qbidAmount);
+      
+      // Actualizamos el valor del QBID con el resultado calculado
+      if (!isNaN(qbidValue)) {
+        console.log("Setting QBID value to:", qbidValue);
+        setQbid(qbidValue.toString());
+      } else {
+        console.warn("Invalid QBID value received:", results.qbidAmount);
+      }
+    } else {
+      console.warn("No qbidAmount found in results:", results);
+    }
+    
+    // Solo cerramos el modal si se indica explícitamente (cuando se presiona "Apply Results")
+    if (shouldClose) {
+      setQbidModalOpen(false);
+    }
+  };
+
+  // Efecto para registrar cambios en el valor QBID
+  useEffect(() => {
+    console.log("QBID state value changed:", QBID);
+  }, [QBID]);
 
   // Efecto para actualizar el Limit Deduction cuando cambia el Filing Status
   useEffect(() => {
@@ -48,6 +90,9 @@ const OrdinaryLossOnWorthlessStockForm = ({ onCalculate }) => {
       return;
     }
 
+    // No verificamos partnershipShare ya que es opcional
+    // El partnership share puede ir en blanco
+
     setError(null);
 
     // Calcular valores
@@ -57,13 +102,17 @@ const OrdinaryLossOnWorthlessStockForm = ({ onCalculate }) => {
     const OLD = meetsRequirement === "Yes" ? (SV >= limitDeduction ? limitDeduction : SV) : 0;
     setOrdinaryLossDeduction(OLD);
 
+    const qbidValue = QBID ? parseFloat(QBID) : 0;
+    console.log("Using QBID value for calculation:", qbidValue);
+
     // Pasar resultados a la función onCalculate
     const results = performCalculations({
       filingStatus,
       grossIncome: parseFloat(grossIncome),
       partnerType,
       formType,
-      QBID: parseFloat(QBID),
+      partnershipShare: partnershipShare ? parseFloat(partnershipShare) : 0,
+      QBID: qbidValue,
       meetsRequirement,
       stocksValue: SV,
       limitDeduction,
@@ -188,14 +237,67 @@ const OrdinaryLossOnWorthlessStockForm = ({ onCalculate }) => {
                 <MenuItem value="1120S">1120S</MenuItem>
                
               </TextField>
-              <TextField
-                label="QBID (Qualified Business Income Deduction)"
-                fullWidth
-                type="number"
-                value={QBID}
-                onChange={(e) => setQbid(e.target.value)}
-                margin="normal"
-              />
+
+              {formType === '1065' && (
+                <TextField
+                  label="% Share if partnership"
+                  fullWidth
+                  type="number"
+                  value={partnershipShare}
+                  onChange={(e) => {
+                    // Limitar el valor entre 0 y 100
+                    const value = Math.min(100, Math.max(0, parseFloat(e.target.value) || 0));
+                    setPartnershipShare(value.toString());
+                  }}
+                  margin="normal"
+                  InputProps={{
+                    inputProps: { min: 0, max: 100 },
+                    endAdornment: (
+                      <span style={{ marginRight: '8px' }}>%</span>
+                    ),
+                  }}
+                  helperText="Enter your partnership share percentage (0-100%)"
+                />
+              )}
+
+              <Box sx={{ position: 'relative' }}>
+                <TextField
+                  label="QBID (Qualified Business Income Deduction)"
+                  fullWidth
+                  type="number"
+                  value={QBID}
+                  onChange={(e) => setQbid(e.target.value)}
+                  margin="normal"
+                  InputProps={{
+                    endAdornment: (
+                      <Button
+                        onClick={handleQbidCalculateClick}
+                        size="small"
+                        aria-label="calculate QBID"
+                        sx={{
+                          color: '#0858e6',
+                          textTransform: 'none',
+                          fontSize: '0.8rem',
+                          fontWeight: 'normal',
+                          minWidth: 'auto',
+                          ml: 1,
+                          p: '4px 8px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '4px',
+                          backgroundColor: 'transparent',
+                          '&:hover': {
+                            backgroundColor: 'rgba(8, 88, 230, 0.08)',
+                          }
+                        }}
+                      >
+                        <CalculateIcon fontSize="small" />
+                        Calculate
+                      </Button>
+                    ),
+                  }}
+                />
+              </Box>
             </Grid>
           </Grid>
 
@@ -210,6 +312,13 @@ const OrdinaryLossOnWorthlessStockForm = ({ onCalculate }) => {
           </Box>
         </form>
       </Box>
+
+      {/* Modal para QBID */}
+      <QbidModal 
+        open={qbidModalOpen} 
+        onClose={handleCloseQbidModal} 
+        onSelect={handleQbidSelection}
+      />
     </Container>
   );
 };

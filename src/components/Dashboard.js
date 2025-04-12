@@ -597,7 +597,7 @@ const Dashboard = () => {
       case 'definedBenefitPlan':
           return 'Defined Benefit Plan';
       case 'structuredInvestmentProgram':
-          return 'Structured Investment Program';
+          return ' Sophisticated investment partnership';
       case 'selfDirectedIRA401K':
           return 'Self-Directed IRA & 401K';
       case 'dayTraderTaxStatus':

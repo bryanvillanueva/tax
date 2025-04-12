@@ -9,7 +9,9 @@ import {
   Grid,
 } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import CalculateIcon from "@mui/icons-material/Calculate";
 import useCalculations from "../utils/useCalculations";
+import QbidModal from "./QbidModal";
 
 const ReasonableCompAnalysisForm = ({ onCalculate }) => {
   // Fixed fields
@@ -32,6 +34,8 @@ const ReasonableCompAnalysisForm = ({ onCalculate }) => {
   const [TTS, setTTS] = useState(0); // Total Tax Savings (Tax + FICA)
 
   const { performCalculations } = useCalculations();
+
+  const [qbidModalOpen, setQbidModalOpen] = useState(false);
 
   // Calculate Total Current Compensation (TCC)
   useEffect(() => {
@@ -62,6 +66,41 @@ const ReasonableCompAnalysisForm = ({ onCalculate }) => {
     const marginalRate = parseFloat(MTR) || 0;
     setTTS(S15 + (EQBI * marginalRate / 100));
   }, [S15, EQBI, MTR]);
+
+  // Manejadores para QBID Modal
+  const handleQbidCalculateClick = () => {
+    setQbidModalOpen(true);
+  };
+
+  const handleCloseQbidModal = () => {
+    setQbidModalOpen(false);
+  };
+
+  const handleQbidSelection = (results, shouldClose = false) => {
+    console.log("handleQbidSelection received:", results);
+    
+    if (results && results.qbidAmount !== undefined) {
+      const qbidValue = parseFloat(results.qbidAmount);
+      
+      if (!isNaN(qbidValue)) {
+        console.log("Setting QBID value to:", qbidValue);
+        setQbid(qbidValue.toString());
+      } else {
+        console.warn("Invalid QBID value received:", results.qbidAmount);
+      }
+    } else {
+      console.warn("No qbidAmount found in results:", results);
+    }
+    
+    if (shouldClose) {
+      setQbidModalOpen(false);
+    }
+  };
+
+  // Efecto para registrar cambios en el valor QBID
+  useEffect(() => {
+    console.log("QBID state value changed:", QBID);
+  }, [QBID]);
 
   const handleSubmit = (e) => {
     e.preventDefault();

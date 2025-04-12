@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   TextField,
   Button,
@@ -9,8 +9,9 @@ import {
   Grid,
 } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import CalculateIcon from "@mui/icons-material/Calculate";
 import useCalculations from "../utils/useCalculations";
-
+import QbidModal from "./QbidModal";
 
 const BonusDepreciationForm = ({ onCalculate }) => {
   // Estados
@@ -20,6 +21,8 @@ const BonusDepreciationForm = ({ onCalculate }) => {
   const [grossIncome, setGrossIncome] = useState("");
   const [QBID, setQbid] = useState("");
   const [error, setError] = useState(null);
+  const [partnershipShare, setPartnershipShare] = useState("");
+  const [qbidModalOpen, setQbidModalOpen] = useState(false);
   
   const [CI, setCI] = useState(""); // Costos/Inversión
   const [TVLP, setTVLP] = useState("yes"); // The vehicle is a listed property
@@ -27,8 +30,42 @@ const BonusDepreciationForm = ({ onCalculate }) => {
   const [CDFY, setCDFY] = useState(""); // Calculated Depreciation First Year
   const BDR = 0.60; // Bonus Depreciation Rate (60%)
 
-
   const { performCalculations } = useCalculations();
+
+  // Manejadores para QBID Modal
+  const handleQbidCalculateClick = () => {
+    setQbidModalOpen(true);
+  };
+
+  const handleCloseQbidModal = () => {
+    setQbidModalOpen(false);
+  };
+
+  const handleQbidSelection = (results, shouldClose = false) => {
+    console.log("handleQbidSelection received:", results);
+    
+    if (results && results.qbidAmount !== undefined) {
+      const qbidValue = parseFloat(results.qbidAmount);
+      
+      if (!isNaN(qbidValue)) {
+        console.log("Setting QBID value to:", qbidValue);
+        setQbid(qbidValue.toString());
+      } else {
+        console.warn("Invalid QBID value received:", results.qbidAmount);
+      }
+    } else {
+      console.warn("No qbidAmount found in results:", results);
+    }
+    
+    if (shouldClose) {
+      setQbidModalOpen(false);
+    }
+  };
+
+  // Efecto para registrar cambios en el valor QBID
+  useEffect(() => {
+    console.log("QBID state value changed:", QBID);
+  }, [QBID]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -61,12 +98,12 @@ const BonusDepreciationForm = ({ onCalculate }) => {
     const totalDepreciation = TVLP === "no" ? calculatedBDA + parseFloat(CDFY) : (TLP === "Limited Vehicle" ? 20400 : calculatedBDA + parseFloat(CDFY));
 
     // Pasar resultados a la función onCalculate
-    const results = performCalculations( {
+    const results = performCalculations({
       filingStatus,
       grossIncome: parseFloat(grossIncome),
       partnerType,
       formType,
-      QBID: parseFloat(QBID),
+      QBID: parseFloat(QBID) || 0,
       CI: parseFloat(CI),
       TVLP,
       TLP,
@@ -75,6 +112,7 @@ const BonusDepreciationForm = ({ onCalculate }) => {
       CDFY: parseFloat(CDFY),
       bonusDepreciationDeduction: totalDepreciation,
       calculationType: "BonusDepreciation",
+      partnershipShare: formType === '1065' ? (parseFloat(partnershipShare) || 0) : 0,
     });
 
     onCalculate(results);
@@ -210,7 +248,7 @@ const BonusDepreciationForm = ({ onCalculate }) => {
                 label="Bonus Depreciation Rate (BDR)"
                 fullWidth
                 type="number"
-                value={BDR * 100} // Mostrar como porcentaje
+                value={BDR * 100}
                 margin="normal"
                 disabled
               />
@@ -218,7 +256,7 @@ const BonusDepreciationForm = ({ onCalculate }) => {
                 label="Bonus Depreciation Deduction"
                 fullWidth
                 type="number"
-                value={totalDepreciation} // Mostrar el valor de la deducción
+                value={totalDepreciation}
                 margin="normal"
                 disabled
               />
@@ -236,14 +274,66 @@ const BonusDepreciationForm = ({ onCalculate }) => {
                 <MenuItem value="1120S">1120S</MenuItem>
                 <MenuItem value="1120">1120</MenuItem>
               </TextField>
-              <TextField
-                label="QBID (Qualified Business Income Deduction)"
-                fullWidth
-                type="number"
-                value={QBID}
-                onChange={(e) => setQbid(e.target.value)}
-                margin="normal"
-              />
+
+              {formType === '1065' && (
+                <TextField
+                  label="% Share if partnership"
+                  fullWidth
+                  type="number"
+                  value={partnershipShare}
+                  onChange={(e) => {
+                    const value = Math.min(100, Math.max(0, parseFloat(e.target.value) || 0));
+                    setPartnershipShare(value.toString());
+                  }}
+                  margin="normal"
+                  InputProps={{
+                    inputProps: { min: 0, max: 100 },
+                    endAdornment: (
+                      <span style={{ marginRight: '8px' }}>%</span>
+                    ),
+                  }}
+                  helperText="Enter your partnership share percentage (0-100%)"
+                />
+              )}
+
+              <Box sx={{ position: 'relative' }}>
+                <TextField
+                  label="QBID (Qualified Business Income Deduction)"
+                  fullWidth
+                  type="number"
+                  value={QBID}
+                  onChange={(e) => setQbid(e.target.value)}
+                  margin="normal"
+                  InputProps={{
+                    endAdornment: (
+                      <Button
+                        onClick={handleQbidCalculateClick}
+                        size="small"
+                        aria-label="calculate QBID"
+                        sx={{
+                          color: '#0858e6',
+                          textTransform: 'none',
+                          fontSize: '0.8rem',
+                          fontWeight: 'normal',
+                          minWidth: 'auto',
+                          ml: 1,
+                          p: '4px 8px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '4px',
+                          backgroundColor: 'transparent',
+                          '&:hover': {
+                            backgroundColor: 'rgba(8, 88, 230, 0.08)',
+                          }
+                        }}
+                      >
+                        <CalculateIcon fontSize="small" />
+                        Calculate
+                      </Button>
+                    ),
+                  }}
+                />
+              </Box>
             </Grid>
           </Grid>
 
@@ -258,6 +348,12 @@ const BonusDepreciationForm = ({ onCalculate }) => {
           </Box>
         </form>
       </Box>
+
+      <QbidModal 
+        open={qbidModalOpen} 
+        onClose={handleCloseQbidModal} 
+        onSelect={handleQbidSelection}
+      />
     </Container>
   );
 };

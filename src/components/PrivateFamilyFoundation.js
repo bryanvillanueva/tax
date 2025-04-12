@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { TextField, Button, Container, Box, MenuItem, Alert, Grid } from '@mui/material';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import CalculateIcon from '@mui/icons-material/Calculate';
 import useCalculations from '../utils/useCalculations';
 import { standardDeductions } from '../utils/taxData';
+import QbidModal from './QbidModal';
 
 const PrivateFamilyFoundation = ({ onCalculate }) => {
   const [filingStatus, setFilingStatus] = useState('Single');
@@ -22,10 +24,47 @@ const PrivateFamilyFoundation = ({ onCalculate }) => {
   const [QBID, setQbid] = useState('');
   const [dagi, setDagi] = useState('');
   const [formType, setFormType] = useState('1040 - Schedule C/F');
+  const [partnershipShare, setPartnershipShare] = useState('');
+  const [qbidModalOpen, setQbidModalOpen] = useState(false);
 
   const standardDeduction = standardDeductions[filingStatus];
 
   const { performCalculations } = useCalculations();
+
+  // Manejadores para QBID Modal
+  const handleQbidCalculateClick = () => {
+    setQbidModalOpen(true);
+  };
+
+  const handleCloseQbidModal = () => {
+    setQbidModalOpen(false);
+  };
+
+  const handleQbidSelection = (results, shouldClose = false) => {
+    console.log("handleQbidSelection received:", results);
+    
+    if (results && results.qbidAmount !== undefined) {
+      const qbidValue = parseFloat(results.qbidAmount);
+      
+      if (!isNaN(qbidValue)) {
+        console.log("Setting QBID value to:", qbidValue);
+        setQbid(qbidValue.toString());
+      } else {
+        console.warn("Invalid QBID value received:", results.qbidAmount);
+      }
+    } else {
+      console.warn("No qbidAmount found in results:", results);
+    }
+    
+    if (shouldClose) {
+      setQbidModalOpen(false);
+    }
+  };
+
+  // Efecto para registrar cambios en el valor QBID
+  useEffect(() => {
+    console.log("QBID state value changed:", QBID);
+  }, [QBID]);
 
   // Calculate dependent fields when inputs change
   useEffect(() => {
@@ -88,9 +127,10 @@ const PrivateFamilyFoundation = ({ onCalculate }) => {
       tcbl: parseFloat(tcbl),
       dl: parseFloat(dl),
       tcd: parseFloat(tcd),
-      QBID: parseFloat(QBID),
+      QBID: parseFloat(QBID) || 0,
       dagi: calculatedDagi,
       formType,
+      partnershipShare: formType === '1065' ? (parseFloat(partnershipShare) || 0) : 0,
     });
 
     onCalculate(results);
@@ -180,7 +220,6 @@ const PrivateFamilyFoundation = ({ onCalculate }) => {
                 margin="normal"
                 disabled
               />
-              
 
               <TextField
                 label="Total Contribution before limitation (TCBL)"
@@ -205,13 +244,10 @@ const PrivateFamilyFoundation = ({ onCalculate }) => {
                   readOnly: true,
                 }}
               />
-
-
-
             </Grid>
 
             <Grid item xs={12} md={6}>
-            <TextField
+              <TextField
                 label="Taxpayer's Adjusted Gross Income (TAGI)"
                 fullWidth
                 type="number"
@@ -222,7 +258,7 @@ const PrivateFamilyFoundation = ({ onCalculate }) => {
                 error={tagi !== '' && parseFloat(tagi) <= 0}
                 helperText={tagi !== '' && parseFloat(tagi) <= 0 ? 'Must be greater than 0' : ''}
               />
-               <TextField
+              <TextField
                 label="Cash Contributed to the Foundation (CCF)"
                 fullWidth
                 type="number"
@@ -230,7 +266,7 @@ const PrivateFamilyFoundation = ({ onCalculate }) => {
                 onChange={(e) => setCcf(e.target.value)}
                 margin="normal"
               />
-                <TextField
+              <TextField
                 label="Non-cash contributed to the foundation (NCCF)"
                 fullWidth
                 type="number"
@@ -238,7 +274,7 @@ const PrivateFamilyFoundation = ({ onCalculate }) => {
                 onChange={(e) => setNccf(e.target.value)}
                 margin="normal"
               />
-            <TextField
+              <TextField
                 label="Total Contribution deductible (TCD)"
                 fullWidth
                 type="number"
@@ -249,7 +285,7 @@ const PrivateFamilyFoundation = ({ onCalculate }) => {
                   readOnly: true,
                 }}
               />
-                <TextField
+              <TextField
                 label="Cash Limitations (CL)"
                 fullWidth
                 type="number"
@@ -273,10 +309,6 @@ const PrivateFamilyFoundation = ({ onCalculate }) => {
                 }}
               />
 
-             
-
-
-
               <TextField
                 select
                 label="Form Type"
@@ -289,16 +321,67 @@ const PrivateFamilyFoundation = ({ onCalculate }) => {
                 <MenuItem value="1040NR - Schedule E">1040NR - Schedule E</MenuItem>
                 <MenuItem value="1065">1065</MenuItem>
                 <MenuItem value="1120S">1120S</MenuItem>
-                
               </TextField>
-              <TextField
-                label="QBID (Qualified Business Income Deduction)"
-                fullWidth
-                type="number"
-                value={QBID}
-                onChange={(e) => setQbid(e.target.value)}
-                margin="normal"
-              />
+
+              {formType === '1065' && (
+                <TextField
+                  label="% Share if partnership"
+                  fullWidth
+                  type="number"
+                  value={partnershipShare}
+                  onChange={(e) => {
+                    const value = Math.min(100, Math.max(0, parseFloat(e.target.value) || 0));
+                    setPartnershipShare(value.toString());
+                  }}
+                  margin="normal"
+                  InputProps={{
+                    inputProps: { min: 0, max: 100 },
+                    endAdornment: (
+                      <span style={{ marginRight: '8px' }}>%</span>
+                    ),
+                  }}
+                  helperText="Enter your partnership share percentage (0-100%)"
+                />
+              )}
+
+              <Box sx={{ position: 'relative' }}>
+                <TextField
+                  label="QBID (Qualified Business Income Deduction)"
+                  fullWidth
+                  type="number"
+                  value={QBID}
+                  onChange={(e) => setQbid(e.target.value)}
+                  margin="normal"
+                  InputProps={{
+                    endAdornment: (
+                      <Button
+                        onClick={handleQbidCalculateClick}
+                        size="small"
+                        aria-label="calculate QBID"
+                        sx={{
+                          color: '#0858e6',
+                          textTransform: 'none',
+                          fontSize: '0.8rem',
+                          fontWeight: 'normal',
+                          minWidth: 'auto',
+                          ml: 1,
+                          p: '4px 8px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '4px',
+                          backgroundColor: 'transparent',
+                          '&:hover': {
+                            backgroundColor: 'rgba(8, 88, 230, 0.08)',
+                          }
+                        }}
+                      >
+                        <CalculateIcon fontSize="small" />
+                        Calculate
+                      </Button>
+                    ),
+                  }}
+                />
+              </Box>
             </Grid>
           </Grid>
 
@@ -309,6 +392,12 @@ const PrivateFamilyFoundation = ({ onCalculate }) => {
           </Box>
         </form>
       </Box>
+
+      <QbidModal 
+        open={qbidModalOpen} 
+        onClose={handleCloseQbidModal} 
+        onSelect={handleQbidSelection}
+      />
     </Container>
   );
 };
