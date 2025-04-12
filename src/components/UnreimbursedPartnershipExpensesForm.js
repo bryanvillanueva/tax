@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { TextField, Button, Container, Box, MenuItem, Alert, Grid } from '@mui/material';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import CalculateIcon from '@mui/icons-material/Calculate';
+import QbidModal from './QbidModal';
 import useCalculations from '../utils/useCalculations';
 
 const UnreimbursedPartnershipExpensesForm = ({ onCalculate }) => {
@@ -8,15 +10,34 @@ const UnreimbursedPartnershipExpensesForm = ({ onCalculate }) => {
   const [grossIncome, setGrossIncome] = useState('');
   const [partnerType, setPartnerType] = useState('Active');
   const [formType, setFormType] = useState('1065');
-
   const [unreimbursedExpenses, setUnreimbursedExpenses] = useState('');
   const [nonDeductibleAmount, setNonDeductibleAmount] = useState('');
   const [totalReimbursement, setTotalReimbursement] = useState('');
-   const [QBID, setQbid] = useState('');
-
+  const [QBID, setQbid] = useState('');
+  const [qbidModalOpen, setQbidModalOpen] = useState(false);
   const [error, setError] = useState(null);
 
   const { performCalculations } = useCalculations();
+
+  const handleQbidCalculateClick = () => {
+    setQbidModalOpen(true);
+  };
+
+  const handleCloseQbidModal = () => {
+    setQbidModalOpen(false);
+  };
+
+  const handleQbidSelection = (results, shouldClose = false) => {
+    if (results && results.qbidAmount !== undefined) {
+      const qbidValue = parseFloat(results.qbidAmount);
+      if (!isNaN(qbidValue)) {
+        setQbid(qbidValue.toString());
+      }
+    }
+    if (shouldClose) {
+      setQbidModalOpen(false);
+    }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -32,13 +53,14 @@ const UnreimbursedPartnershipExpensesForm = ({ onCalculate }) => {
       return;
     }
 
-  
-    const totalReimbursement = (parseFloat(unreimbursedExpenses) - parseFloat(nonDeductibleAmount)).toFixed(2);
+    const totalReimbursement = (
+      parseFloat(unreimbursedExpenses) - parseFloat(nonDeductibleAmount)
+    ).toFixed(2);
+
     // Calculate Income Reduction
     const reductionUnreimbursed = totalReimbursement;
 
     setTotalReimbursement(totalReimbursement);
-    
     setError(null);
 
     // Perform Calculations
@@ -65,7 +87,13 @@ const UnreimbursedPartnershipExpensesForm = ({ onCalculate }) => {
           <Button
             href="https://cmltaxplanning.com/docs/S35.pdf"
             target="_blank"
-            sx={{ textTransform: 'none', backgroundColor: '#ffffff', color: '#0858e6', fontSize: '0.875rem', marginBottom: '150px' }}
+            sx={{
+              textTransform: 'none',
+              backgroundColor: '#ffffff',
+              color: '#0858e6',
+              fontSize: '0.875rem',
+              marginBottom: '150px',
+            }}
             startIcon={<InfoOutlinedIcon />}
           >
             View Strategy Details
@@ -117,6 +145,7 @@ const UnreimbursedPartnershipExpensesForm = ({ onCalculate }) => {
                 <MenuItem value="Active">Active</MenuItem>
                 <MenuItem value="Passive">Passive</MenuItem>
               </TextField>
+
               <TextField
                 label="Unreimbursed Expenses Incurred"
                 fullWidth
@@ -129,8 +158,6 @@ const UnreimbursedPartnershipExpensesForm = ({ onCalculate }) => {
 
             {/* Right Side */}
             <Grid item xs={12} md={6}>
-             
-
               <TextField
                 label="Non-Deductible Amount"
                 fullWidth
@@ -145,12 +172,9 @@ const UnreimbursedPartnershipExpensesForm = ({ onCalculate }) => {
                 fullWidth
                 type="number"
                 value={totalReimbursement}
-                onChange={(e) => setTotalReimbursement(e.target.value)}
                 margin="normal"
                 disabled
               />
-
-            
 
               <TextField
                 select
@@ -163,14 +187,44 @@ const UnreimbursedPartnershipExpensesForm = ({ onCalculate }) => {
                 <MenuItem value="1065">Partnership / MMLLC</MenuItem>
               </TextField>
 
-              <TextField
-                label="QBID (Qualified Business Income Deduction)"
-                fullWidth
-                type="number"
-                value={QBID}
-                onChange={(e) => setQbid(e.target.value)}
-                margin="normal"
-              />
+              <Box sx={{ position: 'relative' }}>
+                <TextField
+                  label="QBID (Qualified Business Income Deduction)"
+                  fullWidth
+                  type="number"
+                  value={QBID}
+                  onChange={(e) => setQbid(e.target.value)}
+                  margin="normal"
+                  InputProps={{
+                    endAdornment: (
+                      <Button
+                        onClick={handleQbidCalculateClick}
+                        size="small"
+                        aria-label="calculate QBID"
+                        sx={{
+                          color: '#0858e6',
+                          textTransform: 'none',
+                          fontSize: '0.8rem',
+                          fontWeight: 'normal',
+                          minWidth: 'auto',
+                          ml: 1,
+                          p: '4px 8px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '4px',
+                          backgroundColor: 'transparent',
+                          '&:hover': {
+                            backgroundColor: 'rgba(8, 88, 230, 0.08)',
+                          }
+                        }}
+                      >
+                        <CalculateIcon fontSize="small" />
+                        Calculate
+                      </Button>
+                    ),
+                  }}
+                />
+              </Box>
             </Grid>
           </Grid>
 
@@ -181,6 +235,12 @@ const UnreimbursedPartnershipExpensesForm = ({ onCalculate }) => {
           </Box>
         </form>
       </Box>
+
+      <QbidModal 
+        open={qbidModalOpen} 
+        onClose={handleCloseQbidModal} 
+        onSelect={handleQbidSelection}
+      />
     </Container>
   );
 };

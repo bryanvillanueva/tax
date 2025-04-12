@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { TextField, Button, Container, Typography, Box, MenuItem, Alert, Grid } from '@mui/material';
+import { TextField, Button, Container, Box, MenuItem, Alert, Grid } from '@mui/material';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import CalculateIcon from '@mui/icons-material/Calculate';
+import QbidModal from './QbidModal';
 import useCalculations from '../utils/useCalculations';
-
-
 
 const formatCurrency = (value) => {
   if (value === undefined || value === null) return '$0.00';
@@ -26,20 +26,39 @@ const BackdoorRothForm = ({ onCalculate }) => {
   const [marginalTaxRate, setMarginalTaxRate] = useState('');
   const [formType, setFormType] = useState('1040 - Schedule C/F');
   const [QBID, setQbid] = useState('');
+  const [qbidModalOpen, setQbidModalOpen] = useState(false);
   const [calculatedValues, setCalculatedValues] = useState({
     limitContribution: 0,
     totalExemptIncome: 0,
     potentialTaxSavings: 0,
   });
   const [error, setError] = useState(null);
-  
 
   const { performCalculations } = useCalculations();
+
+  const handleQbidCalculateClick = () => {
+    setQbidModalOpen(true);
+  };
+
+  const handleCloseQbidModal = () => {
+    setQbidModalOpen(false);
+  };
+
+  const handleQbidSelection = (results, shouldClose = false) => {
+    if (results && results.qbidAmount !== undefined) {
+      const qbidValue = parseFloat(results.qbidAmount);
+      if (!isNaN(qbidValue)) {
+        setQbid(qbidValue.toString());
+      }
+    }
+    if (shouldClose) {
+      setQbidModalOpen(false);
+    }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Validaciones
     if (!grossIncome || parseFloat(grossIncome) <= 0) {
       setError('Gross Income is required and must be greater than 0.');
       return;
@@ -72,7 +91,6 @@ const BackdoorRothForm = ({ onCalculate }) => {
 
     setError(null);
 
-    // Cálculos internos
     const limitContribution = parseFloat(taxpayerAge) >= 50 ? 8000 : 7000;
     const totalExemptIncome =
       Math.min(parseFloat(annualContribution), limitContribution) *
@@ -85,7 +103,6 @@ const BackdoorRothForm = ({ onCalculate }) => {
       potentialTaxSavings,
     });
 
-    // Resultados procesados con performCalculations
     const results = performCalculations({
       filingStatus,
       grossIncome: parseFloat(grossIncome),
@@ -109,7 +126,6 @@ const BackdoorRothForm = ({ onCalculate }) => {
   return (
     <Container>
       <Box sx={{ position: 'relative', mt: 5 }}>
-        {/* Enlace en la esquina superior derecha */}
         <Box sx={{ position: 'absolute', top: -10, right: 0 }}>
           <Button
             href="https://cmltaxplanning.com/docs/S37.pdf"
@@ -171,6 +187,7 @@ const BackdoorRothForm = ({ onCalculate }) => {
                 <MenuItem value="Active">Active</MenuItem>
                 <MenuItem value="Passive">Passive</MenuItem>
               </TextField>
+
               <TextField
                 label="Annual Contribution"
                 fullWidth
@@ -200,8 +217,6 @@ const BackdoorRothForm = ({ onCalculate }) => {
             </Grid>
 
             <Grid item xs={12} md={6}>
-              
-
               <TextField
                 label="Average % Interest Paid by the Account"
                 fullWidth
@@ -219,29 +234,32 @@ const BackdoorRothForm = ({ onCalculate }) => {
                 onChange={(e) => setMarginalTaxRate(e.target.value)}
                 margin="normal"
               />
-              <TextField
-                    label="Limit Contribution"
-                    fullWidth
-                    value={formatCurrency(calculatedValues.limitContribution || 0)}
-                    disabled
-                    margin="normal"
-                  />
 
-                  <TextField
-                    label="Total Exempt Income per Contribution"
-                    fullWidth
-                    value={formatCurrency(calculatedValues.totalExemptIncome || 0)}
-                    disabled
-                    margin="normal"
-                  />
-                   <TextField
-                    label="Potential Tax Savings"
-                    fullWidth
-                    value={formatCurrency(calculatedValues.potentialTaxSavings || 0)}
-                    disabled
-                    margin="normal"
-                  />
-               <TextField
+              <TextField
+                label="Limit Contribution"
+                fullWidth
+                value={formatCurrency(calculatedValues.limitContribution || 0)}
+                disabled
+                margin="normal"
+              />
+
+              <TextField
+                label="Total Exempt Income per Contribution"
+                fullWidth
+                value={formatCurrency(calculatedValues.totalExemptIncome || 0)}
+                disabled
+                margin="normal"
+              />
+
+              <TextField
+                label="Potential Tax Savings"
+                fullWidth
+                value={formatCurrency(calculatedValues.potentialTaxSavings || 0)}
+                disabled
+                margin="normal"
+              />
+
+              <TextField
                 select
                 label="Form Type"
                 fullWidth
@@ -250,20 +268,47 @@ const BackdoorRothForm = ({ onCalculate }) => {
                 margin="normal"
               >
                 <MenuItem value="1040 - Schedule C/F">1040 - Schedule C/F</MenuItem>
-                
               </TextField>
-              
-              <TextField
-                label="QBID (Qualified Business Income Deduction)"
-                fullWidth
-                type="number"
-                value={QBID}
-                onChange={(e) => setQbid(e.target.value)}
-                margin="normal"
-              />
-            </Grid>
 
-          
+              <Box sx={{ position: 'relative' }}>
+                <TextField
+                  label="QBID (Qualified Business Income Deduction)"
+                  fullWidth
+                  type="number"
+                  value={QBID}
+                  onChange={(e) => setQbid(e.target.value)}
+                  margin="normal"
+                  InputProps={{
+                    endAdornment: (
+                      <Button
+                        onClick={handleQbidCalculateClick}
+                        size="small"
+                        aria-label="calculate QBID"
+                        sx={{
+                          color: '#0858e6',
+                          textTransform: 'none',
+                          fontSize: '0.8rem',
+                          fontWeight: 'normal',
+                          minWidth: 'auto',
+                          ml: 1,
+                          p: '4px 8px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '4px',
+                          backgroundColor: 'transparent',
+                          '&:hover': {
+                            backgroundColor: 'rgba(8, 88, 230, 0.08)',
+                          }
+                        }}
+                      >
+                        <CalculateIcon fontSize="small" />
+                        Calculate
+                      </Button>
+                    ),
+                  }}
+                />
+              </Box>
+            </Grid>
           </Grid>
 
           <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
@@ -273,6 +318,12 @@ const BackdoorRothForm = ({ onCalculate }) => {
           </Box>
         </form>
       </Box>
+
+      <QbidModal 
+        open={qbidModalOpen} 
+        onClose={handleCloseQbidModal} 
+        onSelect={handleQbidSelection}
+      />
     </Container>
   );
 };

@@ -117,7 +117,7 @@ const QualifiedBusinessIncomeDeduction = ({ onCalculate }) => {
       <Box sx={{ position: 'relative', mt: 5, mb: 3 }}>
         <Box sx={{ position: 'absolute', top: -10, right: 0 }}>
           <Button
-            href="#"
+            href="https://cmltaxplanning.com/docs/S100.pdf"
             target="_blank"
             sx={{
               textTransform: 'none',

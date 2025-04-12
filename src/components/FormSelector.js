@@ -148,7 +148,11 @@ const FormSelector = ({ onSelectForm, searchTerm, setSearchTerm }) => {
     // Función para ordenar los formularios con favoritos primero
     const getSortedForms = (formsList, favoritesObj, searchTerm) => {
       const filteredForms = formsList.filter((form) =>
-        form.title.toLowerCase().includes(searchTerm.toLowerCase())
+        form.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        // Permitir búsqueda por fixedIndex como string
+        (form.fixedIndex && form.fixedIndex.toString() === searchTerm) ||
+        // Permitir búsqueda por número (para facilitar encontrar estrategias por su índice)
+        (form.fixedIndex && searchTerm && form.fixedIndex.toString().includes(searchTerm))
       );
   
       return filteredForms.sort((a, b) => {
@@ -289,7 +293,7 @@ const FormSelector = ({ onSelectForm, searchTerm, setSearchTerm }) => {
   {/* Barra de búsqueda (siempre visible) */}
   <TextField
     fullWidth
-    placeholder="Search for a form..."
+    placeholder="Search by name or strategy number..."
     variant="outlined"
     value={searchTerm}
     onChange={(e) => setSearchTerm(e.target.value)}

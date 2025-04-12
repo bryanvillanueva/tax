@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { TextField, Button, Container, Box, MenuItem, Alert, Grid } from '@mui/material';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import CalculateIcon from '@mui/icons-material/Calculate';
+import QbidModal from './QbidModal';
 import useCalculations from '../utils/useCalculations';
 
 const Solo401kForm = ({ onCalculate }) => {
@@ -14,6 +16,7 @@ const Solo401kForm = ({ onCalculate }) => {
   const [typeCompany, setTypeCompany] = useState('Sole Prop');
   const [formType, setFormType] = useState('1040 - Schedule C/F');
   const [QBID, setQbid] = useState('');
+  const [qbidModalOpen, setQbidModalOpen] = useState(false);
   const [error, setError] = useState(null);
 
   const { performCalculations } = useCalculations();
@@ -40,10 +43,29 @@ const Solo401kForm = ({ onCalculate }) => {
     return deduction;
   };
 
+  const handleQbidCalculateClick = () => {
+    setQbidModalOpen(true);
+  };
+
+  const handleCloseQbidModal = () => {
+    setQbidModalOpen(false);
+  };
+
+  const handleQbidSelection = (results, shouldClose = false) => {
+    if (results && results.qbidAmount !== undefined) {
+      const qbidValue = parseFloat(results.qbidAmount);
+      if (!isNaN(qbidValue)) {
+        setQbid(qbidValue.toString());
+      }
+    }
+    if (shouldClose) {
+      setQbidModalOpen(false);
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Validaciones de los campos
     if (!grossIncome || parseFloat(grossIncome) <= 0) {
       setError('Gross Income is required and must be greater than 0.');
       return;
@@ -69,7 +91,6 @@ const Solo401kForm = ({ onCalculate }) => {
       return;
     }
 
-    // Lógica para calcular el total de contribuciones
     const employeeContributionLimit = parseFloat(taxPayerAge) >= 50 ? 30500 : 23000;
     const employerContributionLimit = parseFloat(employeeWages) * 0.25;
     const totalLimit = parseFloat(taxPayerAge) >= 50 ? 76500 : 69000;
@@ -113,7 +134,6 @@ const Solo401kForm = ({ onCalculate }) => {
   return (
     <Container>
       <Box sx={{ position: 'relative', mt: 5 }}>
-        {/* Enlace en la esquina superior derecha */}
         <Box sx={{ position: 'absolute', top: -10, right: 0 }}>
           <Button
             href="https://cmltaxplanning.com/docs/S26.pdf"
@@ -139,7 +159,6 @@ const Solo401kForm = ({ onCalculate }) => {
 
         <form onSubmit={handleSubmit}>
           <Grid container spacing={2}>
-            {/* Lado Izquierdo */}
             <Grid item xs={12} md={6}>
               <TextField
                 select
@@ -201,7 +220,6 @@ const Solo401kForm = ({ onCalculate }) => {
               />
             </Grid>
 
-            {/* Lado Derecho */}
             <Grid item xs={12} md={6}>
               <TextField
                 label="Employee Contribution"
@@ -242,14 +260,44 @@ const Solo401kForm = ({ onCalculate }) => {
                 <MenuItem value="1040NR - Schedule E">1040NR - Schedule E</MenuItem>
               </TextField>
 
-              <TextField
-                label="QBID (Qualified Business Income Deduction)"
-                fullWidth
-                type="number"
-                value={QBID}
-                onChange={(e) => setQbid(e.target.value)}
-                margin="normal"
-              />
+              <Box sx={{ position: 'relative' }}>
+                <TextField
+                  label="QBID (Qualified Business Income Deduction)"
+                  fullWidth
+                  type="number"
+                  value={QBID}
+                  onChange={(e) => setQbid(e.target.value)}
+                  margin="normal"
+                  InputProps={{
+                    endAdornment: (
+                      <Button
+                        onClick={handleQbidCalculateClick}
+                        size="small"
+                        aria-label="calculate QBID"
+                        sx={{
+                          color: '#0858e6',
+                          textTransform: 'none',
+                          fontSize: '0.8rem',
+                          fontWeight: 'normal',
+                          minWidth: 'auto',
+                          ml: 1,
+                          p: '4px 8px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '4px',
+                          backgroundColor: 'transparent',
+                          '&:hover': {
+                            backgroundColor: 'rgba(8, 88, 230, 0.08)',
+                          }
+                        }}
+                      >
+                        <CalculateIcon fontSize="small" />
+                        Calculate
+                      </Button>
+                    ),
+                  }}
+                />
+              </Box>
             </Grid>
           </Grid>
 
@@ -260,6 +308,12 @@ const Solo401kForm = ({ onCalculate }) => {
           </Box>
         </form>
       </Box>
+
+      <QbidModal 
+        open={qbidModalOpen} 
+        onClose={handleCloseQbidModal} 
+        onSelect={handleQbidSelection}
+      />
     </Container>
   );
 };
