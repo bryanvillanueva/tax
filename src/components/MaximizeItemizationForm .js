@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   TextField,
   Button,
@@ -9,8 +9,10 @@ import {
   Grid,
 } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import CalculateIcon from '@mui/icons-material/Calculate';
 import useCalculations from "../utils/useCalculations";
 import { standardDeductions } from '../utils/taxData';
+import QbidModal from './QbidModal';
 
 const MaximizeItemizationForm = ({ onCalculate }) => {
   // Campos fijos
@@ -19,7 +21,9 @@ const MaximizeItemizationForm = ({ onCalculate }) => {
   const [formType, setFormType] = useState("1040 - Schedule C/F");
   const [grossIncome, setGrossIncome] = useState("");
   const [QBID, setQbid] = useState("");
+  const [partnershipShare, setPartnershipShare] = useState("");
   const [error, setError] = useState(null);
+  const [qbidModalOpen, setQbidModalOpen] = useState(false);
   const [dagi, setDagi] = useState('');
   const standardDeduction = standardDeductions[filingStatus];
 
@@ -32,11 +36,41 @@ const MaximizeItemizationForm = ({ onCalculate }) => {
   const [jobRelatedExpenses, setJobRelatedExpenses] = useState("");
   const [medicalExpenses, setMedicalExpenses] = useState("");
   const [totalItemizedDeduction, setTotalItemizedDeduction] = useState(0);
- 
 
   const { performCalculations } = useCalculations();
 
+  const handleQbidCalculateClick = () => {
+    setQbidModalOpen(true);
+  };
 
+  const handleCloseQbidModal = () => {
+    setQbidModalOpen(false);
+  };
+
+  const handleQbidSelection = (results, shouldClose = false) => {
+    console.log("handleQbidSelection received:", results);
+    
+    if (results && results.qbidAmount !== undefined) {
+      const qbidValue = parseFloat(results.qbidAmount);
+      
+      if (!isNaN(qbidValue)) {
+        console.log("Setting QBID value to:", qbidValue);
+        setQbid(qbidValue.toString());
+      } else {
+        console.warn("Invalid QBID value received:", results.qbidAmount);
+      }
+    } else {
+      console.warn("No qbidAmount found in results:", results);
+    }
+    
+    if (shouldClose) {
+      setQbidModalOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    console.log("QBID state value changed:", QBID);
+  }, [QBID]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -52,18 +86,15 @@ const MaximizeItemizationForm = ({ onCalculate }) => {
       return;
     }
 
-   
-
     setError(null);
 
     // Calcular valores
-      
     const TAGI = parseFloat(taxpayerAGI);
     const MI = parseFloat(mortgageInterest);
     const STRT = parseFloat(stateTaxesOrRealEstateTaxes);
     const CC = parseFloat(charitableContributions);
     const OID = parseFloat(otherItemizedDeductions);
-    const JRE = parseFloat(jobRelatedExpenses) || 0 ;
+    const JRE = parseFloat(jobRelatedExpenses) || 0;
     const ME = parseFloat(medicalExpenses);
 
     // Calcular Total Itemized Deduction (TID)
@@ -71,9 +102,11 @@ const MaximizeItemizationForm = ({ onCalculate }) => {
     const TID = MI + STRT + CC + OID + JRE + medicalDeduction;
     setTotalItemizedDeduction(TID);
 
-   const newDagi = TID
-   setDagi(newDagi)
- 
+    const newDagi = TID;
+    setDagi(newDagi);
+
+    const qbidValue = QBID ? parseFloat(QBID) : 0;
+    console.log("Using QBID value for calculation:", qbidValue);
 
     // Pasar resultados a la función onCalculate
     const results = performCalculations({
@@ -81,7 +114,8 @@ const MaximizeItemizationForm = ({ onCalculate }) => {
       grossIncome: parseFloat(grossIncome),
       partnerType,
       formType,
-      QBID: parseFloat(QBID),
+      partnershipShare: partnershipShare ? parseFloat(partnershipShare) : 0,
+      QBID: qbidValue,
       taxpayerAGI: TAGI,
       mortgageInterest: MI,
       stateTaxesOrRealEstateTaxes: STRT,
@@ -92,6 +126,7 @@ const MaximizeItemizationForm = ({ onCalculate }) => {
       totalItemizedDeduction: TID,
       calculationType: "MaximizeItemization",
       dagi: parseFloat(newDagi),
+      standardDeduction,
     });
 
     onCalculate(results);
@@ -162,20 +197,20 @@ const MaximizeItemizationForm = ({ onCalculate }) => {
               <TextField
                 label="Deduction To AGI"
                 fullWidth
-                 type="number"
-                 value={dagi}
-                 onChange={(e) => setDagi(e.target.value)}
-                 margin="normal"
-                 disabled
-               />
-               <TextField
-                label="Standar Deduction"
+                type="number"
+                value={dagi}
+                onChange={(e) => setDagi(e.target.value)}
+                margin="normal"
+                disabled
+              />
+              <TextField
+                label="Standard Deduction"
                 fullWidth
                 type="number"
                 value={standardDeduction}
                 margin="normal"
                 disabled
-                />
+              />
               <TextField
                 label="Taxpayer's Adjusted Gross Income (TAGI)"
                 fullWidth
@@ -192,12 +227,10 @@ const MaximizeItemizationForm = ({ onCalculate }) => {
                 onChange={(e) => setMortgageInterest(e.target.value)}
                 margin="normal"
               />
-             
-             
             </Grid>
 
             <Grid item xs={12} md={6}>
-            <TextField
+              <TextField
                 label="State Taxes or Real Estate Taxes (STRT)"
                 fullWidth
                 type="number"
@@ -205,7 +238,7 @@ const MaximizeItemizationForm = ({ onCalculate }) => {
                 onChange={(e) => setStateTaxesOrRealEstateTaxes(e.target.value)}
                 margin="normal"
               />
-            <TextField
+              <TextField
                 label="Charitable Contributions (CC)"
                 fullWidth
                 type="number"
@@ -245,7 +278,6 @@ const MaximizeItemizationForm = ({ onCalculate }) => {
                 margin="normal"
                 disabled
               />
-              
               <TextField
                 select
                 label="Form Type"
@@ -258,16 +290,67 @@ const MaximizeItemizationForm = ({ onCalculate }) => {
                 <MenuItem value="1040NR - Schedule E">1040NR - Schedule E</MenuItem>
                 <MenuItem value="1065">1065</MenuItem>
                 <MenuItem value="1120S">1120S</MenuItem>
-                
               </TextField>
-              <TextField
-                label="QBID (Qualified Business Income Deduction)"
-                fullWidth
-                type="number"
-                value={QBID}
-                onChange={(e) => setQbid(e.target.value)}
-                margin="normal"
-              />
+
+              {formType === '1065' && (
+                <TextField
+                  label="% Share if partnership"
+                  fullWidth
+                  type="number"
+                  value={partnershipShare}
+                  onChange={(e) => {
+                    const value = Math.min(100, Math.max(0, parseFloat(e.target.value) || 0));
+                    setPartnershipShare(value.toString());
+                  }}
+                  margin="normal"
+                  InputProps={{
+                    inputProps: { min: 0, max: 100 },
+                    endAdornment: (
+                      <span style={{ marginRight: '8px' }}>%</span>
+                    ),
+                  }}
+                  helperText="Enter your partnership share percentage (0-100%)"
+                />
+              )}
+
+              <Box sx={{ position: 'relative' }}>
+                <TextField
+                  label="QBID (Qualified Business Income Deduction)"
+                  fullWidth
+                  type="number"
+                  value={QBID}
+                  onChange={(e) => setQbid(e.target.value)}
+                  margin="normal"
+                  InputProps={{
+                    endAdornment: (
+                      <Button
+                        onClick={handleQbidCalculateClick}
+                        size="small"
+                        aria-label="calculate QBID"
+                        sx={{
+                          color: '#0858e6',
+                          textTransform: 'none',
+                          fontSize: '0.8rem',
+                          fontWeight: 'normal',
+                          minWidth: 'auto',
+                          ml: 1,
+                          p: '4px 8px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '4px',
+                          backgroundColor: 'transparent',
+                          '&:hover': {
+                            backgroundColor: 'rgba(8, 88, 230, 0.08)',
+                          }
+                        }}
+                      >
+                        <CalculateIcon fontSize="small" />
+                        Calculate
+                      </Button>
+                    ),
+                  }}
+                />
+              </Box>
             </Grid>
           </Grid>
 
@@ -282,6 +365,13 @@ const MaximizeItemizationForm = ({ onCalculate }) => {
           </Box>
         </form>
       </Box>
+
+      {/* Modal para QBID */}
+      <QbidModal 
+        open={qbidModalOpen} 
+        onClose={handleCloseQbidModal} 
+        onSelect={handleQbidSelection}
+      />
     </Container>
   );
 };

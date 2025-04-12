@@ -9,7 +9,9 @@ import {
   Grid,
 } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import CalculateIcon from "@mui/icons-material/Calculate";
 import useCalculations from "../utils/useCalculations";
+import QbidModal from "./QbidModal";
 
 const RealEstateProfessionalForm = ({ onCalculate }) => {
   // Fixed fields
@@ -19,6 +21,8 @@ const RealEstateProfessionalForm = ({ onCalculate }) => {
   const [grossIncome, setGrossIncome] = useState("");
   const [QBID, setQbid] = useState("");
   const [error, setError] = useState(null);
+  const [qbidModalOpen, setQbidModalOpen] = useState(false);
+  const [partnershipShare, setPartnershipShare] = useState("");
 
   // Specific fields for Real Estate Professional
   const [TWH, setTWH] = useState(""); // Total Working Hours Spent in the year
@@ -43,6 +47,41 @@ const RealEstateProfessionalForm = ({ onCalculate }) => {
     const qualifies = (MPC === "Yes") && (TMMP === "Yes");
     setTQRE(qualifies ? "Yes" : "No");
   }, [MPC, TMMP]);
+
+  // Manejadores para QBID Modal
+  const handleQbidCalculateClick = () => {
+    setQbidModalOpen(true);
+  };
+
+  const handleCloseQbidModal = () => {
+    setQbidModalOpen(false);
+  };
+
+  const handleQbidSelection = (results, shouldClose = false) => {
+    console.log("handleQbidSelection received:", results);
+    
+    if (results && results.qbidAmount !== undefined) {
+      const qbidValue = parseFloat(results.qbidAmount);
+      
+      if (!isNaN(qbidValue)) {
+        console.log("Setting QBID value to:", qbidValue);
+        setQbid(qbidValue.toString());
+      } else {
+        console.warn("Invalid QBID value received:", results.qbidAmount);
+      }
+    } else {
+      console.warn("No qbidAmount found in results:", results);
+    }
+    
+    if (shouldClose) {
+      setQbidModalOpen(false);
+    }
+  };
+
+  // Efecto para registrar cambios en el valor QBID
+  useEffect(() => {
+    console.log("QBID state value changed:", QBID);
+  }, [QBID]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -73,6 +112,7 @@ const RealEstateProfessionalForm = ({ onCalculate }) => {
       TMMP,
       TQRE,
       calculationType: "RealEstateProfessional",
+      partnershipShare: formType === '1065' ? (parseFloat(partnershipShare) || 0) : 0,
     });
 
     onCalculate(results);
@@ -193,20 +233,72 @@ const RealEstateProfessionalForm = ({ onCalculate }) => {
                 onChange={(e) => setFormType(e.target.value)}
                 margin="normal"
               >
-                 <MenuItem value="1040 - Schedule C/F">1040 - Schedule C/F</MenuItem>
+                <MenuItem value="1040 - Schedule C/F">1040 - Schedule C/F</MenuItem>
                 <MenuItem value="1040NR - Schedule E">1040NR - Schedule E</MenuItem>
                 <MenuItem value="1065">1065</MenuItem>
                 <MenuItem value="1120S">1120S</MenuItem>
                 <MenuItem value="1120">1120</MenuItem>
               </TextField>
-              <TextField
-                label="QBID (Qualified Business Income Deduction)"
-                fullWidth
-                type="number"
-                value={QBID}
-                onChange={(e) => setQbid(e.target.value)}
-                margin="normal"
-              />
+
+              {formType === '1065' && (
+                <TextField
+                  label="% Share if partnership"
+                  fullWidth
+                  type="number"
+                  value={partnershipShare}
+                  onChange={(e) => {
+                    const value = Math.min(100, Math.max(0, parseFloat(e.target.value) || 0));
+                    setPartnershipShare(value.toString());
+                  }}
+                  margin="normal"
+                  InputProps={{
+                    inputProps: { min: 0, max: 100 },
+                    endAdornment: (
+                      <span style={{ marginRight: '8px' }}>%</span>
+                    ),
+                  }}
+                  helperText="Enter your partnership share percentage (0-100%)"
+                />
+              )}
+
+              <Box sx={{ position: 'relative' }}>
+                <TextField
+                  label="QBID (Qualified Business Income Deduction)"
+                  fullWidth
+                  type="number"
+                  value={QBID}
+                  onChange={(e) => setQbid(e.target.value)}
+                  margin="normal"
+                  InputProps={{
+                    endAdornment: (
+                      <Button
+                        onClick={handleQbidCalculateClick}
+                        size="small"
+                        aria-label="calculate QBID"
+                        sx={{
+                          color: '#0858e6',
+                          textTransform: 'none',
+                          fontSize: '0.8rem',
+                          fontWeight: 'normal',
+                          minWidth: 'auto',
+                          ml: 1,
+                          p: '4px 8px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '4px',
+                          backgroundColor: 'transparent',
+                          '&:hover': {
+                            backgroundColor: 'rgba(8, 88, 230, 0.08)',
+                          }
+                        }}
+                      >
+                        <CalculateIcon fontSize="small" />
+                        Calculate
+                      </Button>
+                    ),
+                  }}
+                />
+              </Box>
             </Grid>
           </Grid>
 
@@ -221,6 +313,12 @@ const RealEstateProfessionalForm = ({ onCalculate }) => {
           </Box>
         </form>
       </Box>
+
+      <QbidModal 
+        open={qbidModalOpen} 
+        onClose={handleCloseQbidModal} 
+        onSelect={handleQbidSelection}
+      />
     </Container>
   );
 };

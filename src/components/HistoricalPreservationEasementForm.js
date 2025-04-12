@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   TextField,
   Button,
@@ -9,7 +9,9 @@ import {
   Grid,
 } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import CalculateIcon from '@mui/icons-material/Calculate';
 import useCalculations from "../utils/useCalculations";
+import QbidModal from './QbidModal';
 
 const HistoricalPreservationEasementForm = ({ onCalculate }) => {
   // Campos fijos
@@ -18,7 +20,9 @@ const HistoricalPreservationEasementForm = ({ onCalculate }) => {
   const [formType, setFormType] = useState("1040 - Schedule C/F");
   const [grossIncome, setGrossIncome] = useState("");
   const [QBID, setQbid] = useState("");
+  const [partnershipShare, setPartnershipShare] = useState("");
   const [error, setError] = useState(null);
+  const [qbidModalOpen, setQbidModalOpen] = useState(false);
   const [dagi, setDagi] = useState('');
 
   // Campos específicos para Historical Preservation Easement
@@ -28,12 +32,41 @@ const HistoricalPreservationEasementForm = ({ onCalculate }) => {
   const [adjustedGrossIncome, setAdjustedGrossIncome] = useState("");
   const [charitableContribution, setCharitableContribution] = useState(0);
   const [charitableContributionCarriedForward, setCharitableContributionCarriedForward] = useState(0);
- 
 
   const { performCalculations } = useCalculations();
 
+  const handleQbidCalculateClick = () => {
+    setQbidModalOpen(true);
+  };
 
+  const handleCloseQbidModal = () => {
+    setQbidModalOpen(false);
+  };
 
+  const handleQbidSelection = (results, shouldClose = false) => {
+    console.log("handleQbidSelection received:", results);
+    
+    if (results && results.qbidAmount !== undefined) {
+      const qbidValue = parseFloat(results.qbidAmount);
+      
+      if (!isNaN(qbidValue)) {
+        console.log("Setting QBID value to:", qbidValue);
+        setQbid(qbidValue.toString());
+      } else {
+        console.warn("Invalid QBID value received:", results.qbidAmount);
+      }
+    } else {
+      console.warn("No qbidAmount found in results:", results);
+    }
+    
+    if (shouldClose) {
+      setQbidModalOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    console.log("QBID state value changed:", QBID);
+  }, [QBID]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -79,20 +112,29 @@ const HistoricalPreservationEasementForm = ({ onCalculate }) => {
     setCharitableContributionCarriedForward(CCCF);
 
     // Calcular Standard Deduction (SD) basado en el estado civil
-    const SD = filingStatus === "Single" ? 12950 : filingStatus === "MFJ" ? 25900 : filingStatus === "MFS" ? 12950 : filingStatus === "HH" ? 19400 : 25900;
+    const SD = filingStatus === "Single" ? 12950 : 
+               filingStatus === "MFJ" ? 25900 : 
+               filingStatus === "MFS" ? 12950 : 
+               filingStatus === "HH" ? 19400 : 25900;
+    
     const newDagi = CC;
-    setDagi(newDagi)
+    setDagi(newDagi);
+
+    const qbidValue = QBID ? parseFloat(QBID) : 0;
+    console.log("Using QBID value for calculation:", qbidValue);
+
     // Pasar resultados a la función onCalculate
     const results = performCalculations({
       filingStatus,
       grossIncome: parseFloat(grossIncome),
       partnerType,
       formType,
-      QBID: parseFloat(QBID),
-      propertyValuationBeforeEasement: parseFloat(propertyValuationBeforeEasement),
-      propertyValuationAfterEasement: parseFloat(propertyValuationAfterEasement),
+      partnershipShare: partnershipShare ? parseFloat(partnershipShare) : 0,
+      QBID: qbidValue,
+      propertyValuationBeforeEasement: PVBE,
+      propertyValuationAfterEasement: PVAE,
       valuationReduction: VR,
-      adjustedGrossIncome: parseFloat(adjustedGrossIncome),
+      adjustedGrossIncome: AGI,
       charitableContribution: CC,
       charitableContributionCarriedForward: CCCF,
       historicalDeduction: SD,
@@ -165,7 +207,7 @@ const HistoricalPreservationEasementForm = ({ onCalculate }) => {
                 <MenuItem value="Active">Active</MenuItem>
                 <MenuItem value="Passive">Passive</MenuItem>
               </TextField>
-               <TextField
+              <TextField
                 label="Deduction To AGI"
                 fullWidth
                 type="number"
@@ -182,6 +224,9 @@ const HistoricalPreservationEasementForm = ({ onCalculate }) => {
                 onChange={(e) => setPropertyValuationBeforeEasement(e.target.value)}
                 margin="normal"
               />
+            </Grid>
+
+            <Grid item xs={12} md={6}>
               <TextField
                 label="Property Valuation After Easement (PVAE)"
                 fullWidth
@@ -190,11 +235,7 @@ const HistoricalPreservationEasementForm = ({ onCalculate }) => {
                 onChange={(e) => setPropertyValuationAfterEasement(e.target.value)}
                 margin="normal"
               />
-              
-            </Grid>
-
-            <Grid item xs={12} md={6}>
-            <TextField
+              <TextField
                 label="Adjusted Gross Income (AGI)"
                 fullWidth
                 type="number"
@@ -226,7 +267,6 @@ const HistoricalPreservationEasementForm = ({ onCalculate }) => {
                 margin="normal"
                 disabled
               />
-             
               <TextField
                 select
                 label="Form Type"
@@ -239,16 +279,67 @@ const HistoricalPreservationEasementForm = ({ onCalculate }) => {
                 <MenuItem value="1040NR - Schedule E">1040NR - Schedule E</MenuItem>
                 <MenuItem value="1065">1065</MenuItem>
                 <MenuItem value="1120S">1120S</MenuItem>
-              
               </TextField>
-              <TextField
-                label="QBID (Qualified Business Income Deduction)"
-                fullWidth
-                type="number"
-                value={QBID}
-                onChange={(e) => setQbid(e.target.value)}
-                margin="normal"
-              />
+
+              {formType === '1065' && (
+                <TextField
+                  label="% Share if partnership"
+                  fullWidth
+                  type="number"
+                  value={partnershipShare}
+                  onChange={(e) => {
+                    const value = Math.min(100, Math.max(0, parseFloat(e.target.value) || 0));
+                    setPartnershipShare(value.toString());
+                  }}
+                  margin="normal"
+                  InputProps={{
+                    inputProps: { min: 0, max: 100 },
+                    endAdornment: (
+                      <span style={{ marginRight: '8px' }}>%</span>
+                    ),
+                  }}
+                  helperText="Enter your partnership share percentage (0-100%)"
+                />
+              )}
+
+              <Box sx={{ position: 'relative' }}>
+                <TextField
+                  label="QBID (Qualified Business Income Deduction)"
+                  fullWidth
+                  type="number"
+                  value={QBID}
+                  onChange={(e) => setQbid(e.target.value)}
+                  margin="normal"
+                  InputProps={{
+                    endAdornment: (
+                      <Button
+                        onClick={handleQbidCalculateClick}
+                        size="small"
+                        aria-label="calculate QBID"
+                        sx={{
+                          color: '#0858e6',
+                          textTransform: 'none',
+                          fontSize: '0.8rem',
+                          fontWeight: 'normal',
+                          minWidth: 'auto',
+                          ml: 1,
+                          p: '4px 8px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '4px',
+                          backgroundColor: 'transparent',
+                          '&:hover': {
+                            backgroundColor: 'rgba(8, 88, 230, 0.08)',
+                          }
+                        }}
+                      >
+                        <CalculateIcon fontSize="small" />
+                        Calculate
+                      </Button>
+                    ),
+                  }}
+                />
+              </Box>
             </Grid>
           </Grid>
 
@@ -263,6 +354,13 @@ const HistoricalPreservationEasementForm = ({ onCalculate }) => {
           </Box>
         </form>
       </Box>
+
+      {/* Modal para QBID */}
+      <QbidModal 
+        open={qbidModalOpen} 
+        onClose={handleCloseQbidModal} 
+        onSelect={handleQbidSelection}
+      />
     </Container>
   );
 };
