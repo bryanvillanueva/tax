@@ -136,6 +136,7 @@ const Dashboard = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  
    
   // Verificar si hay un token activo al cargar el componente
   useEffect(() => {
@@ -170,44 +171,48 @@ const Dashboard = () => {
     setResults(null);
   }, [formId]);
 
-  // Detectar scroll para mostrar la barra de búsqueda en el AppBar en FormSelector
-  useEffect(() => {
-    // Solo activar este efecto si estamos en la página de FormSelector
-    if (!formId) {
-      // Siempre mostrar la barra de búsqueda para facilitar la búsqueda por fixedIndex
-      setShowSearch(true);
+// Detectar scroll para mostrar la barra de búsqueda en el AppBar en FormSelector
+useEffect(() => {
+  // Solo activar este efecto si estamos en la página de FormSelector
+  if (!formId) {
+    // Estado inicial: buscador oculto
+    setShowSearch(false);
+    
+    // Esta variable evita el closure del estado showSearch
+    let currentShowSearch = false;
+
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY || document.documentElement.scrollTop;
+      const shouldShowSearch = scrollPosition > 300; // Mostrar después de 200px de scroll
       
-      const handleScroll = () => {
-        const scrollPosition = window.scrollY || document.documentElement.scrollTop;
-        const shouldShowSearch = scrollPosition > 200; // Mostrar después de 200px de scroll
-        
-        if (shouldShowSearch !== showSearch && !shouldShowSearch) {
-          // Solo ocultar la barra cuando se hace scroll hacia arriba
-          setShowSearch(shouldShowSearch);
-        }
-      };
-      
-      // Uso de requestAnimationFrame para optimizar el rendimiento
-      let ticking = false;
-      const scrollListener = () => {
-        if (!ticking) {
-          window.requestAnimationFrame(() => {
-            handleScroll();
-            ticking = false;
-          });
-          ticking = true;
-        }
-      };
-      
-      window.addEventListener('scroll', scrollListener, { passive: true });
-      return () => {
-        window.removeEventListener('scroll', scrollListener);
-      };
-    } else {
-      // Si no estamos en FormSelector, asegurarse de que showSearch es false
-      setShowSearch(false);
-    }
-  }, [formId, showSearch]);
+      // Solo actualizar si hay cambio
+      if (shouldShowSearch !== currentShowSearch) {
+        currentShowSearch = shouldShowSearch;
+        setShowSearch(shouldShowSearch);
+      }
+    };
+
+    // Uso de requestAnimationFrame para optimizar el rendimiento
+    let ticking = false;
+    const scrollListener = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          handleScroll();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+    
+    window.addEventListener('scroll', scrollListener, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', scrollListener);
+    };
+  } else {
+    // Si no estamos en FormSelector, asegurarse de que showSearch es false
+    setShowSearch(false);
+  }
+}, [formId]); // Eliminamos showSearch de las dependencias
 
   // Pasar el searchTerm al FormSelector cuando se renderiza
   useEffect(() => {
