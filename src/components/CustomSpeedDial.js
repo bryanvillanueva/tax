@@ -92,7 +92,7 @@ const CustomSpeedDial = () => {
     {
       icon: <WhatsappIcon sx={{ color: '#10b981' }} />,
       name: 'Support',
-      action: () => window.open('https://w.app/nVaYD9', '_blank'),
+      action: () => window.open('https://api.whatsapp.com/message/CXXSJOW4BXFOK1?autoload=1&app_absent=0', '_blank'),
     },
   ], [navigate]);
 
