@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Drawer,
@@ -15,7 +15,8 @@ import {
   useMediaQuery,
   Tooltip,
   Badge,
-  CircularProgress
+  CircularProgress,
+  Collapse
 } from "@mui/material";
 
 // Iconos
@@ -27,6 +28,10 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import HelpIcon from "@mui/icons-material/Help";
+import ChatIcon from "@mui/icons-material/Chat";
+import BarChartIcon from "@mui/icons-material/BarChart";
+import ExpandLess from "@mui/icons-material/ExpandLess";
+import ExpandMore from "@mui/icons-material/ExpandMore";
 import { ReactComponent as SharkLogo } from '../assets/icon.svg';
 
 import { useNavigate } from "react-router-dom";
@@ -35,6 +40,7 @@ const CustomDrawer = ({ drawerOpen, setDrawerOpen, userData }) => {
   const navigate = useNavigate();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const [adminMenuOpen, setAdminMenuOpen] = useState(false);
 
   const handleLogout = () => {
     localStorage.removeItem("authToken");
@@ -46,13 +52,18 @@ const CustomDrawer = ({ drawerOpen, setDrawerOpen, userData }) => {
     setDrawerOpen(false);
   };
 
+  // Toggle admin submenu
+  const handleAdminMenuToggle = () => {
+    setAdminMenuOpen(!adminMenuOpen);
+  };
+
   // Lista de menús con sus íconos correspondientes
   const menuItems = [
     { label: "Profile", icon: <PersonIcon />, path: "/profile" },
     { label: "Dashboard", icon: <DashboardIcon />, path: "/form-selector" },
     { label: "Favorites", icon: <FavoriteIcon />, path: "/favorites" },
     { label: "Shop", icon: <ShoppingCartIcon />, path: "https://store.cmltaxplanning.com", external: true },
-    { label: "Support", icon: <HelpIcon />, path: "/support" },
+    { label: "Support", icon: <HelpIcon />, path: "https://wa.me/message/CXXSJOW4BXFOK1", external: true },
   ];
 
   // Verificar si el usuario tiene rol de admin o developer
@@ -235,33 +246,93 @@ const CustomDrawer = ({ drawerOpen, setDrawerOpen, userData }) => {
 
           {/* Admin Panel (visible solo para admin/developer) */}
           {isAdmin && (
-            <ListItem
-              button
-              onClick={() => {
-                navigate("/usersModule");
-                handleClose();
-              }}
-              sx={{
-                borderRadius: '8px',
-                mb: 0.5,
-                cursor: 'pointer',
-                backgroundColor: 'rgba(211, 47, 47, 0.08)',
-                '&:hover': {
-                  backgroundColor: 'rgba(211, 47, 47, 0.15)',
-                },
-              }}
-            >
-              <ListItemIcon sx={{ minWidth: 40, color: '#d32f2f' }}>
-                <AdminPanelSettingsIcon />
-              </ListItemIcon>
-              <ListItemText 
-                primary="Admin Panel" 
-                primaryTypographyProps={{
-                  fontFamily: 'Montserrat, sans-serif',
-                  fontWeight: 500,
+            <>
+              <ListItem
+                button
+                onClick={handleAdminMenuToggle}
+                sx={{
+                  borderRadius: '8px',
+                  mb: 0.5,
+                  cursor: 'pointer',
+                  backgroundColor: 'rgba(211, 47, 47, 0.08)',
+                  '&:hover': {
+                    backgroundColor: 'rgba(211, 47, 47, 0.15)',
+                  },
                 }}
-              />
-            </ListItem>
+              >
+                <ListItemIcon sx={{ minWidth: 40, color: '#d32f2f' }}>
+                  <AdminPanelSettingsIcon />
+                </ListItemIcon>
+                <ListItemText 
+                  primary="Admin" 
+                  primaryTypographyProps={{
+                    fontFamily: 'Montserrat, sans-serif',
+                    fontWeight: 500,
+                  }}
+                />
+                {adminMenuOpen ? <ExpandLess /> : <ExpandMore />}
+              </ListItem>
+              
+              <Collapse in={adminMenuOpen} timeout="auto" unmountOnExit>
+                <List component="div" disablePadding>
+                  <ListItem
+                    button
+                    onClick={() => {
+                      navigate("/usersModule");
+                      handleClose();
+                    }}
+                    sx={{
+                      pl: 4,
+                      borderRadius: '8px',
+                      mb: 0.5,
+                      cursor: 'pointer',
+                      '&:hover': {
+                        backgroundColor: 'rgba(211, 47, 47, 0.08)',
+                      },
+                    }}
+                  >
+                    <ListItemIcon sx={{ minWidth: 40, color: '#d32f2f' }}>
+                      <BarChartIcon />
+                    </ListItemIcon>
+                    <ListItemText 
+                      primary="Statistics" 
+                      primaryTypographyProps={{
+                        fontFamily: 'Montserrat, sans-serif',
+                        fontWeight: 500,
+                      }}
+                    />
+                  </ListItem>
+                  
+                  <ListItem
+                    button
+                    onClick={() => {
+                      navigate("/chat");
+                      handleClose();
+                    }}
+                    sx={{
+                      pl: 4,
+                      borderRadius: '8px',
+                      mb: 0.5,
+                      cursor: 'pointer',
+                      '&:hover': {
+                        backgroundColor: 'rgba(211, 47, 47, 0.08)',
+                      },
+                    }}
+                  >
+                    <ListItemIcon sx={{ minWidth: 40, color: '#d32f2f' }}>
+                      <ChatIcon />
+                    </ListItemIcon>
+                    <ListItemText 
+                      primary="Chat" 
+                      primaryTypographyProps={{
+                        fontFamily: 'Montserrat, sans-serif',
+                        fontWeight: 500,
+                      }}
+                    />
+                  </ListItem>
+                </List>
+              </Collapse>
+            </>
           )}
         </List>
 

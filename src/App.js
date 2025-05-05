@@ -6,6 +6,7 @@ import ChangePassword from './components/ChangePassword';
 import Profile from './components/profile';
 import Favorites from './components/Favorites';
 import UsersModule from './components/UsersModule';
+import Chat from './components/Chat';
 
 const App = () => {
   return (
@@ -17,6 +18,7 @@ const App = () => {
       <Route path="/profile" element={<Profile />} />
       <Route path="/favorites" element={<Favorites />} />
       <Route path="/usersModule" element={<UsersModule />} />
+      <Route path="/chat" element={<Chat />} />
     </Routes>
   );
 };
