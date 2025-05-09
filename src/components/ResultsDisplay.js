@@ -372,12 +372,12 @@ const ResultsDisplay = ({ results, formTitle, calculationType }) => {
                       </TableCell>
                     </TableRow>
                     
-                    <TableRow sx={{ backgroundColor: 'white' }}>
+                    {/* <TableRow sx={{ backgroundColor: 'white' }}>
                       <TableCell sx={{ fontWeight: 500, color: '#334155' }}>Your Share of Tax Due {results.formType === '1065' ? `(${parseFloat(results.partnershipShare || 0)}%)` : ''}</TableCell>
                       <TableCell sx={{ fontWeight: 600, color: results.formType === '1065' ? '#0858e6' : '#334155' }}>
                         {results.formType === '1065' ? formatCurrency((parseFloat(results.totalTaxDue || 0) * parseFloat(results.partnershipShare || 0)) / 100) : 'Not Applicable'}
                       </TableCell>
-                    </TableRow>
+                    </TableRow> */}
                     
                     <TableRow>
                       <TableCell colSpan={2} sx={{ py: 0.5, borderBottom: 'none' }}></TableCell>

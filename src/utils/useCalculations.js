@@ -194,37 +194,37 @@ const useCalculations = () => {
     // Calcular Net Income según el tipo de cálculo
     switch (calculationType) {
       case 'augusta':
-        netIncome = calculateNetIncomeAugusta(grossIncome, averageMonthlyRent, daysOfRent);
+        netIncome = calculateNetIncomeAugusta(grossIncome, averageMonthlyRent, daysOfRent, partnershipShare);
         break;
       case 'prepaid':
-        netIncome = calculateNetIncomePrepaid(grossIncome, totalExpenses, totalNonPrepaidExpenses);
+        netIncome = calculateNetIncomePrepaid(grossIncome, totalExpenses, totalNonPrepaidExpenses, partnershipShare);
         break;
       case 'hireKids':
-        netIncome = calculateNetIncomeKids(grossIncome, hireKidsDeduction);
+        netIncome = calculateNetIncomeKids(grossIncome, hireKidsDeduction, partnershipShare);
         break;
       case 'hireFamily':
-        netIncome = calculateNetIncomeFamily(grossIncome, hireFamilyDeduction);
+        netIncome = calculateNetIncomeFamily(grossIncome, hireFamilyDeduction, partnershipShare);
         break;
       case 'qualifiedOpportunityFunds':
-        netIncome = calculateNetIncomeQOF(grossIncome, reductionInNetIncome);
+        netIncome = calculateNetIncomeQOF(grossIncome, reductionInNetIncome, partnershipShare);
         break;
       case 'healthSavings':
-        netIncome = calculateNetIncomeHSA(grossIncome, hsaContribution);
+        netIncome = calculateNetIncomeHSA(grossIncome, hsaContribution, partnershipShare);
         break;
       case 'lifetimeLearningCredit':
-        netIncome = calcualteNetIncomeLifeTimeLearningCredit(grossIncome);
+        netIncome = calcualteNetIncomeLifeTimeLearningCredit(grossIncome, partnershipShare);
         break;
       case 'charitableRemainderTrust':
-        netIncome = calculateNetIncomeCRT(grossIncome);
+        netIncome = calculateNetIncomeCRT(grossIncome, partnershipShare);
         break;
       case 'reimbursment':
-        netIncome = calculateReimbursment(grossIncome, tve, pbuv);
+        netIncome = calculateReimbursment(grossIncome, tve, pbuv, partnershipShare);
         break;
       case 'amendedPriorYears':
-        netIncome = calculateNetIncomeAmanda(grossIncome);
+        netIncome = calculateNetIncomeAmanda(grossIncome, partnershipShare, partnershipShare);
         break;
       case 'exemptionQualifiedSmall':
-        netIncome = calculateNetIncomeExemptionQualifiedSmall(grossIncome);
+        netIncome = calculateNetIncomeExemptionQualifiedSmall(grossIncome, partnershipShare);
         break;
       case 'costSegregation':
         netIncome = calculateNetIncomeCostSegregation(grossIncome, deduction);
@@ -494,9 +494,9 @@ const useCalculations = () => {
          break;
 
 
-      case 'standard':
-          netIncome = calculateNetIncome(grossIncome, deduction179);
-        break;
+         case 'standard':
+          netIncome = calculateNetIncome(grossIncome, deduction179, partnershipShare);
+          break;
     }
     console.log(`Selected Form Type: ${formType}`);
 
@@ -521,7 +521,16 @@ const useCalculations = () => {
       const taxableIncome = calculateTaxableIncome(agi, filingStatus, dagi, dagi2, formType ) - QBID;
       const { marginalRate, level } = getMarginalTaxRateAndLevel(filingStatus, taxableIncome);
       const taxDue = calculateTaxDue(filingStatus, taxableIncome);
-      const taxCredits = taxCreditsResults || 0;
+      let tempTaxCredits = taxCreditsResults * partnershipShare / 100;
+
+      const taxCredits = tempTaxCredits > 0
+      ? tempTaxCredits
+      : (taxCreditsResults || 0);
+      
+      
+      //const taxCredits = taxCreditsResults || 0;
+    
+
       const additionalMedicare = calculateAdditionalMedicare(filingStatus, netIncome);
       const selfEmploymentRate = partnerType === 'Active' ? getSelfEmploymentRate() : 
       formType === '1040 - Schedule C/F' ? getSelfEmploymentRate() : 0;
