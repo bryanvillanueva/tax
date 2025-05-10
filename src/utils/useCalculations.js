@@ -494,12 +494,11 @@ switch (calculationType) {
     netIncome = grossIncome; // En este caso, usaremos grossIncome directamente
     break;
 
-
-
-         case 'standard':
+          case 'standard':
           netIncome = calculateNetIncome(grossIncome, deduction179, partnershipShare);
           break;
     }
+    
     console.log(`Selected Form Type: ${formType}`);
 
      //QBID 1040NR

@@ -209,7 +209,7 @@ const FederalSolarInvestmentTaxCreditForm = ({ onCalculate }) => {
                 <MenuItem value="1120S">1120S</MenuItem>
                 <MenuItem value="1120">1120</MenuItem>
               </TextField>
-              {formType === '1065' && (
+              {(formType === '1065' || formType === '1120S') && (
                 <TextField
                   label="% Share if partnership"
                   fullWidth

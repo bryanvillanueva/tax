@@ -22,7 +22,7 @@ const ChoiceOfEntitySCorpForm = ({ onCalculate }) => {
   const [QBID, setQbid] = useState("");
   const [error, setError] = useState(null);
   const [qbidModalOpen, setQbidModalOpen] = useState(false);
-
+  const [partnershipShare, setPartnershipShare] = useState('');
   // S Corp specific fields
   const [NI, setNI] = useState(""); // Net Income
   const [AERC, setAERC] = useState(""); // Additional Expense - Reasonable Compensation
@@ -141,6 +141,7 @@ const ChoiceOfEntitySCorpForm = ({ onCalculate }) => {
       grossIncome: parseFloat(grossIncome),
       partnerType,
       formType,
+      partnershipShare: partnershipShare ? parseFloat(partnershipShare) : 0,
       QBID: parseFloat(QBID) || 0,
       NI: parseFloat(NI),
       AERC: parseFloat(AERC),
@@ -313,6 +314,28 @@ const ChoiceOfEntitySCorpForm = ({ onCalculate }) => {
               >
                 <MenuItem value="1120S">1120S</MenuItem>
               </TextField>
+
+              {(formType === '1065' || formType === '1120S') && (
+                <TextField
+                  label="% Share if partnership"
+                  fullWidth
+                  type="number"
+                  value={partnershipShare}
+                  onChange={(e) => {
+                    // Limitar el valor entre 0 y 100
+                    const value = Math.min(100, Math.max(0, parseFloat(e.target.value) || 0));
+                    setPartnershipShare(value.toString());
+                  }}
+                  margin="normal"
+                  InputProps={{
+                    inputProps: { min: 0, max: 100 },
+                    endAdornment: (
+                      <span style={{ marginRight: '8px' }}>%</span>
+                    ),
+                  }}
+                  helperText="Enter your partnership share percentage (0-100%)"
+                />
+              )}
 
               <Box sx={{ position: 'relative' }}>
                 <TextField

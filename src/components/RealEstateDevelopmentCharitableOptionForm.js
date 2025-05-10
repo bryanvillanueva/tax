@@ -276,7 +276,7 @@ const RealEstateDevelopmentCharitableOptionForm = ({ onCalculate }) => {
                
               </TextField>
 
-              {formType === '1065' && (
+              {(formType === '1065' || formType === '1120S') && (
                 <TextField
                   label="% Share if partnership"
                   fullWidth

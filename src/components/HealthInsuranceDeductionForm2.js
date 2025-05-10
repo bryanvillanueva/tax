@@ -178,7 +178,7 @@ const HealthInsuranceDeductionForm2 = ({ onCalculate }) => {
                 <MenuItem value="1120s">1120s</MenuItem>
               </TextField>
 
-              {formType === '1065' && (
+              {(formType === '1065' || formType === '1120S') && (
                 <TextField
                   label="% Share if partnership"
                   fullWidth

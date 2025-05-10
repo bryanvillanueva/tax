@@ -277,6 +277,7 @@ const COVULForm = ({ onCalculate }) => {
                 
                 <MenuItem value="1120">1120</MenuItem>
               </TextField>
+              
               <Box sx={{ position: 'relative' }}>
                 <TextField
                   label="QBID (Qualified Business Income Deduction)"
