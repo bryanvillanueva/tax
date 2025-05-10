@@ -184,8 +184,30 @@ const UnreimbursedPartnershipExpensesForm = ({ onCalculate }) => {
                 onChange={(e) => setFormType(e.target.value)}
                 margin="normal"
               >
-                <MenuItem value="1065">Partnership / MMLLC</MenuItem>
+                <MenuItem value="1065">1065</MenuItem>
               </TextField>
+
+              {(formType === '1065' || formType === '1120S') && (
+                <TextField
+                  label="% Share if partnership"
+                  fullWidth
+                  type="number"
+                  value={partnershipShare}
+                  onChange={(e) => {
+                    // Limitar el valor entre 0 y 100
+                    const value = Math.min(100, Math.max(0, parseFloat(e.target.value) || 0));
+                    setPartnershipShare(value.toString());
+                  }}
+                  margin="normal"
+                  InputProps={{
+                    inputProps: { min: 0, max: 100 },
+                    endAdornment: (
+                      <span style={{ marginRight: '8px' }}>%</span>
+                    ),
+                  }}
+                  helperText="Enter your partnership share percentage (0-100%)"
+                />
+              )}
 
               <Box sx={{ position: 'relative' }}>
                 <TextField
