@@ -13,6 +13,7 @@ const UnreimbursedPartnershipExpensesForm = ({ onCalculate }) => {
   const [unreimbursedExpenses, setUnreimbursedExpenses] = useState('');
   const [nonDeductibleAmount, setNonDeductibleAmount] = useState('');
   const [totalReimbursement, setTotalReimbursement] = useState('');
+  const [partnershipShare, setPartnershipShare] = useState('');
   const [QBID, setQbid] = useState('');
   const [qbidModalOpen, setQbidModalOpen] = useState(false);
   const [error, setError] = useState(null);
@@ -72,6 +73,7 @@ const UnreimbursedPartnershipExpensesForm = ({ onCalculate }) => {
       unreimbursedExpenses: parseFloat(unreimbursedExpenses),
       nonDeductibleAmount: parseFloat(nonDeductibleAmount),
       totalReimbursement,
+      partnershipShare: partnershipShare ? parseFloat(partnershipShare) : 0,
       reductionUnreimbursed,
       calculationType: 'unreimbursedExpenses',
       QBID: parseFloat(QBID),
