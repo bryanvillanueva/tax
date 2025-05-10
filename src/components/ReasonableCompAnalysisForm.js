@@ -128,6 +128,9 @@ const ReasonableCompAnalysisForm = ({ onCalculate }) => {
 
     setError(null);
 
+    const qbidValue = QBID ? parseFloat(QBID) : 0;
+    console.log("Using QBID value for calculation:", qbidValue);
+
     // Pass results to onCalculate
     const results = performCalculations({
       filingStatus,
@@ -300,6 +303,7 @@ const ReasonableCompAnalysisForm = ({ onCalculate }) => {
               >
               <MenuItem value="1120S">1120S</MenuItem>
               </TextField>
+
               {(formType === '1065' || formType === '1120S') && (
                 <TextField
                   label="% Share if partnership"
@@ -322,14 +326,46 @@ const ReasonableCompAnalysisForm = ({ onCalculate }) => {
                 />
               )}
 
-              <TextField
-                label="QBID (Qualified Business Income Deduction)"
-                fullWidth
-                type="number"
-                value={QBID}
-                onChange={(e) => setQbid(e.target.value)}
-                margin="normal"
-              />
+              <Box sx={{ position: 'relative' }}>
+                <TextField
+                  label="QBID (Qualified Business Income Deduction)"
+                  fullWidth
+                  type="number"
+                  value={QBID}
+                  onChange={(e) => setQbid(e.target.value)}
+                  margin="normal"
+                  InputProps={{
+                    endAdornment: (
+                      <Button
+                        onClick={handleQbidCalculateClick}
+                        size="small"
+                        aria-label="calculate QBID"
+                        sx={{
+                          color: '#0858e6',
+                          textTransform: 'none',
+                          fontSize: '0.8rem',
+                          fontWeight: 'normal',
+                          minWidth: 'auto',
+                          ml: 1,
+                          p: '4px 8px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '4px',
+                          backgroundColor: 'transparent',
+                          '&:hover': {
+                            backgroundColor: 'rgba(8, 88, 230, 0.08)',
+                          }
+                        }}
+                      >
+                        <CalculateIcon fontSize="small" />
+                        Calculate
+                      </Button>
+                    ),
+                  }}
+                />
+              </Box>
+
+
             </Grid>
           </Grid>
 
@@ -344,6 +380,11 @@ const ReasonableCompAnalysisForm = ({ onCalculate }) => {
           </Box>
         </form>
       </Box>
+      <QbidModal 
+        open={qbidModalOpen} 
+        onClose={handleCloseQbidModal} 
+        onSelect={handleQbidSelection}
+      />
     </Container>
   );
 };
