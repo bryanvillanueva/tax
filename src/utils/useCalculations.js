@@ -192,306 +192,308 @@ const useCalculations = () => {
     
 
     // Calcular Net Income según el tipo de cálculo
-    switch (calculationType) {
-      case 'augusta':
-        netIncome = calculateNetIncomeAugusta(grossIncome, averageMonthlyRent, daysOfRent, partnershipShare);
-        break;
-      case 'prepaid':
-        netIncome = calculateNetIncomePrepaid(grossIncome, totalExpenses, totalNonPrepaidExpenses, partnershipShare);
-        break;
-      case 'hireKids':
-        netIncome = calculateNetIncomeKids(grossIncome, hireKidsDeduction, partnershipShare);
-        break;
-      case 'hireFamily':
-        netIncome = calculateNetIncomeFamily(grossIncome, hireFamilyDeduction, partnershipShare);
-        break;
-      case 'qualifiedOpportunityFunds':
-        netIncome = calculateNetIncomeQOF(grossIncome, reductionInNetIncome, partnershipShare);
-        break;
-      case 'healthSavings':
-        netIncome = calculateNetIncomeHSA(grossIncome, hsaContribution, partnershipShare);
-        break;
-      case 'lifetimeLearningCredit':
-        netIncome = calcualteNetIncomeLifeTimeLearningCredit(grossIncome, partnershipShare);
-        break;
-      case 'charitableRemainderTrust':
-        netIncome = calculateNetIncomeCRT(grossIncome, partnershipShare);
-        break;
-      case 'reimbursment':
-        netIncome = calculateReimbursment(grossIncome, tve, pbuv, partnershipShare);
-        break;
-      case 'amendedPriorYears':
-        netIncome = calculateNetIncomeAmanda(grossIncome, partnershipShare, partnershipShare);
-        break;
-      case 'exemptionQualifiedSmall':
-        netIncome = calculateNetIncomeExemptionQualifiedSmall(grossIncome, partnershipShare);
-        break;
-      case 'costSegregation':
-        netIncome = calculateNetIncomeCostSegregation(grossIncome, deduction);
-        break;
-      case 'savingsPlan':
-        netIncome = calculateNetIncomeSavingsPlan(grossIncome);
-        break;
-      case 'educationAssistance':
-        netIncome = calculateNetIncomeEducationAssistance(grossIncome, totalEducationalAssistance);
-        break;
-      case 'accountablePlan':
-          netIncome = calculateNetIncomeAccountableplan(grossIncome, totalReimbursableExpenses);
-        break;
-      case 'adoptionAndIra':
-          netIncome = calculateNetIncomeAdoptionPlan(grossIncome);
-        break;
-      case 'educationTaxCredit':
-        netIncome = calculateNetIncomeEducationTaxCredit(grossIncome);
-        break;
-      case 'healthReimbursement':
-        netIncome = calculateNetIncomeHealthReimbursement(grossIncome, totalBenefits);
-        break;
-      case 'incomeShifting':
-        netIncome = calculateNetIncomeIncomeShifting(grossIncome, totalIncomeShifted);
-        break;
-      case 'lifeInsurance':
-        netIncome = calculateNetIncomeLifeInsurance(grossIncome);
-        break;
-      case 'maximizeMiscellaneousExpenses':
-        netIncome = calculateNetIncomeMaximizeMiscellaneousExpenses(grossIncome, totalNetDeductionMaxi);
-        break;
-      case 'mealsDeduction':
-        netIncome = calculateNetIncomeMealsDeduction(grossIncome, deductionMeals);
-        break;
-      case 'lossesDeduction':
-        netIncome = calculateNetIncomeOperatingLosses(grossIncome, totalNOL);
-        break;
-      case 'solo401k':
-        netIncome = calcularNetIncomeSolo401k(grossIncome, deductionSolo401k);
-        break;
-      case 'researchAndDevelopmentCredit':
-        netIncome = calculateNetIncomeResearchAndDevelopmentCredit(grossIncome);
-        break;
-      case 'rothIRA':
-        netIncome = calculateNetIncomeRothIRA(grossIncome);
-        break;
-      case 'sepContributions':
-        netIncome = calculateNetIncomeHealthInsuranceDeduction(grossIncome, totalContribution, );
-        break;
-      case 'healthInsuranceDeduction2':
-          netIncome = calculateNetIncomeHealthInsuranceDeduction2(grossIncome, incomeReduction );
-        break;
-      case 'simpleIRA':
-          netIncome = calculateNetIncomeSimpleIra(grossIncome, totalEmployerContribution );
-        break;
-      case 'startupCostOptimization':
-          netIncome = calculateNetIncomeStartupCost(grossIncome, deductionStartup );
-        break;
-      case 'stateTaxSavings':
-          netIncome = calculateNetIncomeStateTaxSavings(grossIncome);
-        break;
-      case 'traditionalIRA':
-          netIncome = calculateNetIncomeTraditionalIRA(grossIncome, totalDeductionTraditionalIRA);
-        break;
-      case 'unreimbursedExpenses':
-          netIncome = calculateNetIncomeUnreimbursedExpenses(grossIncome, reductionUnreimbursed);
-        break;
-      case 'charitableDonationSavings':
-          netIncome = calculateNetIncomeCharitableDonation(grossIncome);
-        break;
-      case 'influencerOptimization':
-          netIncome = calculateNetIncomeInfluencer(grossIncome, deductionInfluencer);
-        break;
-      case 'CancellationByInsolvency':
-          netIncome = calculateNetIncomeCancellationByInsolvency(grossIncome, deductionCancellation);
-        break;
-      case 'ActiveRealEstate':
-          netIncome = calculateNetIncomeActiveRealEstate(grossIncome);
-        break;
-      case 'BackdoorRoth':
-          netIncome = calculateNetIncomeBackdoorRoth(grossIncome);
-        break;
-      case 'deferredCapitalGain':
-          netIncome = calculateNetIncomeCapital(grossIncome);
-        break;
-      case 'Covul':
-          netIncome = calculateNetIncomeCovul(grossIncome);
-        break;
-      case 'DepletionDeduction':
-          netIncome = calculateNetIncomeDepletionDeduction(grossIncome, yearDepletion );
-        break;
-      case 'QualifiedDividends':
-          netIncome = calculateNetIncomeQualifiedDividends(grossIncome );
-        break;
-      case 'DonorAdvisedFund':
-          netIncome = calculateNetIncomeDonorAdvisedFund(grossIncome );
-        break;
-      case 'ElectricVehicleCredits':
-          netIncome = calculateNetIncomeElectricVehicleCredits(grossIncome );
-        break;
-      case 'ESOP':
-          netIncome = calculateNetIncomeEmployeeStockOwnershipPlan(grossIncome, sharesValueContributed );
-        break;
-      case 'FederalSolarInvestmentTaxCredit':
-          netIncome = calculateNetIncomeFederalSolarInvestmentTaxCredit(grossIncome );
-        break;
-      case 'FinancedInsurance':
-          netIncome = calculateNetIncomeFinancedInsurance (grossIncome, financedDeduction); 
-        break;
-      case 'FinancedSoftwareLeaseback':
-          netIncome = calculateNetIncomeFinancedSoftware (grossIncome, softwareLeasebackDeduction);
-        break;  
-      case 'ForeignEarnedIncomeExclusion':
-          netIncome = calculateNetIncomeForeignEarnedIncome (grossIncome, foreignDeduction);
-        break;   
-      case 'GroupHealthInsurance':
-          netIncome = calculateNetIncomeGroupHealthInsurance (grossIncome, groupHealthInsuranceDeduction);
-        break;   
-      case 'GroupingRelatedActivities':
-          netIncome = calculateNetIncomeGroupingRelatedActivities (grossIncome);
-        break;   
-      case 'HomeOfficeDeduction':
-          netIncome = calculateNetIncomeHomeOfficeDeduction (grossIncome, homeOfficeDeduction);
-        break;   
-      case 'HistoricalPreservationEasement':
-          netIncome = calculateNetIncomeHistoricalPreservationEasement (grossIncome);
-        break;  
-      case 'InstallmentSale':
-          netIncome = calculateNetIncomeInstallmentSale (grossIncome, installmentSaleDeduction);
-        break;  
-      case 'MaximizeItemization':
-          netIncome = calculateNetIncomeMaximizeItemization (grossIncome);
-        break;  
-      case 'NoncashCharitableContributions':
-          netIncome = calculateNetIncomeNoncashCharitableContributions (grossIncome);
-        break;
-      case 'OilAndGasDrillingCost':
-          netIncome = calculateNetIncomeOilAndGasDrillingCost (grossIncome, oilAndGasDrillingCostDeduction );
-        break;
-      case 'OilAndGasMLP':
-          netIncome = calculateNetIncomeOilAndGasMLP (grossIncome);
-        break;
-      case 'OrdinaryLossOnWorthlessStock':
-          netIncome = calculateNetIncomeOrdinaryLossOnWorthlessStock (grossIncome, ordinaryLossDeduction);
-        break;
-      case 'passThroughEntity':
-          netIncome = calculateNetIncomePassThroughEntity(grossIncome);
-        break;
-      case 'passiveLossAndPigs':
-        netIncome = calculateNetIncomePassiveLossAndPigs(grossIncome);
-        break;
-      case 'primarySaleExclusion':
-        netIncome = calculateNetIncomePrimarySaleExclusion(grossIncome);
-        break;
-      case 'privateFamilyFoundation':
-        netIncome = calculateNetIncomePrivateFamilyFoundation(grossIncome);
-        break;
-      case 'qualifiedCharitableDistributions':
-        netIncome = calculateNetIncomeQualifiedCharitableDistributions(grossIncome, totalDeductionQCDS);
-        break;
-      case 'RealEstateDevelopmentCharitable':
-          netIncome = calculateNetIncomeRealEstateDevelopmentCharitable(grossIncome);
-        break;
-      case 'RestrictedStockUnits':
-          netIncome = calculateNetIncomeRestrictedStockUnits(grossIncome);
-        break;
-      case 'RetireePlanning':
-          netIncome = calculateNetIncomeRetireePlanning(grossIncome);
-        break;
-      case 'SCorpRevocation':
-          netIncome = calculateNetIncomeSCorpRevocation(grossIncome);
-        break;
-      case 'SecureAct20Strategies':
-          netIncome = calculateNetIncomeSecureAct20Strategies(grossIncome);
-        break;
-      case 'SeriesIBond':
-          netIncome = calculateNetIncomeSeriesIBond(grossIncome);
-        break;
-      case 'ShortTermRental':
-          netIncome = calculateNetIncomeShortTermRental(grossIncome);
-        break;
-      case 'BonusDepreciation':
-          netIncome = calculateNetIncomeBonusDepreciation(grossIncome, bonusDepreciationDeduction);
-        break;
-      case 'SolarPassiveInvestment':
-          netIncome = calculateNetIncomeSolarPassiveInvestment(grossIncome, SPID);
-        break;
-      case 'TaxFreeIncome':
-          netIncome = calculateNetIncomeTaxFreeIncome(grossIncome);
-        break;
-      case 'WorkOpportunityTaxCredit':
-          netIncome = calculateNetIncomeWorkOpportunityTaxCredit(grossIncome, workOpportunityTaxCreditDeduction);
-        break;
-      case '1031Exchange':
-          netIncome = calculateNetIncome1031Exchange(grossIncome);
-        break;
-      case 'DefinedBenefitPlan':
-          netIncome = calculateNetIncomeDefinedBenefitPlan(grossIncome);
-        break;
-      case 'StructuredInvestmentProgram':
-          netIncome = calculateNetIncomeStructuredInvestmentProgram(grossIncome, structuredInvestmentProgramDeduction);
-        break;
-      case 'SelfDirectedIRA401K':
-          netIncome = calculateNetIncomeSelfDirectedIRA401K(grossIncome);
-        break;
-      case 'DayTraderTaxStatus':
-          netIncome = calculateNetIncomeDayTraderTaxStatus(grossIncome);
-        break;
-      case 'CollegeStudentStrategies':
-          netIncome = calculateNetIncomeCollegeStudentStrategies(grossIncome);
-        break;
-      case 'SellHomeToSCorp':
-         netIncome = calculateNetIncomeSellHomeToSCorp(grossIncome);
-        break;
-      case 'GiftingStockStrategy':
-         netIncome = calculateNetIncomeGiftingStockStrategy(grossIncome);
-        break;
-      case 'RealEstateOptions':
-         netIncome = calculateNetIncomeRealEstateOptions(grossIncome);
-        break;
-      case 'MarriedFilingSeparate':
-         netIncome = calculateNetIncomeMarriedFilingSeparate(grossIncome);
-        break;
-      case 'IndividualPlanningIdeas':
-         netIncome = calculateNetIncomeIndividualPlanningIdeas(grossIncome);
-        break;
-      case 'NetInvestmentIncomeTax':
-         netIncome = calculateNetIncomeNetInvestmentIncomeTax(grossIncome);
-        break;
-      case 'MiscTaxCredits':
-         netIncome = calculateNetIncomeMiscTaxCredits(grossIncome);
-        break;
-      case 'rentalStrategies754Election':
-         netIncome = calculateNetIncomeRentalStrategies754Election(grossIncome);
-        break;
-     case 'ReasonableCompAnalysis':
-         netIncome = calculateNetIncomeReasonableCompAnalysis(grossIncome);
-        break;
-     case 'RealEstateProfessional':
-         netIncome = calculateNetIncomeRealEstateProfessional(grossIncome);
-        break;
-    case 'CaptiveInsurance':
-         netIncome = calculateNetIncomeCaptiveInsurance(grossIncome);
-        break;
-    case 'CharitableLLC':
-          netIncome = calculateNetIncomeCharitableLLC(grossIncome);
-        break;
-    case 'SoleProprietor':
-           netIncome = calculateNetIncomeSoleProprietor(grossIncome);
-         break;
-    case 'ChoiceOfEntity':
-           netIncome = calculateNetIncomeChoiceOfEntity(grossIncome);
-         break;
-    case 'ChoiceOfEntityCCorp':
-           netIncome = calculateNetIncomeChoiceOfEntityCCorp(grossIncome);
-         break;
-    case 'ChoiceOfEntityPartnership':
-           netIncome = calculateNetIncomeChoiceOfEntityPartnership(grossIncome);
-         break;
-    case 'ChoiceOfEntitySCorp':
-           netIncome = calculateNetIncomeChoiceOfEntitySCorp(grossIncome);
-         break;
-    case 'HarvestingCryptoInvestors':
-            netIncome = calculateNetIncomeHarvestingCryptoInvestors(grossIncome);
-    case 'qbidCalculation':
-           netIncome = grossIncome; // En este caso, usaremos grossIncome directamente
-         break;
+switch (calculationType) {
+  case 'augusta':
+    netIncome = calculateNetIncomeAugusta(grossIncome, averageMonthlyRent, daysOfRent, partnershipShare);
+    break;
+  case 'prepaid':
+    netIncome = calculateNetIncomePrepaid(grossIncome, totalExpenses, totalNonPrepaidExpenses, partnershipShare);
+    break;
+  case 'hireKids':
+    netIncome = calculateNetIncomeKids(grossIncome, hireKidsDeduction, partnershipShare);
+    break;
+  case 'hireFamily':
+    netIncome = calculateNetIncomeFamily(grossIncome, hireFamilyDeduction, partnershipShare);
+    break;
+  case 'qualifiedOpportunityFunds':
+    netIncome = calculateNetIncomeQOF(grossIncome, reductionInNetIncome, partnershipShare);
+    break;
+  case 'healthSavings':
+    netIncome = calculateNetIncomeHSA(grossIncome, hsaContribution, partnershipShare);
+    break;
+  case 'lifetimeLearningCredit':
+    netIncome = calcualteNetIncomeLifeTimeLearningCredit(grossIncome, partnershipShare);
+    break;
+  case 'charitableRemainderTrust':
+    netIncome = calculateNetIncomeCRT(grossIncome, partnershipShare);
+    break;
+  case 'reimbursment':
+    netIncome = calculateReimbursment(grossIncome, tve, pbuv, partnershipShare);
+    break;
+  case 'amendedPriorYears':
+    netIncome = calculateNetIncomeAmanda(grossIncome, partnershipShare);
+    break;
+  case 'exemptionQualifiedSmall':
+    netIncome = calculateNetIncomeExemptionQualifiedSmall(grossIncome, partnershipShare);
+    break;
+  case 'costSegregation':
+    netIncome = calculateNetIncomeCostSegregation(grossIncome, deduction, partnershipShare);
+    break;
+  case 'savingsPlan':
+    netIncome = calculateNetIncomeSavingsPlan(grossIncome, partnershipShare);
+    break;
+  case 'educationAssistance':
+    netIncome = calculateNetIncomeEducationAssistance(grossIncome, totalEducationalAssistance, partnershipShare);
+    break;
+  case 'accountablePlan':
+    netIncome = calculateNetIncomeAccountableplan(grossIncome, totalReimbursableExpenses, partnershipShare);
+    break;
+  case 'adoptionAndIra':
+    netIncome = calculateNetIncomeAdoptionPlan(grossIncome, partnershipShare);
+    break;
+  case 'educationTaxCredit':
+    netIncome = calculateNetIncomeEducationTaxCredit(grossIncome, partnershipShare);
+    break;
+  case 'healthReimbursement':
+    netIncome = calculateNetIncomeHealthReimbursement(grossIncome, totalBenefits, partnershipShare);
+    break;
+  case 'incomeShifting':
+    netIncome = calculateNetIncomeIncomeShifting(grossIncome, totalIncomeShifted, partnershipShare);
+    break;
+  case 'lifeInsurance':
+    netIncome = calculateNetIncomeLifeInsurance(grossIncome, partnershipShare);
+    break;
+  case 'maximizeMiscellaneousExpenses':
+    netIncome = calculateNetIncomeMaximizeMiscellaneousExpenses(grossIncome, totalNetDeductionMaxi, partnershipShare);
+    break;
+  case 'mealsDeduction':
+    netIncome = calculateNetIncomeMealsDeduction(grossIncome, deductionMeals, partnershipShare);
+    break;
+  case 'lossesDeduction':
+    netIncome = calculateNetIncomeOperatingLosses(grossIncome, totalNOL, partnershipShare);
+    break;
+  case 'solo401k':
+    netIncome = calcularNetIncomeSolo401k(grossIncome, deductionSolo401k, partnershipShare);
+    break;
+  case 'researchAndDevelopmentCredit':
+    netIncome = calculateNetIncomeResearchAndDevelopmentCredit(grossIncome, partnershipShare);
+    break;
+  case 'rothIRA':
+    netIncome = calculateNetIncomeRothIRA(grossIncome, partnershipShare);
+    break;
+  case 'sepContributions':
+    netIncome = calculateNetIncomeHealthInsuranceDeduction(grossIncome, totalContribution, partnershipShare);
+    break;
+  case 'healthInsuranceDeduction2':
+    netIncome = calculateNetIncomeHealthInsuranceDeduction2(grossIncome, incomeReduction, partnershipShare);
+    break;
+  case 'simpleIRA':
+    netIncome = calculateNetIncomeSimpleIra(grossIncome, totalEmployerContribution, partnershipShare);
+    break;
+  case 'startupCostOptimization':
+    netIncome = calculateNetIncomeStartupCost(grossIncome, deductionStartup, partnershipShare);
+    break;
+  case 'stateTaxSavings':
+    netIncome = calculateNetIncomeStateTaxSavings(grossIncome, partnershipShare);
+    break;
+  case 'traditionalIRA':
+    netIncome = calculateNetIncomeTraditionalIRA(grossIncome, totalDeductionTraditionalIRA, partnershipShare);
+    break;
+  case 'unreimbursedExpenses':
+    netIncome = calculateNetIncomeUnreimbursedExpenses(grossIncome, reductionUnreimbursed, partnershipShare);
+    break;
+  case 'charitableDonationSavings':
+    netIncome = calculateNetIncomeCharitableDonation(grossIncome, partnershipShare);
+    break;
+  case 'influencerOptimization':
+    netIncome = calculateNetIncomeInfluencer(grossIncome, deductionInfluencer, partnershipShare);
+    break;
+  case 'CancellationByInsolvency':
+    netIncome = calculateNetIncomeCancellationByInsolvency(grossIncome, deductionCancellation, partnershipShare);
+    break;
+  case 'ActiveRealEstate':
+    netIncome = calculateNetIncomeActiveRealEstate(grossIncome, partnershipShare);
+    break;
+  case 'BackdoorRoth':
+    netIncome = calculateNetIncomeBackdoorRoth(grossIncome, partnershipShare);
+    break;
+  case 'deferredCapitalGain':
+    netIncome = calculateNetIncomeCapital(grossIncome, partnershipShare);
+    break;
+  case 'Covul':
+    netIncome = calculateNetIncomeCovul(grossIncome, partnershipShare);
+    break;
+  case 'DepletionDeduction':
+    netIncome = calculateNetIncomeDepletionDeduction(grossIncome, yearDepletion, partnershipShare);
+    break;
+  case 'QualifiedDividends':
+    netIncome = calculateNetIncomeQualifiedDividends(grossIncome, partnershipShare);
+    break;
+  case 'DonorAdvisedFund':
+    netIncome = calculateNetIncomeDonorAdvisedFund(grossIncome, partnershipShare);
+    break;
+  case 'ElectricVehicleCredits':
+    netIncome = calculateNetIncomeElectricVehicleCredits(grossIncome, partnershipShare);
+    break;
+  case 'ESOP':
+    netIncome = calculateNetIncomeEmployeeStockOwnershipPlan(grossIncome, sharesValueContributed, partnershipShare);
+    break;
+  case 'FederalSolarInvestmentTaxCredit':
+    netIncome = calculateNetIncomeFederalSolarInvestmentTaxCredit(grossIncome, partnershipShare);
+    break;
+  case 'FinancedInsurance':
+    netIncome = calculateNetIncomeFinancedInsurance(grossIncome, financedDeduction, partnershipShare);
+    break;
+  case 'FinancedSoftwareLeaseback':
+    netIncome = calculateNetIncomeFinancedSoftware(grossIncome, softwareLeasebackDeduction, partnershipShare);
+    break;
+  case 'ForeignEarnedIncomeExclusion':
+    netIncome = calculateNetIncomeForeignEarnedIncome(grossIncome, foreignDeduction, partnershipShare);
+    break;
+  case 'GroupHealthInsurance':
+    netIncome = calculateNetIncomeGroupHealthInsurance(grossIncome, groupHealthInsuranceDeduction, partnershipShare);
+    break;
+  case 'GroupingRelatedActivities':
+    netIncome = calculateNetIncomeGroupingRelatedActivities(grossIncome, partnershipShare);
+    break;
+  case 'HomeOfficeDeduction':
+    netIncome = calculateNetIncomeHomeOfficeDeduction(grossIncome, homeOfficeDeduction, partnershipShare);
+    break;
+  case 'HistoricalPreservationEasement':
+    netIncome = calculateNetIncomeHistoricalPreservationEasement(grossIncome, partnershipShare);
+    break;
+  case 'InstallmentSale':
+    netIncome = calculateNetIncomeInstallmentSale(grossIncome, installmentSaleDeduction, partnershipShare);
+    break;
+  case 'MaximizeItemization':
+    netIncome = calculateNetIncomeMaximizeItemization(grossIncome, partnershipShare);
+    break;
+  case 'NoncashCharitableContributions':
+    netIncome = calculateNetIncomeNoncashCharitableContributions(grossIncome, partnershipShare);
+    break;
+  case 'OilAndGasDrillingCost':
+    netIncome = calculateNetIncomeOilAndGasDrillingCost(grossIncome, oilAndGasDrillingCostDeduction, partnershipShare);
+    break;
+  case 'OilAndGasMLP':
+    netIncome = calculateNetIncomeOilAndGasMLP(grossIncome, partnershipShare);
+    break;
+  case 'OrdinaryLossOnWorthlessStock':
+    netIncome = calculateNetIncomeOrdinaryLossOnWorthlessStock(grossIncome, ordinaryLossDeduction, partnershipShare);
+    break;
+  case 'passThroughEntity':
+    netIncome = calculateNetIncomePassThroughEntity(grossIncome, partnershipShare);
+    break;
+  case 'passiveLossAndPigs':
+    netIncome = calculateNetIncomePassiveLossAndPigs(grossIncome, partnershipShare);
+    break;
+  case 'primarySaleExclusion':
+    netIncome = calculateNetIncomePrimarySaleExclusion(grossIncome, partnershipShare);
+    break;
+  case 'privateFamilyFoundation':
+    netIncome = calculateNetIncomePrivateFamilyFoundation(grossIncome, partnershipShare);
+    break;
+  case 'qualifiedCharitableDistributions':
+    netIncome = calculateNetIncomeQualifiedCharitableDistributions(grossIncome, totalDeductionQCDS, partnershipShare);
+    break;
+  case 'RealEstateDevelopmentCharitable':
+    netIncome = calculateNetIncomeRealEstateDevelopmentCharitable(grossIncome, partnershipShare);
+    break;
+  case 'RestrictedStockUnits':
+    netIncome = calculateNetIncomeRestrictedStockUnits(grossIncome, partnershipShare);
+    break;
+  case 'RetireePlanning':
+    netIncome = calculateNetIncomeRetireePlanning(grossIncome, partnershipShare);
+    break;
+  case 'SCorpRevocation':
+    netIncome = calculateNetIncomeSCorpRevocation(grossIncome, partnershipShare);
+    break;
+  case 'SecureAct20Strategies':
+    netIncome = calculateNetIncomeSecureAct20Strategies(grossIncome, partnershipShare);
+    break;
+  case 'SeriesIBond':
+    netIncome = calculateNetIncomeSeriesIBond(grossIncome, partnershipShare);
+    break;
+  case 'ShortTermRental':
+    netIncome = calculateNetIncomeShortTermRental(grossIncome, partnershipShare);
+    break;
+  case 'BonusDepreciation':
+    netIncome = calculateNetIncomeBonusDepreciation(grossIncome, bonusDepreciationDeduction, partnershipShare);
+    break;
+  case 'SolarPassiveInvestment':
+    netIncome = calculateNetIncomeSolarPassiveInvestment(grossIncome, SPID, partnershipShare);
+    break;
+  case 'TaxFreeIncome':
+    netIncome = calculateNetIncomeTaxFreeIncome(grossIncome, partnershipShare);
+    break;
+  case 'WorkOpportunityTaxCredit':
+    netIncome = calculateNetIncomeWorkOpportunityTaxCredit(grossIncome, workOpportunityTaxCreditDeduction, partnershipShare);
+    break;
+  case '1031Exchange':
+    netIncome = calculateNetIncome1031Exchange(grossIncome, partnershipShare);
+    break;
+  case 'DefinedBenefitPlan':
+    netIncome = calculateNetIncomeDefinedBenefitPlan(grossIncome, partnershipShare);
+    break;
+  case 'StructuredInvestmentProgram':
+    netIncome = calculateNetIncomeStructuredInvestmentProgram(grossIncome, structuredInvestmentProgramDeduction, partnershipShare);
+    break;
+  case 'SelfDirectedIRA401K':
+    netIncome = calculateNetIncomeSelfDirectedIRA401K(grossIncome, partnershipShare);
+    break;
+  case 'DayTraderTaxStatus':
+    netIncome = calculateNetIncomeDayTraderTaxStatus(grossIncome, partnershipShare);
+    break;
+  case 'CollegeStudentStrategies':
+    netIncome = calculateNetIncomeCollegeStudentStrategies(grossIncome, partnershipShare);
+    break;
+  case 'SellHomeToSCorp':
+    netIncome = calculateNetIncomeSellHomeToSCorp(grossIncome, partnershipShare);
+    break;
+  case 'GiftingStockStrategy':
+    netIncome = calculateNetIncomeGiftingStockStrategy(grossIncome, partnershipShare);
+    break;
+  case 'RealEstateOptions':
+    netIncome = calculateNetIncomeRealEstateOptions(grossIncome, partnershipShare);
+    break;
+  case 'MarriedFilingSeparate':
+    netIncome = calculateNetIncomeMarriedFilingSeparate(grossIncome, partnershipShare);
+    break;
+  case 'IndividualPlanningIdeas':
+    netIncome = calculateNetIncomeIndividualPlanningIdeas(grossIncome, partnershipShare);
+    break;
+  case 'NetInvestmentIncomeTax':
+    netIncome = calculateNetIncomeNetInvestmentIncomeTax(grossIncome, partnershipShare);
+    break;
+  case 'MiscTaxCredits':
+    netIncome = calculateNetIncomeMiscTaxCredits(grossIncome, partnershipShare);
+    break;
+  case 'rentalStrategies754Election':
+    netIncome = calculateNetIncomeRentalStrategies754Election(grossIncome, partnershipShare);
+    break;
+  case 'ReasonableCompAnalysis':
+    netIncome = calculateNetIncomeReasonableCompAnalysis(grossIncome, partnershipShare);
+    break;
+  case 'RealEstateProfessional':
+    netIncome = calculateNetIncomeRealEstateProfessional(grossIncome, partnershipShare);
+    break;
+  case 'CaptiveInsurance':
+    netIncome = calculateNetIncomeCaptiveInsurance(grossIncome, partnershipShare);
+    break;
+  case 'CharitableLLC':
+    netIncome = calculateNetIncomeCharitableLLC(grossIncome, partnershipShare);
+    break;
+  case 'SoleProprietor':
+    netIncome = calculateNetIncomeSoleProprietor(grossIncome, partnershipShare);
+    break;
+  case 'ChoiceOfEntity':
+    netIncome = calculateNetIncomeChoiceOfEntity(grossIncome, partnershipShare);
+    break;
+  case 'ChoiceOfEntityCCorp':
+    netIncome = calculateNetIncomeChoiceOfEntityCCorp(grossIncome, partnershipShare);
+    break;
+  case 'ChoiceOfEntityPartnership':
+    netIncome = calculateNetIncomeChoiceOfEntityPartnership(grossIncome, partnershipShare);
+    break;
+  case 'ChoiceOfEntitySCorp':
+    netIncome = calculateNetIncomeChoiceOfEntitySCorp(grossIncome, partnershipShare);
+    break;
+  case 'HarvestingCryptoInvestors':
+    netIncome = calculateNetIncomeHarvestingCryptoInvestors(grossIncome, partnershipShare);
+    break;
+  case 'qbidCalculation':
+    netIncome = grossIncome; // En este caso, usaremos grossIncome directamente
+    break;
+
 
 
          case 'standard':

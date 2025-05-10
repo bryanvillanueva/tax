@@ -256,10 +256,30 @@ export function calculateNetIncomeHSA(
 }
 
 
-//calcular el net income para life Time Learning Credit
-export function calcualteNetIncomeLifeTimeLearningCredit(grossIncome) {
-  return Math.max(0, grossIncome ); // Evita valores negativos
+// Calcular el Net Income para Lifetime Learning Credit
+// Cuando no hay deducción ni contribución, tratamos deduction = 0
+// y aplicamos partnershipShare igual que en calculateNetIncome:
+export function calcualteNetIncomeLifeTimeLearningCredit(
+  grossIncome,
+  partnershipShare
+) {
+  // 1. Si partnershipShare es null, undefined o 0, usamos la lógica original (grossIncome - 0)
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome);
+  }
+
+  // 2. Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // 3. Calcular la parte proporcional de ingresos
+  const incomeShare = grossIncome * shareRatio;
+
+  // 4. Evitar resultados negativos
+  return Math.max(0, incomeShare);
 }
+
 
 // Calcular el Net Income para amendedPriorYears (Amanda)
 // Cuando no hay deducción ni contribución, tratamos deduction179 = 0
@@ -311,430 +331,2147 @@ export function calculateNetIncomeExemptionQualifiedSmall(
 }
 
 
-// calcular el Net income para costSegregation
-export function calculateNetIncomeCostSegregation(grossIncome, deduction){
-  return Math.max(0, grossIncome - deduction); // Evita valores negativos{
+// Calcular el Net Income para costSegregation
+// Añadida validación de partnershipShare igual que en calculateNetIncome:
+export function calculateNetIncomeCostSegregation(
+  grossIncome,
+  deduction,
+  partnershipShare
+) {
+  // 1. Si partnershipShare es null, undefined o 0, usamos la lógica original
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome - deduction);
+  }
+
+  // 2. Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // 3. Calcular la parte proporcional de ingresos y deducción
+  const incomeShare    = grossIncome * shareRatio;
+  const deductionShare = deduction  * shareRatio;
+
+  // 4. Resta proporcional y evitar resultados negativos
+  const netIncome = incomeShare - deductionShare;
+  return Math.max(0, netIncome);
+}
+
+
+// Calcular el Net Income para Accountable Plan
+// Añadida validación de partnershipShare como en calculateNetIncome:
+export function calculateNetIncomeAccountableplan(
+  grossIncome,
+  totalReimbursableExpenses,
+  partnershipShare
+) {
+  // 1. Si partnershipShare es null, undefined o 0, usamos la lógica original
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome - totalReimbursableExpenses);
+  }
+
+  // 2. Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // 3. Calcular la parte proporcional de ingresos y gastos reembolsables
+  const incomeShare   = grossIncome               * shareRatio;
+  const expenseShare  = totalReimbursableExpenses * shareRatio;
+
+  // 4. Resta proporcional y evitar resultados negativos
+  const netIncome = incomeShare - expenseShare;
+  return Math.max(0, netIncome);
+}
+
+
+// Calcular el Net Income para Adoption Plan
+// Cuando no hay deducción, tratamos deduction = 0
+// y aplicamos partnershipShare igual que en calculateNetIncome:
+export function calculateNetIncomeAdoptionPlan(
+  grossIncome,
+  partnershipShare
+) {
+  // 1. Si partnershipShare es null, undefined o 0, usamos la lógica original (grossIncome - 0)
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome);
+  }
+
+  // 2. Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // 3. Calcular la parte proporcional de ingresos
+  const incomeShare = grossIncome * shareRatio;
+
+  // 4. Evitar resultados negativos
+  return Math.max(0, incomeShare);
+}
+
+
+// Calcular el Net Income para Active Real Estate
+// Cuando no hay deducción, tratamos deduction = 0
+// y aplicamos partnershipShare igual que en calculateNetIncome:
+export function calculateNetIncomeActiveRealEstate(
+  grossIncome,
+  partnershipShare
+) {
+  // 1. Si partnershipShare es null, undefined o 0, usamos la lógica original (grossIncome - 0)
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome);
+  }
+
+  // 2. Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // 3. Calcular la parte proporcional de ingresos
+  const incomeShare = grossIncome * shareRatio;
+
+  // 4. Evitar resultados negativos
+  return Math.max(0, incomeShare);
+}
+
+
+// Calcular el Net Income para Backdoor Roth
+// Cuando no hay deducción, tratamos deduction = 0
+// y aplicamos partnershipShare igual que en calculateNetIncome:
+export function calculateNetIncomeBackdoorRoth(
+  grossIncome,
+  partnershipShare
+) {
+  // 1. Si partnershipShare es null, undefined o 0, usamos la lógica original (grossIncome - 0)
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome);
+  }
+
+  // 2. Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // 3. Calcular la parte proporcional de ingresos
+  const incomeShare = grossIncome * shareRatio;
+
+  // 4. Evitar resultados negativos
+  return Math.max(0, incomeShare);
+}
+
+
+
+// Calcular el Net Income para Cancellation By Insolvency
+// Añadida validación de partnershipShare como en calculateNetIncome:
+export function calculateNetIncomeCancellationByInsolvency(
+  grossIncome,
+  deductionCancellation,
+  partnershipShare
+) {
+  // 1. Si partnershipShare es null, undefined o 0, usamos la lógica original
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome - deductionCancellation);
+  }
+
+  // 2. Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // 3. Calcular la parte proporcional de ingresos y deducción
+  const incomeShare     = grossIncome           * shareRatio;
+  const deductionShare  = deductionCancellation * shareRatio;
+
+  // 4. Resta proporcional y evitar resultados negativos
+  const netIncome = incomeShare - deductionShare;
+  return Math.max(0, netIncome);
+}
+
+// Calcular el Net Income para Savings Plan
+// Añadida validación de partnershipShare igual que en calculateNetIncome:
+export function calculateNetIncomeSavingsPlan(
+  grossIncome,
+  partnershipShare
+) {
+  // 1. Si partnershipShare es null, undefined o 0, usamos la lógica original
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome);
+  }
+
+  // 2. Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // 3. Calcular la parte proporcional de ingresos
+  const incomeShare = grossIncome * shareRatio;
+
+  // 4. Evitar resultados negativos
+  return Math.max(0, incomeShare);
+}
+
+
+// Calcular el Net Income para Education Assistance
+// Añadida validación de partnershipShare igual que en calculateNetIncome:
+export function calculateNetIncomeEducationAssistance(
+  grossIncome,
+  totalEducationalAssistance,
+  partnershipShare
+) {
+  // 1. Si partnershipShare es null, undefined o 0, usamos la lógica original
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome - totalEducationalAssistance);
+  }
+
+  // 2. Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // 3. Calcular la parte proporcional de ingresos y asistencia educativa
+  const incomeShare      = grossIncome               * shareRatio;
+  const assistanceShare  = totalEducationalAssistance * shareRatio;
+
+  // 4. Resta proporcional y evitar resultados negativos
+  const netIncome = incomeShare - assistanceShare;
+  return Math.max(0, netIncome);
+}
+
+
+// Calcular el Net Income para Education Tax Credit
+// Cuando no hay deducción, tratamos deduction = 0
+// y aplicamos partnershipShare igual que en calculateNetIncome:
+export function calculateNetIncomeEducationTaxCredit(
+  grossIncome,
+  partnershipShare
+) {
+  // 1. Si partnershipShare es null, undefined o 0, usamos la lógica original (grossIncome - 0)
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome);
+  }
+
+  // 2. Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // 3. Calcular la parte proporcional de ingresos
+  const incomeShare = grossIncome * shareRatio;
+
+  // 4. Evitar resultados negativos
+  return Math.max(0, incomeShare);
+}
+
+
+// Calcular el Net Income para Health Reimbursement
+// Añadida validación de partnershipShare igual que en calculateNetIncome:
+export function calculateNetIncomeHealthReimbursement(
+  grossIncome,
+  totalBenefits,
+  partnershipShare
+) {
+  // 1. Si partnershipShare es null, undefined o 0, usamos la lógica original
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome - totalBenefits);
+  }
+
+  // 2. Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // 3. Calcular la parte proporcional de ingresos y beneficios
+  const incomeShare    = grossIncome     * shareRatio;
+  const benefitShare   = totalBenefits   * shareRatio;
+
+  // 4. Resta proporcional y evitar resultados negativos
+  const netIncome = incomeShare - benefitShare;
+  return Math.max(0, netIncome);
+}
+
+
+// Calcular el Net Income para Income Shifting
+// Añadida validación de partnershipShare como en calculateNetIncome:
+export function calculateNetIncomeIncomeShifting(
+  grossIncome,
+  totalIncomeShifted,
+  partnershipShare
+) {
+  // 1. Si partnershipShare es null, undefined o 0, usamos la lógica original
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome - totalIncomeShifted);
+  }
+
+  // 2. Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // 3. Calcular la parte proporcional de ingresos y del monto desplazado
+  const incomeShare   = grossIncome         * shareRatio;
+  const shiftedShare  = totalIncomeShifted  * shareRatio;
+
+  // 4. Resta proporcional y evitar resultados negativos
+  const netIncome = incomeShare - shiftedShare;
+  return Math.max(0, netIncome);
+}
+
+
+// Calcular el Net Income para Life Insurance
+// Añadida validación de partnershipShare como en calculateNetIncome:
+export function calculateNetIncomeLifeInsurance(
+  grossIncome,
+  partnershipShare
+) {
+  // 1. Si partnershipShare es null, undefined o 0, usamos la lógica original
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome);
+  }
+
+  // 2. Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // 3. Calcular la parte proporcional de ingresos
+  const incomeShare = grossIncome * shareRatio;
+
+  // 4. Evitar resultados negativos
+  return Math.max(0, incomeShare);
+}
+
+
+// Calcular el Net Income para Maximize Miscellaneous Expenses
+// Añadida validación de partnershipShare igual que en calculateNetIncome:
+export function calculateNetIncomeMaximizeMiscellaneousExpenses(
+  grossIncome,
+  totalNetDeductionMaxi,
+  partnershipShare
+) {
+  // 1. Si partnershipShare es null, undefined o 0, usamos la lógica original
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome - totalNetDeductionMaxi);
+  }
+
+  // 2. Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // 3. Calcular la parte proporcional de ingresos y deducción
+  const incomeShare    = grossIncome             * shareRatio;
+  const deductionShare = totalNetDeductionMaxi   * shareRatio;
+
+  // 4. Resta proporcional y evitar resultados negativos
+  const netIncome = incomeShare - deductionShare;
+  return Math.max(0, netIncome);
+}
+
+
+// Calcular el Net Income para Meals Deduction
+// Añadida validación de partnershipShare igual que en calculateNetIncome:
+export function calculateNetIncomeMealsDeduction(
+  grossIncome,
+  deductionMeals,
+  partnershipShare
+) {
+  // 1. Si partnershipShare es null, undefined o 0, usamos la lógica original
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome - deductionMeals);
+  }
+
+  // 2. Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // 3. Calcular la parte proporcional de ingresos y deducción de comidas
+  const incomeShare    = grossIncome     * shareRatio;
+  const deductionShare = deductionMeals * shareRatio;
+
+  // 4. Resta proporcional y evitar resultados negativos
+  const netIncome = incomeShare - deductionShare;
+  return Math.max(0, netIncome);
+}
+
+
+// Calcular el Net Income para Operating Losses
+// Añadida validación de partnershipShare igual que en calculateNetIncome:
+export function calculateNetIncomeOperatingLosses(
+  grossIncome,
+  totalNOL,
+  partnershipShare
+) {
+  // 1. Si partnershipShare es null, undefined o 0, usamos la lógica original
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome - totalNOL);
+  }
+
+  // 2. Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // 3. Calcular la parte proporcional de ingresos y pérdidas operativas
+  const incomeShare = grossIncome * shareRatio;
+  const lossShare   = totalNOL     * shareRatio;
+
+  // 4. Resta proporcional y evitar resultados negativos
+  const netIncome = incomeShare - lossShare;
+  return Math.max(0, netIncome);
+}
+
+
+// Calcular el Net Income para Solo 401(k)
+// Añadida validación de partnershipShare al igual que en calculateNetIncome:
+export function calcularNetIncomeSolo401k(
+  grossIncome,
+  deductionSolo401k,
+  partnershipShare
+) {
+  // 1. Si partnershipShare es null, undefined o 0, usamos la lógica original
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome - deductionSolo401k);
+  }
+
+  // 2. Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // 3. Calcular la parte proporcional de ingresos y deducción
+  const incomeShare    = grossIncome         * shareRatio;
+  const deductionShare = deductionSolo401k   * shareRatio;
+
+  // 4. Resta proporcional y evitar resultados negativos
+  const netIncome = incomeShare - deductionShare;
+  return Math.max(0, netIncome);
+}
+
+
+// Calcular el Net Income para Research & Development Credit
+// Añadida validación de partnershipShare igual que en calculateNetIncome:
+export function calculateNetIncomeResearchAndDevelopmentCredit(
+  grossIncome,
+  partnershipShare
+) {
+  // 1. Si partnershipShare es null, undefined o 0, usamos la lógica original
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome);
+  }
+
+  // 2. Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // 3. Calcular la parte proporcional de ingresos
+  const incomeShare = grossIncome * shareRatio;
+
+  // 4. Evitar resultados negativos
+  return Math.max(0, incomeShare);
+}
+
+
+// Calcular el Net Income para Roth IRA
+// Añadida validación de partnershipShare igual que en calculateNetIncome:
+export function calculateNetIncomeRothIRA(
+  grossIncome,
+  partnershipShare
+) {
+  // 1. Si partnershipShare es null, undefined o 0, usamos la lógica original (grossIncome - 0)
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome);
+  }
+
+  // 2. Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // 3. Calcular la parte proporcional de ingresos
+  const incomeShare = grossIncome * shareRatio;
+
+  // 4. Evitar resultados negativos
+  return Math.max(0, incomeShare);
+}
+
+
+// Calcular el Net Income para Health Insurance Deduction
+// Añadida validación de partnershipShare igual que en calculateNetIncome:
+export function calculateNetIncomeHealthInsuranceDeduction(
+  grossIncome,
+  totalContribution,
+  partnershipShare
+) {
+  // 1. Si partnershipShare es null, undefined o 0, usamos la lógica original
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome - totalContribution);
+  }
+
+  // 2. Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // 3. Calcular la parte proporcional de ingresos y contribución
+  const incomeShare        = grossIncome      * shareRatio;
+  const contributionShare  = totalContribution * shareRatio;
+
+  // 4. Resta proporcional y evitar resultados negativos
+  const netIncome = incomeShare - contributionShare;
+  return Math.max(0, netIncome);
+}
+
+
+// Calcular el Net Income para Health Insurance Deduction 2
+// Añadida validación de partnershipShare al igual que en calculateNetIncome:
+export function calculateNetIncomeHealthInsuranceDeduction2(
+  grossIncome,
+  incomeReduction,
+  partnershipShare
+) {
+  // 1. Si partnershipShare es null, undefined o 0, usamos la lógica original
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome - incomeReduction);
+  }
+
+  // 2. Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // 3. Calcular la parte proporcional de ingresos y reducción
+  const incomeShare     = grossIncome     * shareRatio;
+  const reductionShare  = incomeReduction * shareRatio;
+
+  // 4. Resta proporcional y evitar resultados negativos
+  const netIncome = incomeShare - reductionShare;
+  return Math.max(0, netIncome);
+}
+
+
+// Calcular el Net Income para Simple IRA
+// Añadida validación de partnershipShare igual que en calculateNetIncome:
+export function calculateNetIncomeSimpleIra(
+  grossIncome,
+  totalEmployerContribution,
+  partnershipShare
+) {
+  // 1. Si partnershipShare es null, undefined o 0, usamos la lógica original
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome - totalEmployerContribution);
+  }
+
+  // 2. Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // 3. Calcular la parte proporcional de ingresos y contribución del empleador
+  const incomeShare       = grossIncome             * shareRatio;
+  const contributionShare = totalEmployerContribution * shareRatio;
+
+  // 4. Resta proporcional y evitar resultados negativos
+  const netIncome = incomeShare - contributionShare;
+  return Math.max(0, netIncome);
+}
+
+
+// Calcular el Net Income para Startup Cost
+// Añadida validación de partnershipShare igual que en calculateNetIncome:
+export function calculateNetIncomeStartupCost(
+  grossIncome,
+  deductionStartup,
+  partnershipShare
+) {
+  // 1. Si partnershipShare es null, undefined o 0, usamos la lógica original
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome - deductionStartup);
+  }
+
+  // 2. Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // 3. Calcular la parte proporcional de ingresos y deducción
+  const incomeShare    = grossIncome      * shareRatio;
+  const deductionShare = deductionStartup * shareRatio;
+
+  // 4. Resta proporcional y evitar resultados negativos
+  const netIncome = incomeShare - deductionShare;
+  return Math.max(0, netIncome);
+}
+
+// Calcular el Net Income para State Tax Savings
+// Añadida validación de partnershipShare igual que en calculateNetIncome:
+export function calculateNetIncomeStateTaxSavings(
+  grossIncome,
+  partnershipShare
+) {
+  // 1. Si partnershipShare es null, undefined o 0, usamos la lógica original (grossIncome - 0)
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome);
+  }
+
+  // 2. Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // 3. Calcular la parte proporcional de ingresos
+  const incomeShare = grossIncome * shareRatio;
+
+  // 4. Evitar resultados negativos
+  return Math.max(0, incomeShare);
+}
+
+
+// Calcular el Net Income para Traditional IRA
+// Añadida validación de partnershipShare igual que en calculateNetIncome:
+export function calculateNetIncomeTraditionalIRA(
+  grossIncome,
+  totalDeductionTraditionalIRA,
+  partnershipShare
+) {
+  // 1. Si partnershipShare es null, undefined o 0, usar la lógica original
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome - totalDeductionTraditionalIRA);
+  }
+
+  // 2. Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // 3. Calcular la parte proporcional de ingresos y deducción
+  const incomeShare    = grossIncome                  * shareRatio;
+  const deductionShare = totalDeductionTraditionalIRA * shareRatio;
+
+  // 4. Resta proporcional y evitar resultados negativos
+  const netIncome = incomeShare - deductionShare;
+  return Math.max(0, netIncome);
+}
+
+
+// Calcular el Net Income para Unreimbursed Expenses
+// Añadida validación de partnershipShare igual que en calculateNetIncome:
+export function calculateNetIncomeUnreimbursedExpenses(
+  grossIncome,
+  reductionUnreimbursed,
+  partnershipShare
+) {
+  // 1. Si partnershipShare es null, undefined o 0, usamos la lógica original
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome - reductionUnreimbursed);
+  }
+
+  // 2. Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // 3. Calcular la parte proporcional de ingresos y reducción no reembolsada
+  const incomeShare     = grossIncome          * shareRatio;
+  const reductionShare  = reductionUnreimbursed * shareRatio;
+
+  // 4. Resta proporcional y evitar resultados negativos
+  const netIncome = incomeShare - reductionShare;
+  return Math.max(0, netIncome);
+}
+
+
+// Calcular el Net Income para Charitable Donation Of Appreciated
+// Añadida validación de partnershipShare como en calculateNetIncome:
+export function calculateNetIncomeCharitableDonation(
+  grossIncome,
+  partnershipShare
+) {
+  // 1. Si partnershipShare es null, undefined o 0, usamos la lógica original (grossIncome - 0)
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome);
+  }
+
+  // 2. Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // 3. Calcular la parte proporcional de ingresos
+  const incomeShare = grossIncome * shareRatio;
+
+  // 4. Evitar resultados negativos
+  return Math.max(0, incomeShare);
+}
+
+// Calcular el Net Income para Influencer
+// Añadida validación de partnershipShare como en calculateNetIncome:
+export function calculateNetIncomeInfluencer(
+  grossIncome,
+  deductionInfluencer,
+  partnershipShare
+) {
+  // 1. Si partnershipShare es null, undefined o 0, usamos la lógica original
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome - deductionInfluencer);
+  }
+
+  // 2. Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // 3. Calcular la parte proporcional de ingresos y deducción
+  const incomeShare    = grossIncome           * shareRatio;
+  const deductionShare = deductionInfluencer   * shareRatio;
+
+  // 4. Resta proporcional y evitar resultados negativos
+  const netIncome = incomeShare - deductionShare;
+  return Math.max(0, netIncome);
+}
+
+// Calcular el Net Income para Deferred Capital Gain
+// Añadida validación de partnershipShare igual que en calculateNetIncome:
+export function calculateNetIncomeCapital(
+  grossIncome,
+  partnershipShare
+) {
+  // 1. Si partnershipShare es null, undefined o 0, usamos la lógica original (grossIncome - 0)
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome);
+  }
+
+  // 2. Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // 3. Calcular la parte proporcional de ingresos
+  const incomeShare = grossIncome * shareRatio;
+
+  // 4. Evitar resultados negativos
+  return Math.max(0, incomeShare);
+}
+
+
+// Calcular el Net Income para Covul
+// Añadida validación de partnershipShare igual que en calculateNetIncome:
+export function calculateNetIncomeCovul(
+  grossIncome,
+  partnershipShare
+) {
+  // 1. Si partnershipShare es null, undefined o 0, usamos la lógica original (grossIncome - 0)
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome);
+  }
+
+  // 2. Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // 3. Calcular la parte proporcional de ingresos
+  const incomeShare = grossIncome * shareRatio;
+
+  // 4. Evitar resultados negativos
+  return Math.max(0, incomeShare);
+}
+
+// Calcular el Net Income para Depletion Deduction
+// Añadida validación de partnershipShare igual que en calculateNetIncome:
+export function calculateNetIncomeDepletionDeduction(
+  grossIncome,
+  yearDepletion,
+  partnershipShare
+) {
+  // 1. Si partnershipShare es null, undefined o 0, usamos la lógica original
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome - yearDepletion);
+  }
+
+  // 2. Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // 3. Calcular la parte proporcional de ingresos y deducción
+  const incomeShare    = grossIncome   * shareRatio;
+  const deductionShare = yearDepletion * shareRatio;
+
+  // 4. Resta proporcional y evitar resultados negativos
+  const netIncome = incomeShare - deductionShare;
+  return Math.max(0, netIncome);
+}
+
+// Calcular el Net Income para Qualified Dividends
+// Añadida validación de partnershipShare como en calculateNetIncome:
+export function calculateNetIncomeQualifiedDividends(
+  grossIncome,
+  partnershipShare
+) {
+  // 1. Si partnershipShare es null, undefined o 0, usamos la lógica original (grossIncome - 0)
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome);
+  }
+
+  // 2. Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // 3. Calcular la parte proporcional de ingresos
+  const incomeShare = grossIncome * shareRatio;
+
+  // 4. Evitar resultados negativos
+  return Math.max(0, incomeShare);
+}
+
+
+// Calcular el Net Income para Donor Advised Fund
+// Añadida validación de partnershipShare igual que en calculateNetIncome:
+export function calculateNetIncomeDonorAdvisedFund(
+  grossIncome,
+  partnershipShare
+) {
+  // 1. Si partnershipShare es null, undefined o 0, usamos la lógica original (grossIncome - 0)
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome);
+  }
+
+  // 2. Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // 3. Calcular la parte proporcional de ingresos
+  const incomeShare = grossIncome * shareRatio;
+
+  // 4. Evitar resultados negativos
+  return Math.max(0, incomeShare);
+}
+
+
+// Calcular el Net Income para Electric Vehicle Credits
+// Añadida validación de partnershipShare igual que en calculateNetIncome:
+export function calculateNetIncomeElectricVehicleCredits(
+  grossIncome,
+  partnershipShare
+) {
+  // 1. Si partnershipShare es null, undefined o 0, usamos la lógica original (grossIncome - 0)
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome);
+  }
+
+  // 2. Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // 3. Calcular la parte proporcional de ingresos
+  const incomeShare = grossIncome * shareRatio;
+
+  // 4. Evitar resultados negativos
+  return Math.max(0, incomeShare);
+}
+
+
+// Calcular el Net Income para Employee Stock Ownership Plan
+// Añadida validación de partnershipShare igual que en calculateNetIncome:
+export function calculateNetIncomeEmployeeStockOwnershipPlan(
+  grossIncome,
+  sharesValueContributed,
+  partnershipShare
+) {
+  // 1. Si partnershipShare es null, undefined o 0, usamos la lógica original
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome - sharesValueContributed);
+  }
+
+  // 2. Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // 3. Calcular la parte proporcional de ingresos y contribución de acciones
+  const incomeShare    = grossIncome             * shareRatio;
+  const contributionShare = sharesValueContributed * shareRatio;
+
+  // 4. Resta proporcional y evitar resultados negativos
+  const netIncome = incomeShare - contributionShare;
+  return Math.max(0, netIncome);
+}
+
+
+// Calcular el Net Income para Federal Solar Investment Tax Credit
+// Añadida validación de partnershipShare igual que en calculateNetIncome:
+export function calculateNetIncomeFederalSolarInvestmentTaxCredit(
+  grossIncome,
+  partnershipShare
+) {
+  // 1. Si partnershipShare es null, undefined o 0, usamos la lógica original (grossIncome - 0)
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome);
+  }
+
+  // 2. Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // 3. Calcular la parte proporcional de ingresos
+  const incomeShare = grossIncome * shareRatio;
+
+  // 4. Evitar resultados negativos
+  return Math.max(0, incomeShare);
+}
+
+
+// Calcular el Net Income para Financed Insurance for Business Risks
+// Añadida validación de partnershipShare igual que en calculateNetIncome:
+export function calculateNetIncomeFinancedInsurance(
+  grossIncome,
+  financedDeduction,
+  partnershipShare
+) {
+  // 1. Si partnershipShare es null, undefined o 0, usamos la lógica original
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome - financedDeduction);
+  }
+
+  // 2. Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // 3. Calcular la parte proporcional de ingresos y deducción financiada
+  const incomeShare     = grossIncome        * shareRatio;
+  const deductionShare  = financedDeduction  * shareRatio;
+
+  // 4. Resta proporcional y evitar resultados negativos
+  const netIncome = incomeShare - deductionShare;
+  return Math.max(0, netIncome);
+}
+
+
+// Calcular el Net Income para Financed Software Leaseback
+// Añadida validación de partnershipShare al igual que calculateNetIncome:
+export function calculateNetIncomeFinancedSoftware(
+  grossIncome,
+  softwareLeasebackDeduction,
+  partnershipShare
+) {
+  // 1. Si partnershipShare es null, undefined o 0, usamos la lógica original
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome - softwareLeasebackDeduction);
+  }
+
+  // 2. Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // 3. Calcular la parte proporcional de ingresos y deducción software
+  const incomeShare    = grossIncome               * shareRatio;
+  const deductionShare = softwareLeasebackDeduction * shareRatio;
+
+  // 4. Resta proporcional y evitar resultados negativos
+  const netIncome = incomeShare - deductionShare;
+  return Math.max(0, netIncome);
+}
+
+
+// Calcular el Net Income para Foreign Earned Income Exclusion
+export function calculateNetIncomeForeignEarnedIncome(
+  grossIncome,
+  foreignDeduction,
+  partnershipShare
+) {
+  // Si no hay partnershipShare o es 0, aplicamos la resta directa
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome - foreignDeduction);
+  }
+
+  // Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // Calcular parte proporcional de ingresos y deducción
+  const incomeShare    = grossIncome      * shareRatio;
+  const deductionShare = foreignDeduction * shareRatio;
+
+  // Resta proporcional y evitar resultados negativos
+  return Math.max(0, incomeShare - deductionShare);
+}
+
+
+// Calcular el Net Income para Group Health Insurance
+export function calculateNetIncomeGroupHealthInsurance(
+  grossIncome,
+  groupHealthInsuranceDeduction,
+  partnershipShare
+) {
+  // Si no hay partnershipShare o es 0, aplicamos la resta directa
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome - groupHealthInsuranceDeduction);
+  }
+
+  // Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // Calcular parte proporcional de ingresos y deducción de seguro
+  const incomeShare    = grossIncome                   * shareRatio;
+  const deductionShare = groupHealthInsuranceDeduction * shareRatio;
+
+  // Resta proporcional y evitar resultados negativos
+  return Math.max(0, incomeShare - deductionShare);
+}
+
+
+// Calcular el Net Income para Grouping Related Activities
+export function calculateNetIncomeGroupingRelatedActivities(
+  grossIncome,
+  partnershipShare
+) {
+  // Si no hay partnershipShare o es 0, devolvemos el grossIncome
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome);
+  }
+
+  // Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // Calcular la parte proporcional de ingresos
+  const incomeShare = grossIncome * shareRatio;
+
+  // Evitar resultados negativos
+  return Math.max(0, incomeShare);
+}
+
+
+// Calcular el Net Income para Home Office Deduction
+export function calculateNetIncomeHomeOfficeDeduction(
+  grossIncome,
+  homeOfficeDeduction,
+  partnershipShare
+) {
+  // Si no hay partnershipShare o es 0, aplicamos la resta directa
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome - homeOfficeDeduction);
+  }
+
+  // Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // Calcular parte proporcional de ingresos y deducción de home office
+  const incomeShare    = grossIncome             * shareRatio;
+  const deductionShare = homeOfficeDeduction     * shareRatio;
+
+  // Resta proporcional y evitar resultados negativos
+  return Math.max(0, incomeShare - deductionShare);
+}
+
+
+// Calcular el Net Income para Historical Preservation Easement
+export function calculateNetIncomeHistoricalPreservationEasement(
+  grossIncome,
+  partnershipShare
+) {
+  // Si partnershipShare es null, undefined o 0, devolvemos el grossIncome
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome);
+  }
+
+  // Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // Calcular la parte proporcional de ingresos
+  const incomeShare = grossIncome * shareRatio;
+
+  // Evitar resultados negativos
+  return Math.max(0, incomeShare);
+}
+
+
+// Calcular el Net Income para Installment Sale
+export function calculateNetIncomeInstallmentSale(
+  grossIncome,
+  installmentSaleDeduction,
+  partnershipShare
+) {
+  // Si no hay partnershipShare o es 0, aplicamos la resta directa
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome - installmentSaleDeduction);
+  }
+
+  // Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // Calcular parte proporcional de ingresos y deducción
+  const incomeShare    = grossIncome               * shareRatio;
+  const deductionShare = installmentSaleDeduction  * shareRatio;
+
+  // Resta proporcional y evitar resultados negativos
+  return Math.max(0, incomeShare - deductionShare);
+}
+
+
+// Calcular el Net Income para Maximize Itemization Strategies
+export function calculateNetIncomeMaximizeItemization(
+  grossIncome,
+  partnershipShare
+) {
+  // Si no hay partnershipShare o es 0, devolvemos el grossIncome
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome);
+  }
+
+  // Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // Calcular la parte proporcional de ingresos
+  const incomeShare = grossIncome * shareRatio;
+
+  // Evitar resultados negativos
+  return Math.max(0, incomeShare);
+}
+
+
+// Calcular el Net Income para Noncash Charitable Contributions
+export function calculateNetIncomeNoncashCharitableContributions(
+  grossIncome,
+  partnershipShare
+) {
+  // Si no hay partnershipShare o es 0, devolvemos el grossIncome
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome);
+  }
+
+  // Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // Calcular la parte proporcional de ingresos
+  const incomeShare = grossIncome * shareRatio;
+
+  // Evitar resultados negativos
+  return Math.max(0, incomeShare);
+}
+
+
+// Calcular el Net Income para Oil And Gas Drilling Cost
+export function calculateNetIncomeOilAndGasDrillingCost(
+  grossIncome,
+  oilAndGasDrillingCostDeduction,
+  partnershipShare
+) {
+  // Si no hay partnershipShare o es 0, aplicamos la resta directa
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome - oilAndGasDrillingCostDeduction);
+  }
+
+  // Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // Calcular parte proporcional de ingresos y deducción
+  const incomeShare    = grossIncome                     * shareRatio;
+  const deductionShare = oilAndGasDrillingCostDeduction  * shareRatio;
+
+  // Resta proporcional y evitar resultados negativos
+  return Math.max(0, incomeShare - deductionShare);
+}
+
+
+// Calcular el Net Income para Oil And Gas MLP
+export function calculateNetIncomeOilAndGasMLP(
+  grossIncome,
+  partnershipShare
+) {
+  // Si no hay partnershipShare o es 0, devolvemos el grossIncome
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome);
+  }
+
+  // Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // Calcular la parte proporcional de ingresos
+  const incomeShare = grossIncome * shareRatio;
+
+  // Evitar resultados negativos
+  return Math.max(0, incomeShare);
+}
+
+
+// Calcular el Net Income para Ordinary Loss On Worthless Stock
+export function calculateNetIncomeOrdinaryLossOnWorthlessStock(
+  grossIncome,
+  ordinaryLossDeduction,
+  partnershipShare
+) {
+  // 1. Si partnershipShare es null, undefined o 0, usamos la lógica original
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome - ordinaryLossDeduction);
+  }
+
+  // 2. Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // 3. Calcular la parte proporcional de ingresos y deducción
+  const incomeShare    = grossIncome              * shareRatio;
+  const deductionShare = ordinaryLossDeduction    * shareRatio;
+
+  // 4. Resta proporcional y evitar resultados negativos
+  return Math.max(0, incomeShare - deductionShare);
+}
+
+// Calcular el Net Income para Real Estate Development Charitable
+export function calculateNetIncomeRealEstateDevelopmentCharitable(
+  grossIncome,
+  partnershipShare
+) {
+  // Si no hay partnershipShare o es 0, devolvemos el grossIncome directo
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome);
+  }
+
+  // Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // Calcular la parte proporcional de ingresos
+  const incomeShare = grossIncome * shareRatio;
+
+  // Evitar resultados negativos
+  return Math.max(0, incomeShare);
+}
+
+
+// Calcular el Net Income para Restricted Stock Units
+export function calculateNetIncomeRestrictedStockUnits(
+  grossIncome,
+  partnershipShare
+) {
+  // Si partnershipShare es null, undefined o 0, devolvemos el grossIncome directo
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome);
+  }
+
+  // Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // Calcular la parte proporcional de ingresos
+  const incomeShare = grossIncome * shareRatio;
+
+  // Evitar resultados negativos
+  return Math.max(0, incomeShare);
+}
+
+
+// Calcular el Net Income para Retiree Planning
+export function calculateNetIncomeRetireePlanning(
+  grossIncome,
+  partnershipShare
+) {
+  // Si partnershipShare es null, undefined o 0, devolvemos el grossIncome directo
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome);
+  }
+
+  // Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // Calcular la parte proporcional de ingresos
+  const incomeShare = grossIncome * shareRatio;
+
+  // Evitar resultados negativos
+  return Math.max(0, incomeShare);
+}
+
+
+// Calcular el Net Income para S-Corp Revocation
+export function calculateNetIncomeSCorpRevocation(
+  grossIncome,
+  partnershipShare
+) {
+  // Si partnershipShare es null, undefined o 0, devolvemos el grossIncome directo
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome);
+  }
+
+  // Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // Calcular la parte proporcional de ingresos
+  const incomeShare = grossIncome * shareRatio;
+
+  // Evitar resultados negativos
+  return Math.max(0, incomeShare);
+}
+
+
+// Calcular el Net Income para Secure Act 20 Strategies
+export function calculateNetIncomeSecureAct20Strategies(
+  grossIncome,
+  partnershipShare
+) {
+  // Si partnershipShare es null, undefined o 0, devolvemos el grossIncome directo
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome);
+  }
+
+  // Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // Calcular la parte proporcional de ingresos
+  const incomeShare = grossIncome * shareRatio;
+
+  // Evitar resultados negativos
+  return Math.max(0, incomeShare);
+}
+
+
+// Calcular el Net Income para PassThroughEntity
+export function calculateNetIncomePassThroughEntity(
+  grossIncome,
+  partnershipShare
+) {
+  // Si no hay partnershipShare o es 0, devolvemos el grossIncome directo
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome);
+  }
+
+  // Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // Calcular la parte proporcional de ingresos
+  const incomeShare = grossIncome * shareRatio;
+
+  // Evitar resultados negativos
+  return Math.max(0, incomeShare);
+}
+
+
+// Calcular el Net Income para Passive Loss And Pigs
+export function calculateNetIncomePassiveLossAndPigs(
+  grossIncome,
+  partnershipShare
+) {
+  // Si partnershipShare es null, undefined o 0, devolvemos el grossIncome directo
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome);
+  }
+
+  // Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // Calcular la parte proporcional de ingresos
+  const incomeShare = grossIncome * shareRatio;
+
+  // Evitar resultados negativos
+  return Math.max(0, incomeShare);
+}
+
+
+// Calcular el Net Income para Primary Sale Exclusion
+export function calculateNetIncomePrimarySaleExclusion(
+  grossIncome,
+  partnershipShare
+) {
+  // Si no hay partnershipShare o es 0, devolvemos el grossIncome directo
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome);
+  }
+
+  // Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // Calcular la parte proporcional de ingresos
+  const incomeShare = grossIncome * shareRatio;
+
+  // Evitar resultados negativos
+  return Math.max(0, incomeShare);
+}
+
+
+// Calcular el Net Income para Private Family Foundation
+export function calculateNetIncomePrivateFamilyFoundation(
+  grossIncome,
+  partnershipShare
+) {
+  // Si no hay partnershipShare o es 0, devolvemos el grossIncome directo
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome);
+  }
+
+  // Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // Calcular la parte proporcional de ingresos
+  const incomeShare = grossIncome * shareRatio;
+
+  // Evitar resultados negativos
+  return Math.max(0, incomeShare);
+}
+
+
+// Calcular el Net Income para Qualified Charitable Distributions
+export function calculateNetIncomeQualifiedCharitableDistributions(
+  grossIncome,
+  totalDeductionQCDS,
+  partnershipShare
+) {
+  // Si no hay partnershipShare o es 0, aplicamos la resta directa
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome - totalDeductionQCDS);
+  }
+
+  // Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // Calcular parte proporcional de ingresos y deducción
+  const incomeShare    = grossIncome          * shareRatio;
+  const deductionShare = totalDeductionQCDS   * shareRatio;
+
+  // Resta proporcional y evitar resultados negativos
+  return Math.max(0, incomeShare - deductionShare);
+}
+
+
+// Calcular el Net Income para Series I Bond
+export function calculateNetIncomeSeriesIBond(
+  grossIncome,
+  partnershipShare
+) {
+  // Si no hay partnershipShare o es 0, devolvemos el grossIncome directo
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome);
+  }
+
+  // Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // Calcular la parte proporcional de ingresos
+  const incomeShare = grossIncome * shareRatio;
+
+  // Evitar resultados negativos
+  return Math.max(0, incomeShare);
+}
+
+
+// Calcular el Net Income para Short Term Rental
+export function calculateNetIncomeShortTermRental(
+  grossIncome,
+  partnershipShare
+) {
+  // Si no hay partnershipShare o es 0, devolvemos el grossIncome directo
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome);
+  }
+
+  // Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // Calcular la parte proporcional de ingresos
+  const incomeShare = grossIncome * shareRatio;
+
+  // Evitar resultados negativos
+  return Math.max(0, incomeShare);
+}
+
+
+// Calcular el Net Income para Bonus Depreciation
+export function calculateNetIncomeBonusDepreciation(
+  grossIncome,
+  bonusDepreciationDeduction,
+  partnershipShare
+) {
+  // Si no hay partnershipShare o es 0, aplicamos la resta directa
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome - bonusDepreciationDeduction);
+  }
+
+  // Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // Calcular parte proporcional de ingresos y deducción
+  const incomeShare    = grossIncome               * shareRatio;
+  const deductionShare = bonusDepreciationDeduction * shareRatio;
+
+  // Resta proporcional y evitar resultados negativos
+  return Math.max(0, incomeShare - deductionShare);
+}
+
+
+// Calcular el Net Income para Solar Passive Investment
+export function calculateNetIncomeSolarPassiveInvestment(
+  grossIncome,
+  SPID,
+  partnershipShare
+) {
+  // Si no hay partnershipShare o es 0, aplicamos la resta directa
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome - SPID);
+  }
+
+  // Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // Calcular parte proporcional de ingresos y deducción
+  const incomeShare    = grossIncome * shareRatio;
+  const deductionShare = SPID         * shareRatio;
+
+  // Resta proporcional y evitar resultados negativos
+  return Math.max(0, incomeShare - deductionShare);
+}
+
+
+// Calcular el Net Income para Tax Free Income
+export function calculateNetIncomeTaxFreeIncome(
+  grossIncome,
+  partnershipShare
+) {
+  // Si no hay partnershipShare o es 0, devolvemos el grossIncome directo
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome);
+  }
+
+  // Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // Calcular la parte proporcional de ingresos
+  const incomeShare = grossIncome * shareRatio;
+
+  // Evitar resultados negativos
+  return Math.max(0, incomeShare);
+}
+
+
+// Calcular el Net Income para Work Opportunity Tax Credit
+export function calculateNetIncomeWorkOpportunityTaxCredit(
+  grossIncome,
+  workOpportunityTaxCreditDeduction,
+  partnershipShare
+) {
+  // Si no hay partnershipShare o es 0, aplicamos la resta directa
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome - workOpportunityTaxCreditDeduction);
+  }
+
+  // Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // Calcular parte proporcional de ingresos y deducción
+  const incomeShare    = grossIncome                        * shareRatio;
+  const deductionShare = workOpportunityTaxCreditDeduction  * shareRatio;
+
+  // Resta proporcional y evitar resultados negativos
+  return Math.max(0, incomeShare - deductionShare);
+}
+ 
+
+// Calcular el Net Income para 1031 Exchange
+export function calculateNetIncome1031Exchange(
+  grossIncome,
+  partnershipShare
+) {
+  // Si no hay partnershipShare o es 0, devolvemos el grossIncome directo
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome);
+  }
+
+  // Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // Calcular la parte proporcional de ingresos
+  const incomeShare = grossIncome * shareRatio;
+
+  // Evitar resultados negativos
+  return Math.max(0, incomeShare);
+}
+
+
+// Calcular el Net Income para Defined Benefit Plan
+export function calculateNetIncomeDefinedBenefitPlan(
+  grossIncome,
+  partnershipShare
+) {
+  // Si no hay partnershipShare o es 0, devolvemos el grossIncome directo
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome);
+  }
+
+  // Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // Calcular la parte proporcional de ingresos
+  const incomeShare = grossIncome * shareRatio;
+
+  // Evitar resultados negativos
+  return Math.max(0, incomeShare);
+}
+
+
+// Calcular el Net Income para Structured Investment Program
+export function calculateNetIncomeStructuredInvestmentProgram(
+  grossIncome,
+  structuredInvestmentProgramDeduction,
+  partnershipShare
+) {
+  // Si no hay partnershipShare o es 0, aplicamos la resta directa
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome - structuredInvestmentProgramDeduction);
+  }
+
+  // Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // Calcular parte proporcional de ingresos y deducción
+  const incomeShare    = grossIncome                            * shareRatio;
+  const deductionShare = structuredInvestmentProgramDeduction   * shareRatio;
+
+  // Resta proporcional y evitar resultados negativos
+  return Math.max(0, incomeShare - deductionShare);
+}
+
+// Calcular el Net Income para Self-Directed IRA & 401K
+export function calculateNetIncomeSelfDirectedIRA401K(
+  grossIncome,
+  partnershipShare
+) {
+  // Si no hay partnershipShare o es 0, devolvemos el grossIncome directo
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome);
+  }
+
+  // Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // Calcular la parte proporcional de ingresos
+  const incomeShare = grossIncome * shareRatio;
+
+  // Evitar resultados negativos
+  return Math.max(0, incomeShare);
+}
+
+
+// Calcular el Net Income para Day Trader Tax Status
+export function calculateNetIncomeDayTraderTaxStatus(
+  grossIncome,
+  partnershipShare
+) {
+  // Si no hay partnershipShare o es 0, devolvemos el grossIncome directo
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome);
+  }
+
+  // Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // Calcular la parte proporcional de ingresos
+  const incomeShare = grossIncome * shareRatio;
+
+  // Evitar resultados negativos
+  return Math.max(0, incomeShare);
+}
+
+
+// Calcular el Net Income para College Student Strategies
+export function calculateNetIncomeCollegeStudentStrategies(
+  grossIncome,
+  partnershipShare
+) {
+  // Si no hay partnershipShare o es 0, devolvemos el grossIncome directo
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome);
+  }
+
+  // Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // Calcular la parte proporcional de ingresos
+  const incomeShare = grossIncome * shareRatio;
+
+  // Evitar resultados negativos
+  return Math.max(0, incomeShare);
+}
+
+
+// Calcular el Net Income para Sell Home to S-Corp
+export function calculateNetIncomeSellHomeToSCorp(
+  grossIncome,
+  partnershipShare
+) {
+  // 1. Si partnershipShare es null, undefined o 0, devolvemos el grossIncome directo
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome);
+  }
+
+  // 2. Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // 3. Calcular la parte proporcional de ingresos
+  const incomeShare = grossIncome * shareRatio;
+
+  // 4. Evitar resultados negativos
+  return Math.max(0, incomeShare);
+}
+
+
+// Calcular el Net Income para Gifting Stock Strategy
+export function calculateNetIncomeGiftingStockStrategy(
+  grossIncome,
+  partnershipShare
+) {
+  // Si no hay partnershipShare o es 0, devolvemos el grossIncome directo
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome);
+  }
+
+  // Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // Calcular la parte proporcional de ingresos
+  const incomeShare = grossIncome * shareRatio;
+
+  // Evitar resultados negativos
+  return Math.max(0, incomeShare);
+}
+
+
+// Calcular el Net Income para Real Estate Options
+export function calculateNetIncomeRealEstateOptions(
+  grossIncome,
+  partnershipShare
+) {
+  // Si no hay partnershipShare o es 0, devolvemos el grossIncome directo
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome);
+  }
+
+  // Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // Calcular la parte proporcional de ingresos
+  const incomeShare = grossIncome * shareRatio;
+
+  // Evitar resultados negativos
+  return Math.max(0, incomeShare);
+}
+
+
+// Calcular el Net Income para Married Filing Separate
+export function calculateNetIncomeMarriedFilingSeparate(
+  grossIncome,
+  partnershipShare
+) {
+  // Si no hay partnershipShare o es 0, devolvemos el grossIncome directo
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome);
+  }
+
+  // Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // Calcular la parte proporcional de ingresos
+  const incomeShare = grossIncome * shareRatio;
+
+  // Evitar resultados negativos
+  return Math.max(0, incomeShare);
+}
+
+
+// Calcular el Net Income para Individual Planning Ideas
+export function calculateNetIncomeIndividualPlanningIdeas(
+  grossIncome,
+  partnershipShare
+) {
+  // Si no hay partnershipShare o es 0, devolvemos el grossIncome directo
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome);
+  }
+
+  // Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // Calcular la parte proporcional de ingresos
+  const incomeShare = grossIncome * shareRatio;
+
+  // Evitar resultados negativos
+  return Math.max(0, incomeShare);
+}
+
+
+// Calcular el Net Income para Net Investment Income Tax
+export function calculateNetIncomeNetInvestmentIncomeTax(
+  grossIncome,
+  partnershipShare
+) {
+  // Si no hay partnershipShare o es 0, devolvemos el grossIncome directo
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome);
+  }
+
+  // Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // Calcular la parte proporcional de ingresos
+  const incomeShare = grossIncome * shareRatio;
+
+  // Evitar resultados negativos
+  return Math.max(0, incomeShare);
+}
+
+
+// Calcular el Net Income para Miscellaneous Tax Credits
+export function calculateNetIncomeMiscTaxCredits(
+  grossIncome,
+  partnershipShare
+) {
+  // Si no hay partnershipShare o es 0, devolvemos el grossIncome directo
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome);
+  }
+
+  // Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // Calcular la parte proporcional de ingresos
+  const incomeShare = grossIncome * shareRatio;
+
+  // Evitar resultados negativos
+  return Math.max(0, incomeShare);
+}
+
+
+// Calcular el Net Income para Rental Strategies & 754 Election
+export function calculateNetIncomeRentalStrategies754Election(
+  grossIncome,
+  partnershipShare
+) {
+  // Si no hay partnershipShare o es 0, devolvemos el grossIncome directo
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome);
+  }
+
+  // Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // Calcular la parte proporcional de ingresos
+  const incomeShare = grossIncome * shareRatio;
+
+  // Evitar resultados negativos
+  return Math.max(0, incomeShare);
+}
+
+// Calcular el Net Income para Reasonable Compensation Analysis
+export function calculateNetIncomeReasonableCompAnalysis(
+  grossIncome,
+  partnershipShare
+) {
+  // Si no hay partnershipShare o es 0, devolvemos el grossIncome directo
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome);
+  }
+
+  // Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // Calcular la parte proporcional de ingresos
+  const incomeShare = grossIncome * shareRatio;
+
+  // Evitar resultados negativos
+  return Math.max(0, incomeShare);
+}
+
+
+// Calcular el Net Income para Real Estate Professional
+export function calculateNetIncomeRealEstateProfessional(
+  grossIncome,
+  partnershipShare
+) {
+  // Si no hay partnershipShare o es 0, devolvemos el grossIncome directo
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome);
+  }
+
+  // Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // Calcular la parte proporcional de ingresos
+  const incomeShare = grossIncome * shareRatio;
+
+  // Evitar resultados negativos
+  return Math.max(0, incomeShare);
+}
+
+
+// Calcular el Net Income para Captive Insurance
+export function calculateNetIncomeCaptiveInsurance(
+  grossIncome,
+  partnershipShare
+) {
+  // Si no hay partnershipShare o es 0, devolvemos el grossIncome directo
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome);
+  }
+
+  // Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // Calcular la parte proporcional de ingresos
+  const incomeShare = grossIncome * shareRatio;
+
+  // Evitar resultados negativos
+  return Math.max(0, incomeShare);
+}
+
+
+// Calcular el Net Income para Charitable LLC
+export function calculateNetIncomeCharitableLLC(
+  grossIncome,
+  partnershipShare
+) {
+  // Si no hay partnershipShare o es 0, devolvemos el grossIncome directo
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome);
+  }
+
+  // Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // Calcular la parte proporcional de ingresos
+  const incomeShare = grossIncome * shareRatio;
+
+  // Evitar resultados negativos
+  return Math.max(0, incomeShare);
+}
+
+
+// Calcular el Net Income para Sole Proprietor
+export function calculateNetIncomeSoleProprietor(
+  grossIncome,
+  partnershipShare
+) {
+  // Si no hay partnershipShare o es 0, devolvemos el grossIncome directo
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome);
+  }
+
+  // Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // Calcular la parte proporcional de ingresos
+  const incomeShare = grossIncome * shareRatio;
+
+  // Evitar resultados negativos
+  return Math.max(0, incomeShare);
+}
+
+
+// Calcular el Net Income para Choice of Entity
+export function calculateNetIncomeChoiceOfEntity(
+  grossIncome,
+  partnershipShare
+) {
+  // Si no hay partnershipShare o es 0, devolvemos el grossIncome directo
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome);
+  }
+
+  // Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // Calcular la parte proporcional de ingresos
+  const incomeShare = grossIncome * shareRatio;
+
+  // Evitar resultados negativos
+  return Math.max(0, incomeShare);
+}
+
+
+// Calcular el Net Income para Choice of Entity - C Corporation
+export function calculateNetIncomeChoiceOfEntityCCorp(
+  grossIncome,
+  partnershipShare
+) {
+  // Si no hay partnershipShare o es 0, devolvemos el grossIncome directo
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome);
+  }
+
+  // Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // Calcular la parte proporcional de ingresos
+  const incomeShare = grossIncome * shareRatio;
+
+  // Evitar resultados negativos
+  return Math.max(0, incomeShare);
+}
+
+
+// Calcular el Net Income para Choice of Entity - Partnership
+export function calculateNetIncomeChoiceOfEntityPartnership(
+  grossIncome,
+  partnershipShare
+) {
+  // Si no hay partnershipShare o es 0, devolvemos el grossIncome directo
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome);
+  }
+
+  // Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // Calcular la parte proporcional de ingresos
+  const incomeShare = grossIncome * shareRatio;
+
+  // Evitar resultados negativos
+  return Math.max(0, incomeShare);
+}
+
+
+// Calcular el Net Income para Choice of Entity - S Corporation
+export function calculateNetIncomeChoiceOfEntitySCorp(
+  grossIncome,
+  partnershipShare
+) {
+  // Si no hay partnershipShare o es 0, devolvemos el grossIncome directo
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome);
+  }
+
+  // Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // Calcular la parte proporcional de ingresos
+  const incomeShare = grossIncome * shareRatio;
+
+  // Evitar resultados negativos
+  return Math.max(0, incomeShare);
+}
+
+
+// Calcular el Net Income para Harvesting Crypto Investors
+export function calculateNetIncomeHarvestingCryptoInvestors(
+  grossIncome,
+  partnershipShare
+) {
+  // Si no hay partnershipShare o es 0, devolvemos el grossIncome directo
+  if (partnershipShare == null || partnershipShare === 0) {
+    return Math.max(0, grossIncome);
+  }
+
+  // Normalizar partnershipShare a decimal (0–1)
+  const shareRatio = partnershipShare > 1
+    ? partnershipShare / 100
+    : partnershipShare;
+
+  // Calcular la parte proporcional de ingresos
+  const incomeShare = grossIncome * shareRatio;
+
+  // Evitar resultados negativos
+  return Math.max(0, incomeShare);
 }
 
-//calcular el Net income accountableplan
-export function calculateNetIncomeAccountableplan(grossIncome, totalReimbursableExpenses) {
-  return Math.max(0, grossIncome - totalReimbursableExpenses); 
-}
-
-// CALCULAR NET INCOME PARA ADOTIONPLAN
-export function calculateNetIncomeAdoptionPlan(grossIncome) {
-  return Math.max(0, grossIncome ); 
-}
-//calcular net income para active real 
-export function calculateNetIncomeActiveRealEstate(grossIncome){
-  return Math.max(0, grossIncome );
-}
-
-// calcular net inoome para Backdoor Roth
-export function calculateNetIncomeBackdoorRoth(grossIncome, ) {
-  return Math.max(0, grossIncome ); 
-}
-
-
-//calcular net income Cancellation By Insolvency
-export function calculateNetIncomeCancellationByInsolvency(grossIncome, deductionCancellation) {
-  return Math.max(0, grossIncome - deductionCancellation ); 
-}
-
-// calcular el Net income para savingsPlan
-export function calculateNetIncomeSavingsPlan(grossIncome) {
-  return Math.max(0, grossIncome); // Evita valores negativos
-}
-//calcular el Net income para educationAssistance
-export function calculateNetIncomeEducationAssistance(grossIncome, totalEducationalAssistance) {
-  return Math.max(0, grossIncome - totalEducationalAssistance); // Evita valores negativos
-}
-
-//calcular el Net income para educationTaxCredit
-export function calculateNetIncomeEducationTaxCredit(grossIncome) {
-  return Math.max(0, grossIncome ); // Evita valores negativos
-}
-
-//calcular el Net income para reimbursement
-export function calculateNetIncomeHealthReimbursement(grossIncome, totalBenefits) {
-  return Math.max(0, grossIncome - totalBenefits); // Evita valores negativos
-}
-
-//calcular el Net income para incomeShifting
-export function calculateNetIncomeIncomeShifting(grossIncome, totalIncomeShifted) {
-  return Math.max(0, grossIncome - totalIncomeShifted); // Evita valores negativos
-}
-
-//calcular el Net income para lifeInsurance
-export function calculateNetIncomeLifeInsurance(grossIncome) {
-  return Math.max(0, grossIncome ); // Evita valores negativos
-}
-
-//calcular el Net income para lifetimeLearningCredit
-export function calculateNetIncomeMaximizeMiscellaneousExpenses(grossIncome, totalNetDeductionMaxi) {
-  return Math.max(0, grossIncome - totalNetDeductionMaxi); // Evita valores negativos 
-}
-//calcular el Net income para Meals Deduction
-
-export function calculateNetIncomeMealsDeduction(grossIncome, deductionMeals) {
-  return Math.max(0, grossIncome - deductionMeals); // Evita valores negativos
-}
-
-//calcular el Net income para Operating Losses
-export function calculateNetIncomeOperatingLosses(grossIncome, totalNOL) {
-  return Math.max(0, grossIncome - totalNOL); // Evita valores negativos
-}
-
-//cacular el Net income para solo401k
-export function calcularNetIncomeSolo401k(grossIncome, deductionSolo401k) {
-  return Math.max(0, grossIncome - deductionSolo401k); // Evita valores negativos
-}
-//calcular el Net income para researchAndDevelopmentCredit
-export function calculateNetIncomeResearchAndDevelopmentCredit(grossIncome) {
-  return Math.max(0, grossIncome ); // Evita valores negativos
-}
-//calcular el Net income para rothIRA
-export function calculateNetIncomeRothIRA(grossIncome) {
-  return Math.max(0, grossIncome ); // Evita valores negativos
-}
-//calcular el Net income para healthInsuranceDeduction
-export function calculateNetIncomeHealthInsuranceDeduction(grossIncome, totalContribution) {
-  return Math.max(0, grossIncome - totalContribution); // Evita valores negativos
-}
-
-//calcular el Net income para healthInsuranceDeduction2
-export function calculateNetIncomeHealthInsuranceDeduction2 (grossIncome, incomeReduction ) {
-  return Math.max(0, grossIncome - incomeReduction); // Evita valores negativos
-}
-//calcular el Net income para SimpleIRA
-export function calculateNetIncomeSimpleIra (grossIncome, totalEmployerContribution) {
-  return Math.max(0, grossIncome - totalEmployerContribution); // Evita valores negativos
-}
-//calcular net income para startupcost
-export function calculateNetIncomeStartupCost (grossIncome,deductionStartup){
-  return Math.max(0, grossIncome - deductionStartup); // Evita valores negativos
-}
-// calcular net income para StateTaxSaving
-export function calculateNetIncomeStateTaxSavings(grossIncome){
-  return Math.max(0, grossIncome ); // Evita valores negativos
-}
-
-//calcular Net income para TraditionalIRA
-export function calculateNetIncomeTraditionalIRA (grossIncome, totalDeductionTraditionalIRA) {
-  return Math.max(0, grossIncome - totalDeductionTraditionalIRA ); // Evita valores negativos
-}
-
-
-//calcular Net income para Unreimbursed Expenses
-export function calculateNetIncomeUnreimbursedExpenses (grossIncome, reductionUnreimbursed){
-  return Math.max(0, grossIncome - reductionUnreimbursed); // Evita valores negativos
-}
-
-//calcular Net Income para Charitable Donation Of Appreciated
-export function calculateNetIncomeCharitableDonation (grossIncome ){
-  return Math.max(0, grossIncome ); // Evita valores negativos
-}
-//calcular Net Income para influencer
-export function calculateNetIncomeInfluencer (grossIncome, deductionInfluencer){
-  return Math.max(0, grossIncome - deductionInfluencer); // Evita valores negativos
-}
-
-// calcular net income para deferred Capital Gain
-export function calculateNetIncomeCapital (grossIncome){
-  return Math.max(0, grossIncome); // Evita valores negativos
-}
-//calcular net income para covul
-export function calculateNetIncomeCovul(grossIncome) {
-  return Math.max(0, grossIncome); // Evita valores negativos
-}
-//calcular net income para depletionDeduction
-export function calculateNetIncomeDepletionDeduction (grossIncome, yearDepletion){
-  return Math.max(0, grossIncome - yearDepletion); // Evita valores negativos
-}
-
-//calcular Net income para Qualified Dividends
-export function calculateNetIncomeQualifiedDividends (grossIncome){
-  return Math.max(0, grossIncome ); // Evita valores negativos
-}
-
-
-//calcular net income para Donor Advised Fund
-export function calculateNetIncomeDonorAdvisedFund (grossIncome){
-  return Math.max(0, grossIncome ); // Evita valores negativos
-}
-
-//calcular Net income para Electric vehicle credits
-export function calculateNetIncomeElectricVehicleCredits (grossIncome){
-  return Math.max(0, grossIncome ); // Evita valores negativos
-}
-
-// calcular net income para Employee Stock Ownership Plan
-export function calculateNetIncomeEmployeeStockOwnershipPlan (grossIncome, sharesValueContributed){
-  return Math.max(0, grossIncome - sharesValueContributed); // Evita valores negativos
-}
-
-//calcular net income para Federal Solar Investment Tax Credit
-export function calculateNetIncomeFederalSolarInvestmentTaxCredit (grossIncome){
-  return Math.max(0, grossIncome ); // Evita valores negativos
-}
-
-//calcular net income para FINANCED INSURANCE FOR BUSINESS RISKS
-export function calculateNetIncomeFinancedInsurance (grossIncome, financedDeduction){
-  return Math.max(0, grossIncome - financedDeduction ); // Evita valores negativos
-}
-
-//calcular net income para FINANCED Software
-export function calculateNetIncomeFinancedSoftware (grossIncome, softwareLeasebackDeduction){
-  return Math.max(0, grossIncome - softwareLeasebackDeduction ); // Evita valores negativos
-}
-
-//calcular net income para Foreign Earned Income Exclusion
-export function calculateNetIncomeForeignEarnedIncome (grossIncome, foreignDeduction){
-  return Math.max(0, grossIncome - foreignDeduction ); // Evita valores negativos
-}
-
-// calcular net income para Group Health Insurance
-export function calculateNetIncomeGroupHealthInsurance (grossIncome, groupHealthInsuranceDeduction){
-  return Math.max(0, grossIncome - groupHealthInsuranceDeduction ); // Evita valores negativos
-}
-
-//calcular net income para Grouping Related Activities
-export function calculateNetIncomeGroupingRelatedActivities (grossIncome){
-  return Math.max(0, grossIncome ); // Evita valores negativos  
-}
-
-//calcular net income para Home Office Deduction
-export function calculateNetIncomeHomeOfficeDeduction (grossIncome, homeOfficeDeduction){
-  return Math.max(0, grossIncome - homeOfficeDeduction ); // Evita valores negativos
-}
-
-//calcular net income para Historical Preservation Easement
-export function calculateNetIncomeHistoricalPreservationEasement (grossIncome ){
-  return Math.max(0, grossIncome ); // Evita valores negativos
-}
-
-//calcular net income para Installment Sale
-export function calculateNetIncomeInstallmentSale (grossIncome, installmentSaleDeduction ){
-  return Math.max(0, grossIncome - installmentSaleDeduction ); // Evita valores negativos
-}
-//calcular net income para Maximize Itemization Strategies
-export function calculateNetIncomeMaximizeItemization (grossIncome ){
-  return Math.max(0, grossIncome  ); // Evita valores negativos
-}
-
-//calcular net income para Noncash Charitable Contributions
-export function calculateNetIncomeNoncashCharitableContributions (grossIncome ){
-  return Math.max(0, grossIncome  ); // Evita valores negativos
-}
-//calcular net income para  Oil And Gas Drilling Cost
-export function calculateNetIncomeOilAndGasDrillingCost (grossIncome, oilAndGasDrillingCostDeduction ){
-  return Math.max(0, grossIncome - oilAndGasDrillingCostDeduction ); // Evita valores negativos
-}
-
-//calcular net income para Oil And Gas MLP
-export function calculateNetIncomeOilAndGasMLP (grossIncome ){
-  return Math.max(0, grossIncome  ); // Evita valores negativos
-}
-//calcular net income para OrdinaryLossOnWorthlessStock
-export function calculateNetIncomeOrdinaryLossOnWorthlessStock (grossIncome, ordinaryLossDeduction ){
-  return Math.max(0, grossIncome - ordinaryLossDeduction  ); // Evita valores negativos
-}
-//calcular net income para Real Estate Development Charitable
-export function calculateNetIncomeRealEstateDevelopmentCharitable(grossIncome) {
-  return Math.max(0, grossIncome); // Evita valores negativos
-}
-
-//calcular net income para Restricted Stock Units
-export function calculateNetIncomeRestrictedStockUnits(grossIncome) {
-  return Math.max(0, grossIncome); // Evita valores negativos
-}
-
-//calcular net income para Retiree Planning
-export function calculateNetIncomeRetireePlanning(grossIncome) {
-  return Math.max(0, grossIncome); // Evita valores negativos
-}
-
-//calcular net income para S-Corp Revocation
-export function calculateNetIncomeSCorpRevocation(grossIncome) {
-  return Math.max(0, grossIncome); // Evita valores negativos
-}
-
-//calcular net income para Secure Act 20 Strategies
-export function calculateNetIncomeSecureAct20Strategies(grossIncome) {
-  return Math.max(0, grossIncome); // Evita valores negativos
-}
-
-//calcular net income para PassThroughEntity
-export function calculateNetIncomePassThroughEntity(grossIncome) {
-  return Math.max(0, grossIncome); // Evita valores negativos
-}
-
-//calcular net income para PassiveLossAndPigs
-export function calculateNetIncomePassiveLossAndPigs(grossIncome) {
-  return Math.max(0, grossIncome); // Evita valores negativos
-}
-
-//calcular net income para PrimarySaleExclusion
-export function calculateNetIncomePrimarySaleExclusion(grossIncome) {
-  return Math.max(0, grossIncome); // Evita valores negativos
-}
-
-//calcular net income para PrivateFamilyFoundation
-export function calculateNetIncomePrivateFamilyFoundation(grossIncome) {
-  return Math.max(0, grossIncome); // Evita valores negativos
-}
-
-//calcular net income para QualifiedCharitableDistributions
-export function calculateNetIncomeQualifiedCharitableDistributions(grossIncome, totalDeductionQCDS) {
-  return Math.max(0, grossIncome - totalDeductionQCDS); // Evita valores negativos
-}
-
-//calcular net income para Series I Bond
-export function calculateNetIncomeSeriesIBond(grossIncome) {
-  return Math.max(0, grossIncome ); // Evita valores negativos
-}
-
-//calcular net income para Short Term Rental
-export function calculateNetIncomeShortTermRental(grossIncome) {
-  return Math.max(0, grossIncome ); // Evita valores negativos
-}
-
-//calcular net income para Bonus Depreciation
-export function calculateNetIncomeBonusDepreciation(grossIncome, bonusDepreciationDeduction) {
-  return Math.max(0, grossIncome - bonusDepreciationDeduction ); // Evita valores negativos
-}
-
-//calcular net income para Solar Passive Investment
-export function calculateNetIncomeSolarPassiveInvestment(grossIncome, SPID) {
-  return Math.max(0, grossIncome - SPID ); // Evita valores negativos
-}
-
-//calcular net income para Tax Free Income
-export function calculateNetIncomeTaxFreeIncome(grossIncome) {
-  return Math.max(0, grossIncome  ); // Evita valores negativos
-}
-
-//calcular net income para Work Opportunity Tax Credit
-export function calculateNetIncomeWorkOpportunityTaxCredit(grossIncome, workOpportunityTaxCreditDeduction) {
-  return Math.max(0, grossIncome - workOpportunityTaxCreditDeduction ); // Evita valores negativos
-}   
-
-//calcular net income para 1031 Exchange
-export function calculateNetIncome1031Exchange(grossIncome) {
-  return Math.max(0, grossIncome  ); // Evita valores negativos
-}
-
-//calcular net income para Defined Benefit Plan
-export function calculateNetIncomeDefinedBenefitPlan(grossIncome) {
-  return Math.max(0, grossIncome  ); // Evita valores negativos
-}
-
-//calcular net income para Structured Investment Program
-export function calculateNetIncomeStructuredInvestmentProgram(grossIncome, structuredInvestmentProgramDeduction) {
-  return Math.max(0, grossIncome - structuredInvestmentProgramDeduction ); // Evita valores negativos
-}
-// Calcular net income para Self-Directed IRA & 401K
-export function calculateNetIncomeSelfDirectedIRA401K(grossIncome) {
-  return Math.max(0, grossIncome);
-}
-
-// Calcular net income para Day Trader Tax Status
-export function calculateNetIncomeDayTraderTaxStatus(grossIncome) {
-  return Math.max(0, grossIncome);
-}
-
-// Calcular net income para College Student Strategies
-export function calculateNetIncomeCollegeStudentStrategies(grossIncome) {
-  return Math.max(0, grossIncome);
-}
-
-// Calcular net income para Sell Home to S-Corp
-export function calculateNetIncomeSellHomeToSCorp(grossIncome) {
-  return Math.max(0, grossIncome);
-}
-
-// Calcular net income para Gifting Stock Strategy
-export function calculateNetIncomeGiftingStockStrategy(grossIncome) {
-  return Math.max(0, grossIncome);
-}
-
-// Calcular net income para Real Estate Options
-export function calculateNetIncomeRealEstateOptions(grossIncome) {
-  return Math.max(0, grossIncome);
-}
-
-// Calcular net income para Married Filing Separate
-export function calculateNetIncomeMarriedFilingSeparate(grossIncome) {
-  return Math.max(0, grossIncome);
-}
-
-// Calcular net income para Individual Planning Ideas
-export function calculateNetIncomeIndividualPlanningIdeas(grossIncome) {
-  return Math.max(0, grossIncome);
-}
-
-// Calcular net income para Net Investment Income Tax
-export function calculateNetIncomeNetInvestmentIncomeTax(grossIncome) {
-  return Math.max(0, grossIncome);
-}
-
-// Calcular net income para Miscellaneous Tax Credits
-export function calculateNetIncomeMiscTaxCredits(grossIncome) {
-  return Math.max(0, grossIncome);
-}
-
-// Calcular net income para Rental Strategies & 754 Election
-export function calculateNetIncomeRentalStrategies754Election(grossIncome) {
-  return Math.max(0, grossIncome);
-}
-// Calcular net income para Reasonable Compensation Analysis
-export function calculateNetIncomeReasonableCompAnalysis(grossIncome) {
-  return Math.max(0, grossIncome);
-}
-
-// Calcular net income para Real Estate Professional
-export function calculateNetIncomeRealEstateProfessional(grossIncome) {
-  return Math.max(0, grossIncome);
-}
-
-// Calcular net income para Captive Insurance
-export function calculateNetIncomeCaptiveInsurance(grossIncome) {
-  return Math.max(0, grossIncome);
-}
-
-// Calcular net income para Charitable LLC
-export function calculateNetIncomeCharitableLLC(grossIncome) {
-  return Math.max(0, grossIncome);
-}
-
-// Calcular net income para Sole Proprietor
-export function calculateNetIncomeSoleProprietor(grossIncome) {
-  return Math.max(0, grossIncome);
-}
-
-// Calcular net income para Choice of Entity
-export function calculateNetIncomeChoiceOfEntity(grossIncome) {
-  return Math.max(0, grossIncome);
-}
-
-// Calcular net income para Choice of Entity - C Corporation
-export function calculateNetIncomeChoiceOfEntityCCorp(grossIncome) {
-  return Math.max(0, grossIncome);
-}
-
-// Calcular net income para Choice of Entity - Partnership
-export function calculateNetIncomeChoiceOfEntityPartnership(grossIncome) {
-  return Math.max(0, grossIncome);
-}
-
-// Calcular net income para Choice of Entity - S Corporation
-export function calculateNetIncomeChoiceOfEntitySCorp(grossIncome) {
-  return Math.max(0, grossIncome);
-}
-
-export function calculateNetIncomeHarvestingCryptoInvestors(grossIncome) {
-  return Math.max(0, grossIncome); // Evita valores negativos 
-}
 
 
 
