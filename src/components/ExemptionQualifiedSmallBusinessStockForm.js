@@ -295,7 +295,7 @@ console.log('Total Savings of Capital Gain (TSCG):', totalSavings);
                 <MenuItem value="1120S">1120S</MenuItem>
               </TextField>
 
-              {formType === '1065' && (
+              {(formType === '1065' || formType === '1120S') && (
                 <TextField
                   label="% Share if partnership"
                   fullWidth

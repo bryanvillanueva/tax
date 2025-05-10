@@ -292,7 +292,7 @@ const SecureAct20StrategiesForm = ({ onCalculate }) => {
                 <MenuItem value="1120S">1120S</MenuItem>
               </TextField>
 
-              {formType === '1065' && (
+              {(formType === '1065' || formType === '1120S') && (
                 <TextField
                   label="% Share if partnership"
                   fullWidth
